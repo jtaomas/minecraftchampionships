@@ -1,0 +1,3 @@
+SUMMARY jumps 221 (easy-table checked 70), footholds 224 (tiny objects 0), decoys 0, catch ledges 1122 (warning)
+RESULT: PASS  errors 0  warnings 71
+wrote previews/course_side.png (1236, 250)

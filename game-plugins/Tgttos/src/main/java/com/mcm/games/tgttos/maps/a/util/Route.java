@@ -249,7 +249,7 @@ public final class Route {
                         long vi = info(x + dx, fy2, z + dz);
                         byte vt = type(vi);
                         if (vt == NONE || vt == VIRTUAL) {
-                            if (!pass(x + dx, fy2 + 1, z + dz) && fy2 <= fy + 1) break;   // column blocked above landing
+                            if (!pass(x + dx, fy2, z + dz) && fy2 <= fy + 1) break;   // solid in the body range: column blocked
                             continue;
                         }
                         double vh = hOf(vi), rise = vh - uh;

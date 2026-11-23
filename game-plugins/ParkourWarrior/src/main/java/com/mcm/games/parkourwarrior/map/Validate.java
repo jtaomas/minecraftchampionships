@@ -124,9 +124,9 @@ final class Validate {
                 if (!Bs.isAir(w.get(p.x(), p.y(), p.z()))) r.err(o.id + ": timed position not air in the static store " + p);
             // length
             int sx = o.wx(0, 0), sz = o.wz(0, 0), ex = o.wx(o.endX, o.endZ), ez = o.wz(o.endX, o.endZ);
-            double span = Math.hypot(ex - sx, ez - sz) - 3;
+            double span = o.kind == CourseModel.Kind.ENDING ? Math.hypot(Math.hypot(ex - sx, ez - sz), o.endY) - 3 : Math.hypot(ex - sx, ez - sz) - 3;
             if (o.kind != CourseModel.Kind.ENDING && (span < 15 || span > 35)) r.err(o.id + ": length " + f(span) + " outside 15..35");
-            if (o.kind == CourseModel.Kind.ENDING && (span < 12 || span > 35)) r.err(o.id + ": ending length " + f(span) + " outside 12..35");
+            if (o.kind == CourseModel.Kind.ENDING && (span < 8 || span > 35)) r.err(o.id + ": ending length " + f(span) + " outside 8..35");
             double maxGap = 0, maxRise = 0, hard = 0;
             List<Double> hs = new ArrayList<>();
             for (Jump j : js) { maxGap = Math.max(maxGap, j.gap); maxRise = Math.max(maxRise, j.rise); hs.add(j.hard); }

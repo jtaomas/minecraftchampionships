@@ -137,7 +137,8 @@ public final class QuarrySteps implements TgMap {
                 // top dressing
                 if (route) g.set(x, top, z, ROAD.at(x, top, z, g.seed));
                 else if (top > RIM_FAR + 1 || x < -20 || x > 20) {
-                    double r = g.rnd(x, top, z, 3);
+                    double r = Noise.fbm2(x * 0.11, z * 0.11, g.seed + 21) * 0.8 + g.rnd(x, top, z, 3) * 0.2;
+                    r = (r - 0.3) * 1.9;
                     g.set(x, top, z, r < 0.35 ? "coarse_dirt" : r < 0.55 ? "sandstone" : r < 0.75 ? "grass_block" : r < 0.85 ? "rooted_dirt" : "smooth_sandstone");
                     double p = g.rnd(x, top + 1, z, 4);
                     if (g.get(x, top, z).contains("grass") && p < 0.3) g.set(x, top + 1, z, p < 0.1 ? "fern" : "short_grass");
@@ -295,7 +296,7 @@ public final class QuarrySteps implements TgMap {
         // obstacle field between the rim edge and the pen: stone block stacks, pipe racks, a barrier line
         g.scenery = true;
         // block storage yard: jittered stacks of quarried blocks (no straight sprint anywhere in the yard)
-        for (int gz = 52; gz <= 94; gz += 5)
+        for (int gz = 50; gz <= 94; gz += 5)
             for (int gx = -38; gx <= 36; gx += 5) {
                 int x = gx + (int) (g.rnd(gx, 7, gz) * 2.99), z = gz + (int) (g.rnd(gx, 8, gz) * 2.99);
                 int w = 2 + (int) (g.rnd(gx, 9, gz) * 1.99), dz = 2 + (int) (g.rnd(gx, 10, gz) * 1.99);
@@ -307,12 +308,19 @@ public final class QuarrySteps implements TgMap {
             for (int gx = 21; gx <= 37; gx += 5) {
                 int x = gx + (int) (g.rnd(gx, 7, gz) * 2.99), z = gz + (int) (g.rnd(gx, 8, gz) * 2.99);
                 int w = 2 + (int) (g.rnd(gx, 9, gz) * 1.99), dz = 2 + (int) (g.rnd(gx, 10, gz) * 1.99);
-                if (z + dz >= 30 && z <= 38 && x <= 30) continue;                     // ramp trench + landing
-                if (z + dz >= 43 && z <= 49 && x <= 37) continue;                     // cut trench + exit
+                if (z + dz - 1 >= 31 && z <= 37 && x <= 28) continue;                 // ramp trench + landing
+                if (z + dz - 1 >= 44 && z <= 48 && x <= 38) continue;                 // cut trench + exit
                 stack(g, x, y, z, w, dz);
             }
         stack(g, 8, y, 70, 3, 2);
+        stack(g, 0, y, 56, 3, 2);
+        stack(g, -5, y, 53, 2, 2);
+        stack(g, 5, y, 52, 2, 2);
         stack(g, -11, y, 66, 2, 3);
+        // guarantee: no straight free sprint > 14 anywhere on the yard / plateau floor
+        g.breakRuns(-40, 40, 26, 98, y, 13, p -> (p[0] >= -8 && p[0] <= 7 && p[1] >= 61 && p[1] <= 76)
+                || (p[0] >= 35 && p[0] <= 36 && p[1] >= 45 && p[1] <= 47) || (p[0] <= 29 && p[1] >= 31 && p[1] <= 37),
+                "stone_brick_wall", "lantern[hanging=false]");
         // pipe racks (stacked logs) along the yard sides
         for (int z = 51; z <= 73; z += 11) {
             g.fill(-24, y + 1, z, -20, y + 1, z + 1, "stripped_spruce_log[axis=x]");
@@ -327,7 +335,7 @@ public final class QuarrySteps implements TgMap {
         Pal m = g.rnd(x, 2, z) < 0.5 ? new Pal("smooth_stone", 3, "stone", 1) : g.rnd(x, 3, z) < 0.5 ? new Pal("stone_bricks", 3, "cracked_stone_bricks", 1) : new Pal("cut_sandstone", 3, "smooth_sandstone", 1);
         g.fill(x, y + 1, z, x + w - 1, y + hgt, z + dz - 1, m);
         if (g.rnd(x, 4, z) < 0.5) g.set(x + (int) (g.rnd(x, 5, z) * w), y + hgt + 1, z, "smooth_stone_slab[type=bottom]");
-        if (g.rnd(x, 6, z) < 0.25) g.set(x, y + hgt + 1, z + dz - 1, "lantern[hanging=false]");
+        if (g.rnd(x, 6, z) < 0.1) g.set(x, y + hgt + 1, z + dz - 1, "lantern[hanging=false]");
     }
 
     // ------------------------------------------------------------------ machinery
@@ -360,15 +368,15 @@ public final class QuarrySteps implements TgMap {
         for (int z = 20; z <= 27; z++) g.set(-36, py + 6, z, (z & 1) == 0 ? "black_terracotta" : "yellow_terracotta");
         g.set(-30, py + 10, 24, "lantern[hanging=false]");
         // boom: two-block-thick line up and over the road to the tip, arm down to the bucket
-        double[] a = {-24, py + 9, 24}, b = {-12, 27, 26}, c = {-3, 21, 27};
+        double[] a = {-24, py + 9, 24}, b = {-17, 29, 25}, c = {-15, 22, 26};
         for (int k = 0; k < 2; k++) for (int j = 0; j < 2; j++) {
             g.line(a[0], a[1] + k, a[2] + j, b[0], b[1] + k, b[2] + j, "yellow_terracotta");
             g.line(b[0], b[1] + k, b[2] + j, c[0], c[1] + k, c[2] + j, "yellow_terracotta");
         }
         g.line(a[0], a[1] + 2, a[2] + 1, b[0], b[1] + 2, b[2] + 1, "black_terracotta");
-        g.tether(-14, 20, 25, -20, py + 14, 25, "chain");
+        g.tether(-19, 24, 25, -22, py + 14, 25, "chain");
         // bucket raised high over the left half of the bowl (overhead scenery, not a stepping stone)
-        int bx1 = -6, bx2 = 0, bz1 = 25, bz2 = 29, by1 = 15, by2 = 20;
+        int bx1 = -18, bx2 = -12, bz1 = 24, bz2 = 28, by1 = 16, by2 = 21;
         for (int x = bx1; x <= bx2; x++)
             for (int z = bz1; z <= bz2; z++)
                 for (int y = by1; y <= by2; y++) {
@@ -395,7 +403,7 @@ public final class QuarrySteps implements TgMap {
 
     /** Hanging steel sheet piles (tall plates) in the gap: they bend the straight bridge, their tops are too high to use. */
     static final int[][] PLATES = {{-12, 17, -7}, {-3, 24, 3}, {4, 31, 9}, {-9, 38, -3}, {-1, 44, 6}};
-    static final int PLATE_LO = -6, PLATE_HI = 12, CABLE = 22;
+    static final int PLATE_LO = -6, PLATE_HI = 11, CABLE = 22;
 
     private void cableways(G g) {
         for (int[] c : new int[][]{{-27, 8}, {-27, 47}, {25, 8}, {25, 47}}) tower(g, c[0], c[1], CABLE);
@@ -445,7 +453,7 @@ public final class QuarrySteps implements TgMap {
     }
 
     private void crane(G g) {
-        int y0 = RIM_FAR + 1, top = 48;
+        int y0 = RIM_FAR + 1, top = 56;
         int tx = 14, tz = 78;
         // lattice mast
         for (int y = y0; y <= top; y++)
@@ -478,7 +486,7 @@ public final class QuarrySteps implements TgMap {
         for (int y = top + 8; y <= top + 14; y++) g.set(tx + 1, y, tz + 1, "end_rod[facing=up]");
         for (int i = 0; i < 6; i++)
             for (int y = top + 9 + i / 2; y <= top + 14 - i / 2; y++) g.set(tx + 2 + i, y, tz + 1, i % 2 == 0 ? "red_wool" : "white_wool");
-        g.text("MCM", tx - 22, top + 1, tz + 2, 1, 0, 1, "black_wool");
+        g.text("MCM", tx - 8, top + 1, tz + 2, -1, 0, 1, "black_wool");
         g.landmark.add(new double[]{tx + 1.5, top + 12, tz + 1.5});
         g.landmark.add(new double[]{tx + 1.5, top + 1, tz + 1.5});
         // floodlights at the pen corners
@@ -527,7 +535,7 @@ public final class QuarrySteps implements TgMap {
         for (int yy = 1; yy <= 17; yy++) { g.set(-13, yy, -6, "spruce_log"); g.set(13, yy, -6, "spruce_log"); }
         g.fill(-12, 10, -6, 12, 10, -6, "spruce_planks");
         g.fill(-12, 11, -6, 12, 17, -6, "black_wool");
-        g.text("QUARRY", -11, 16, -6, 1, 0, 1, "yellow_wool");
+        g.text("QUARRY", 11, 16, -7, -1, 0, 1, "yellow_wool");
         g.fill(-12, 18, -6, 12, 18, -6, "spruce_slab[type=bottom]");
         // small spruce trees on the outer hills
         for (int i = 0; i < 40; i++) {

@@ -139,6 +139,49 @@ public final class G {
         post = PostPass.run(b);
     }
 
+    /**
+     * Break up every straight free run (rows, columns and both diagonals) on a flat floor at {@code fy} inside the
+     * box: after {@code max} free cells in a line, a post is placed (unless {@code keep} protects the cell).
+     * Free = full block at fy with two air cells above. Returns the number of posts placed.
+     */
+    public int breakRuns(int x1, int x2, int z1, int z2, int fy, int max, java.util.function.Predicate<int[]> keep, String post, String cap) {
+        int placed = 0;
+        int[][] dirs = {{1, 0}, {0, 1}, {1, 1}, {1, -1}};
+        for (int[] d0 : dirs) {
+            int lim = d0[0] != 0 && d0[1] != 0 ? (int) Math.floor(max / Math.sqrt(2)) : max;
+            java.util.List<int[]> starts = new ArrayList<>();
+            if (d0[1] == 0) for (int z = z1; z <= z2; z++) starts.add(new int[]{x1, z});
+            else if (d0[0] == 0) for (int x = x1; x <= x2; x++) starts.add(new int[]{x, z1});
+            else {
+                for (int x = x1; x <= x2; x++) starts.add(new int[]{x, d0[1] > 0 ? z1 : z2});
+                for (int z = z1; z <= z2; z++) starts.add(new int[]{x1, z});
+            }
+            for (int[] st : starts) {
+                int run = 0, lx = 0, lz = 0, lrun = -1;   // last placeable cell in the current run
+                for (int x = st[0], z = st[1]; x >= x1 && x <= x2 && z >= z1 && z <= z2; x += d0[0], z += d0[1]) {
+                    boolean free = Bs.standTop(get(x, fy, z)) > 0.99 && Bs.passable(get(x, fy + 1, z)) && Bs.passable(get(x, fy + 2, z))
+                            && Bs.standTop(get(x, fy, z)) < 1.01;
+                    if (!free) { run = 0; lrun = -1; continue; }
+                    run++;
+                    boolean can = !keep.test(new int[]{x, z});
+                    if (can) { lx = x; lz = z; lrun = run; }
+                    if (run > lim) {
+                        int px, pz, at;
+                        if (can) { px = x; pz = z; at = run; }
+                        else if (lrun > 1) { px = lx; pz = lz; at = lrun; }
+                        else continue;
+                        set(px, fy + 1, pz, post);
+                        if (cap != null && ((px + pz) & 3) == 0) set(px, fy + 2, pz, cap);
+                        placed++;
+                        run = run - at;
+                        lrun = -1;
+                    }
+                }
+            }
+        }
+        return placed;
+    }
+
     /** Team-colour concrete is reserved for players: replace any stray one (safety net) and count them. */
     public int scrubConcrete() {
         List<int[]> bad = new ArrayList<>();

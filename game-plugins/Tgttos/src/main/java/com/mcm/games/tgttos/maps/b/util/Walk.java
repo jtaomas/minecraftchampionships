@@ -213,7 +213,10 @@ public final class Walk {
                 for (int dy = 1; dy >= -8; dy--) {
                     int ny = n.y + dy;
                     double f = feet(jx, ny, jz);
-                    if (Double.isNaN(f)) continue;
+                    if (Double.isNaN(f)) {
+                        if (dy <= 0 && !pass(jx, ny, jz)) break;
+                        continue;
+                    }
                     double rise = f - fh;
                     double allowGap = 4 - Math.max(0, Math.ceil(rise - 0.01));
                     if (rise < -1.5) allowGap = 4.25;
@@ -254,18 +257,20 @@ public final class Walk {
     // ------------------------------------------------------------------ metrics
 
     /** Longest run of standable cells at one feet level in a straight line along (dx,dz) through (x,y,z). */
-    public int straightRun(int x, int y, int z, int dx, int dz) {
+    public int straightRun(int x, int y, int z, int dx, int dz, Predicate<int[]> stop) {
         if (!standable(x, y, z)) return 0;
         double f0 = feet(x, y, z);
         int n = 1;
         for (int s = 1; s < 80; s++) {
             int cx = x + dx * s, cz = z + dz * s;
-            if (!standable(cx, y, cz) || Math.abs(feet(cx, y, cz) - f0) > 0.01 || !pass(cx, y + 2, cz) && false) break;
+            if (!standable(cx, y, cz) || Math.abs(feet(cx, y, cz) - f0) > 0.01 || stop.test(new int[]{cx, y, cz})) break;
+            if (dx != 0 && dz != 0 && (!pass(cx - dx, y, cz) || !pass(cx, y, cz - dz) || !pass(cx - dx, y + 1, cz) || !pass(cx, y + 1, cz - dz))) break;
             n++;
         }
         for (int s = 1; s < 80; s++) {
             int cx = x - dx * s, cz = z - dz * s;
-            if (!standable(cx, y, cz) || Math.abs(feet(cx, y, cz) - f0) > 0.01) break;
+            if (!standable(cx, y, cz) || Math.abs(feet(cx, y, cz) - f0) > 0.01 || stop.test(new int[]{cx, y, cz})) break;
+            if (dx != 0 && dz != 0 && (!pass(cx + dx, y, cz) || !pass(cx, y, cz + dz) || !pass(cx + dx, y + 1, cz) || !pass(cx, y + 1, cz + dz))) break;
             n++;
         }
         return n;
@@ -285,7 +290,7 @@ public final class Walk {
             if (Math.abs(c.x - a.x) * 2 < Math.abs(c.z - a.z)) dx = 0;
             if (Math.abs(c.z - a.z) * 2 < Math.abs(c.x - a.x)) dz = 0;
             if (dx == 0 && dz == 0) continue;
-            int r = straightRun(n.x, n.y, n.z, dx, dz);
+            int r = straightRun(n.x, n.y, n.z, dx, dz, skip);
             if (dx != 0 && dz != 0) r = (int) Math.round(r * Math.sqrt(2));
             if (r > best) { best = r; bx = n.x; by = n.y; bz = n.z; }
         }

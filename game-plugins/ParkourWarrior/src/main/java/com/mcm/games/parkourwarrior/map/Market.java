@@ -201,7 +201,7 @@ final class Market {
         o.difficultyTag = "HARD";
         // a tall façade on the left (x <= -3) with flower-box ledges; billboards jut out between them
         houses(o, -7, -3, 3, 25, -10, 8, -3, 7, 4, true);
-        int[][] ledge = {{4, 0}, {8, 0}, {12, 1}, {16, 1}, {20, 1}};
+        int[][] ledge = {{4, 0}, {8, 0}, {11, 0}, {15, 0}, {19, 0}};
         for (int[] l : ledge) {
             for (int x = -2; x <= -1; x++) o.set(x, l[1], l[0], "spruce_planks");
             o.set(-1, l[1] + 1, l[0], "red_tulip");
@@ -224,8 +224,8 @@ final class Market {
             Ob.Node n = o.area(-2, ledge[i][1], ledge[i][0], -1, ledge[i][0]);
             n.neo = true;
         }
-        o.end(1, 1, 24);
-        Sh.padBase(o, 1, 1, 24, "spruce_planks", "stripped_spruce_wood[axis=y]", "spruce_planks", 2);
+        o.end(1, 0, 23);
+        Sh.padBase(o, 1, 0, 23, "spruce_planks", "stripped_spruce_wood[axis=y]", "spruce_planks", 2);
         return o;
     }
 }

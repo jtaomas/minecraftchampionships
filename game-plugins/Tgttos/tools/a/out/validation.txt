@@ -2,34 +2,34 @@ Builder-A TGTTOS maps: validation report (seed 20261124)
 Movement model: walk/sprint 5.6 b/s (median 4.3), step 0.6 / stairs 1, jumps edge-to-edge gap <= 4 flat, -1 per block of rise,
 drops reach further (vanilla fall time), bridging 0.30 s/block (median 0.55), pillar 0.40 s/block (median 0.55), ladders 2.35 b/s.
 
-==== Bookshelf Run  (com.mcm.games.tgttos.maps.a.BookshelfRunMap, PARKOUR, kit SNOWBALLS_ONLY) ====  [generate 143 ms, validate 1156 ms, 42710 blocks]
+==== Orchard Drop  (com.mcm.games.tgttos.maps.a.OrchardDropMap, DROP, kit SNOWBALLS_ONLY) ====  [generate 210 ms, validate 1053 ms, 119157 blocks]
   [ok]   contract check 
   [ok]   no concrete / concrete powder in the build (0)
   [ok]   distinct block types >= 25 (58)
-  [ok]   scenery share 40-60% (52% of 42710 blocks outside the route envelope)
+  [ok]   scenery share 40-60% (60% of 119157 blocks outside the route envelope)
   [ok]   connection post-pass holds (fences/panes/walls/bars: 0 mismatches)
-  [FAIL] staircase helper: 3 flights walkable [spoon ramp[0] @(-1,-11,100)north: no landing flush with the last step at (-1,-6,94), spoon ramp[1] @(0,-11,100)north: no landing flush with the last step at (0,-6,94)]
-  [ok]   start strip holds 40 (261 standable cells, 60/60 spawns valid)
+  [ok]   staircase helper: 0 flights walkable
+  [ok]   start strip holds 40 (252 standable cells, 52/52 spawns valid)
   [ok]   start strip fenced in before GO (cells reachable outside: 0)
-  [ok]   start barrier blocks present (87)
-  [ok]   landmark visible from the start (ray-cast): 55/60 spawns (92%)
-  [ok]   built route start -> pen without placing blocks (16.6 s expert, 8 jumps, hardest gap 3.0 rise +1.0)
-  -- line FAST: leaning-book ramp onto the book tops, gaps 2-3 with rises and a head-hitter, leaning ramp, pencil over the void (3 wide), push-pins, coins, leap into the cup
+  [ok]   start barrier blocks present (108)
+  [ok]   landmark visible from the start (ray-cast): 52/52 spawns (100%)
+  [ok]   built route start -> pen without placing blocks (12.0 s expert, 3 jumps, hardest gap 4.0 drop 9.0)
+  -- line FAST: walk off the right side, 36-block fall onto a 5-wide apple 10 out, 14-block fall onto the second small apple, hop to the meadow in front of the 4-wide yard gate
   [ok]   FAST line completes
-         path 79 blocks, blocks placed 0, jumps 12 (3+ gaps: 4, falls 1), hardest jump gap 3.0 rise +1.0, max rise 1.0
-         estimated time: expert 18.2 s, median 25.7 s (+ fails)
-  [ok]   FAST longest obstacle-free straight sprint 6.0 <= 15 (-3,3,54)->(-3,3,60)
+         path 64 blocks, blocks placed 0, jumps 4 (3+ gaps: 2, falls 2), hardest jump gap 4.0 drop 10.0, max rise 1.0
+         estimated time: expert 12.5 s, median 16.5 s (+ fails)
+  [ok]   FAST longest obstacle-free straight sprint 9.0 <= 15 (6,1,45)->(6,1,54)
   [ok]   FAST blocks within the 64 kit (0)
-  -- line SAFE: back alley (hop clutter), step books up to the leaning ramp top, ruler slide to the desk, round the stack to the spoon ramp
+  -- line SAFE: walk off the left side onto the big apple below, cross it, drop to the second big apple, drop to the meadow, walk across to the gate (or round by the side gap)
   [ok]   SAFE line completes
-         path 105 blocks, blocks placed 0, jumps 13 (3+ gaps: 0, falls 0), hardest jump gap 2.0 rise +1.0, max rise 1.0
-         estimated time: expert 23.2 s, median 31.6 s (+ fails)
-  [ok]   SAFE longest obstacle-free straight sprint 10.0 <= 15 (9,1,11)->(9,1,21)
+         path 95 blocks, blocks placed 0, jumps 4 (3+ gaps: 0, falls 3), hardest jump gap 2.0 rise +1.0, max rise 1.0
+         estimated time: expert 17.6 s, median 22.8 s (+ fails)
+  [ok]   SAFE longest obstacle-free straight sprint 11.0 <= 15 (-13,1,69)->(-2,1,70)
   [ok]   SAFE blocks within the 64 kit (0)
-  [ok]   FAST saves >= 20% vs SAFE (expert 22%, median 19%)
-  [ok]   best line by an expert <= 35 s (18.2 s)
-  [ok]   map-wide: longest straight flat run along the course (z) 14 <= 15 at (-8,1,62)  [2774 reachable cells]
-         longest straight flat run across (x): 16 at (-12,-5,78)
+  [ok]   FAST saves >= 20% vs SAFE (expert 29%, median 28%)
+  [ok]   best line by an expert <= 35 s (12.5 s)
+  [ok]   map-wide: longest straight flat run along the course (z) 13 <= 15 at (-1,4,36)  [4145 reachable cells]
+         longest straight flat run across (x): 56 at (-28,1,93)
   [ok]   lines and pen inside playBounds
-  RESULT 1 problem(s)
+  RESULT PASS
 

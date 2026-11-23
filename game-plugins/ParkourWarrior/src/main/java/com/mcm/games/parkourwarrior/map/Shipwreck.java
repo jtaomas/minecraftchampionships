@@ -174,7 +174,7 @@ final class Shipwreck {
         o.difficultyTag = "HARD";
         // a broken keel that steps up, crossed by rib frames from alternating sides
         int[] ribs = {4, 9, 14, 19};
-        int[] ky = {0, 1, 1, 2, 2};
+        int[] ky = {0, 0, 1, 1, 1};
         int prev = 2;
         for (int i = 0; i <= ribs.length; i++) {
             int end = i < ribs.length ? ribs[i] - 1 : prev + 1;
@@ -200,8 +200,8 @@ final class Shipwreck {
         }
         // hull strakes far below
         for (int z = 2; z <= 24; z++) for (int sx = -1; sx <= 1; sx += 2) for (int k = 0; k < 3; k++) o.set(sx * (2 + k), -3 - k, z, k == 1 ? "spruce_planks" : "dark_oak_planks");
-        o.end(0, 2, 27);
-        Sh.padBase(o, 0, 2, 27, "dark_oak_planks", "spruce_planks", "dark_oak_planks", 2);
+        o.end(0, 1, 27);
+        Sh.padBase(o, 0, 1, 27, "dark_oak_planks", "spruce_planks", "dark_oak_planks", 2);
         return o;
     }
 }

@@ -1,5 +1,5 @@
 Parkour Warrior course validation  (seed 20261124)
-blocks: 44837, obstacles: 36, timed groups: 27
+blocks: 56045, obstacles: 36, timed groups: 30
   warn  B1-1: catch ledge above kill-Y (not on route) 7,101,-6 flowering_azalea_leaves
   warn  B1-1: catch ledge above kill-Y (not on route) 8,101,-5 flowering_azalea_leaves
 B1-1       Alphabet Avalanche       DROP    len 27.0  jumps  4  maxGap 4.0  climb  4  killY 92  diff 3.25  sign EASY
@@ -25,7 +25,7 @@ B2-1       Fruit Crate Tumble       GAP     len 27.0  jumps  6  maxGap 3.2  clim
   warn  B2-2: catch ledge above kill-Y (not on route) 33,103,101 melon
 B2-2       Swinging Shop Signs      HANG    len 22.0  jumps  6  maxGap 3.0  climb  1  killY 99  diff 4.25  sign MEDIUM
   warn  B2-3: catch ledge above kill-Y (not on route) 58,104,102 stripped_spruce_wood
-B2-3       Billboard Bend           NEO     len 21.0  jumps  6  maxGap 3.0  climb  1  killY 100  diff 5.25  sign HARD
+B2-3       Billboard Bend           NEO     len 20.0  jumps  6  maxGap 3.0  climb  0  killY 100  diff 4.75  sign HARD
   warn  M2-1: catch ledge above kill-Y (not on route) -5,106,109 lantern
   warn  M2-1: catch ledge above kill-Y (not on route) -4,106,110 lantern
 M2-1       Awning Alley             DIAG    len 26.0  jumps  7  maxGap 2.2  climb  2  killY 100  diff 2.12  [easy table]
@@ -41,9 +41,9 @@ B3-1       Barrel Scatter           POST    len 22.0  jumps  6  maxGap 3.0  clim
   warn  B3-2: catch ledge above kill-Y (not on route) 28,112,189 barrel
   warn  B3-2: catch ledge above kill-Y (not on route) 28,115,190 barrel
 B3-2       Gun Deck Duck            HEAD    len 21.0  jumps  6  maxGap 3.0  climb  1  killY 110  diff 4.00  sign HARD
-  warn  B3-3: catch ledge above kill-Y (not on route) 52,118,186 dark_oak_planks
-  warn  B3-3: catch ledge above kill-Y (not on route) 52,118,187 spruce_planks
-B3-3       Hull Rib Run             NEO     len 24.0  jumps  6  maxGap 3.0  climb  2  killY 110  diff 5.25  sign HARD
+  warn  B3-3: catch ledge above kill-Y (not on route) 52,114,188 polished_blackstone_wall
+  warn  B3-3: catch ledge above kill-Y (not on route) 52,114,189 coal_block
+B3-3       Hull Rib Run             NEO     len 24.0  jumps  6  maxGap 3.0  climb  1  killY 110  diff 5.00  sign HARD
   warn  M3-1: catch ledge above kill-Y (not on route) -4,116,198 lantern
   warn  M3-1: catch ledge above kill-Y (not on route) -4,113,201 stripped_spruce_log
 M3-1       Fallen Mainmast          BEAM    len 27.0  jumps  5  maxGap 2.0  climb  3  killY 107  diff 1.25  [easy table]
@@ -106,23 +106,22 @@ E-MEDIUM-2 Lighthouse Ladder        LADDER  len 13.2  jumps  3  maxGap 3.0  clim
 E-HARD-1   Spine Scramble           UP      len 11.5  jumps  9  maxGap 3.0  climb 11  killY 114  diff 5.00
   warn  E-HARD-2: catch ledge above kill-Y (not on route) 8,128,478 cyan_wool
   warn  E-HARD-2: catch ledge above kill-Y (not on route) 12,127,478 purple_wool
-E-HARD-2   Missing Treads           SPIRAL  len 11.4  jumps  8  maxGap 3.0  climb  6  killY 125  diff 4.46
+E-HARD-2   Missing Treads           SPIRAL  len 11.4  jumps  8  maxGap 4.0  climb  6  killY 125  diff 5.16
 
 == course checks
 pad blocks: 324 (stray 0)
 timed obstacles: [B4-1, B4-3, E-HARD-2, M4-2, M5-3]
 stage 1 difficulty: main 2.29  bonus 3.17
-stage 2 difficulty: main 2.54  bonus 4.26
-stage 3 difficulty: main 2.17  bonus 4.58
+stage 2 difficulty: main 2.54  bonus 4.10
+stage 3 difficulty: main 2.17  bonus 4.50
 stage 4 difficulty: main 2.67  bonus 4.58
 stage 5 difficulty: main 3.58  bonus 4.63
-endings difficulty: easy 1.50  medium 2.38  hard 4.73
-  ERROR Hard ending (4.7) is not the hardest thing on the map (max other 5.3)
+endings difficulty: easy 1.50  medium 2.38  hard 5.08
 staircases: 0 lanes, problems 0
-bounds: x -20..88  y 87..149  z -10..515
-distinct block types: 169
+bounds: x -90..87  y 87..155  z -10..551
+distinct block types: 185
 
-SUMMARY jumps 221 (easy-table checked 70), footholds 227 (tiny objects 0), decoys 0, catch ledges 1151 (warning)
-RESULT: FAIL  errors 1  warnings 71
+SUMMARY jumps 221 (easy-table checked 70), footholds 224 (tiny objects 0), decoys 0, catch ledges 1122 (warning)
+RESULT: PASS  errors 0  warnings 71
 
-(generated + validated in 511 ms)
+(generated + validated in 442 ms)

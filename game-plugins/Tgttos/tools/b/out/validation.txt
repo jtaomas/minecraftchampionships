@@ -1,7 +1,7 @@
 TGTTOS maps, builder B - validation report (seed 20261124)
 
 === ticket_gates ===
-  30632 blocks, 53 block types, generated in 254 ms, bounds x -28..23 y -7..23 z -4..93, scenery share 82%
+  32372 blocks, 53 block types, generated in 170 ms, bounds x -35..23 y -7..23 z -4..93, scenery share 82%
   ok    inside the contract box (x/z -250..250, y -60..180)
   ok    material richness: 53 block types (>= 25)
   ok    contract check (TgMapData.check): clean
@@ -9,22 +9,18 @@ TGTTOS maps, builder B - validation report (seed 20261124)
   ok    start holds 45 players (45 inside the strip, 45 on solid floor with headroom, closest pair 2.33 apart)
         start strip 36 x 7 (x -18..17, z 0..6), barrier 108 blocks, drop floor 0 blocks
   ok    every barrier / drop-floor position holds a real block (0 missing)
-  ok    connection post-pass: 1387 fence/pane/wall/bar states set, 36 leaves, 0 unsupported carpets dropped; re-run changes 0
+  ok    connection post-pass: 1443 fence/pane/wall/bar states set, 36 leaves, 0 unsupported carpets dropped; re-run changes 0
   ok    staircase helper: 2 flights (6 columns) walked bottom to top
   ok    12 chicken spawns inside the pen 12 x 12
   --    landmark ray-cast not required (indoor map)
   ok    12 turnstile groups with OPEN / JAMMED / DROP, rule: at least 4 OPEN per round
   ok    turnstile variants consistent: 12/12 (OPEN passes, JAMMED blocks after 1 block, DROP falls to the tunnel that rejoins at platform A)
   route lines (walk: sprint 5.6 b/s; variants as stated):
-        path: start@-17,1,5 walk@-17,1,6 jump gap 1.0 up 1.0@-20,3,26 jump gap 2.0 down 8@-20,-5,29 walk@-20,-5,30 
-  ERROR SAFE  staff corridor + carriage doors (all gates jammed): path 97 blocks, 2 jumps, hardest jump gap 1.0 up 1.0 at (-20,3,26) (difficulty 2.0), 0 blocks placed, longest straight free stretch 18 (at -17,1,41; limit 15), est. 15.4 s (expert pace)
-        path: start@0,1,5 walk@0,1,6 jump gap 2.0@0,1,44 jump gap 3.0@0,1,48 walk@0,1,49 
-  ok    FAST  open turnstile + coupling jumps (all gates open): path 74 blocks, 2 jumps, hardest jump gap 3.0 at (0,1,48) (difficulty 3.0), 0 blocks placed, longest straight free stretch 14 (at 1,1,16; limit 15), est. 13.5 s (expert pace)
-        path: start@9,1,5 walk@9,1,6 
-  ok    MID   open turnstile + carriage doors: path 77 blocks, 0 jumps, hardest none (difficulty 0.0), 0 blocks placed, longest straight free stretch 15 (at 7,1,23; limit 15), est. 13.7 s (expert pace)
-        path: start@-17,1,5 walk@-17,1,6 jump gap 1.0 up 1.0@-20,3,26 jump gap 2.0 down 8@-20,-5,29 walk@-20,-5,30 
-  ERROR DROP  through a dropping turnstile + tunnel stairs + couplers: path 97 blocks, 2 jumps, hardest jump gap 1.0 up 1.0 at (-20,3,26) (difficulty 2.0), 0 blocks placed, longest straight free stretch 17 (at -17,1,41; limit 15), est. 15.4 s (expert pace)
-  ERROR fast line saves 12% vs the safe line (>= 20%)
-  gamble estimate (1/3 open, 1/3 jammed, 1/3 drop, crowd-following): ~16 s expert; median ~31 s; safe line median ~27 s
-  RESULT: 3 problem(s)
+  ok    SAFE  staff corridor + carriage doors (all gates jammed): path 129 blocks, 1 jumps, hardest jump gap 3.2 down 3 at (-19,-2,37) (difficulty 3.2), 0 blocks placed, longest straight free stretch 14 (at -17,1,7; limit 15), est. 21.5 s (expert pace)
+  ok    FAST  open turnstile + coupling jumps (all gates open): path 84 blocks, 3 jumps, hardest jump gap 3.0 at (10,1,58) (difficulty 3.0), 0 blocks placed, longest straight free stretch 14 (at 1,1,16; limit 15), est. 14.7 s (expert pace)
+  ok    MID   open turnstile + carriage doors: path 87 blocks, 1 jumps, hardest jump gap 3.2 down 1 at (-17,1,42) (difficulty 3.2), 0 blocks placed, longest straight free stretch 14 (at -14,1,10; limit 15), est. 15.1 s (expert pace)
+  ok    DROP  through a dropping turnstile + tunnel stairs + couplers: path 99 blocks, 0 jumps, hardest none (difficulty 0.0), 0 blocks placed, longest straight free stretch 14 (at -14,1,10; limit 15), est. 16.0 s (expert pace)
+  ok    fast line saves 32% vs the safe line (>= 20%)
+  gamble estimate (1/3 open, 1/3 jammed, 1/3 drop, crowd-following): ~17 s expert; median ~33 s; safe line median ~36 s
+  RESULT: all checks passed
 
