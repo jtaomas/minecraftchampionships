@@ -217,11 +217,10 @@ public final class OrchardDropMap extends AMap {
     private void meadowAndYard(TgMapData d) {
         // island top (y 0), rounded outline with a ragged edge, tapered rocky underside with roots
         for (int x = -29; x <= 29; x++) for (int z = 36; z <= 96; z++) {
-            double ex = Math.max(0, Math.abs(x) - 22) / 7.0, ez = z < 44 ? (44 - z) / 8.0 : Math.max(0, z - 88) / 8.0;
+            double ex = Math.max(0, Math.abs(x) - 24) / 5.5, ez = z < 44 ? (44 - z) / 8.0 : Math.max(0, z - 88) / 8.0;
             double e = ex * ex + ez * ez;
             double n = 0.35 * Noise.fbm2(x * 0.15, z * 0.15, g.seed + 21);
             if (e > 1 + n) continue;
-            if (Math.abs(x) <= 27 && z >= 38 && z <= 92) e = 0;
             g.set(x, 0, z, grass.at(x, 0, z, g.seed));
         }
         g.underside(-29, 36, 29, 96, 0, 26, rock, 23);

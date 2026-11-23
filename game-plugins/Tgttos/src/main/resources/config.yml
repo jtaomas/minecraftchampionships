@@ -6,10 +6,10 @@ maps:
   - com.mcm.games.tgttos.maps.a.DamFaceMap
   - com.mcm.games.tgttos.maps.a.BookshelfRunMap
   - com.mcm.games.tgttos.maps.a.OrchardDropMap
-  - com.mcm.games.tgttos.maps.b.KiteFestivalMap
-  - com.mcm.games.tgttos.maps.b.FrozenCanalMap
-  - com.mcm.games.tgttos.maps.b.TicketGatesMap
-  - com.mcm.games.tgttos.maps.b.QuarryStepsMap
+  - com.mcm.games.tgttos.maps.b.KiteFestival
+  - com.mcm.games.tgttos.maps.b.FrozenCanal
+  - com.mcm.games.tgttos.maps.b.TicketGates
+  - com.mcm.games.tgttos.maps.b.QuarrySteps
 # Also load any other TgMap class found in com.mcm.games.tgttos.maps.* inside the jar.
 auto-discover: true
 # Development stub map (com.mcm.games.tgttos.stub.StubBridgeMap): always | auto (only if fewer real maps than rounds) | never

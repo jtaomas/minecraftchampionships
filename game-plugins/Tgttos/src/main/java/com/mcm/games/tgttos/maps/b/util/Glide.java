@@ -26,7 +26,8 @@ public final class Glide {
         public int collisions, fireworks;
         public final List<String> notes = new ArrayList<>();
         public boolean ok = true;
-        public double worstGlide = 0;   // steepest sustained climb ratio not used; kept for report
+        public double worstGlide = 0;
+        public double maxTurnDeg = 0;   // steepest sustained climb ratio not used; kept for report
     }
 
     /** One vanilla elytra tick in the vertical plane. v = {vh, vy}; pitchDeg > 0 looks down. */
@@ -71,12 +72,21 @@ public final class Glide {
      * Fly the line. Starts at the first waypoint with the given initial speed (b/tick, horizontal). Uses up to
      * {@code rockets} fireworks when below the target by more than 3 blocks.
      */
+    static final double TURN_R = 10;
+
     public static Flight fly(TgMapData d, List<Wp> wps, double v0, int rockets, double eyeLead) {
         Flight fl = new Flight();
         double[] cum = new double[wps.size()];
         for (int i = 1; i < wps.size(); i++)
             cum[i] = cum[i - 1] + Math.hypot(wps.get(i).x() - wps.get(i - 1).x(), wps.get(i).z() - wps.get(i - 1).z());
         double total = cum[cum.length - 1];
+        double[] turn = new double[wps.size()];
+        for (int i = 1; i < wps.size() - 1; i++) {
+            double h1 = Math.atan2(wps.get(i).x() - wps.get(i - 1).x(), wps.get(i).z() - wps.get(i - 1).z());
+            double h2 = Math.atan2(wps.get(i + 1).x() - wps.get(i).x(), wps.get(i + 1).z() - wps.get(i).z());
+            turn[i] = Math.abs(Math.atan2(Math.sin(h2 - h1), Math.cos(h2 - h1)));
+            fl.maxTurnDeg = Math.max(fl.maxTurnDeg, Math.toDegrees(turn[i]));
+        }
         double s = 0, y = wps.get(0).y();
         double[] v = {v0, 0};
         double pitch = 10;
@@ -90,8 +100,19 @@ public final class Glide {
             double err = v[1] - vyd;                 // positive -> rising too fast -> nose down
             pitch += clamp(err * 60, -6, 6);
             pitch = clamp(pitch, -45, 70);
-            if (rockets > 0 && boostLeft == 0 && yt - y > 3 && s > 10) { rockets--; fl.fireworks++; boostLeft = 26; pitch = -20; }
+            // stall protection (what a player does): when slow, never pull up - nose down until flying speed is back
+            if (v[0] < 1.1 && y > yt - 6) pitch = Math.max(pitch, 12 + (1.1 - v[0]) * 30);
+            if (rockets > 0 && boostLeft == 0 && ((fl.fireworks == 0 && s > 3) || (yt - y > 3 && s > 10))) { rockets--; fl.fireworks++; boostLeft = 26; pitch = -20; }
             tick(v, pitch, boostLeft > 0);
+            // turning: vanilla blends the horizontal velocity 10%/tick towards the look direction, so a turn rate w needs
+            // the look to lead the velocity by ~w/0.1 rad, which scrubs speed by sqrt(0.82 + 0.18 cos(lead)) per tick.
+            // Corners of the polyline are spread over +-TURN_R blocks.
+            double kappa = 0;
+            for (int i = 1; i < wps.size() - 1; i++) if (Math.abs(s - cum[i]) <= TURN_R) kappa += turn[i] / (2 * TURN_R);
+            if (kappa > 0) {
+                double lead = Math.min(1.2, kappa * v[0] / 0.1);
+                v[0] *= Math.sqrt(0.82 + 0.18 * Math.cos(lead));
+            }
             if (boostLeft > 0) boostLeft--;
             s += v[0];
             y += v[1];
@@ -120,7 +141,10 @@ public final class Glide {
         for (double[] p : fl.pts) {
             double clear = clearance(d.blocks, p[0], p[1], p[2]);
             fl.minClear = Math.min(fl.minClear, clear);
-            if (clear <= 0) fl.collisions++;
+            if (clear <= 0) {
+                if (fl.collisions == 0) fl.notes.add(String.format("first contact at (%.1f, %.1f, %.1f)", p[0], p[1], p[2]));
+                fl.collisions++;
+            }
         }
         if (fl.collisions > 0) { fl.ok = false; fl.notes.add(fl.collisions + " ticks inside blocks"); }
         return fl;

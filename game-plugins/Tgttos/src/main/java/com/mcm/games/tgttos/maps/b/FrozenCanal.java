@@ -33,10 +33,10 @@ public final class FrozenCanal implements TgMap {
     /** Canal centre line. */
     public static final double[][] LINE = {{0, 9}, {0, 34}, {24, 58}, {24, 86}, {-6, 116}, {-6, 140}};
     public static final double HALF = 10;
-    static final double[][] BYPASS = {{18, 60}, {10, 67}, {10, 81}, {18, 88}};
+    static final double[][] BYPASS = {{30, 58}, {42, 66}, {42, 82}, {30, 90}};
     public static final int X1 = -64, X2 = 64, Z1 = -24, Z2 = 180;
     public static final Region RINK = Region.of(-22, 0, 134, 10, 0, 158);
-    public static final Region LOCK = Region.of(21, 0, 68, 26, 0, 80);
+    public static final Region LOCK = Region.of(21, 0, 68, 25, 0, 80);
 
     static final Pal BRICK = new Pal("bricks", 6, "mud_bricks", 1, "granite", 1);
     static final Pal QUAY = new Pal("stone_bricks", 5, "polished_andesite", 2, "cracked_stone_bricks", 1);
@@ -79,6 +79,9 @@ public final class FrozenCanal implements TgMap {
         barges(g);
         lamps(g);
         g.scenery = false;
+        dolphins(g);
+        g.scenery = true;
+        g.scenery = false;
 
         d.voidY = -12;
         d.playBounds = Region.of(-40, -14, -2, 50, 40, 162);
@@ -106,7 +109,7 @@ public final class FrozenCanal implements TgMap {
                     in = cx * cx + cz * cz <= 16 || in;
                 }
                 // lock island and right lock wall
-                if (z >= 68 && z <= 80 && ((x >= 14 && x <= 20) || (x >= 27 && x <= 35))) in = false;
+                if (z >= 68 && z <= 80 && ((x >= 12 && x <= 20) || (x >= 26 && x <= 37))) in = false;
                 put(x, z, in ? CANAL : LAND);
             }
         // quays: land cells next to the canal
@@ -123,7 +126,9 @@ public final class FrozenCanal implements TgMap {
         bend(24, 86, -1, 0.0, 1, 1);   // V3: inside -x
         bend(-6, 116, 1, 0.0, 1, 1);   // V4: inside +x
         // slush patches in the straights (force steering at least every ~25 blocks)
-        int[][] slush = {{-6, 18, 4, 2}, {5, 26, 3, 2}, {28, 66, 3, 3}, {18, 92, 3, 2}, {-12, 128, 4, 2}, {-1, 124, 3, 2}, {6, 100, 3, 3}};
+        int[][] slush = {{-6, 18, 4, 2}, {5, 26, 3, 2}, {28, 66, 3, 3}, {20, 90, 3, 2}, {-12, 128, 4, 2}, {-1, 124, 3, 2}, {8, 106, 3, 3}};
+        // snowdrift across the bypass (the price of the wide way round)
+        for (int x = 36; x <= 47; x++) for (int z = 73; z <= 74; z++) if (c(x, z) == CANAL) put(x, z, SLUSH);
         for (int[] s : slush) for (int x = s[0]; x < s[0] + s[2]; x++) for (int z = s[1]; z < s[1] + s[3]; z++) if (c(x, z) == CANAL) put(x, z, SLUSH);
     }
 
@@ -152,12 +157,11 @@ public final class FrozenCanal implements TgMap {
             for (int z = Z1; z <= Z2; z++) {
                 int k = c(x, z);
                 if (k == LAND || k == QUAYC) continue;
-                g.scenery = true;
-                for (int y = -4; y <= -1; y++) g.set(x, y, z, y == -4 ? "stone" : "mud_bricks");
-                g.scenery = false;
+                g.set(x, -1, z, "mud_bricks");     // lane bed (route support)
+                g.set(x, -2, z, "stone");
                 switch (k) {
                     case HOLE -> {
-                        for (int y = -4; y <= 0; y++) g.set(x, y, z, null);
+                        for (int y = -2; y <= 0; y++) g.set(x, y, z, null);
                     }
                     case BLUE -> g.set(x, 0, z, "blue_ice");
                     case SLUSH -> g.set(x, 0, z, "snow_block");
@@ -165,14 +169,6 @@ public final class FrozenCanal implements TgMap {
                 }
                 for (int y = 1; y <= 3; y++) g.set(x, y, z, null);
             }
-        // hole rims: broken floes (ice slabs are not a thing: use packed ice + snow layers on the quay side)
-        for (int x = X1; x <= X2; x++)
-            for (int z = Z1; z <= Z2; z++)
-                if (c(x, z) == HOLE) {
-                    g.scenery = true;
-                    g.set(x, -5, z, null);
-                    g.scenery = false;
-                }
     }
 
     private int ground(G g, int x, int z) {
@@ -189,9 +185,11 @@ public final class FrozenCanal implements TgMap {
                 double ex = x / 64.0, ez = (z - 78) / 102.0;
                 double e = ex * ex + ez * ez;
                 if (e > 1) continue;
+                double band = Math.min(polyDist(LINE, x, z), Math.min(polyDist(BYPASS, x, z), Math.hypot(x + 6, z - 156) - 6));
+                if (band > 26 + 4 * Noise.fbm2(x * 0.08, z * 0.08, g.seed + 21) && !(Math.abs(x + 6) <= 6 && z >= 156 && z <= 172)) continue;
                 int top = k == QUAYC ? 2 : ground(g, x, z) + (e > 0.75 ? -1 : 0);
-                int bottom = -4 - (int) ((1 - e) * 10 * (0.6 + 0.4 * g.rnd(x, 0, z)));
-                for (int y = bottom; y < top; y++) g.set(x, y, z, y < -4 ? "stone" : y < 0 ? "dirt" : "stone_bricks");
+                int bottom = k == QUAYC ? -4 : top - 3 - (e > 0.6 ? 0 : (int) (g.rnd(x, 0, z) * 2));
+                for (int y = bottom; y < top; y++) g.set(x, y, z, y < bottom + 1 ? "stone" : y < top - 1 ? "dirt" : "stone_bricks");
                 if (k == QUAYC) {
                     // quay wall face (bricks) with a stone coping walkway
                     for (int y = -3; y <= 1; y++) g.set(x, y, z, BRICK.at(x, y, z, g.seed));
@@ -227,6 +225,13 @@ public final class FrozenCanal implements TgMap {
     private void house(G g, int x0, int z0, int w, int dp) {
         int base = ground(g, x0, z0);
         int h = 6 + (int) (g.rnd(x0, 5, z0) * 6);
+        int span0 = w >= dp ? dp : w;
+        // keep the sight line from the tray to the lantern tree free (rises ~0.29 per block)
+        if (x0 + w >= -36 && x0 <= 30) {
+            double ray = 2.6 + 0.287 * (z0 - 4);
+            h = Math.min(h, (int) Math.floor(ray - 3 - base - span0 / 2 - 4));
+            if (h < 4) return;
+        }
         String wall = g.rnd(x0, 6, z0) < 0.6 ? "bricks" : g.rnd(x0, 7, z0) < 0.5 ? "white_terracotta" : "mud_bricks";
         boolean alongX = w >= dp;
         for (int x = x0; x <= x0 + w; x++)
@@ -315,28 +320,28 @@ public final class FrozenCanal implements TgMap {
 
     private void bridges(G g) {
         bridge(g, 26, -12, 12, new int[]{-6, 4});
-        bridge(g, 92, 6, 36, new int[]{18, 27});
+        bridge(g, 100, -8, 30, new int[]{3, 15});
         bridge(g, 124, -18, 6, new int[]{-11, -3});
     }
 
     private void lock(G g) {
         g.scenery = true;
-        // lock walls (stone bricks, 3 high above the ice) and the keeper's house on the island
+        // lock walls (stone bricks, 3 high above the ice), beams overhead at the lock ends, keeper's house on the island
         for (int z = 68; z <= 80; z++) {
-            for (int y = 0; y <= 3; y++) { g.set(20, y, z, QUAY.at(20, y, z, g.seed)); g.set(27, y, z, QUAY.at(27, y, z, g.seed)); }
-            if (z == 68 || z == 80) for (int x = 21; x <= 26; x++) { g.set(x, 4, z, "dark_oak_planks"); g.set(x, 5, z, "dark_oak_fence"); }
+            for (int y = 0; y <= 3; y++) { g.set(20, y, z, QUAY.at(20, y, z, g.seed)); g.set(26, y, z, QUAY.at(26, y, z, g.seed)); }
+            if (z == 68 || z == 80) for (int x = 20; x <= 26; x++) { g.set(x, 4, z, "dark_oak_planks"); g.set(x, 5, z, "dark_oak_fence"); }
         }
-        // lock gates swung open against the walls (dark oak, striped)
-        for (int y = 1; y <= 3; y++) { g.set(21, y, 67, "dark_oak_planks"); g.set(26, y, 67, "dark_oak_planks"); g.set(21, y, 81, "dark_oak_planks"); g.set(26, y, 81, "dark_oak_planks"); }
+        for (int z : new int[]{68, 80}) for (int y = 1; y <= 3; y++) { g.set(19, y, z, "dark_oak_log"); g.set(27, y, z, "dark_oak_log"); }
         int base = 3;
-        for (int x = 14; x <= 19; x++)
+        for (int x = 29; x <= 35; x++)
             for (int z = 70; z <= 78; z++)
                 for (int y = base; y <= base + 6; y++) {
-                    boolean edge = x == 14 || x == 19 || z == 70 || z == 78;
-                    if (edge) g.set(x, y, z, y == base + 6 ? "spruce_planks" : (y == base + 3 && (z & 1) == 0 && x != 14 && x != 19) ? "yellow_stained_glass_pane" : "white_terracotta");
+                    boolean edge = x == 29 || x == 35 || z == 70 || z == 78;
+                    if (edge) g.set(x, y, z, y == base + 6 ? "spruce_planks" : (y == base + 3 && (z & 1) == 0 && x != 29 && x != 35) ? "yellow_stained_glass_pane" : "white_terracotta");
                 }
-        for (int i = 0; i <= 3; i++) for (int z = 69 + i; z <= 79 - i; z++) { g.set(13 + i, base + 7 + i, z, "red_terracotta"); g.set(20 - i, base + 7 + i, z, "red_terracotta"); }
-        g.set(16, base + 2, 74, "lantern[hanging=false]");
+        for (int i = 0; i <= 3; i++) for (int z = 69 + i; z <= 79 - i; z++) { g.set(28 + i, base + 7 + i, z, "red_terracotta"); g.set(36 - i, base + 7 + i, z, "red_terracotta"); }
+        for (int z = 72; z <= 76; z++) g.set(32, base + 11, z, "red_terracotta");
+        g.set(32, base + 2, 74, "lantern[hanging=false]");
         g.scenery = false;
     }
 
@@ -379,19 +384,18 @@ public final class FrozenCanal implements TgMap {
         for (int y = gy + 44; y <= gy + 48; y++) g.set(tx, y, tz, "gold_block");
         g.set(tx - 1, gy + 46, tz, "gold_block"); g.set(tx + 1, gy + 46, tz, "gold_block");
         g.set(tx, gy + 46, tz - 1, "gold_block"); g.set(tx, gy + 46, tz + 1, "gold_block");
-        g.landmark.add(new double[]{tx + 0.5, gy + 47, tz + 0.5});
-        g.landmark.add(new double[]{tx + 0.5, gy + 40, tz + 0.5});
+        g.landmark.add(new double[]{tx + 0.5, gy + 46.5, tz - 0.5});
+        g.landmark.add(new double[]{tx + 0.5, gy + 48.5, tz + 0.5});
         // rink border of hay bales and benches, lamp posts with lanterns
         for (int x = RINK.minX() - 2; x <= RINK.maxX() + 2; x += 4) for (int z : new int[]{RINK.minZ() - 2, RINK.maxZ() + 3}) {
             if (c(x, z) == QUAYC || c(x, z) == LAND) { for (int y = 3; y <= 5; y++) g.set(x, y, z, "dark_oak_fence"); g.set(x, 6, z, "lantern[hanging=false]"); }
         }
-        g.text("MCM", 1, 20, 158, -1, 0, 1, "red_wool");
         g.scenery = false;
     }
 
     private void barges(G g) {
         // moored barges along the quays (bumpers): hull + cabin + cargo
-        int[][] b = {{-9, 13, 0}, {6, 40, 1}, {31, 60, 0}, {30, 100, 1}, {-15, 133, 0}};
+        int[][] b = {{-9, 13, 0}, {7, 12, 0}, {-15, 133, 0}};
         for (int[] s : b) {
             int x0 = s[0], z0 = s[1];
             boolean alongZ = s[2] == 0;
@@ -406,6 +410,19 @@ public final class FrozenCanal implements TgMap {
                     if (i == L - 2 && !rim) { g.set(x, 2, z, "spruce_planks"); g.set(x, 3, z, "red_terracotta"); }
                 }
         }
+    }
+
+    /** Timber dolphins (mooring piles) standing in the open lane: obstacles in the long diagonal. */
+    private void dolphins(G g) {
+        int[][] p = {{11, 45}, {-2, 104}};
+        for (int[] q : p)
+            for (int x = q[0]; x <= q[0] + 1; x++)
+                for (int z = q[1]; z <= q[1] + 1; z++) {
+                    g.set(x, 1, z, "stripped_spruce_log");
+                    g.set(x, 2, z, "spruce_log");
+                    g.set(x, 3, z, ((x + z) & 1) == 0 ? "spruce_fence" : "dark_oak_fence");
+                }
+        for (int[] q : p) g.set(q[0], 4, q[1], "lantern[hanging=false]");
     }
 
     private void lamps(G g) {

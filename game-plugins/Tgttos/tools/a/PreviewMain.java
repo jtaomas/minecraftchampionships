@@ -64,9 +64,10 @@ public final class PreviewMain {
             }
             Files.write(new File(out, m.id() + "_paths.txt").toPath(), ps.toString().getBytes(StandardCharsets.UTF_8));
             TgMapData.Region st = g.d.startStrip, pen = g.d.pen;
-            String cam = String.format("{\"start\":[%.1f,%.1f,%.1f],\"look\":[%.1f,%.1f,%.1f],\"min\":[%d,%d,%d]}",
-                    (st.minX() + st.maxX() + 1) / 2.0, st.minY() + 1.62 + 0.5, st.minZ() + 1.0,
-                    pen.centerX(), (double) pen.minY() + 4, pen.centerZ(), minX, minY, minZ);
+            String cam = String.format(java.util.Locale.ROOT, "{\"start\":[%.1f,%.1f,%.1f],\"look\":[%.1f,%.1f,%.1f],\"min\":[%d,%d,%d],\"pitchScale\":%.2f}",
+                    (st.minX() + st.maxX() + 1) / 2.0, st.minY() + 1.62 + 0.5, m.type() == com.mcm.games.tgttos.model.MapType.DROP ? st.maxZ() + 3.5 : st.minZ() + 1.0,
+                    pen.centerX(), (double) pen.minY() + 4, pen.centerZ(), minX, minY, minZ,
+                    m.type() == com.mcm.games.tgttos.model.MapType.DROP ? 0.8 : 0.35);
             Files.write(new File(out, m.id() + ".cam.json").toPath(), cam.getBytes(StandardCharsets.UTF_8));
         }
         Files.write(new File(out, "validation.txt").toPath(), all.toString().getBytes(StandardCharsets.UTF_8));

@@ -57,7 +57,7 @@ def persp(grid, lut, cam, out, W, H, fov):
     eye = np.array(cam["start"], np.float64) - mn + np.array([0.0, 0.0, 0.0])
     look = np.array(cam["look"], np.float64) - mn
     fwd = look - eye
-    fwd[1] = fwd[1] * 0.35          # mostly level gaze, slightly toward the goal
+    fwd[1] = fwd[1] * cam.get("pitchScale", 0.35)   # mostly level gaze, slightly toward the goal (drop maps look down)
     fwd /= np.linalg.norm(fwd)
     up0 = np.array([0, 1.0, 0])
     right = np.cross(fwd, up0); right /= np.linalg.norm(right)

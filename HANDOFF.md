@@ -13,7 +13,7 @@ This repository root **is the server folder** (Paper 1.21.1, Java 21). Clone the
 | Find the Button | built, installed, not yet playtested |
 | Sky Blockle | built with researched loot/border/graves, installed, not yet playtested |
 | Parkour Warrior | rewrite built: single course, 5 zones + 3 endings, 36 obstacles — installed, loads and builds on the server, not yet playtested |
-| To Get To The Other Side | rewrite: game code done; 8 maps being built — NOT installed yet |
+| To Get To The Other Side | rewrite built: 8 maps (bridge, climb, parkour, drop, elytra, boats, turnstiles, push+bridge) — installed, all maps load on the server, not yet playtested |
 | Foot Race, Rocket Spleef, Hole in the Wall, Sands of Time, Parkour Tag, Dodgebolt, Grid Runners, Bingo/Lockout, Decision Dome | earlier builds, installed; not yet through the research → spec → build pipeline |
 | Ace Race, Build Mart, Meltdown, Railroad Rush, Sky Battle | shelved (code kept, jars in `game-plugins/_built/_shelved/`) |
 

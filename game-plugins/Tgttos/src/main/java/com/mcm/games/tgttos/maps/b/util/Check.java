@@ -139,7 +139,26 @@ public final class Check {
             for (double[] t : targets)
                 if (sees(b, s.x(), s.y() + 1.62, s.z(), t[0], t[1], t[2])) { seeing++; break; }
         }
-        r.check(seeing * 10 >= eyes * 8, String.format("landmark visible from the start: %d of %d sampled spawn eyes see it (ray-cast)", seeing, eyes));
+        String why = "";
+        if (seeing * 10 < eyes * 8)
+            for (int i = 0; i < d.startSpawns.size() && why.isEmpty(); i += 4) {
+                Spawn s = d.startSpawns.get(i);
+                double[] t = targets.get(0);
+                double x1 = s.x(), y1 = s.y() + 1.62, z1 = s.z();
+                if (sees(b, x1, y1, z1, t[0], t[1], t[2])) continue;
+                double len = Math.sqrt((t[0] - x1) * (t[0] - x1) + (t[1] - y1) * (t[1] - y1) + (t[2] - z1) * (t[2] - z1));
+                int steps = (int) Math.ceil(len / 0.2);
+                for (int k = 1; k < steps - 3; k++) {
+                    double u = k / (double) steps;
+                    int x = (int) Math.floor(x1 + (t[0] - x1) * u), y = (int) Math.floor(y1 + (t[1] - y1) * u), z = (int) Math.floor(z1 + (t[2] - z1) * u);
+                    if (!sees(b, x1, y1, z1, x + 0.5, y + 0.5, z + 0.5) || b.get(x, y, z) == null) continue;
+                    String id = Bs.id(b.get(x, y, z));
+                    if (Bs.passable(b.get(x, y, z)) || id.contains("glass") || Bs.kind(id) != 0 || id.contains("lantern")) continue;
+                    why = " (first blocker for eye " + i + ": " + id + " at " + x + "," + y + "," + z + ")";
+                    break;
+                }
+            }
+        r.check(seeing * 10 >= eyes * 8, String.format("landmark visible from the start: %d of %d sampled spawn eyes see it (ray-cast)%s", seeing, eyes, why));
     }
 
     /** Post-pass ran and is idempotent (a second run changes nothing). */
