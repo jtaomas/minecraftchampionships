@@ -1,0 +1,10 @@
+#These settings are shared across an entire server.  If multiworld is enabled, they act as the default values for the individual world properties; otherwise, they are used directly.
+#Wed Apr 14 17:52:40 CEST 2021
+LinkedWorlds=
+Messages.SAVING=true
+LastSaved=1618415560092
+ServerName=hive.sexy
+Messages.ON_WORLD_LOAD=false
+Messages.PLUGIN_CHANNEL_MESSAGE=false
+Messages.INFO=true
+Messages.enableAll=true

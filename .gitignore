@@ -1,0 +1,15 @@
+# Regenerable Paper / server caches (auto-recreated on first startup)
+cache/
+libraries/
+versions/
+plugins/.paper-remapped/
+plugins/spark/tmp-client/
+
+# Scratch plugin build directory (compiled jar is tracked at plugins/MinecraftMondayCore.jar)
+plugin-build/
+
+# Logs, crash reports, and runtime state (keeps player IPs off the public repo and avoids file locks)
+logs/
+crash-reports/
+**/session.lock
+usercache.json
