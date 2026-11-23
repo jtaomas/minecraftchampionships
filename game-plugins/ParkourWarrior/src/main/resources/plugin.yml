@@ -1,0 +1,20 @@
+name: McmParkourWarrior
+version: 2.0.0
+main: com.mcm.games.parkourwarrior.McmParkourWarriorPlugin
+api-version: '1.21'
+depend: [MinecraftMondayCore]
+description: Parkour Warrior (shared course, medals, bonus paths, three endings) for MinecraftMondayCore
+commands:
+  pw:
+    description: Parkour Warrior admin helpers (list, tp, complete, time, info, rebuild).
+    usage: /pw <list|tp|complete|time|info|rebuild>
+    permission: parkourwarrior.admin
+  pwview:
+    description: Spectator overview teleports in Parkour Warrior.
+    usage: /pwview <n>
+    permission: parkourwarrior.view
+permissions:
+  parkourwarrior.admin:
+    default: op
+  parkourwarrior.view:
+    default: true

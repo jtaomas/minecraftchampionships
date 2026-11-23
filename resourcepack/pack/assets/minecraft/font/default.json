@@ -1,0 +1,531 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_red.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue000"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_orange.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue001"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_yellow.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue002"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_lime.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue003"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_green.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue004"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_cyan.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue005"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_aqua.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue006"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_blue.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue007"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_purple.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue008"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_pink.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue009"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/coin.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue010"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/crown.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "\ue011"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/skull.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue012"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/sword.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue013"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/bow.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue014"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/heart.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue015"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/clock.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue016"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/flag.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue017"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/trophy.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue018"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/medal_1.png",
+      "ascent": 9,
+      "height": 10,
+      "chars": [
+        "\ue019"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/medal_2.png",
+      "ascent": 9,
+      "height": 10,
+      "chars": [
+        "\ue01a"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/medal_3.png",
+      "ascent": 9,
+      "height": 10,
+      "chars": [
+        "\ue01b"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/arrow_up.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue01c"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/arrow_down.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue01d"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/star.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue01e"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/lock.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue01f"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/check.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "\ue020"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/cross.png",
+      "ascent": 7,
+      "height": 7,
+      "chars": [
+        "\ue021"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/flag_finish.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue022"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_skybattle.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue040"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_battlebox.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue041"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_dodgebolt.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue042"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_parkourwarrior.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue043"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_rocketspleef.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue044"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_hitw.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue045"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_bingo.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue046"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_lockout.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue047"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_gridrunners.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue048"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_railroadrush.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue049"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_sandsoftime.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue04a"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_acerace.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue04b"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_tgttos.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue04c"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_buildmart.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue04d"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_meltdown.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue04e"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_parkourtag.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue04f"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_footrace.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue050"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/game/game_dome.png",
+      "ascent": 12,
+      "height": 16,
+      "chars": [
+        "\ue051"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/brand/logo.png",
+      "ascent": 9,
+      "height": 10,
+      "chars": [
+        "\ue060"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/brand/logo_large.png",
+      "ascent": 18,
+      "height": 28,
+      "chars": [
+        "\ue061"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/brand/emblem.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue062"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/brand/title_bar.png",
+      "ascent": 10,
+      "height": 14,
+      "chars": [
+        "\ue063"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/gui/gui_selector.png",
+      "ascent": 13,
+      "height": 222,
+      "chars": [
+        "\ue070"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/gui/gui_admin.png",
+      "ascent": 13,
+      "height": 168,
+      "chars": [
+        "\ue071"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/gui/gui_dome.png",
+      "ascent": 13,
+      "height": 168,
+      "chars": [
+        "\ue072"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/gui/gui_kit.png",
+      "ascent": 13,
+      "height": 132,
+      "chars": [
+        "\ue073"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/gui/gui_team.png",
+      "ascent": 13,
+      "height": 168,
+      "chars": [
+        "\ue074"
+      ]
+    },
+    {
+      "type": "space",
+      "advances": {
+        "\uf801": -1,
+        "\uf821": 1,
+        "\uf802": -2,
+        "\uf822": 2,
+        "\uf803": -4,
+        "\uf823": 4,
+        "\uf804": -8,
+        "\uf824": 8,
+        "\uf805": -16,
+        "\uf825": 16,
+        "\uf806": -32,
+        "\uf826": 32,
+        "\uf807": -64,
+        "\uf827": 64,
+        "\uf808": -128,
+        "\uf828": 128,
+        "\uf809": -256,
+        "\uf829": 256
+      }
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "countdown_tick": {
+    "sounds": [
+      {
+        "name": "mcmshow:countdown_tick"
+      }
+    ],
+    "subtitle": "subtitles.mcmshow.countdown_tick"
+  },
+  "countdown_go": {
+    "sounds": [
+      {
+        "name": "mcmshow:countdown_go"
+      }
+    ],
+    "subtitle": "subtitles.mcmshow.countdown_go"
+  },
+  "point_gained": {
+    "sounds": [
+      {
+        "name": "mcmshow:point_gained"
+      }
+    ],
+    "subtitle": "subtitles.mcmshow.point_gained"
+  },
+  "elimination": {
+    "sounds": [
+      {
+        "name": "mcmshow:elimination"
+      }
+    ],
+    "subtitle": "subtitles.mcmshow.elimination"
+  },
+  "team_eliminated": {
+    "sounds": [
+      {
+        "name": "mcmshow:team_eliminated"
+      }
+    ],
+    "subtitle": "subtitles.mcmshow.team_eliminated"
+  },
+  "round_win": {
+    "sounds": [
+      {
+        "name": "mcmshow:round_win"
+      }
+    ],
+    "subtitle": "subtitles.mcmshow.round_win"
+  },
+  "checkpoint": {
+    "sounds": [
+      {
+        "name": "mcmshow:checkpoint"
+      }
+    ],
+    "subtitle": "subtitles.mcmshow.checkpoint"
+  },
+  "vote_cast": {
+    "sounds": [
+      {
+        "name": "mcmshow:vote_cast"
+      }
+    ],
+    "subtitle": "subtitles.mcmshow.vote_cast"
+  },
+  "vote_locked": {
+    "sounds": [
+      {
+        "name": "mcmshow:vote_locked"
+      }
+    ],
+    "subtitle": "subtitles.mcmshow.vote_locked"
+  },
+  "podium_fanfare": {
+    "sounds": [
+      {
+        "name": "mcmshow:podium_fanfare"
+      }
+    ],
+    "subtitle": "subtitles.mcmshow.podium_fanfare"
+  }
+}

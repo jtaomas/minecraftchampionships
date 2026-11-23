@@ -1,0 +1,6 @@
+name: McmRailroadRush
+version: 1.0.0
+main: com.mcm.games.railroadrush.RailroadRushPlugin
+api-version: '1.21'
+depend: [MinecraftMondayCore]
+description: Railroad Rush - team track-building minigame for MinecraftMondayCore

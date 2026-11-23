@@ -76,6 +76,8 @@ modesets:
     - "old-critical-hits"
   new:
     - "old-golden-apples"
+  # Pure modern combat, used by the MCC-style game worlds.
+  vanilla: []
 
 worlds:
   # Controls which modesets are allowed in each world.
@@ -83,6 +85,28 @@ worlds:
   # The first modeset in each list is the default for players in that world.
   # If you create a new modeset, add it to __default__ or to each world where it should be available.
   __default__: [ "old", "new" ]
+  # MCC-style games use modern 1.9+ combat.
+  mcc_battlebox: [ "vanilla" ]
+  mcc_bingo: [ "vanilla" ]
+  mcc_lockout: [ "vanilla" ]
+  mcc_buildmart: [ "vanilla" ]
+  mcc_dome: [ "vanilla" ]
+  mcc_lobby: [ "vanilla" ]
+  mcc_footrace: [ "vanilla" ]
+  mcc_hitw: [ "vanilla" ]
+  mcc_meltdown: [ "vanilla" ]
+  mcc_parkourtag: [ "vanilla" ]
+  mcc_parkourwarrior: [ "vanilla" ]
+  mcc_railroadrush: [ "vanilla" ]
+  mcc_sandsoftime: [ "vanilla" ]
+  mcc_skybattle: [ "vanilla" ]
+  mcc_skyblockle: [ "vanilla" ]
+  mcc_tgttos: [ "vanilla" ]
+  mcc_dodgebolt: [ "vanilla" ]
+  mcc_rocketspleef: [ "vanilla" ]
+  mcc_gridrunners: [ "vanilla" ]
+  mcc_acerace: [ "vanilla" ]
+  mcc_findthebutton: [ "vanilla" ]
   # world: [ "old", "new" ]
   # world_nether: [ "old", "new" ]
   # world_the_end: [ "old", "new" ]

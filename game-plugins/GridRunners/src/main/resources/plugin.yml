@@ -1,0 +1,6 @@
+name: McmGridRunners
+version: 1.0.0
+main: com.mcm.games.gridrunners.GridRunnersPlugin
+api-version: '1.21'
+depend: [MinecraftMondayCore]
+description: Grid Runners - co-op challenge room race for MinecraftMondayCore

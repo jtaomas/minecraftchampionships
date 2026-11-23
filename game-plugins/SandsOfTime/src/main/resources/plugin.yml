@@ -1,0 +1,6 @@
+name: McmSandsOfTime
+version: 1.0.0
+main: com.mcm.games.sandsoftime.SandsOfTimePlugin
+api-version: '1.21'
+depend: [MinecraftMondayCore]
+description: Sands of Time minigame for MinecraftMondayCore - raid a generated desert dungeon before your hourglass runs out.

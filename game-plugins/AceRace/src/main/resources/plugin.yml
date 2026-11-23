@@ -1,0 +1,6 @@
+name: McmAceRace
+version: 1.0.0
+main: com.mcm.games.acerace.AceRacePlugin
+api-version: '1.21'
+depend: [MinecraftMondayCore]
+description: Ace Race minigame for MinecraftMondayCore

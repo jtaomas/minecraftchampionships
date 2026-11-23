@@ -1,0 +1,110 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "minecraft:item/paper"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 1001
+      },
+      "model": "mcmshow:item/kit_fighter"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1002
+      },
+      "model": "mcmshow:item/kit_archer"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1003
+      },
+      "model": "mcmshow:item/kit_marksman"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1004
+      },
+      "model": "mcmshow:item/kit_medic"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1010
+      },
+      "model": "mcmshow:item/vote_token"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1020
+      },
+      "model": "mcmshow:item/checkpoint_token"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1030
+      },
+      "model": "mcmshow:item/team_flag"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1031
+      },
+      "model": "mcmshow:item/team_flag_red"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1032
+      },
+      "model": "mcmshow:item/team_flag_orange"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1033
+      },
+      "model": "mcmshow:item/team_flag_yellow"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1034
+      },
+      "model": "mcmshow:item/team_flag_lime"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1035
+      },
+      "model": "mcmshow:item/team_flag_green"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1036
+      },
+      "model": "mcmshow:item/team_flag_cyan"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1037
+      },
+      "model": "mcmshow:item/team_flag_aqua"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1038
+      },
+      "model": "mcmshow:item/team_flag_blue"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1039
+      },
+      "model": "mcmshow:item/team_flag_purple"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1040
+      },
+      "model": "mcmshow:item/team_flag_pink"
+    }
+  ]
+}

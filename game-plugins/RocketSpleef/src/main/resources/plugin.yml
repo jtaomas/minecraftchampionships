@@ -1,0 +1,6 @@
+name: McmRocketSpleef
+version: 1.0.0
+main: com.mcm.games.rocketspleef.RocketSpleefPlugin
+api-version: '1.21'
+depend: [MinecraftMondayCore]
+description: Rocket Spleef Rush minigame for MinecraftMondayCore

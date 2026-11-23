@@ -1,0 +1,77 @@
+# To Get To The Other Side - settings. Values marked (default) are not researched; adjust after playtesting.
+
+# Map classes in preferred order (fully-qualified). Missing classes are skipped with a warning.
+maps:
+  - com.mcm.games.tgttos.maps.a.LaundryLineMap
+  - com.mcm.games.tgttos.maps.a.DamFaceMap
+  - com.mcm.games.tgttos.maps.a.BookshelfRunMap
+  - com.mcm.games.tgttos.maps.a.OrchardDropMap
+  - com.mcm.games.tgttos.maps.b.KiteFestivalMap
+  - com.mcm.games.tgttos.maps.b.FrozenCanalMap
+  - com.mcm.games.tgttos.maps.b.TicketGatesMap
+  - com.mcm.games.tgttos.maps.b.QuarryStepsMap
+# Also load any other TgMap class found in com.mcm.games.tgttos.maps.* inside the jar.
+auto-discover: true
+# Development stub map (com.mcm.games.tgttos.stub.StubBridgeMap): always | auto (only if fewer real maps than rounds) | never
+stub-map: auto
+# false = every map uses a fixed seed (validated layout); true = new seed each game (variants are re-rolled anyway).
+random-seeds: false
+
+rounds: 6
+round-seconds: 100
+pre-round-seconds: 15        # in the start strip with the kit in hand; the last 3 s are the 3-2-1 title
+intermission-seconds: 6      # round results before the next map
+time-skip:
+  enabled: true              # (default, MCC Island rule)
+  finished-fraction: 0.8
+  seconds-left: 20
+
+world:
+  base-y: 64                 # world y of local y = 0
+  map-spacing: 600           # each map slot sits at x = slot * spacing
+
+kit:
+  concrete: 64
+  snowballs: 5
+  fireworks: 2               # elytra maps (default)
+  pickaxe: IRON_PICKAXE      # (default) no enchantments
+
+knockback:                   # (default) vanilla-like values; no damage is ever dealt
+  punch-horizontal: 0.42
+  punch-vertical: 0.36
+  sprint-bonus: 0.35
+  snowball-horizontal: 0.38
+  snowball-vertical: 0.28
+  hit-cooldown-ticks: 10     # min ticks between two knockbacks on the same victim (vanilla i-frames)
+
+karma:                       # (default) thresholds; karma decays every second
+  per-punch: 1.0
+  same-victim-bonus: 0.5     # extra karma when punching the same player again within same-victim-seconds
+  same-victim-seconds: 5
+  decay-per-second: 0.35
+  more-knockback-from: 3.0   # from this karma the puncher takes extra knockback
+  knockback-per-karma: 0.08  # +8% knockback taken per karma point above the threshold
+  max-knockback-mult: 1.8
+  glow-from: 6.0             # red glow (+ slowness if enabled)
+  slowness: true
+  lock-from: 9.0             # punching disabled for lock-seconds
+  lock-seconds: 4
+  # victims: each recent hit taken reduces knockback received, decays per second
+  hit-protection-per-hit: 0.07
+  hit-protection-max: 0.45
+  hit-protection-decay: 0.5
+
+points:                      # scaled /5 from the researched MCC table
+  placement-first: 8
+  placement-step-every: 5    # 1 point less every 5 places
+  placement-min: 1
+  top10-bonus: [16, 15, 14, 13, 12, 11, 10, 9, 8, 7]
+  team-bonus: [20, 15, 10, 5]   # first 4 sides (2+ members) with every online member finished, split evenly
+
+chickens:
+  count: 10
+  wander: true               # AI on, but put back into the pen if they leave it
+
+# Pun death lines (%s = player name). Leave empty to use the built-in list.
+puns-void: []
+puns-hazard: []

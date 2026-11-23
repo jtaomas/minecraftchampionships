@@ -1,0 +1,12 @@
+{
+  "subtitles.mcmshow.countdown_tick": "Countdown ticks",
+  "subtitles.mcmshow.countdown_go": "Round starts",
+  "subtitles.mcmshow.point_gained": "Points gained",
+  "subtitles.mcmshow.elimination": "Player eliminated",
+  "subtitles.mcmshow.team_eliminated": "Team eliminated",
+  "subtitles.mcmshow.round_win": "Round won",
+  "subtitles.mcmshow.checkpoint": "Checkpoint reached",
+  "subtitles.mcmshow.vote_cast": "Vote cast",
+  "subtitles.mcmshow.vote_locked": "Vote locked in",
+  "subtitles.mcmshow.podium_fanfare": "Podium fanfare"
+}

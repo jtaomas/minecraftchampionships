@@ -1,12 +1,12 @@
 name: MinecraftMondayCore
-version: 3.1.0
+version: 3.2.0
 main: com.mcm.MinecraftMondayPlugin
 api-version: '1.21'
 description: All-in-one Minecraft Monday / Championship tournament server plugin with real community maps, Speed Survival, multi-round events, authentic team split scoring, and admin skip controls.
 commands:
   mcm:
     description: Open the Minecraft Monday Tournament Controller or run admin commands.
-    usage: /mcm [start|play <game>|skip|stop|reset|teamsize <1-5>]
+    usage: /mcm [help|start [mcc]|play <game>|fast [on|off]|skipwait|skip (round)|next (whole game)|map [game] [id]|tools|stop|reset|games|teamsize <1-5>|lobby [tp|mm|rebuild|status]|preview <x1> <y1> <z1> <x2> <y2> <z2> [name]]
     aliases: [mcc, tournament]
   team:
     description: Open the Team Selector GUI.

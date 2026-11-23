@@ -1,0 +1,14 @@
+name: McmSkyBlockle
+version: 1.0.0
+main: com.mcm.games.skyblockle.SkyBlocklePlugin
+api-version: '1.21'
+depend: [MinecraftMondayCore]
+description: Sky Blockle (classic 18-minute skyblock battle royale) for the MinecraftMondayCore tournament.
+commands:
+  sbl:
+    description: Sky Blockle admin helpers (map preview, info, loot test, cleanup).
+    usage: /sbl <build|tp|info|clear|loot|reload>
+    permission: skyblockle.admin
+permissions:
+  skyblockle.admin:
+    default: op

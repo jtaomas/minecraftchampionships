@@ -13,3 +13,14 @@ logs/
 crash-reports/
 **/session.lock
 usercache.json
+
+# Build output and regenerable artefacts of the game plugins / tools
+target/
+*.class
+*.mcmdump.gz
+node_modules/
+__pycache__/
+game-plugins/**/tools/**/out/
+game-plugins/**/previews/
+tools/previews/
+tools/lobby_preview/out*/

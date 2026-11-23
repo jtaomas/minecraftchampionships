@@ -1,0 +1,14 @@
+name: McmDecisionDome
+version: 1.0.0
+main: com.mcm.games.decisiondome.DecisionDomePlugin
+api-version: '1.21'
+depend: [MinecraftMondayCore]
+description: Decision Dome vote provider for MinecraftMondayCore
+commands:
+  dome:
+    description: Decision Dome admin commands
+    usage: /dome <test|cancel|status>
+    permission: mcm.dome.admin
+permissions:
+  mcm.dome.admin:
+    default: op

@@ -1,0 +1,6 @@
+name: McmHoleInTheWall
+version: 1.0.0
+main: com.mcm.games.hitw.HoleInTheWallPlugin
+api-version: '1.21'
+depend: [MinecraftMondayCore]
+description: Hole in the Wall minigame for MinecraftMondayCore

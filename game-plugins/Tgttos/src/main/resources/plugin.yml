@@ -1,0 +1,14 @@
+name: McmTgttos
+version: 2.0.0
+main: com.mcm.games.tgttos.TgttosPlugin
+api-version: '1.21'
+depend: [MinecraftMondayCore]
+description: To Get To The Other Side minigame for MinecraftMondayCore
+commands:
+  tg:
+    description: TGTTOS admin (list maps, queue a map, info, tp)
+    usage: /tg list | map <id> | info <id> | tp <id> | build <id> | reload
+    permission: mcm.tgttos.admin
+permissions:
+  mcm.tgttos.admin:
+    default: op

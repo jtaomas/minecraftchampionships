@@ -1,0 +1,6 @@
+name: McmFootRace
+version: 1.0.0
+main: com.mcm.games.footrace.FootRacePlugin
+api-version: '1.21'
+depend: [MinecraftMondayCore]
+description: Foot Race minigame for MinecraftMondayCore

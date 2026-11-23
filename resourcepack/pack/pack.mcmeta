@@ -1,0 +1,16 @@
+{
+  "pack": {
+    "pack_format": 34,
+    "description": [
+      {
+        "text": "Block Showdown",
+        "color": "gold",
+        "bold": true
+      },
+      {
+        "text": "\nTournament HUD, menus & sounds",
+        "color": "gray"
+      }
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+name: McmSkyBattle
+version: 1.0.0
+main: com.mcm.games.skybattle.SkyBattlePlugin
+api-version: '1.21'
+depend: [MinecraftMondayCore]
+description: Sky Battle minigame for MinecraftMondayCore

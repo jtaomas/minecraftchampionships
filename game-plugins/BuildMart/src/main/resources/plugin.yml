@@ -1,0 +1,6 @@
+name: McmBuildMart
+version: '1.0.0'
+main: com.mcm.games.buildmart.BuildMartPlugin
+api-version: '1.21'
+depend: [MinecraftMondayCore]
+description: Build Mart minigame for MinecraftMondayCore

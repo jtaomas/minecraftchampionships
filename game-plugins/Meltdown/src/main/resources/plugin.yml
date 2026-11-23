@@ -1,0 +1,6 @@
+name: McmMeltdown
+version: 1.0.0
+main: com.mcm.games.meltdown.MeltdownPlugin
+api-version: '1.21'
+depend: [MinecraftMondayCore]
+description: Meltdown minigame for MinecraftMondayCore - escape the freezing facility.
