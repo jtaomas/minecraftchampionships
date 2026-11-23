@@ -1,0 +1,7 @@
+zone5.mcmdump.gz zone5.png --angle 1
+ob_B5-1.mcmdump.gz ob_B5-1.png --angle 0
+ob_B5-2.mcmdump.gz ob_B5-2.png --angle 0
+ob_B5-3.mcmdump.gz ob_B5-3.png --angle 0
+ob_M5-1.mcmdump.gz ob_M5-1.png --angle 1
+ob_M5-2.mcmdump.gz ob_M5-2.png --angle 1
+ob_M5-3.mcmdump.gz ob_M5-3.png --angle 1

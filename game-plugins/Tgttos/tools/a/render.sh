@@ -23,7 +23,7 @@ V=tools/a/view.py
 for id in $IDS; do
   python "$R" "$OUT/$id.mcmdump.gz" "previews/${id}_top.png" --top &
   python "$R" "$OUT/${id}_routes.mcmdump.gz" "previews/${id}_routes_top.png" --top &
-  python "$R" "$OUT/$id.mcmdump.gz" "previews/${id}_iso.png" --angle ${ANGLE:-1} &
+  python "$R" "$OUT/$id.mcmdump.gz" "previews/${id}_iso.png" --angle $(case $id in dam_face) echo 2;; *) echo ${ANGLE:-1};; esac) &
   python "$V" side "$OUT/$id.mcmdump.gz" "previews/${id}_side.png" --scale 4 &
   python "$V" persp "$OUT/${id}_go.mcmdump.gz" "$OUT/$id.cam.json" "previews/${id}_start_view.png" &
   wait

@@ -1,0 +1,279 @@
+=== 2 wedges (379 ms) ===
+Sky Blockle map, 2 wedges, seed 20261123: 55643 blocks, 35 islands (incl. castle, 8 stepping rocks), 24 chests
+post-pass: 244 fence/pane/wall states set, 210 leaves (0 persistent), 0 carpets dropped
+bridging gaps along each team's path (blocks to bridge; required 13..30):
+  wedge 0: gen|4| start->pillar 15.0 (dy -2)  pillar->fort 15.0 (dy +5)  fort->spike 16.0 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 14.0 (dy +2)  
+  wedge 1: gen|4| start->pillar 15.0 (dy -2)  pillar->fort 15.0 (dy +5)  fort->spike 16.0 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 14.0 (dy +2)  
+  generator shrine sits directly behind the start: gap 4..4 (research: almost touching)
+  start      -> pillar     min 15.0  max 15.0
+  pillar     -> fort       min 15.0  max 15.0
+  fort       -> spike      min 16.0  max 16.0
+  spike      -> enchanting min 16.0  max 16.0
+  enchanting -> castle     min 14.0  max 14.0
+  PATH GAPS overall: min 14.0, max 16.0
+shared spoke between wedge 0 and wedge 1 (nearest gap of each island to anything else):
+  brewing        r= 70.0  nearest showpiece        17.0
+  showpiece      r= 96.0  nearest pillar_shared    14.0
+  pillar_shared  r=119.0  nearest showpiece        14.0
+  grass          r=141.0  nearest pillar_shared    15.0
+  spike_shared   r=163.0  nearest grass            15.0
+  asteroid       r=190.0  nearest spike_shared     17.0
+  islet          r= 39.1  nearest castle           12.5
+  islet          r= 39.1  nearest castle           12.5
+  islet          r= 48.7  nearest castle           21.2
+  islet          r= 48.7  nearest castle           21.2
+island spacing: no overlaps, every pair at least 4 apart (generator/start pair excepted)
+wedge identity: all copies block-identical (enchanting x2, boulder x2, start x2, generator x2, islet x8, asteroid x2, show_pickaxe x1, brewing x2, spike_sand x2, pillar x2, show_hourglass x1, pillar_shared x2, grass x2, spike_red x2, fort x2, tower x4, positions equal within 0.00 blocks of rounding). Showpieces cycle 3 designs (scenery, no chests).
+chests: 24 registered (GENERATOR=2 CASTLE=4 MID=10 FORT=2 START=2 ENCHANTING=2 BREWING=2); every chest island reachable from every start through gaps <= 30; walk-checked from the island edges (4 pillar-top chests reached by towering up, standing room next to them verified)
+staircases: 12 lanes walked bottom to top, all OK
+ladders: 10 climbs checked, all attached and continuous
+castle walk: apron -> arena floor OK, tower chests reachable 4/4, floor -> rim OK, rim -> wall top by ladder OK
+RESULT: all checks passed
+
+=== 3 wedges (113 ms) ===
+Sky Blockle map, 3 wedges, seed 20261123: 61758 blocks, 46 islands (incl. castle, 6 stepping rocks), 34 chests
+post-pass: 286 fence/pane/wall states set, 746 leaves (32 persistent), 0 carpets dropped
+bridging gaps along each team's path (blocks to bridge; required 13..30):
+  wedge 0: gen|4| start->pillar 15.0 (dy -2)  pillar->fort 15.0 (dy +5)  fort->spike 16.0 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 14.0 (dy +2)  
+  wedge 1: gen|3| start->pillar 13.8 (dy -2)  pillar->fort 14.8 (dy +5)  fort->spike 14.7 (dy -2)  spike->enchanting 15.6 (dy +3)  enchanting->castle 16.9 (dy +2)  
+  wedge 2: gen|4| start->pillar 14.8 (dy -2)  pillar->fort 13.8 (dy +5)  fort->spike 14.7 (dy -2)  spike->enchanting 16.2 (dy +3)  enchanting->castle 16.9 (dy +2)  
+  generator shrine sits directly behind the start: gap 3..4 (research: almost touching)
+  start      -> pillar     min 13.8  max 15.0
+  pillar     -> fort       min 13.8  max 15.0
+  fort       -> spike      min 14.7  max 16.0
+  spike      -> enchanting min 15.6  max 16.2
+  enchanting -> castle     min 14.0  max 16.9
+  PATH GAPS overall: min 13.8, max 16.9
+shared spoke between wedge 0 and wedge 1 (nearest gap of each island to anything else):
+  brewing        r= 70.3  nearest showpiece        16.5
+  showpiece      r= 95.9  nearest pillar_shared    13.8
+  pillar_shared  r=119.2  nearest showpiece        13.8
+  grass          r=141.2  nearest spike_shared     14.3
+  spike_shared   r=163.1  nearest grass            14.3
+  asteroid       r=190.4  nearest spike_shared     16.5
+  islet          r= 50.5  nearest castle           21.4
+  islet          r= 50.6  nearest castle           23.8
+island spacing: no overlaps, every pair at least 4 apart (generator/start pair excepted)
+wedge identity: all copies block-identical (enchanting x3, boulder x3, start x3, generator x3, show_planter x1, islet x6, asteroid x3, show_pickaxe x1, brewing x3, spike_sand x3, pillar x3, show_hourglass x1, pillar_shared x3, grass x3, spike_red x3, fort x3, tower x4, positions equal within 1.03 blocks of rounding). Showpieces cycle 3 designs (scenery, no chests).
+chests: 34 registered (GENERATOR=3 CASTLE=4 MID=15 FORT=3 START=3 ENCHANTING=3 BREWING=3); every chest island reachable from every start through gaps <= 30; walk-checked from the island edges (6 pillar-top chests reached by towering up, standing room next to them verified)
+staircases: 12 lanes walked bottom to top, all OK
+ladders: 11 climbs checked, all attached and continuous
+castle walk: apron -> arena floor OK, tower chests reachable 4/4, floor -> rim OK, rim -> wall top by ladder OK
+RESULT: all checks passed
+
+=== 4 wedges (127 ms) ===
+Sky Blockle map, 4 wedges, seed 20261123: 67786 blocks, 61 islands (incl. castle, 8 stepping rocks), 44 chests
+post-pass: 372 fence/pane/wall states set, 851 leaves (32 persistent), 0 carpets dropped
+bridging gaps along each team's path (blocks to bridge; required 13..30):
+  wedge 0: gen|4| start->pillar 15.0 (dy -2)  pillar->fort 15.0 (dy +5)  fort->spike 16.0 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 14.0 (dy +2)  
+  wedge 1: gen|4| start->pillar 15.0 (dy -2)  pillar->fort 15.0 (dy +5)  fort->spike 16.0 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 14.0 (dy +2)  
+  wedge 2: gen|4| start->pillar 15.0 (dy -2)  pillar->fort 15.0 (dy +5)  fort->spike 16.0 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 14.0 (dy +2)  
+  wedge 3: gen|4| start->pillar 15.0 (dy -2)  pillar->fort 15.0 (dy +5)  fort->spike 16.0 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 14.0 (dy +2)  
+  generator shrine sits directly behind the start: gap 4..4 (research: almost touching)
+  start      -> pillar     min 15.0  max 15.0
+  pillar     -> fort       min 15.0  max 15.0
+  fort       -> spike      min 16.0  max 16.0
+  spike      -> enchanting min 16.0  max 16.0
+  enchanting -> castle     min 14.0  max 14.0
+  PATH GAPS overall: min 14.0, max 16.0
+shared spoke between wedge 0 and wedge 1 (nearest gap of each island to anything else):
+  brewing        r= 69.3  nearest showpiece        18.1
+  showpiece      r= 96.2  nearest pillar_shared    14.6
+  pillar_shared  r=118.8  nearest showpiece        14.6
+  grass          r=141.4  nearest spike_shared     13.9
+  spike_shared   r=162.6  nearest grass            13.9
+  asteroid       r=189.5  nearest spike_shared     16.7
+  islet          r= 53.2  nearest brewing          19.0
+  islet          r= 54.1  nearest enchanting(w0)   19.0
+island spacing: no overlaps, every pair at least 4 apart (generator/start pair excepted)
+wedge identity: all copies block-identical (enchanting x4, boulder x4, start x4, generator x4, show_planter x1, islet x8, asteroid x4, show_pickaxe x1, brewing x4, spike_sand x4, pillar x4, show_hourglass x2, pillar_shared x4, grass x4, spike_red x4, fort x4, tower x4, positions equal within 0.88 blocks of rounding). Showpieces cycle 3 designs (scenery, no chests).
+chests: 44 registered (GENERATOR=4 CASTLE=4 MID=20 FORT=4 START=4 ENCHANTING=4 BREWING=4); every chest island reachable from every start through gaps <= 30; walk-checked from the island edges (8 pillar-top chests reached by towering up, standing room next to them verified)
+staircases: 12 lanes walked bottom to top, all OK
+ladders: 12 climbs checked, all attached and continuous
+castle walk: apron -> arena floor OK, tower chests reachable 4/4, floor -> rim OK, rim -> wall top by ladder OK
+RESULT: all checks passed
+
+=== 5 wedges (151 ms) ===
+Sky Blockle map, 5 wedges, seed 20261123: 73687 blocks, 76 islands (incl. castle, 10 stepping rocks), 54 chests
+post-pass: 414 fence/pane/wall states set, 956 leaves (32 persistent), 0 carpets dropped
+bridging gaps along each team's path (blocks to bridge; required 13..30):
+  wedge 0: gen|4| start->pillar 15.0 (dy -2)  pillar->fort 15.0 (dy +5)  fort->spike 16.0 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 14.0 (dy +2)  
+  wedge 1: gen|4| start->pillar 14.8 (dy -2)  pillar->fort 15.1 (dy +5)  fort->spike 14.3 (dy -2)  spike->enchanting 15.8 (dy +3)  enchanting->castle 16.0 (dy +2)  
+  wedge 2: gen|4| start->pillar 15.3 (dy -2)  pillar->fort 14.0 (dy +5)  fort->spike 14.0 (dy -2)  spike->enchanting 16.7 (dy +3)  enchanting->castle 16.7 (dy +2)  
+  wedge 4: gen|4| start->pillar 14.5 (dy -2)  pillar->fort 15.3 (dy +5)  fort->spike 14.3 (dy -2)  spike->enchanting 15.8 (dy +3)  enchanting->castle 16.0 (dy +2)  
+  generator shrine sits directly behind the start: gap 2..4 (research: almost touching)
+  start      -> pillar     min 14.5  max 15.3
+  pillar     -> fort       min 14.0  max 15.3
+  fort       -> spike      min 14.0  max 16.0
+  spike      -> enchanting min 15.8  max 16.7
+  enchanting -> castle     min 14.0  max 16.7
+  PATH GAPS overall: min 14.0, max 16.7
+shared spoke between wedge 0 and wedge 1 (nearest gap of each island to anything else):
+  brewing        r= 70.2  nearest islet            15.3
+  showpiece      r= 96.0  nearest pillar_shared    14.6
+  pillar_shared  r=118.8  nearest showpiece        14.6
+  grass          r=141.0  nearest pillar_shared    14.6
+  spike_shared   r=163.2  nearest grass            14.6
+  asteroid       r=190.4  nearest spike_shared     17.0
+  islet          r= 56.1  nearest brewing          15.3
+  islet          r= 55.3  nearest brewing          16.0
+island spacing: no overlaps, every pair at least 4 apart (generator/start pair excepted)
+wedge identity: all copies block-identical (enchanting x5, boulder x5, start x5, generator x5, show_planter x1, islet x10, asteroid x5, show_pickaxe x2, brewing x5, spike_sand x5, pillar x5, show_hourglass x2, pillar_shared x5, grass x5, spike_red x5, fort x5, tower x4, positions equal within 1.08 blocks of rounding). Showpieces cycle 3 designs (scenery, no chests).
+chests: 54 registered (GENERATOR=5 CASTLE=4 MID=25 FORT=5 START=5 ENCHANTING=5 BREWING=5); every chest island reachable from every start through gaps <= 30; walk-checked from the island edges (10 pillar-top chests reached by towering up, standing room next to them verified)
+staircases: 12 lanes walked bottom to top, all OK
+ladders: 13 climbs checked, all attached and continuous
+castle walk: apron -> arena floor OK, tower chests reachable 4/4, floor -> rim OK, rim -> wall top by ladder OK
+RESULT: all checks passed
+
+=== 6 wedges (157 ms) ===
+Sky Blockle map, 6 wedges, seed 20261123: 79950 blocks, 91 islands (incl. castle, 12 stepping rocks), 64 chests
+post-pass: 456 fence/pane/wall states set, 1492 leaves (64 persistent), 0 carpets dropped
+bridging gaps along each team's path (blocks to bridge; required 13..30):
+  wedge 0: gen|4| start->pillar 15.0 (dy -2)  pillar->fort 15.0 (dy +5)  fort->spike 16.0 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 14.0 (dy +2)  
+  wedge 1: gen|4| start->pillar 14.8 (dy -2)  pillar->fort 13.8 (dy +5)  fort->spike 14.7 (dy -2)  spike->enchanting 16.2 (dy +3)  enchanting->castle 16.9 (dy +2)  
+  wedge 2: gen|3| start->pillar 13.8 (dy -2)  pillar->fort 14.8 (dy +5)  fort->spike 14.7 (dy -2)  spike->enchanting 15.6 (dy +3)  enchanting->castle 16.9 (dy +2)  
+  wedge 5: gen|3| start->pillar 14.3 (dy -2)  pillar->fort 14.3 (dy +5)  fort->spike 14.7 (dy -2)  spike->enchanting 16.2 (dy +3)  enchanting->castle 16.9 (dy +2)  
+  generator shrine sits directly behind the start: gap 3..4 (research: almost touching)
+  start      -> pillar     min 13.8  max 15.0
+  pillar     -> fort       min 13.8  max 15.0
+  fort       -> spike      min 14.7  max 16.0
+  spike      -> enchanting min 15.6  max 16.2
+  enchanting -> castle     min 14.0  max 16.9
+  PATH GAPS overall: min 13.8, max 16.9
+shared spoke between wedge 0 and wedge 1 (nearest gap of each island to anything else):
+  brewing        r= 70.3  nearest islet            13.1
+  showpiece      r= 95.9  nearest pillar_shared    14.0
+  pillar_shared  r=118.7  nearest showpiece        14.0
+  grass          r=140.7  nearest pillar_shared    14.3
+  spike_shared   r=162.6  nearest grass            14.3
+  asteroid       r=190.4  nearest spike_shared     17.8
+  islet          r= 67.2  nearest spike(w0)        13.1
+  islet          r= 67.2  nearest spike(w1)        12.5
+island spacing: no overlaps, every pair at least 4 apart (generator/start pair excepted)
+wedge identity: all copies block-identical (enchanting x6, boulder x6, start x6, generator x6, show_planter x2, islet x12, asteroid x6, show_pickaxe x2, brewing x6, spike_sand x6, pillar x6, show_hourglass x2, pillar_shared x6, grass x6, spike_red x6, fort x6, tower x4, positions equal within 0.87 blocks of rounding). Showpieces cycle 3 designs (scenery, no chests).
+chests: 64 registered (GENERATOR=6 CASTLE=4 MID=30 FORT=6 START=6 ENCHANTING=6 BREWING=6); every chest island reachable from every start through gaps <= 30; walk-checked from the island edges (12 pillar-top chests reached by towering up, standing room next to them verified)
+staircases: 12 lanes walked bottom to top, all OK
+ladders: 14 climbs checked, all attached and continuous
+castle walk: apron -> arena floor OK, tower chests reachable 4/4, floor -> rim OK, rim -> wall top by ladder OK
+RESULT: all checks passed
+
+=== 7 wedges (215 ms) ===
+Sky Blockle map, 7 wedges, seed 20261123: 85460 blocks, 92 islands (incl. castle, 0 stepping rocks), 74 chests
+post-pass: 542 fence/pane/wall states set, 1597 leaves (64 persistent), 0 carpets dropped
+bridging gaps along each team's path (blocks to bridge; required 13..30):
+  wedge 0: gen|4| start->pillar 15.0 (dy -2)  pillar->fort 15.0 (dy +5)  fort->spike 16.0 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 14.0 (dy +2)  
+  wedge 1: gen|4| start->pillar 15.3 (dy -2)  pillar->fort 14.6 (dy +5)  fort->spike 14.6 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 17.4 (dy +2)  
+  wedge 2: gen|3| start->pillar 15.1 (dy -2)  pillar->fort 14.8 (dy +5)  fort->spike 16.0 (dy -2)  spike->enchanting 15.3 (dy +3)  enchanting->castle 14.7 (dy +2)  
+  wedge 6: gen|1| start->pillar 14.6 (dy -2)  pillar->fort 15.3 (dy +5)  fort->spike 14.6 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 17.4 (dy +2)  
+  generator shrine sits directly behind the start: gap 1..4 (research: almost touching)
+  start      -> pillar     min 14.2  max 15.3
+  pillar     -> fort       min 14.2  max 15.3
+  fort       -> spike      min 14.6  max 16.0
+  spike      -> enchanting min 15.3  max 16.0
+  enchanting -> castle     min 14.0  max 17.4
+  PATH GAPS overall: min 14.0, max 17.4
+shared spoke between wedge 0 and wedge 1 (nearest gap of each island to anything else):
+  brewing        r= 69.8  nearest showpiece        16.5
+  showpiece      r= 95.7  nearest pillar_shared    14.3
+  pillar_shared  r=119.0  nearest grass            14.2
+  grass          r=140.9  nearest pillar_shared    14.2
+  spike_shared   r=163.2  nearest grass            14.7
+  asteroid       r=189.6  nearest spike_shared     16.5
+island spacing: no overlaps, every pair at least 4 apart (generator/start pair excepted)
+wedge identity: all copies block-identical (enchanting x7, boulder x7, start x7, generator x7, show_planter x2, asteroid x7, show_pickaxe x2, brewing x7, spike_sand x7, pillar x7, show_hourglass x3, pillar_shared x7, grass x7, spike_red x7, fort x7, tower x4, positions equal within 1.05 blocks of rounding). Showpieces cycle 3 designs (scenery, no chests).
+chests: 74 registered (GENERATOR=7 CASTLE=4 MID=35 FORT=7 START=7 ENCHANTING=7 BREWING=7); every chest island reachable from every start through gaps <= 30; walk-checked from the island edges (14 pillar-top chests reached by towering up, standing room next to them verified)
+staircases: 12 lanes walked bottom to top, all OK
+ladders: 15 climbs checked, all attached and continuous
+castle walk: apron -> arena floor OK, tower chests reachable 4/4, floor -> rim OK, rim -> wall top by ladder OK
+RESULT: all checks passed
+
+=== 8 wedges (200 ms) ===
+Sky Blockle map, 8 wedges, seed 20261123: 91287 blocks, 105 islands (incl. castle, 0 stepping rocks), 84 chests
+post-pass: 584 fence/pane/wall states set, 1702 leaves (64 persistent), 0 carpets dropped
+bridging gaps along each team's path (blocks to bridge; required 13..30):
+  wedge 0: gen|4| start->pillar 15.0 (dy -2)  pillar->fort 15.0 (dy +5)  fort->spike 16.0 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 14.0 (dy +2)  
+  wedge 1: gen|1| start->pillar 14.6 (dy -2)  pillar->fort 14.6 (dy +5)  fort->spike 14.6 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 18.1 (dy +2)  
+  wedge 2: gen|4| start->pillar 15.0 (dy -2)  pillar->fort 15.0 (dy +5)  fort->spike 16.0 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 14.0 (dy +2)  
+  wedge 7: gen|4| start->pillar 15.3 (dy -2)  pillar->fort 13.9 (dy +5)  fort->spike 14.6 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 18.1 (dy +2)  
+  generator shrine sits directly behind the start: gap 1..4 (research: almost touching)
+  start      -> pillar     min 14.6  max 15.3
+  pillar     -> fort       min 13.9  max 15.0
+  fort       -> spike      min 14.6  max 16.0
+  spike      -> enchanting min 16.0  max 16.0
+  enchanting -> castle     min 14.0  max 18.1
+  PATH GAPS overall: min 13.9, max 18.1
+shared spoke between wedge 0 and wedge 1 (nearest gap of each island to anything else):
+  brewing        r= 70.4  nearest showpiece        16.5
+  showpiece      r= 96.4  nearest pillar_shared    13.8
+  pillar_shared  r=119.2  nearest showpiece        13.8
+  grass          r=140.8  nearest pillar_shared    13.9
+  spike_shared   r=163.2  nearest grass            14.8
+  asteroid       r=190.5  nearest spike_shared     17.4
+island spacing: no overlaps, every pair at least 4 apart (generator/start pair excepted)
+wedge identity: all copies block-identical (enchanting x8, boulder x8, start x8, generator x8, show_planter x2, asteroid x8, show_pickaxe x3, brewing x8, spike_sand x8, pillar x8, show_hourglass x3, pillar_shared x8, grass x8, spike_red x8, fort x8, tower x4, positions equal within 1.01 blocks of rounding). Showpieces cycle 3 designs (scenery, no chests).
+chests: 84 registered (GENERATOR=8 CASTLE=4 MID=40 FORT=8 START=8 ENCHANTING=8 BREWING=8); every chest island reachable from every start through gaps <= 30; walk-checked from the island edges (16 pillar-top chests reached by towering up, standing room next to them verified)
+staircases: 12 lanes walked bottom to top, all OK
+ladders: 16 climbs checked, all attached and continuous
+castle walk: apron -> arena floor OK, tower chests reachable 4/4, floor -> rim OK, rim -> wall top by ladder OK
+RESULT: all checks passed
+
+=== 9 wedges (190 ms) ===
+Sky Blockle map, 9 wedges, seed 20261123: 97476 blocks, 118 islands (incl. castle, 0 stepping rocks), 94 chests
+post-pass: 626 fence/pane/wall states set, 2238 leaves (96 persistent), 0 carpets dropped
+bridging gaps along each team's path (blocks to bridge; required 13..30):
+  wedge 0: gen|4| start->pillar 15.0 (dy -2)  pillar->fort 15.0 (dy +5)  fort->spike 16.0 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 14.0 (dy +2)  
+  wedge 1: gen|2| start->pillar 13.9 (dy -2)  pillar->fort 15.3 (dy +5)  fort->spike 14.6 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 17.4 (dy +2)  
+  wedge 2: gen|4| start->pillar 15.1 (dy -2)  pillar->fort 14.3 (dy +5)  fort->spike 16.0 (dy -2)  spike->enchanting 16.1 (dy +3)  enchanting->castle 13.9 (dy +2)  
+  wedge 8: gen|5| start->pillar 14.6 (dy -2)  pillar->fort 14.6 (dy +5)  fort->spike 14.6 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 17.4 (dy +2)  
+  generator shrine sits directly behind the start: gap 2..5 (research: almost touching)
+  start      -> pillar     min 13.8  max 15.2
+  pillar     -> fort       min 13.8  max 15.5
+  fort       -> spike      min 14.3  max 16.0
+  spike      -> enchanting min 15.6  max 16.2
+  enchanting -> castle     min 13.9  max 17.4
+  PATH GAPS overall: min 13.8, max 17.4
+shared spoke between wedge 0 and wedge 1 (nearest gap of each island to anything else):
+  brewing        r= 70.2  nearest showpiece        16.1
+  showpiece      r= 95.9  nearest pillar_shared    14.2
+  pillar_shared  r=119.3  nearest grass            13.6
+  grass          r=140.5  nearest pillar_shared    13.6
+  spike_shared   r=162.9  nearest grass            14.8
+  asteroid       r=190.4  nearest spike_shared     17.4
+island spacing: no overlaps, every pair at least 4 apart (generator/start pair excepted)
+wedge identity: all copies block-identical (enchanting x9, boulder x9, start x9, generator x9, show_planter x3, asteroid x9, show_pickaxe x3, brewing x9, spike_sand x9, pillar x9, show_hourglass x3, pillar_shared x9, grass x9, spike_red x9, fort x9, tower x4, positions equal within 0.81 blocks of rounding). Showpieces cycle 3 designs (scenery, no chests).
+chests: 94 registered (GENERATOR=9 CASTLE=4 MID=45 FORT=9 START=9 ENCHANTING=9 BREWING=9); every chest island reachable from every start through gaps <= 30; walk-checked from the island edges (18 pillar-top chests reached by towering up, standing room next to them verified)
+staircases: 12 lanes walked bottom to top, all OK
+ladders: 17 climbs checked, all attached and continuous
+castle walk: apron -> arena floor OK, tower chests reachable 4/4, floor -> rim OK, rim -> wall top by ladder OK
+RESULT: all checks passed
+
+=== 10 wedges (237 ms) ===
+Sky Blockle map, 10 wedges, seed 20261123: 103430 blocks, 131 islands (incl. castle, 0 stepping rocks), 104 chests
+post-pass: 712 fence/pane/wall states set, 2343 leaves (96 persistent), 0 carpets dropped
+bridging gaps along each team's path (blocks to bridge; required 13..30):
+  wedge 0: gen|4| start->pillar 15.0 (dy -2)  pillar->fort 15.0 (dy +5)  fort->spike 16.0 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 14.0 (dy +2)  
+  wedge 1: gen|2| start->pillar 14.6 (dy -2)  pillar->fort 14.6 (dy +5)  fort->spike 14.0 (dy -2)  spike->enchanting 16.7 (dy +3)  enchanting->castle 16.7 (dy +2)  
+  wedge 2: gen|4| start->pillar 14.8 (dy -2)  pillar->fort 15.1 (dy +5)  fort->spike 14.3 (dy -2)  spike->enchanting 15.8 (dy +3)  enchanting->castle 16.0 (dy +2)  
+  wedge 9: gen|4| start->pillar 15.3 (dy -2)  pillar->fort 14.0 (dy +5)  fort->spike 14.0 (dy -2)  spike->enchanting 16.7 (dy +3)  enchanting->castle 16.7 (dy +2)  
+  generator shrine sits directly behind the start: gap 2..4 (research: almost touching)
+  start      -> pillar     min 14.5  max 15.3
+  pillar     -> fort       min 14.0  max 15.3
+  fort       -> spike      min 14.0  max 16.0
+  spike      -> enchanting min 15.8  max 16.7
+  enchanting -> castle     min 14.0  max 16.7
+  PATH GAPS overall: min 14.0, max 16.7
+shared spoke between wedge 0 and wedge 1 (nearest gap of each island to anything else):
+  brewing        r= 70.5  nearest spike(w1)        15.6
+  showpiece      r= 95.8  nearest pillar_shared    13.9
+  pillar_shared  r=118.9  nearest showpiece        13.9
+  grass          r=141.0  nearest spike_shared     14.3
+  spike_shared   r=162.9  nearest grass            14.3
+  asteroid       r=190.4  nearest spike_shared     17.4
+island spacing: no overlaps, every pair at least 4 apart (generator/start pair excepted)
+wedge identity: all copies block-identical (enchanting x10, boulder x10, start x10, generator x10, show_planter x3, asteroid x10, show_pickaxe x3, brewing x10, spike_sand x10, pillar x10, show_hourglass x4, pillar_shared x10, grass x10, spike_red x10, fort x10, tower x4, positions equal within 0.95 blocks of rounding). Showpieces cycle 3 designs (scenery, no chests).
+chests: 104 registered (GENERATOR=10 CASTLE=4 MID=50 FORT=10 START=10 ENCHANTING=10 BREWING=10); every chest island reachable from every start through gaps <= 30; walk-checked from the island edges (20 pillar-top chests reached by towering up, standing room next to them verified)
+staircases: 12 lanes walked bottom to top, all OK
+ladders: 18 climbs checked, all attached and continuous
+castle walk: apron -> arena floor OK, tower chests reachable 4/4, floor -> rim OK, rim -> wall top by ladder OK
+RESULT: all checks passed
+

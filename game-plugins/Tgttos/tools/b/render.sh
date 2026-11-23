@@ -16,8 +16,10 @@ V=tools/b/views.py
 IDS="$@"; [ -z "$IDS" ] && IDS="kite_festival frozen_canal ticket_gates quarry_steps"
 for id in $IDS; do
   D=$OUT/$id.mcmdump.gz
-  python "$R" "$D" previews/${id}_top.png --top > /dev/null &
-  python "$R" "$D" previews/${id}_iso.png --angle 1 > /dev/null &
+  C=$D; [ -f "$OUT/${id}_cut.mcmdump.gz" ] && C=$OUT/${id}_cut.mcmdump.gz
+  python "$R" "$C" previews/${id}_top.png --top > /dev/null &
+  python "$R" "$C" previews/${id}_iso.png --angle 1 > /dev/null &
+  python "$R" "$C" previews/${id}_iso2.png --angle 3 > /dev/null &
   python "$V" "$D" previews/$id &
   wait
 done

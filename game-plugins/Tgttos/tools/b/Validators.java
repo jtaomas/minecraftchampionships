@@ -86,7 +86,12 @@ final class Validators {
         if (!res.ok()) { r.err(name + ": NO ROUTE (" + res.visited + " cells searched)"); return -1; }
         Walk.Node e = res.end;
         int[] st = w.longestStraight(res.path, skipStraight);
-        double bridgeT = e.blocks / w.bridgeRate;
+        if (System.getenv("DEBUGPATH") != null) {
+            StringBuilder sb = new StringBuilder("        path: ");
+            String last = "";
+            for (Walk.Node n : res.path) { String h = n.how.split(" ")[0]; if (!h.equals(last) || h.equals("jump")) sb.append(n.how).append("@").append(n.x).append(",").append(n.y).append(",").append(n.z).append(" "); last = h; }
+            r.line(sb.toString());
+        }
         r.check(st[0] <= maxStraight, String.format("%s: path %.0f blocks, %d jumps, hardest %s (difficulty %.1f), %d blocks placed, "
                         + "longest straight free stretch %d (at %d,%d,%d; limit %d), est. %.1f s (expert pace)",
                 name, e.len, e.jumps, e.hardest, e.maxGap, e.blocks, st[0], st[1], st[2], st[3], maxStraight, e.cost));

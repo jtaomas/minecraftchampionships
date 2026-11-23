@@ -1,0 +1,129 @@
+Parkour Warrior course validation  (seed 20261124)
+blocks: 44837, obstacles: 36, timed groups: 27
+  warn  B1-1: catch ledge above kill-Y (not on route) 7,101,-6 flowering_azalea_leaves
+  warn  B1-1: catch ledge above kill-Y (not on route) 8,101,-5 flowering_azalea_leaves
+B1-1       Alphabet Avalanche       DROP    len 27.0  jumps  4  maxGap 4.0  climb  4  killY 92  diff 3.25  sign EASY
+  warn  B1-2: catch ledge above kill-Y (not on route) 35,96,-1 lime_concrete
+  warn  B1-2: catch ledge above kill-Y (not on route) 35,96,0 lime_concrete
+B1-2       Peg Pole Spiral          SPIRAL  len 15.0  jumps 14  maxGap 2.0  climb  9  killY 93  diff 3.50  sign EASY
+  warn  B1-3: catch ledge above kill-Y (not on route) 53,100,0 yellow_concrete
+  warn  B1-3: catch ledge above kill-Y (not on route) 53,106,0 blue_concrete
+B1-3       Pop Goes the Jester      SLIME   len 18.0  jumps  4  maxGap 3.0  climb  5  killY 97  diff 2.75  sign MEDIUM
+  warn  M1-1: catch ledge above kill-Y (not on route) -2,102,10 lantern
+  warn  M1-1: catch ledge above kill-Y (not on route) -2,102,39 yellow_terracotta
+M1-1       Brick by Brick           UP      len 29.0  jumps  7  maxGap 3.0  climb  4  killY 96  diff 2.75  [easy table]
+  warn  M1-2: catch ledge above kill-Y (not on route) -2,102,39 yellow_terracotta
+  warn  M1-2: catch ledge above kill-Y (not on route) -2,102,43 yellow_terracotta
+M1-2       Domino Line-Up           GAP     len 23.0  jumps  7  maxGap 3.0  climb  0  killY 100  diff 2.75  [easy table]
+  warn  M1-3: catch ledge above kill-Y (not on route) -4,106,94 lantern
+  warn  M1-3: catch ledge above kill-Y (not on route) -1,103,70 dark_oak_slab
+M1-3       Tin Train Trestle        BEAM    len 25.0  jumps  8  maxGap 2.0  climb  2  killY 100  diff 1.38  [easy table]
+  warn  B2-1: catch ledge above kill-Y (not on route) 6,105,98 flowering_azalea_leaves
+  warn  B2-1: catch ledge above kill-Y (not on route) 7,106,97 lantern
+B2-1       Fruit Crate Tumble       GAP     len 27.0  jumps  6  maxGap 3.2  climb  2  killY 98  diff 3.29  sign MEDIUM
+  warn  B2-2: catch ledge above kill-Y (not on route) 33,103,100 melon
+  warn  B2-2: catch ledge above kill-Y (not on route) 33,103,101 melon
+B2-2       Swinging Shop Signs      HANG    len 22.0  jumps  6  maxGap 3.0  climb  1  killY 99  diff 4.25  sign MEDIUM
+  warn  B2-3: catch ledge above kill-Y (not on route) 58,104,102 stripped_spruce_wood
+B2-3       Billboard Bend           NEO     len 21.0  jumps  6  maxGap 3.0  climb  1  killY 100  diff 5.25  sign HARD
+  warn  M2-1: catch ledge above kill-Y (not on route) -5,106,109 lantern
+  warn  M2-1: catch ledge above kill-Y (not on route) -4,106,110 lantern
+M2-1       Awning Alley             DIAG    len 26.0  jumps  7  maxGap 2.2  climb  2  killY 100  diff 2.12  [easy table]
+  warn  M2-2: catch ledge above kill-Y (not on route) -5,110,134 dark_oak_planks
+  warn  M2-2: catch ledge above kill-Y (not on route) -5,110,135 stripped_dark_oak_log
+M2-2       Chimney Pots             POST    len 21.0  jumps  7  maxGap 3.0  climb  2  killY 104  diff 3.25  [easy table]
+  warn  M2-3: catch ledge above kill-Y (not on route) -6,116,184 lantern
+  warn  M2-3: catch ledge above kill-Y (not on route) -5,116,183 lantern
+M2-3       Drainpipe Dash           LADDER  len 18.0  jumps  6  maxGap 2.0  climb  6  killY 104  diff 2.25  [easy table]
+  warn  B3-1: catch ledge above kill-Y (not on route) 6,115,186 flowering_azalea_leaves
+  warn  B3-1: catch ledge above kill-Y (not on route) 6,115,194 flowering_azalea_leaves
+B3-1       Barrel Scatter           POST    len 22.0  jumps  6  maxGap 3.0  climb  1  killY 110  diff 4.50  sign MEDIUM
+  warn  B3-2: catch ledge above kill-Y (not on route) 28,112,189 barrel
+  warn  B3-2: catch ledge above kill-Y (not on route) 28,115,190 barrel
+B3-2       Gun Deck Duck            HEAD    len 21.0  jumps  6  maxGap 3.0  climb  1  killY 110  diff 4.00  sign HARD
+  warn  B3-3: catch ledge above kill-Y (not on route) 52,118,186 dark_oak_planks
+  warn  B3-3: catch ledge above kill-Y (not on route) 52,118,187 spruce_planks
+B3-3       Hull Rib Run             NEO     len 24.0  jumps  6  maxGap 3.0  climb  2  killY 110  diff 5.25  sign HARD
+  warn  M3-1: catch ledge above kill-Y (not on route) -4,116,198 lantern
+  warn  M3-1: catch ledge above kill-Y (not on route) -4,113,201 stripped_spruce_log
+M3-1       Fallen Mainmast          BEAM    len 27.0  jumps  5  maxGap 2.0  climb  3  killY 107  diff 1.25  [easy table]
+  warn  M3-2: catch ledge above kill-Y (not on route) -2,113,230 spruce_fence
+  warn  M3-2: catch ledge above kill-Y (not on route) -2,113,231 spruce_fence
+M3-2       Plankless Rope Bridge    GAP     len 23.0  jumps  7  maxGap 3.0  climb  1  killY 106  diff 2.50  [easy table]
+  warn  M3-3: catch ledge above kill-Y (not on route) -4,113,272 lantern
+  warn  M3-3: catch ledge above kill-Y (not on route) -4,112,274 flowering_azalea_leaves
+M3-3       Cargo Net Catch          LADDER  len 17.0  jumps  7  maxGap 2.0  climb  6  killY 105  diff 2.75  [easy table]
+  warn  B4-1: catch ledge above kill-Y (not on route) 6,112,284 flowering_azalea_leaves
+  warn  B4-1: catch ledge above kill-Y (not on route) 8,113,276 lantern
+B4-1       Pendulum Hall            TIMED   len 22.0  jumps  5  maxGap 3.0  climb  0  killY 107  diff 4.00  sign HARD
+  warn  B4-2: catch ledge above kill-Y (not on route) 28,111,279 gold_block
+  warn  B4-2: catch ledge above kill-Y (not on route) 28,111,280 gold_block
+B4-2       Axle Hop                 POST    len 22.0  jumps  6  maxGap 3.0  climb  2  killY 107  diff 4.75  sign HARD
+  warn  B4-3: catch ledge above kill-Y (not on route) 53,110,278 waxed_cut_copper
+  warn  B4-3: catch ledge above kill-Y (not on route) 53,110,279 gold_block
+B4-3       Cuckoo Chorus            TIMED   len 22.0  jumps  6  maxGap 3.0  climb  2  killY 109  diff 5.00  sign HARD
+  warn  M4-1: catch ledge above kill-Y (not on route) -7,113,285 lantern
+  warn  M4-1: catch ledge above kill-Y (not on route) -6,112,284 flowering_azalea_leaves
+M4-1       Gear Train               ROUND   len 33.0  jumps  5  maxGap 2.0  climb  2  killY 107  diff 2.50
+  warn  M4-2: catch ledge above kill-Y (not on route) -2,111,325 waxed_cut_copper
+  warn  M4-2: catch ledge above kill-Y (not on route) -2,111,326 waxed_cut_copper
+M4-2       Tick-Tock Teeth          TIMED   len 23.0  jumps  8  maxGap 2.0  climb  0  killY 109  diff 3.00
+  warn  M4-3: catch ledge above kill-Y (not on route) -4,113,371 lantern
+  warn  M4-3: catch ledge above kill-Y (not on route) -2,112,345 waxed_copper_bulb
+M4-3       Spring Loaded            SLIME   len 20.0  jumps  5  maxGap 2.0  climb  5  killY 104  diff 2.50
+  warn  B5-1: catch ledge above kill-Y (not on route) 6,112,375 flowering_azalea_leaves
+  warn  B5-1: catch ledge above kill-Y (not on route) 8,113,375 lantern
+B5-1       Runaway Rails            BEAM    len 24.0  jumps  5  maxGap 4.0  climb  1  killY 107  diff 4.13  sign HARD
+  warn  B5-2: catch ledge above kill-Y (not on route) 32,110,377 cobbled_deepslate
+  warn  B5-2: catch ledge above kill-Y (not on route) 32,110,381 cobbled_deepslate
+B5-2       Dripstone Descent        DROP    len 25.0  jumps  6  maxGap 4.0  climb  7  killY 101  diff 4.75  sign HARD
+  warn  B5-3: catch ledge above kill-Y (not on route) 58,101,378 dripstone_block
+  warn  B5-3: catch ledge above kill-Y (not on route) 58,105,379 dripstone_block
+B5-3       Crystal Curtain          NEO     len 17.0  jumps  6  maxGap 2.0  climb  4  killY 102  diff 5.00  sign HARD
+  warn  M5-1: catch ledge above kill-Y (not on route) -4,113,387 lantern
+  warn  M5-1: catch ledge above kill-Y (not on route) -3,107,403 smooth_basalt
+M5-1       Geode Steps              POST    len 21.0  jumps  6  maxGap 3.0  climb  2  killY 107  diff 3.75
+  warn  M5-2: catch ledge above kill-Y (not on route) -2,111,408 cobbled_deepslate
+  warn  M5-2: catch ledge above kill-Y (not on route) -2,111,412 cobbled_deepslate
+M5-2       Lantern Line             HANG    len 25.0  jumps  5  maxGap 3.0  climb  1  killY 109  diff 3.00
+  warn  M5-3: catch ledge above kill-Y (not on route) -4,120,457 lantern
+  warn  M5-3: catch ledge above kill-Y (not on route) -3,120,442 stripped_spruce_log
+M5-3       Rattling Lift            TIMED   len 17.0  jumps  6  maxGap 2.0  climb  4  killY 110  diff 4.00
+  warn  E-EASY-1: catch ledge above kill-Y (not on route) -18,120,471 lantern
+  warn  E-EASY-1: catch ledge above kill-Y (not on route) -16,120,473 lantern
+E-EASY-1   Honeycomb Hop            UP      len 17.1  jumps  5  maxGap 1.0  climb  2  killY 114  diff 1.50  [easy table]
+  warn  E-EASY-2: catch ledge above kill-Y (not on route) -16,119,490 moss_block
+  warn  E-EASY-2: catch ledge above kill-Y (not on route) -16,119,494 moss_block
+E-EASY-2   Bloom Stepping           GAP     len 15.0  jumps  4  maxGap 2.0  climb  0  killY 116  diff 1.50  [easy table]
+  warn  E-MEDIUM-1: catch ledge above kill-Y (not on route) -4,120,473 lantern
+  warn  E-MEDIUM-1: catch ledge above kill-Y (not on route) -2,117,475 snow_block
+E-MEDIUM-1 Ice Floe Slide           ICE     len 20.0  jumps  4  maxGap 3.0  climb  0  killY 114  diff 3.25
+  warn  E-MEDIUM-2: catch ledge above kill-Y (not on route) -2,117,491 snow_block
+  warn  E-MEDIUM-2: catch ledge above kill-Y (not on route) -2,116,493 packed_ice
+E-MEDIUM-2 Lighthouse Ladder        LADDER  len 13.2  jumps  3  maxGap 3.0  climb  7  killY 113  diff 1.50
+  warn  E-HARD-1: catch ledge above kill-Y (not on route) 5,126,468 waxed_weathered_cut_copper_stairs
+  warn  E-HARD-1: catch ledge above kill-Y (not on route) 8,120,473 lantern
+E-HARD-1   Spine Scramble           UP      len 11.5  jumps  9  maxGap 3.0  climb 11  killY 114  diff 5.00
+  warn  E-HARD-2: catch ledge above kill-Y (not on route) 8,128,478 cyan_wool
+  warn  E-HARD-2: catch ledge above kill-Y (not on route) 12,127,478 purple_wool
+E-HARD-2   Missing Treads           SPIRAL  len 11.4  jumps  8  maxGap 3.0  climb  6  killY 125  diff 4.46
+
+== course checks
+pad blocks: 324 (stray 0)
+timed obstacles: [B4-1, B4-3, E-HARD-2, M4-2, M5-3]
+stage 1 difficulty: main 2.29  bonus 3.17
+stage 2 difficulty: main 2.54  bonus 4.26
+stage 3 difficulty: main 2.17  bonus 4.58
+stage 4 difficulty: main 2.67  bonus 4.58
+stage 5 difficulty: main 3.58  bonus 4.63
+endings difficulty: easy 1.50  medium 2.38  hard 4.73
+  ERROR Hard ending (4.7) is not the hardest thing on the map (max other 5.3)
+staircases: 0 lanes, problems 0
+bounds: x -20..88  y 87..149  z -10..515
+distinct block types: 169
+
+SUMMARY jumps 221 (easy-table checked 70), footholds 227 (tiny objects 0), decoys 0, catch ledges 1151 (warning)
+RESULT: FAIL  errors 1  warnings 71
+
+(generated + validated in 511 ms)
+dumps written to tools\out\dumps  (1 validator problems)
