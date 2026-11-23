@@ -199,7 +199,7 @@ public abstract class ArenaTheme {
         // corner lamp posts (decor) on the outer corners
         for (int sx = -1; sx <= 1; sx += 2)
             for (int sz = -1; sz <= 1; sz += 2) {
-                set(sx * d, 2, sz * d, "polished_andesite_wall");
+                set(sx * d, 2, sz * d, "andesite_wall");
                 set(sx * d, 3, sz * d, "lantern");
                 set(sx * (d - 1), 3, sz * (d - 1), "yellow_candle[candles=3,lit=true]");
             }

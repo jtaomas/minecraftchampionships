@@ -240,7 +240,7 @@ public final class KiteFestival implements TgMap {
         // tail
         int ty = ky - hh - 1;
         for (int i = 0; i < 5; i++) {
-            g.set(kx + ((i & 1) == 0 ? 0 : side), ty - i, kz, i % 2 == 0 ? "string" : "red_wool");
+            g.set(kx + ((i & 1) == 0 ? 0 : side), ty - i, kz, i % 2 == 0 ? "tripwire" : "red_wool");
         }
         // tether: from the kite's lower corner down to a stake on the ridge on the kite's own side
         double ax = cx(kz) + side * (HALF + 3);

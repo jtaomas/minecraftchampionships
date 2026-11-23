@@ -211,7 +211,7 @@ public final class DamFaceMap extends AMap {
             g.set(x, CREST + 1, 60, "stone_brick_wall");
         }
         // centre stair cut through tier 4 (choke, 4 wide)
-        Stairs.flight(g, "centre crest stair", "smooth_stone", "smooth_stone", -2, zf(0) + 9, 32, 0, 1, 4, 4);
+        Stairs.flight(g, "centre crest stair", "stone", "smooth_stone", -2, zf(0) + 9, 32, 0, 1, 4, 4);
         // pen: low bamboo-walled yard in the middle of the crest
         int x1 = -6, x2 = 6, z1 = 43, z2 = 55;
         for (int x = x1; x <= x2; x++) for (int z = z1; z <= z2; z++) {
@@ -237,7 +237,7 @@ public final class DamFaceMap extends AMap {
         g.set(1, CREST + 1, 60, null);
         // crest lamps & bollards break the long runs (outside the pen)
         g.breakRuns(-19, 18, 37, 59, CREST + 1, 9, java.util.List.of(Region.of(-6, CREST, 43, 6, CREST + 3, 55), Region.of(-1, CREST, 59, 1, CREST + 2, 67)),
-                "polished_andesite_wall", "barrel[facing=up,open=false]", "lightning_rod[facing=up,powered=false,waterlogged=false]", "yellow_terracotta");
+                "andesite_wall", "barrel[facing=up,open=false]", "lightning_rod[facing=up,powered=false,waterlogged=false]", "yellow_terracotta");
         // the intake / control tower (landmark), standing in the reservoir
         double cx = 0.5, cz = 72.5;
         g.cyl(cx, cz, 5.5, 20, 64, new Pal("smooth_stone", 50, "calcite", 30, "polished_andesite", 20));

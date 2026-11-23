@@ -294,9 +294,9 @@ async function runGame(id, mode) {
     await waitOver(t0 + limitMs);
     if (!over) {
       r.endedBy = mode === 'pass1' ? 'skip' : 'timeout-skip';
-      send('mcm skip');
+      send('mcm next');
       over = await waitLine(overRe, 20000, lines.length - 1);
-      if (!over) { r.notes.push('No OVER line within 20s of /mcm skip; sending /mcm stop'); send('mcm stop'); over = await waitLine(overRe, 15000); }
+      if (!over) { r.notes.push('No OVER line within 20s of /mcm next; sending /mcm stop'); send('mcm stop'); over = await waitLine(overRe, 15000); }
     } else r.endedBy = 'natural';
     if (over) { const m = over.msg.match(overRe) || over.raw.match(overRe); r.endReason = m ? m[2] : over.msg; r.durationSec = Math.round((over.t - t0) / 1000); }
     await sleep(10000);
@@ -329,7 +329,7 @@ async function runChampionship() {
   else {
     c.started = true; c.firstGame = (s.msg.match(/>>> (.+?) <<</) || [])[1];
     const over = await waitLine(/OVER! \(/, 45000, s.idx + 1);
-    if (!over) { send('mcm skip'); c.notes.push('skipped first game after 45s to reach the between-games vote'); }
+    if (!over) { send('mcm next'); c.notes.push('skipped first game after 45s to reach the between-games vote'); }
     const until = Date.now() + Math.max(60000, CHAMP_SECS * 1000 - 45000);
     const dome = await waitLine(/Decision Dome|\[Dome\]/, until - Date.now(), fromIdx);
     c.domeTriggered = !!dome;
@@ -354,7 +354,7 @@ function esc(s) { return String(s ?? '').replace(/\|/g, '\\|').replace(/\n/g, ' 
 function writeResults() {
   fs.writeFileSync(path.join(HERE, OUT + '.json'), JSON.stringify(results, null, 1));
   const o = [];
-  o.push(`# MCM staging bot test - run ${RUN_ID}`, '', `Raw logs: \`${LOGDIR}\``, `Bots: ${NBOTS}, pass1 watch ${PASS1_SECS}s then /mcm skip; pass2 natural end (timeout ${PASS2_MINS} min).`, '');
+  o.push(`# MCM staging bot test - run ${RUN_ID}`, '', `Raw logs: \`${LOGDIR}\``, `Bots: ${NBOTS}, pass1 watch ${PASS1_SECS}s then /mcm next; pass2 natural end (timeout ${PASS2_MINS} min).`, '');
   for (const n of results.notes) o.push('- ' + n);
   o.push('', '## Pass 1 (all games: play, watch, skip)', '', '| id | name | result | started | ended | duration | bots in arena @10s / @60s | back in lobby | issues | bot kicks/errors |', '|---|---|---|---|---|---|---|---|---|---|');
   for (const r of Object.values(results.games)) o.push(`| ${r.id} | ${esc(r.name)} | **${r.pass ? 'PASS' : 'FAIL'}** | ${r.started ? 'yes' : 'NO'} | ${esc(r.endReason ?? '-')} (${r.endedBy ?? '-'}) | ${r.durationSec ?? '-'}s | ${r.movedAt10.length}/${r.movedAt60.length} | ${r.returnedToLobby ?? '-'} | ${r.issues.map(i => `${i.lvl} ${i.plugin} x${i.count}`).join('; ') || '-'} | ${r.botProblems.length} |`);

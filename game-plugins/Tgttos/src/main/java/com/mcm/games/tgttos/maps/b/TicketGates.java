@@ -276,7 +276,7 @@ public final class TicketGates implements TgMap {
             for (int x = x0; x <= x0 + 2; x++)
                 for (int z = z2 + 1; z <= z2 + 6; z++)
                     for (int y = LOW + 1; y <= 3; y++) g.set(x, y, z, null);
-            Stairs.flight(g, side < 0 ? "tunnelL" : "tunnelR", "polished_deepslate_brick", "deepslate_bricks", x0, z2 + 1, LOW, 0, 1, 6, 3, LOW);
+            Stairs.flight(g, side < 0 ? "tunnelL" : "tunnelR", "deepslate_brick", "deepslate_bricks", x0, z2 + 1, LOW, 0, 1, 6, 3, LOW);
             // railing on the platform side of the well
             int rx = side < 0 ? -18 : 18;
             for (int z = z2 + 1; z <= z2 + 5; z++) g.set(rx, 1, z, "dark_oak_fence");
