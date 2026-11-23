@@ -6,7 +6,8 @@ plugins/.paper-remapped/
 plugins/spark/tmp-client/
 
 # Scratch plugin build directory (compiled jar is tracked at plugins/MinecraftMondayCore.jar)
-plugin-build/
+plugin-build/*
+!plugin-build/pom.xml
 
 # Logs, crash reports, and runtime state (keeps player IPs off the public repo and avoids file locks)
 logs/

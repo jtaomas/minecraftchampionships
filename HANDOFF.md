@@ -21,7 +21,7 @@ This repository root **is the server folder** (Paper 1.21.1, Java 21). Clone the
 - `game-plugins/PIPELINE.md` — research → spec (owner approves) → build → verify → playtest → feedback.
 - `game-plugins/LESSONS.md` — mistakes not to repeat. `game-plugins/BRIEF.md` — plugin API contract and admin testing hooks.
 - Per game: `game-plugins/<Game>/SPEC*.md`, `FEEDBACK_*.md`, `README.md`; research in `game-plugins/research/`.
-- Core plugin source: `plugin-src/` (build with `plugin-build/pom.xml`, not tracked — see README). Game plugins: `mvn package` in each folder; jars go to `game-plugins/_built/` and then `plugins/`.
+- Core plugin source: `plugin-src/` (build with `mvn install` in `plugin-build/`; the games compile against that installed core (`com.mcm:MinecraftMondayCore:3.2.0`), so build the core first). Game plugins: `mvn package` in each folder; jars go to `game-plugins/_built/` and then `plugins/`.
 - Map previews: `game-plugins/<Game>/previews/`; offline renderer `tools/render_preview.py`; bot test harness `tools/bot-harness/`.
 
 ## Known to-do
