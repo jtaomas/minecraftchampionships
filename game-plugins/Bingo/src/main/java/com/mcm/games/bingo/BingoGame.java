@@ -1170,40 +1170,62 @@ public final class BingoGame implements McmGame, Listener {
         };
     }
 
+    /**
+     * A click in the card menu. Runs one tick after the click (never inside the click event: closing the inventory
+     * and teleporting during InventoryClickEvent is unreliable), and every refusal tells the player why.
+     */
     private void handleMenuClick(Player p, CardMenu m, int slot) {
-        if (phase != Phase.PLAYING || world == null) return;
+        boolean isStart = slot == 45;
+        UUID mateId = m.tpTargets.get(slot);
+        if (!isStart && mateId == null) return; // not a button
+        if (world == null || !isPlayer(p)) { deny(p, "§cTeleports only work for players in this game."); return; }
+        if (phase != Phase.PLAYING) { deny(p, "§cTeleports work once the game has started."); return; }
+        if (p.getGameMode() != GameMode.SURVIVAL || p.isDead()) { deny(p, "§cYou can't teleport right now."); return; }
+        if (!p.getWorld().equals(world)) { deny(p, "§cYou are not in the Bingo world."); return; }
         String side = sideOf.get(p.getUniqueId());
-        if (side == null) return;
-        Location dest = null;
-        if (slot == 45) {
+        Location dest;
+        if (isStart) {
             dest = nextStartSpot();
-        } else if (m.tpTargets.containsKey(slot)) {
-            Player mate = Bukkit.getPlayer(m.tpTargets.get(slot));
+        } else {
+            Player mate = Bukkit.getPlayer(mateId);
             if (mate == null || !mate.isOnline() || mate.isDead() || !mate.getWorld().equals(world)
-                    || !side.equals(sideOf.get(mate.getUniqueId()))) {
-                p.sendMessage(txt("§cThat teammate can't be reached right now."));
+                    || mate.getGameMode() != GameMode.SURVIVAL || !side.equals(sideOf.get(mate.getUniqueId()))) {
+                deny(p, "§cThat teammate can't be reached right now.");
                 return;
             }
             dest = mate.getLocation();
         }
-        if (dest == null) return;
+        if (dest == null || dest.getWorld() == null) { deny(p, "§cNo start point yet - try again in a moment."); return; }
         long now = System.currentTimeMillis();
         long until = tpCooldown.getOrDefault(p.getUniqueId(), 0L);
-        if (now < until) {
-            p.sendMessage(txt("§cTeleport on cooldown for " + ((until - now) / 1000 + 1) + "s."));
-            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1f, 0.6f);
+        if (now < until) { deny(p, "§cTeleport on cooldown for " + ((until - now) / 1000 + 1) + "s."); return; }
+        long combat = combatUntil.getOrDefault(p.getUniqueId(), 0L);
+        if (cfg.topBlockedInCombat && now < combat) {
+            deny(p, "§cYou were just hit by a player - teleports are blocked for " + ((combat - now) / 1000 + 1) + "s.");
             return;
         }
-        if (cfg.topBlockedInCombat && now < combatUntil.getOrDefault(p.getUniqueId(), 0L)) {
-            p.sendMessage(txt("§cYou were just hit by a player - teleports are blocked for a few seconds."));
-            return;
-        }
-        tpCooldown.put(p.getUniqueId(), now + cfg.teleportCooldown * 1000L);
-        Location target = dest.clone();
+        final Location target = dest.clone();
+        final int gen = prepGen;
         p.closeInventory();
         p.setFallDistance(0f);
-        p.teleport(target);
-        p.playSound(target, Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1f);
+        // teleportAsync loads the target chunk off the main thread first (the start area may have unloaded).
+        p.teleportAsync(target).whenComplete((ok, err) -> Bukkit.getScheduler().runTask(plugin, () -> {
+            if (!p.isOnline()) return;
+            if (Boolean.TRUE.equals(ok) && err == null) {
+                if (gen == prepGen) tpCooldown.put(p.getUniqueId(), System.currentTimeMillis() + cfg.teleportCooldown * 1000L);
+                p.setFallDistance(0f);
+                p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1f);
+            } else {
+                plugin.getLogger().warning("Bingo: card teleport of " + p.getName() + " failed" + (err != null ? ": " + err : " (cancelled by a listener)"));
+                deny(p, "§cThe teleport didn't go through - try again.");
+            }
+        }));
+    }
+
+    private static void deny(Player p, String msg) {
+        if (p == null || !p.isOnline()) return;
+        p.sendMessage(txt(msg));
+        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1f, 0.6f);
     }
 
     // ================================================================ listeners (only act while running, only in our world)
@@ -1256,8 +1278,10 @@ public final class BingoGame implements McmGame, Listener {
         if (e.getInventory().getHolder() instanceof CardMenu m && m.game == this) {
             e.setCancelled(true);
             if (!(e.getWhoClicked() instanceof Player p)) return;
-            if (e.getClickedInventory() == null || e.getClickedInventory() != e.getView().getTopInventory()) return;
-            handleMenuClick(p, m, e.getRawSlot());
+            // Top-inventory slots are raw slots 0..size-1 (no identity check on inventory wrappers).
+            int raw = e.getRawSlot();
+            if (raw < 0 || raw >= m.inv.getSize()) return;
+            Bukkit.getScheduler().runTask(plugin, () -> { if (p.isOnline()) handleMenuClick(p, m, raw); });
             return;
         }
         // Any click on the card in the player's own inventory opens the card; the card never moves.
