@@ -1,41 +1,66 @@
-# Ace Race (McmAceRace)
+# Ace Race v2 (McmAceRace)
 
-Individual racing minigame for MinecraftMondayCore. Start it with `/mcm play acerace`.
+Map-driven Ace Race for MinecraftMondayCore. This is the **Phase 1 foundation** of the rebuild: the map contract, one world with map slots, a tick-budgeted paster, the race runtime/HUD, admin commands and a **Test Grid** course. Sunset Skyway and Kessler Run are the next generators; the old single-track prototype (`AceRaceGame`/`Track`) has been removed.
 
-## How it plays
-- Everyone spawns on a start grid (team-coloured pads, teammates together) in the void world `mcc_acerace`.
-  A 7-second countdown runs, then the glass gate opens.
-- Race **2 laps** of a course built in code. Sections, each starting with a checkpoint:
-  1. **Start straight** with speed pads (magenta glazed terracotta: Speed III + a push forward)
-  2. **Jump Pads**: emerald pads launch you up two ledges
-  3. **Parkour**: small platforms over the void
-  4. **Elytra Launch**: purpur pads launch you and give you an elytra. Glide through 3 gold **boost rings** to the landing
-  5. **Landing**: the elytra is taken away, then a big **drop**
-  6. **Hazard Run**: magma strips. Touching magma sends you back
-  7. **Riptide Pool**: you get a Riptide III trident and Dolphin's Grace. Riptide or swim through the pool
-  8. **Ring Jump**: a long jump pad over a gap through a boost ring, then the finish arch
-- Crossing the finish arch on lap 1 teleports you back to the start straight for lap 2.
-- Falling into the void or touching magma teleports you to your last checkpoint. The **red dye** (slot 9, right-click) does it on demand.
-- No PvP and no damage of any kind. Finished players become spectators at the grandstand.
-- Time limit: 6 minutes. The game ends early once every remaining racer has finished.
+## Status
 
-## Scoring
-| Event | Points |
-|---|---|
-| Each checkpoint (7 per lap) | 2 |
-| Completing lap 1 | 10 |
-| Finishing the race | 15 |
-| Placement (finishers only) | 1st 50, 2nd 40, 3rd 32, 4th 26, 5th 22, 6th 18, 7th 15, 8th 12, 9th 10, 10th 8, 11-15th 6, 16-25th 4, then 2 |
+- **Phase 1 — done:** map contract, `mcc_acerace` void world, slot paster, start pen, countdown, directional checkpoints, pads, boost rings, falls/respawn, laps/scoring, spectator handling, HUD, `/acerace` commands, Test Grid.
+- **Phase 2 — next:** Sunset Skyway generator + palette + validation.
+- **Phase 3:** Kessler Run generator (wing rings, riptide, ring pass).
+- **Not yet:** live player playtest, elytra/riptide real-client test, large-map async paster (Phase 1 uses `McmBuild.BuildQueue`), stale-slot recovery after a restart for changed maps.
 
-A winner who completes everything gets about 103 points. Racers who don't finish keep their checkpoint and lap points.
+## Commands
 
-## HUD
-- Sidebar: finished count plus the top 5 by progress (lap, checkpoint, distance to the next checkpoint).
-- Action bar: lap, checkpoints, next section, your position and current lap time.
-- Title at each checkpoint: section name, split time, and the gap to the first player who reached that split (or LEADER).
+- `/mcm play acerace` — run the next map.
+- `/mcm map acerace <id>` — force the next map.
+- `/acerace list|info <id>|validate <id>|build <id>|tp <id>|reload|stop` — admin tools (`acerace.admin`).
+- `/acerace build testgrid` — paste the Test Grid and teleport to its overview.
+
+## Test Grid
+
+A flat rectangular circuit used to prove the runtime:
+
+- 40 start slots, 4 sections (start + 3 checkpoints), 1 lap, 120 s.
+- Speed pad, jump pad, one gold boost ring, start barrier, finish gate.
+- `/acerace validate testgrid` should print `OK` and `5236` blocks.
+- It is deliberately plain; it is not a showcase map.
+
+## Architecture
+
+```
+com.mcm.games.acerace
+  AceRacePlugin          enable/disable, register game + command
+  AceRaceCommand         /acerace admin
+  RaceGame               McmGame: lifecycle, state machine, runtime, scoring
+  RaceHud                sidebar, timer, action bar, checkpoint/finish feedback
+  RaceListener           world-only guards, start freeze, spectator containment
+  RaceScoring            progress + placement points
+  RaceRegistry           ids, slots, cached map data, rotation
+  RaceWorld              mcc_acerace void world, slots, BuildQueue paster
+map/
+  RaceMap                pure map interface
+  RaceMapData            pure data + check()
+  RaceGeo                regions, gates, pads, rings, loadouts, sections
+  RaceBlocks             sparse block-state store
+  RaceBuilder            shape helpers
+  maps/TestGridMap       Phase-1 course
+```
+
+The owner-approved design documents are `../research/acerace/SPEC.md` and `../research/acerace/SCHEMATICS.md`.
+
+## Build
+
+Java 21 and core `com.mcm:MinecraftMondayCore:3.2.0` installed:
+
+```bash
+cd plugin-build && mvn install
+cd ../game-plugins/AceRace && mvn package
+# copy target/McmAceRace.jar to game-plugins/_built/ and plugins/
+```
 
 ## Known limitations
-- Player collisions are not disabled, because the core owns the scoreboard teams.
-- The course is point-to-point. Lap 2 starts with a teleport back to the start straight instead of a looped track.
-- The forced elytra glide (`setGliding`) and the riptide pool depend on vanilla client behaviour. They haven't been play-tested on a live server.
-- Late joiners get the core's default (spectator).
+
+- The Test Grid is not the final map; real maps still need generators, palette and offline renders.
+- `RaceWorld` uses the core `BuildQueue` (20k blocks/tick). The 120–300k-block maps need the TGTTOS-style async chunk paster before Phase 2 ships.
+- A changed map pasted into a slot after a server restart can leave stale blocks because the old-key set is in memory only. Fix before the real maps are iterated.
+- Live playtest still required; the boot test only proves plugin load and registration.

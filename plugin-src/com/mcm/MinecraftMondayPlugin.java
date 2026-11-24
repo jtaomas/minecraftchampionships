@@ -45,6 +45,8 @@ import org.bukkit.util.Vector;
 import java.util.*;
 import java.util.logging.Level;
 import com.mcm.api.*;
+import com.mcm.dropper.ImportedDropper;
+import com.mcm.dropper.ImportedDroppers;
 import org.bukkit.event.server.PluginDisableEvent;
 import com.mcm.lobby.HubManager;
 
@@ -78,7 +80,16 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         KitType(String display, Material icon) { this.display = display; this.icon = icon; }
     }
 
-    private record DropperStage(String name, String hint, Material targetMat, double x, double y, double z, float yaw) {}
+    /**
+     * A Multi-Stage Dropper shaft. Built-in stages are in dropper_world at hard-coded spots and are completed by landing
+     * on {@code targetMat} at the bottom (y <= 106); imported stages ({@code imported != null}, loaded at runtime from
+     * plugins/MinecraftMondayCore/imported-droppers/) are completed by landing in their pool.
+     */
+    private record DropperStage(String name, String hint, Material targetMat, double x, double y, double z, float yaw, ImportedDropper imported) {
+        DropperStage(String name, String hint, Material targetMat, double x, double y, double z, float yaw) {
+            this(name, hint, targetMat, x, y, z, yaw, null);
+        }
+    }
 
     private static final List<DropperStage> ALL_DROPPER_STAGES = Arrays.asList(
             new DropperStage("Jungle Drop", "VINES", Material.VINE, 19.5, 201.0, 5038.5, -90f),
@@ -164,7 +175,9 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     private final List<DropperStage> activeDropperStages = new ArrayList<>();
     private final Map<UUID, Integer> dropperStageIdx = new HashMap<>();
     private final Map<UUID, Long> dropperAdvanceCooldown = new HashMap<>();
-    private final int[] stageFinishCounts = new int[5];
+    private int[] stageFinishCounts = new int[5];
+    /** Imported dropper shafts (null until enable; empty without the imported-droppers folder). */
+    private ImportedDroppers importedDroppers;
 
     // TNT Run & Spleef block restoration + abilities
     private final Set<String> scheduledTntKeys = new HashSet<>();
@@ -344,6 +357,8 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         getConfig().addDefault("admin-tools-item", true);
         getConfig().addDefault("admin-tools-hidden-in-games", new ArrayList<>(List.of("bingo", "skyblockle")));
         getConfig().addDefault("minecraft-monday-external-games", new ArrayList<>(List.of("findthebutton")));
+        getConfig().addDefault("dropper.stage-count", 5);
+        getConfig().addDefault("dropper.imported-stages", "always");
         getConfig().options().copyDefaults(true);
         getConfig().setInlineComments("mcc-hub.enabled", List.of(
                 "Build/load the MCC hub island (world mcc_lobby) as the lobby for MCC games. The MM lobby stays the default spawn."));
@@ -363,7 +378,15 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         getConfig().setInlineComments("minecraft-monday-external-games", List.of(
                 "Ids of installed external games that belong to Minecraft Monday (with the 7 built-ins, MM lobby, /mcm start),",
                 "not MCC (excluded from the MCC hub list, /mcm start mcc and the Decision Dome vote)."));
+        getConfig().setInlineComments("dropper.stage-count", List.of(
+                "Stages per Multi-Stage Dropper round (1-12, capped by the stages available)."));
+        getConfig().setInlineComments("dropper.imported-stages", List.of(
+                "Imported shafts from plugins/MinecraftMondayCore/imported-droppers/: always = every ready one is in the round, the rest",
+                "built-in stages; mixed = shuffled into one pool with the built-ins; off = built-in stages only."));
         saveConfig();
+        importedDroppers = new ImportedDroppers(this);
+        try { importedDroppers.enable(dropperWorld); }
+        catch (Throwable t) { getLogger().log(Level.WARNING, "Imported droppers failed to start", t); }
         McmApi.setFastTest(getConfig().getBoolean("fast-test", false));
         if (McmApi.isFastTest()) getLogger().info("Admin fast-test mode is ON (all core waits <= 1 s). /mcm fast off to disable.");
         adminTools = new AdminTools(this);
@@ -426,6 +449,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         if (adminTools != null) { try { adminTools.disable(); } catch (Throwable ignored) {} }
+        if (importedDroppers != null) { try { importedDroppers.disable(); } catch (Throwable ignored) {} }
         removePodium(false);
         if (hub != null) { try { hub.disable(); } catch (Throwable ignored) {} }
         McmLobby.setBridge(null);
@@ -1772,25 +1796,100 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     // 3. MULTI-STAGE DROPPER (Real Delightful Dropper 2 — 5 Stages!)
     private void setupDropper() {
         World w = dropperWorld != null ? dropperWorld : world;
-        List<DropperStage> pool = new ArrayList<>(ALL_DROPPER_STAGES);
-        Collections.shuffle(pool);
         activeDropperStages.clear();
-        for (int i = 0; i < 5; i++) activeDropperStages.add(pool.get(i));
-        Arrays.fill(stageFinishCounts, 0);
+        activeDropperStages.addAll(pickDropperStages());
+        stageFinishCounts = new int[activeDropperStages.size()];
+        int n = activeDropperStages.size();
 
         DropperStage first = activeDropperStages.get(0);
-        Location spawn = new Location(w, first.x(), first.y(), first.z(), first.yaw(), 45f);
+        Location spawn = dropperStart(first);
         ItemStack retry = makeItem(Material.FEATHER, ChatColor.AQUA + "Retry Current Drop", ChatColor.GRAY + "Right-click to restart this stage");
         for (Player p : Bukkit.getOnlinePlayers()) {
             resetPlayer(p, GameMode.ADVENTURE);
             dropperStageIdx.put(p.getUniqueId(), 0);
             p.getInventory().setItem(4, retry.clone());
             p.teleport(spawn);
-            p.sendTitle(ChatColor.AQUA + "Stage 1 / 5: " + first.name(), ChatColor.YELLOW + "Aim for: " + first.hint() + "!", 5, 45, 10);
+            afterDropperTeleport(p, first);
+            p.sendTitle(ChatColor.AQUA + "Stage 1 / " + n + ": " + first.name(), dropperSubtitle(first), 5, 45, 10);
         }
         timeLeft = 210;
-        broadcast(ChatColor.BLUE + "Clear 5 themed Dropper shafts! Watch the title for what to land on (Water, Slime, Cobwebs, or Vines)!");
-        broadcast(ChatColor.AQUA + "Stage 1: " + ChatColor.WHITE + first.name() + ChatColor.YELLOW + " — Aim for " + first.hint() + "!");
+        boolean anyImported = activeDropperStages.stream().anyMatch(st -> st.imported() != null);
+        broadcast(ChatColor.BLUE + "Clear " + n + " themed Dropper shafts! Watch the title for what to land on (Water, Slime, Cobwebs, or Vines)!"
+                + (anyImported ? " Imported shafts end in a pool." : ""));
+        broadcast(ChatColor.AQUA + "Stage 1: " + ChatColor.WHITE + first.name() + ChatColor.YELLOW + " — Aim for " + first.hint() + "!"
+                + dropperCreditSuffix(first));
+    }
+
+    /**
+     * Stages for this round (config dropper.stage-count, default 5; dropper.imported-stages: always | mixed | off).
+     * Without ready imported shafts this is exactly the old pick: 5 of the 6 built-in stages, shuffled.
+     */
+    private List<DropperStage> pickDropperStages() {
+        int count = Math.max(1, Math.min(12, getConfig().getInt("dropper.stage-count", 5)));
+        String mode = getConfig().getString("dropper.imported-stages", "always").toLowerCase(Locale.ROOT);
+        List<DropperStage> imported = new ArrayList<>();
+        if (importedDroppers != null && !mode.equals("off") && dropperWorld != null) {
+            for (ImportedDropper d : importedDroppers.ready()) imported.add(importedStage(d));
+        }
+        List<DropperStage> builtIn = new ArrayList<>(ALL_DROPPER_STAGES);
+        Collections.shuffle(builtIn);
+        List<DropperStage> out = new ArrayList<>();
+        if (imported.isEmpty()) {
+            for (int i = 0; i < Math.min(count, builtIn.size()); i++) out.add(builtIn.get(i));
+            return out;
+        }
+        Collections.shuffle(imported);
+        if (mode.equals("mixed")) {
+            List<DropperStage> pool = new ArrayList<>(builtIn);
+            pool.addAll(imported);
+            Collections.shuffle(pool);
+            for (int i = 0; i < Math.min(count, pool.size()); i++) out.add(pool.get(i));
+        } else {
+            for (int i = 0; i < imported.size() && out.size() < count; i++) out.add(imported.get(i));
+            for (int i = 0; i < builtIn.size() && out.size() < count; i++) out.add(builtIn.get(i));
+            Collections.shuffle(out);
+        }
+        return out;
+    }
+
+    private static DropperStage importedStage(ImportedDropper d) {
+        double[] s = d.spawn();
+        return new DropperStage(d.name, "THE POOL", Material.WATER, s[0], s[1], s[2], d.yaw, d);
+    }
+
+    /** Where a player (re)starts a stage. Imported shafts: in the air above the shaft, looking down. */
+    private Location dropperStart(DropperStage st) {
+        World w = dropperWorld != null ? dropperWorld : world;
+        return new Location(w, st.x(), st.y(), st.z(), st.yaw(), st.imported() != null ? 60f : 45f);
+    }
+
+    /** Imported shafts have no ledge: a short slow fall at the top lets the player get their bearings. */
+    private void afterDropperTeleport(Player p, DropperStage st) {
+        p.setFallDistance(0f);
+        p.setFireTicks(0);
+        if (st.imported() != null) {
+            p.setVelocity(new Vector());
+            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 40, 0, false, false, false));
+        }
+    }
+
+    private void sendToDropperStart(Player p, DropperStage st) {
+        p.teleport(dropperStart(st));
+        afterDropperTeleport(p, st);
+    }
+
+    private static String dropperCreditSuffix(DropperStage st) {
+        return st.imported() != null ? ChatColor.GRAY + " (Map by " + st.imported().credit + ")" : "";
+    }
+
+    private static String dropperSubtitle(DropperStage st) {
+        if (st.imported() != null) return ChatColor.YELLOW + "Land in the pool! " + ChatColor.GRAY + "Map by " + st.imported().credit;
+        return ChatColor.YELLOW + "Aim for: " + st.hint() + "!";
+    }
+
+    private DropperStage currentDropperStage(Player p) {
+        int idx = dropperStageIdx.getOrDefault(p.getUniqueId(), 0);
+        return idx >= 0 && idx < activeDropperStages.size() ? activeDropperStages.get(idx) : null;
     }
 
     // 4. TNT RUN — Best of 3 Rounds (Real RunnonStone: Jungle -> Castle -> Pyramid!)
@@ -2240,6 +2339,11 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         if (e.getHand() != EquipmentSlot.HAND) return;
         if (e.getAction() != Action.RIGHT_CLICK_AIR && e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         Player p = e.getPlayer();
+        if (currentGame == GameType.DROPPER && e.getClickedBlock() != null) {
+            DropperStage cur = currentDropperStage(p);
+            // imported shafts keep the source map's buttons, chests, signs: they are scenery only
+            if (cur != null && cur.imported() != null) e.setUseInteractedBlock(Event.Result.DENY);
+        }
 
         if (currentGame == GameType.SURVIVAL && e.getAction() == Action.RIGHT_CLICK_BLOCK
                 && e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.CHEST) {
@@ -2278,11 +2382,9 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
 
         if (currentGame == GameType.DROPPER && item.getType() == Material.FEATHER) {
             cancelItemUse(e, p);
-            int idx = dropperStageIdx.getOrDefault(p.getUniqueId(), 0);
-            if (idx < activeDropperStages.size()) {
-                DropperStage st = activeDropperStages.get(idx);
-                World w = dropperWorld != null ? dropperWorld : world;
-                p.teleport(new Location(w, st.x(), st.y(), st.z(), st.yaw(), 45f));
+            DropperStage st = currentDropperStage(p);
+            if (st != null) {
+                sendToDropperStart(p, st);
                 p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 0.7f, 1f);
             }
             return;
@@ -2482,6 +2584,13 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         }
 
         // Dropper landing detection (Water, Slime, Cobwebs, Vines) & multi-stage progression
+        if (currentGame == GameType.DROPPER) {
+            DropperStage cur = currentDropperStage(p);
+            if (cur != null && cur.imported() != null) {
+                importedDropperMove(p, cur, to);
+                return;
+            }
+        }
         if (currentGame == GameType.DROPPER && to.getY() <= 106.0) {
             long now = System.currentTimeMillis();
             if (now - dropperAdvanceCooldown.getOrDefault(p.getUniqueId(), 0L) < 1000L) return;
@@ -2492,38 +2601,93 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
 
             if (isSafeDropperBlock(feetMat) || isSafeDropperBlock(headMat) || isSafeDropperBlock(belowMat)
                     || (to.getY() <= 104.5 && p.isOnGround() && p.getFallDistance() < 3.0f)) {
-                int idx = dropperStageIdx.getOrDefault(p.getUniqueId(), 0);
-                if (idx >= activeDropperStages.size()) return;
-
-                dropperAdvanceCooldown.put(p.getUniqueId(), now);
-                p.setFallDistance(0f);
-                stageFinishCounts[idx]++;
-                int sPlace = stageFinishCounts[idx];
-                int stagePts = sPlace == 1 ? 12 : sPlace == 2 ? 8 : sPlace == 3 ? 6 : 4;
-                scoring.addIndividualPoints(p.getUniqueId(), stagePts, "Dropper Stage " + (idx + 1) + "/5 (#" + sPlace + ")");
-
-                int nextIdx = idx + 1;
-                dropperStageIdx.put(p.getUniqueId(), nextIdx);
-                if (nextIdx >= activeDropperStages.size()) {
-                    if (!finishOrder.contains(p.getUniqueId())) {
-                        finishOrder.add(p.getUniqueId());
-                        int overall = finishOrder.size();
-                        int finishPts = overall == 1 ? 25 : overall == 2 ? 15 : overall == 3 ? 10 : 5;
-                        scoring.addIndividualPoints(p.getUniqueId(), finishPts, "All 5 Stages Clear #" + overall + "!");
-                        spectateInBuiltIn(p);
-                        broadcast(ChatColor.GREEN + p.getName() + " finished all 5 Dropper stages (#" + overall + ")!");
-                        if (finishOrder.size() >= alivePlayers.size()) endSubRound("All players finished!");
-                    }
-                } else {
-                    DropperStage nextStage = activeDropperStages.get(nextIdx);
-                    World w = dropperWorld != null ? dropperWorld : world;
-                    p.teleport(new Location(w, nextStage.x(), nextStage.y(), nextStage.z(), nextStage.yaw(), 45f));
-                    p.sendTitle(ChatColor.AQUA + "Stage " + (nextIdx + 1) + " / 5: " + nextStage.name(),
-                            ChatColor.YELLOW + "Aim for: " + nextStage.hint() + "!", 5, 40, 10);
-                    p.sendMessage(ChatColor.AQUA + "Stage " + (nextIdx + 1) + "/5 (" + nextStage.name() + ") — Aim for " + ChatColor.YELLOW + nextStage.hint() + "!");
-                    p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.8f, 1.3f);
-                }
+                completeDropperStage(p);
             }
+        }
+    }
+
+    /** Imported shaft: the pool at the bottom completes the stage; the void or leaving the shaft sends back to the start. */
+    private void importedDropperMove(Player p, DropperStage st, Location to) {
+        if (p.getGameMode() == GameMode.SPECTATOR) return;
+        ImportedDropper d = st.imported();
+        if (to.getWorld() == null || dropperWorld == null || !to.getWorld().equals(dropperWorld)) return;
+        if (d.outOfBounds(to.getX(), to.getY(), to.getZ())) {
+            dropperRespawn(p, st, ChatColor.RED + "Out of the shaft! Back to the top of " + st.name() + ".");
+            return;
+        }
+        int bx = to.getBlockX(), by = to.getBlockY(), bz = to.getBlockZ();
+        if (!d.inPool(bx, by, bz) && !d.inPool(bx, by + 1, bz)) return;
+        long now = System.currentTimeMillis();
+        if (now - dropperAdvanceCooldown.getOrDefault(p.getUniqueId(), 0L) < 1000L) return;
+        Block feet = to.getBlock();
+        Block head = feet.getRelative(0, 1, 0);
+        boolean wet = (feet.getType() == Material.WATER && d.inPool(bx, by, bz)) || (head.getType() == Material.WATER && d.inPool(bx, by + 1, bz));
+        if (wet) completeDropperStage(p);
+    }
+
+    /** Back to the start of the player's current stage (a "death" on the way down). */
+    private void dropperRespawn(Player p, DropperStage st, String msg) {
+        sendToDropperStart(p, st);
+        if (msg != null) p.sendMessage(msg);
+        p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.8f, 1f);
+    }
+
+    /** The player cleared their current stage: points, then the next stage or the finish. */
+    private void completeDropperStage(Player p) {
+        int idx = dropperStageIdx.getOrDefault(p.getUniqueId(), 0);
+        if (idx >= activeDropperStages.size()) return;
+        int n = activeDropperStages.size();
+
+        dropperAdvanceCooldown.put(p.getUniqueId(), System.currentTimeMillis());
+        p.setFallDistance(0f);
+        stageFinishCounts[idx]++;
+        int sPlace = stageFinishCounts[idx];
+        int stagePts = sPlace == 1 ? 12 : sPlace == 2 ? 8 : sPlace == 3 ? 6 : 4;
+        scoring.addIndividualPoints(p.getUniqueId(), stagePts, "Dropper Stage " + (idx + 1) + "/" + n + " (#" + sPlace + ")");
+
+        int nextIdx = idx + 1;
+        dropperStageIdx.put(p.getUniqueId(), nextIdx);
+        if (nextIdx >= n) {
+            if (!finishOrder.contains(p.getUniqueId())) {
+                finishOrder.add(p.getUniqueId());
+                int overall = finishOrder.size();
+                int finishPts = overall == 1 ? 25 : overall == 2 ? 15 : overall == 3 ? 10 : 5;
+                scoring.addIndividualPoints(p.getUniqueId(), finishPts, "All " + n + " Stages Clear #" + overall + "!");
+                spectateInBuiltIn(p);
+                broadcast(ChatColor.GREEN + p.getName() + " finished all " + n + " Dropper stages (#" + overall + ")!");
+                if (finishOrder.size() >= alivePlayers.size()) endSubRound("All players finished!");
+            }
+        } else {
+            DropperStage nextStage = activeDropperStages.get(nextIdx);
+            sendToDropperStart(p, nextStage);
+            p.sendTitle(ChatColor.AQUA + "Stage " + (nextIdx + 1) + " / " + n + ": " + nextStage.name(), dropperSubtitle(nextStage), 5, 40, 10);
+            p.sendMessage(ChatColor.AQUA + "Stage " + (nextIdx + 1) + "/" + n + " (" + nextStage.name() + ") — Aim for " + ChatColor.YELLOW + nextStage.hint() + "!"
+                    + dropperCreditSuffix(nextStage));
+            p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.8f, 1.3f);
+        }
+    }
+
+    /**
+     * Damage on an imported shaft never hurts: a landing from {@code lethal-fall} blocks or more (or any damaging fall
+     * when the map sets none) onto anything but slime/honey/water, lava, fire, cactus, magma, suffocation or the void
+     * sends the player back to the stage start - like a splat on a built-in stage.
+     */
+    private void importedDropperDamage(EntityDamageEvent e, Player p, DropperStage st) {
+        e.setCancelled(true);
+        if (p.getGameMode() == GameMode.SPECTATOR) return;
+        ImportedDropper d = st.imported();
+        switch (e.getCause()) {
+            case FALL -> {
+                Material under = p.getLocation().subtract(0, 0.6, 0).getBlock().getType();
+                float fell = Math.max(p.getFallDistance(), (float) e.getDamage() + 3f);
+                p.setFallDistance(0f);
+                if (isSafeDropperBlock(under)) return;
+                if (d.lethalFall > 0 && fell < d.lethalFall) return;
+                dropperRespawn(p, st, ChatColor.RED + "Splat! Land in the pool at the bottom of " + st.name() + ".");
+            }
+            case LAVA, FIRE, FIRE_TICK, HOT_FLOOR, CONTACT, SUFFOCATION, VOID, DROWNING, FREEZE ->
+                    dropperRespawn(p, st, ChatColor.RED + "Ouch! Back to the top of " + st.name() + ".");
+            default -> { }
         }
     }
 
@@ -2584,6 +2748,11 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             return;
         }
         if (currentGame == GameType.DROPPER) {
+            DropperStage cur = currentDropperStage(p);
+            if (cur != null && cur.imported() != null) {
+                importedDropperDamage(e, p, cur);
+                return;
+            }
             if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 e.setCancelled(true);
                 Material under = p.getLocation().subtract(0, 0.6, 0).getBlock().getType();
@@ -2776,7 +2945,17 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                     World w = dropperWorld != null ? dropperWorld : world;
                     DropperStage st = activeDropperStages.isEmpty() ? ALL_DROPPER_STAGES.get(0) : activeDropperStages.get(0);
                     // above the first shaft, looking straight down it; box covers every stage (z 5038..5309)
-                    return overviewZone(w, st.x(), st.y() + 8, st.z(), st.yaw(), 90f, 19.5, 5174.0, 220);
+                    double x0 = 19.5, x1 = 19.5, z0 = 5174.0 - 220, z1 = 5174.0 + 220;
+                    boolean anyImported = false;
+                    for (DropperStage s : activeDropperStages) {
+                        if (s.imported() == null) continue;
+                        anyImported = true;
+                        x0 = Math.min(x0, s.imported().centreX() - 80); x1 = Math.max(x1, s.imported().centreX() + 80);
+                        z0 = Math.min(z0, s.imported().centreZ() - 80); z1 = Math.max(z1, s.imported().centreZ() + 80);
+                    }
+                    if (!anyImported) return overviewZone(w, st.x(), st.y() + 8, st.z(), st.yaw(), 90f, 19.5, 5174.0, 220);
+                    double half = Math.max(x1 - x0, z1 - z0) / 2 + 20;
+                    return overviewZone(w, st.x(), st.y() + 8, st.z(), st.yaw(), 90f, (x0 + x1) / 2, (z0 + z1) / 2, half);
                 }
                 case TNT_RUN -> {
                     World w = tntrunWorld != null ? tntrunWorld : world;
@@ -4077,6 +4256,22 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                         "ledge=" + ledgeOk + " jumpOpen(x=" + jx + ")=" + jumpOpen + " target=" + st.targetMat() + " x" + targetHits)) passed++; else failed++;
             }
         } else { reportCheck(sender, "Dropper", false, "world null"); failed++; }
+        if (dropperWorld != null && importedDroppers != null) {
+            for (ImportedDropper d : importedDroppers.all()) {
+                if (!d.isReady()) { reportCheck(sender, "Imported dropper " + d.id, false, "not pasted yet (slot " + d.slot() + ")"); failed++; continue; }
+                double[] sp = d.spawn();
+                int sx = (int) Math.floor(sp[0]), sy = (int) Math.floor(sp[1]), sz = (int) Math.floor(sp[2]);
+                boolean air = dropperWorld.getBlockAt(sx, sy, sz).isPassable() && dropperWorld.getBlockAt(sx, sy + 1, sz).isPassable()
+                        && dropperWorld.getBlockAt(sx, sy - 1, sz).isPassable();
+                int water = 0;
+                int cx = (int) Math.floor(d.centreX()), cz = (int) Math.floor(d.centreZ());
+                for (int dx = -3; dx <= 3; dx++) for (int dz = -3; dz <= 3; dz++)
+                    if (dropperWorld.getBlockAt(cx + dx, d.oy() + d.poolTopY, cz + dz).getType() == Material.WATER) water++;
+                boolean ok = air && water > 0;
+                if (reportCheck(sender, "Imported dropper " + d.id, ok, "start=(" + sx + "," + sy + "," + sz + ") air=" + air
+                        + " poolWater(7x7 at centre)=" + water + " by " + d.credit)) passed++; else failed++;
+            }
+        }
 
         // 7. All 3 TNT Run Arenas: Andesite Spawn, Headroom & Lava Floor
         if (tntrunWorld != null) {

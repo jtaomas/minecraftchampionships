@@ -1,6 +1,15 @@
 name: McmAceRace
-version: 1.0.0
+version: 2.0.0
 main: com.mcm.games.acerace.AceRacePlugin
 api-version: '1.21'
 depend: [MinecraftMondayCore]
-description: Ace Race minigame for MinecraftMondayCore
+description: Map-driven Ace Race for MinecraftMondayCore (MCC-style checkpoints, pads and wing rings).
+commands:
+  acerace:
+    description: Ace Race admin helpers (list, info, build, validate, reload).
+    usage: /acerace <list|info|validate|build|tp|reload|stop> [map]
+    aliases: [arace]
+    permission: acerace.admin
+permissions:
+  acerace.admin:
+    default: op
