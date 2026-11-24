@@ -29,7 +29,8 @@ public final class BingoPlugin extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(bingo, this);
         Bukkit.getPluginManager().registerEvents(lockout, this);
         McmApi.registerGame(this, bingo);
-        McmApi.registerGame(this, lockout);
+        // Owner (playtest): Lockout Bingo is hidden from the games screen unless switched back on in config.
+        if (getConfig().getBoolean("lockout-enabled", false)) McmApi.registerGame(this, lockout);
 
         PluginCommand top = getCommand("top");
         if (top != null) {

@@ -1,6 +1,9 @@
 # McmBingo settings. Everything here is a default, not a researched value; adjust after playtesting.
 # Changes apply at the next game start (world.* settings at the next server start).
 
+# Lockout Bingo as a separate game on the games screen. Owner decision: off.
+lockout-enabled: false
+
 card:
   # Items per tier on a card: [easy, medium, hard, very hard] (must add up to 25)
   bingo-mix: [8, 10, 5, 2]
