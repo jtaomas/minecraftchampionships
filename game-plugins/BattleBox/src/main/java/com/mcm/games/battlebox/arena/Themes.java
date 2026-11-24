@@ -13,6 +13,9 @@ public final class Themes {
         l.add(new GreenhouseTheme());
         l.add(new ToyWorkshopTheme());
         l.add(new SkiLodgeTheme());
+        l.add(new CanalShipsTheme());
+        l.add(new TrainStationTheme());
+        l.add(new VillaCourtyardTheme());
         return l;
     }
 
@@ -25,6 +28,9 @@ public final class Themes {
         if (k.startsWith("green")) return new GreenhouseTheme();
         if (k.startsWith("toy")) return new ToyWorkshopTheme();
         if (k.startsWith("ski")) return new SkiLodgeTheme();
+        if (k.startsWith("canal") || k.startsWith("ship") || k.startsWith("harbour")) return new CanalShipsTheme();
+        if (k.startsWith("train") || k.startsWith("station") || k.startsWith("terminus")) return new TrainStationTheme();
+        if (k.startsWith("villa") || k.startsWith("courtyard")) return new VillaCourtyardTheme();
         return null;
     }
 

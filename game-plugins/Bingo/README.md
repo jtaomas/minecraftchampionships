@@ -34,12 +34,12 @@ Design research (item pools, card weighting, world generation): `../research/bin
   - the **Cave Finder** (a compass)
   - the **Bingo Card** (a knowledge book)
 - **Card:** every side has the same 5x5 card.
-  - Bingo: 8 easy, 10 medium, 5 hard and 2 very hard items.
+  - Bingo: 9 easy, 10 medium, 5 hard and 1 very hard item.
   - Lockout: 6 easy, 10 medium, 6 hard and 3 very hard items.
   - At most one item per group appears on a card (Fetchr-style categories, for example one village item and one jungle item).
   - At most 2 squares can be made from wood alone.
   - Biome-, structure- and mob-specific items are twice as likely to be picked as generic ones.
-- **Mob items:** Slimeball, Sticky Piston (hard) and Lead (very hard) are back on the card. Slimes spawn in slime chunks below y 40 at any time of day. Swamp slimes and other surface night mobs are not counted on, because a game mostly ends before night.
+- **Mob items:** Slimeball, Sticky Piston, Lead, Rabbit's Foot, Ender Pearl, Axolotl Bucket, Heart of the Sea, Pottery Sherds, and Emerald Block were removed from the pool so 10-minute runs stay achievable without pure RNG.
 - **Obtainability:** every pool item declares what it needs, such as biomes, a structure or the mobs of a biome. A card only uses items whose needs are met by this area's actual biomes and placed structures. Nether and End items are never used, because portals are disabled. Each card square shows its difficulty, its point value and where to find the item.
 - An item counts as soon as it is in a side member's inventory (checked every 0.5 s).
 - **Card menu:** right-click the card in your hand, or click it anywhere in your inventory. The card cannot be moved, dropped or swapped. The menu shows the scoring, the structures, the biomes in the area, teleports to the start and to teammates (45 s cooldown; only while the game is running, blocked for 8 s after PvP damage, and every refusal says why in chat), and every square's status and value.

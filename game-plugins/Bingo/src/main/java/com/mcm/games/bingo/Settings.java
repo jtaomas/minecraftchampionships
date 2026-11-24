@@ -6,7 +6,7 @@ import java.util.List;
 
 /** Values from plugins/McmBingo/config.yml (all "defaults, not researched" unless the README says otherwise). */
 final class Settings {
-    int[] bingoMix = {0, 8, 10, 5, 2};
+    int[] bingoMix = {0, 9, 10, 5, 1};
     int[] lockoutMix = {0, 6, 10, 6, 3};
     int woodCap = 2;
     int[] bingoTierPoints = {0, 3, 5, 8, 12};

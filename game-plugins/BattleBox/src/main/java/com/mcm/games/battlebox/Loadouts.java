@@ -38,6 +38,9 @@ final class Loadouts {
         switch (t) {
             case "toyworkshop" -> toy(kit, l);
             case "skilodge" -> ski(kit, l);
+            case "canalships" -> canal(kit, l);
+            case "trainstation" -> train(kit, l);
+            case "villacourtyard" -> villa(kit, l);
             default -> greenhouse(kit, l);
         }
         return l;
@@ -82,6 +85,36 @@ final class Loadouts {
                 l.add(Gear.splash(PotionType.HARMING, ChatColor.DARK_RED + "Icy Harming Splash (enemies only)"));
                 l.add(Gear.splash(PotionType.HARMING, ChatColor.DARK_RED + "Icy Harming Splash (enemies only)"));
                 l.add(sword(Material.WOODEN_SWORD, "Ski Pole")); }
+        }
+    }
+
+    private static void canal(Kit k, List<ItemStack> l) {
+        switch (k) {
+            case MEDIC -> { l.add(sword(Material.STONE_SWORD, "Deckhand Cutlass")); l.add(bow("Harbour Bow", null, 0)); l.add(arrows(8)); l.add(Gear.custom(BLOOM, 2)); l.add(Gear.custom(MENDING, 1)); }
+            case MARKSMAN -> { l.add(bow("Crow's Nest Bow", Enchantment.POWER, 1)); l.add(arrows(14)); l.add(Gear.custom(UPDRAFT, 1)); }
+            case TINKERER -> { l.add(bow("Grapple Bow", Enchantment.PUNCH, 1)); l.add(arrows(6)); l.add(Gear.custom(STING, 1)); l.add(Gear.custom(LIFT, 1)); }
+            case RUNNER -> { l.add(Gear.weapon(Material.STONE_AXE, "Boarding Axe", Enchantment.KNOCKBACK, 1)); l.add(Gear.custom(QUICKSTEP, 2)); l.add(Gear.custom(SLIP, 1)); }
+            case BRAWLER -> { l.add(sword(Material.IRON_SWORD, "Captain's Sabre")); l.add(Gear.plain(Material.GOLDEN_APPLE, 1)); }
+        }
+    }
+
+    private static void train(Kit k, List<ItemStack> l) {
+        switch (k) {
+            case MEDIC -> { l.add(sword(Material.STONE_SWORD, "Conductor's Baton")); l.add(bow("Signal Bow", null, 0)); l.add(arrows(6)); l.add(Gear.custom(MENDING, 2)); l.add(Gear.custom(BLOOM, 1)); }
+            case MARKSMAN -> { l.add(xbow("Express Crossbow")); l.add(arrows(12)); l.add(Gear.custom(QUICKSTEP, 1)); }
+            case TINKERER -> { l.add(bow("Steam Bow", Enchantment.PUNCH, 1)); l.add(arrows(5)); l.add(Gear.custom(SMOKE, 1)); l.add(Gear.custom(FLARE, 1)); }
+            case RUNNER -> { l.add(Gear.weapon(Material.STONE_AXE, "Ticket Puncher", null, 0)); l.add(Gear.custom(QUICKSTEP, 2)); l.add(Gear.custom(POPPER, 1)); }
+            case BRAWLER -> { l.add(xbow("Whistle Launcher")); l.add(Gear.rockets(3)); l.add(sword(Material.WOODEN_SWORD, "Brake Lever")); }
+        }
+    }
+
+    private static void villa(Kit k, List<ItemStack> l) {
+        switch (k) {
+            case MEDIC -> { l.add(sword(Material.STONE_SWORD, "Courtyard Blade")); l.add(bow("Terrace Bow", null, 0)); l.add(arrows(8)); l.add(Gear.custom(BLOOM, 3)); }
+            case MARKSMAN -> { l.add(bow("Colonnade Longbow", Enchantment.POWER, 1)); l.add(arrows(16)); l.add(Gear.custom(SPRING, 1)); }
+            case TINKERER -> { l.add(bow("Cypress Bow", Enchantment.PUNCH, 1)); l.add(arrows(6)); l.add(Gear.custom(STING, 1)); l.add(Gear.custom(SMOKE, 1)); }
+            case RUNNER -> { l.add(Gear.weapon(Material.STONE_AXE, "Villa Hatchet", Enchantment.KNOCKBACK, 1)); l.add(Gear.custom(QUICKSTEP, 2)); l.add(Gear.custom(VANISH, 1)); }
+            case BRAWLER -> { l.add(sword(Material.IRON_SWORD, "Gladiator's Gladius")); l.add(Gear.plain(Material.GOLDEN_APPLE, 1)); }
         }
     }
 }

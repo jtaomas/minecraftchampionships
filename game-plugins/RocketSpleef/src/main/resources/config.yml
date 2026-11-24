@@ -1,0 +1,35 @@
+# Rocket Spleef Rush Configuration
+# Defaults are tuned for Paper 1.21.1 + MinecraftMondayCore 3.2.0
+
+rounds: 3
+countdown-seconds: 5
+active-seconds: 120
+overtime-seconds: 45
+intermission-seconds: 7
+
+elim-y: 64
+clear-radius: 46
+
+rocket:
+  cooldown-ticks: 18
+  speed: 1.8
+  life-ticks: 70
+  blast-radius: 2.7
+  knockback-radius: 4.5
+  knockback-strength: 1.25
+  knockback-vertical: 0.65
+
+updraft:
+  charges-per-round: 2
+  cooldown-ms: 1200
+  vertical-velocity: 1.35
+  allow-double-jump: false
+
+ko-credit-ms: 10000
+
+scoring:
+  survival-pool: 18.0
+  ko-points: 5
+  last-side-bonus: 12
+  shared-survivor-bonus: 6
+  placement-bonus: [5, 3, 2]

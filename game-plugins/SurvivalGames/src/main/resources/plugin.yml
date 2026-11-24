@@ -1,0 +1,6 @@
+name: McmSurvivalGames
+version: 1.0.0
+main: com.mcm.games.hungergames.SurvivalGamesPlugin
+api-version: '1.21'
+depend: [MinecraftMondayCore]
+description: Accelerated Hunger Games / Survival Games MCC-style plugin

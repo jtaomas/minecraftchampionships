@@ -1,0 +1,25 @@
+# Modern MCC-style Hunger Games / Survival Games (hungergames)
+# Small numeric defaults not fixed by research can be tuned here.
+
+timings:
+  countdown-seconds: 10
+  grace-seconds: 15
+  game-seconds: 300
+  refill-at-elapsed-seconds: 135
+  airdrop-interval-seconds: 65
+  deathmatch-at-remaining-seconds: 60
+
+border:
+  initial-radius: 124
+  final-radius: 16
+  deathmatch-radius: 22
+
+scoring:
+  kill-points: 10
+  survival-per-elimination: 1
+  airdrop-team-points: 24
+  placement-1st: 40
+  placement-2nd: 30
+  placement-3rd: 22
+  placement-4th: 16
+  placement-5th: 12

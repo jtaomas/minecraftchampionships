@@ -108,6 +108,7 @@ worlds:
   mcc_gridrunners: [ "vanilla" ]
   mcc_acerace: [ "vanilla" ]
   mcc_findthebutton: [ "vanilla" ]
+  mcc_hungergames: [ "vanilla" ]
   # world: [ "old", "new" ]
   # world_nether: [ "old", "new" ]
   # world_the_end: [ "old", "new" ]
