@@ -54,7 +54,8 @@ public final class OrchardDropMap extends AMap {
             new int[]{-16, 1, 106}, new int[]{-12, 1, 109}, new int[]{-9, 1, 105}, new int[]{-14, 1, 112}, new int[]{-10, 1, 112},
             new int[]{-30, 1, 122}, new int[]{-27, 1, 125}, new int[]{-30, 1, 128}, new int[]{-26, 1, 129});
 
-    @Override public List<int[]> decoyChickens() { return DECOYS; }
+    /** Owner (playtest 2): the two decoy pens are gone; decoys wander the later part of the map (runtime scatter). */
+    @Override public List<int[]> decoyChickens() { return List.of(); }
 
     private Gen g;
     private final Pal red = new Pal("red_terracotta", 45, "red_wool", 30, "red_nether_bricks", 10, "red_mushroom_block[down=true,east=true,north=true,south=true,up=true,west=true]", 15);
@@ -486,11 +487,20 @@ public final class OrchardDropMap extends AMap {
         for (int x = -20; x <= -6; x++) wall(x, 117);      // inner yard north wall, exit gap x -5..-1
         for (int x = 0; x <= 13; x++) wall(x, 117);
         // decoy pen D1 in the inner yard (unnamed chickens)
-        penRing(-18, 104, -7, 114, false);
+        // decoy pen D1 removed after playtest 2: the same footprint is now a solid apple-crate heap (no pen, same obstacle)
+        for (int x = -18; x <= -7; x++) for (int z = 104; z <= 114; z++) {
+            g.set(x, 1, z, ((x + z) & 1) == 0 ? "barrel[facing=up,open=false]" : "oak_planks");
+            if (g.rnd(x, 2, z, 7) < 0.45 && x > -18 && x < -7 && z > 104 && z < 114) g.set(x, 2, z, g.rnd(x, 2, z, 8) < 0.5 ? "red_wool" : "hay_block[axis=y]");
+        }
         // decoy pen D2 in the dead-end pocket at the far left (behind a wall that closes the west strip)
         for (int x = -33; x <= -22; x++) wall(x, 132);
         for (int z = 119; z <= 131; z++) wall(-22, z);
-        penRing(-32, 120, -24, 130, false);
+        // decoy pen D2 removed after playtest 2: a cider-barrel store fills the pocket instead (no pen)
+        for (int x = -32; x <= -24; x++) for (int z = 120; z <= 130; z++) {
+            boolean edge = x == -32 || x == -24 || z == 120 || z == 130;
+            if (edge) g.set(x, 1, z, ((x + z) & 1) == 0 ? "barrel[facing=up,open=false]" : "spruce_planks");
+            else if (((x + z) % 4) == 0) g.set(x, 1, z, "barrel[facing=east,open=false]");
+        }
         // lane north of the inner yard to the pen, with staggered barrels (no free sprint)
         int[][] lane = {{-18, 120}, {-12, 122}, {-7, 119}, {-2, 121}, {-15, 125}, {-9, 127}, {-4, 125}};
         for (int[] b : lane) { g.set(b[0], 1, b[1], "barrel[facing=up,open=false]"); g.set(b[0] + 1, 1, b[1], "hay_block[axis=x]"); }

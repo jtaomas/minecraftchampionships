@@ -33,13 +33,16 @@ final class MapRegistry {
         long fixedSeed() { return map.id().hashCode() * 2654435761L; }
     }
 
-    private final List<Entry> entries = new ArrayList<>();
+    /** Replaced as a whole on the main thread by {@link #install} (maps are built on the worker thread). */
+    private volatile List<Entry> entries = new ArrayList<>();
+    private volatile boolean ready;
     private final Logger log;
 
     MapRegistry(Logger log) { this.log = log; }
 
-    void load(List<String> classNames, boolean autoDiscover, File jar, String stubMode, int rounds) {
-        entries.clear();
+    /** Worker-safe: instantiate the map classes into a fresh list (no Bukkit calls). */
+    List<Entry> scan(List<String> classNames, boolean autoDiscover, File jar, String stubMode, int rounds) {
+        List<Entry> entries = new ArrayList<>();
         Set<String> names = new LinkedHashSet<>(classNames);
         if (autoDiscover && jar != null && jar.isFile()) {
             try (JarFile jf = new JarFile(jar)) {
@@ -81,10 +84,16 @@ final class MapRegistry {
         if (sm.equals("always") || (sm.equals("auto") && entries.size() < rounds)) {
             entries.add(new Entry(new StubBridgeMap(), entries.size(), true));
         }
+        return entries;
     }
 
-    /** Build every map once with its fixed seed and run the contract check. */
-    void validate() {
+    /** Main thread: make a scanned + validated list the live one. */
+    void install(List<Entry> list) { entries = list; ready = true; }
+
+    boolean ready() { return ready; }
+
+    /** Worker-safe: build every map once with its fixed seed and run the contract check (pure Java). */
+    void validate(List<Entry> entries) {
         for (Entry e : entries) {
             long t0 = System.nanoTime();
             try {

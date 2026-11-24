@@ -37,89 +37,91 @@ public final class BingoWorld {
      * every game plays on terrain nobody has touched.
      */
     static final int AREA_SPACING = 4096;
+    static final int BORDER = 1200;
 
-    /** Index of the next game area (0 = around the world spawn). */
-    private int nextArea;
+    /** Index of the next game area (area 0 around the world spawn is never used: its chunks predate the layout). */
+    private int nextArea = 1;
+    private final BingoBiomeProvider biomes = new BingoBiomeProvider();
+    private java.util.concurrent.CompletableFuture<AreaLayout> pending;
+    private int pendingIndex = -1;
+    private Settings settings = new Settings();
 
     public World get() { return Bukkit.getWorld(NAME); }
+
+    void settings(Settings s) { this.settings = s; }
 
     /**
      * Plugin enable: generate a fresh mcc_bingo (random seed) now, at server start. Creating a world at game start
      * stalls the main thread for seconds (world creation + synchronous spawn-area generation), so it is never done
-     * then. Each game uses a new, untouched area of this world instead (see {@link #nextAreaCenter}).
+     * then. Each game uses a new area of this world instead (see {@link #nextArea}).
      */
     public World prepare() {
         if (Bukkit.getWorld(NAME) == null) deleteFolderSafely();
         World w = createFresh();
-        nextArea = 0;
+        nextArea = 1;
+        if (w != null) prefetch(w, nextArea);
         return w;
     }
 
+    /** Starts planning area {@code index} on a background thread (noise sampling only, no chunks). */
+    private void prefetch(World w, int index) {
+        if (pendingIndex == index && pending != null) return;
+        final org.bukkit.generator.BiomeProvider vanilla;
+        try { vanilla = w.vanillaBiomeProvider(); } catch (Throwable t) { pending = null; pendingIndex = -1; return; }
+        final long seed = w.getSeed();
+        final boolean place = settings.placeStructures;
+        final org.bukkit.generator.WorldInfo info = w;
+        pendingIndex = index;
+        pending = java.util.concurrent.CompletableFuture.supplyAsync(() -> plan(info, vanilla, seed, index, place));
+    }
+
+    private static AreaLayout plan(org.bukkit.generator.WorldInfo info, org.bukkit.generator.BiomeProvider vanilla,
+                                   long seed, int index, boolean place) {
+        AreaLayout.Sampler s = (x, y, z) -> vanilla.getBiome(info, x, y, z);
+        return AreaLayout.plan(index, index * AREA_SPACING, 0, BORDER / 2, seed, s, place);
+    }
+
     /**
-     * The centre of a fresh, never-visited area for the next game, with the border moved there. Area 0 is the
-     * world spawn (picked by vanilla); later areas are {@link #AREA_SPACING} blocks further along +X, nudged onto
-     * land using the vanilla biome source (no chunk is loaded or generated here). The returned Y is a placeholder:
-     * the caller finds the surface once the chunks are loaded asynchronously. Null if the world is missing.
+     * The plan of a fresh, never-visited area for the next game, with the border moved there and its layout handed
+     * to the biome provider (before any of its chunks generate). Usually planned in the background already; if not,
+     * planned now (a few thousand noise samples, tens of milliseconds). Null if the world is missing.
      */
-    public Location nextAreaCenter() {
+    public AreaLayout nextArea() {
         cancelPendingCleanup();
         World w = get();
         if (w == null) {
             w = createFresh(); // only if something unloaded it; normally created at enable
             if (w == null) return null;
-            nextArea = 0;
+            nextArea = 1;
         }
         configure(w);
-        Location spawn = w.getSpawnLocation();
-        int area = nextArea++;
-        Location center;
-        if (area == 0) {
-            center = spawn.clone();
-        } else {
-            int bx = spawn.getBlockX() + area * AREA_SPACING, bz = spawn.getBlockZ();
-            int[] land = findLand(w, bx, bz);
-            center = new Location(w, land[0] + 0.5, spawn.getY(), land[1] + 0.5);
+        int index = nextArea++;
+        AreaLayout layout = null;
+        long t0 = System.nanoTime();
+        if (pending != null && pendingIndex == index) {
+            try { layout = pending.get(); } catch (Exception e) { log.warning("Area planning failed: " + e); }
         }
+        if (layout == null) {
+            try { layout = plan(w, w.vanillaBiomeProvider(), w.getSeed(), index, settings.placeStructures); }
+            catch (Throwable t) { log.severe("Could not plan Bingo area: " + t); return null; }
+        }
+        pending = null;
+        pendingIndex = -1;
+        if (!(w.getGenerator() == null && biomesAttached(w))) {
+            log.warning(NAME + " was not created by this plugin instance; the biome layout may not apply.");
+        }
+        biomes.register(layout);
+        log.info("Bingo " + layout.describe() + String.format(" (%.0f ms wait)", (System.nanoTime() - t0) / 1e6));
         WorldBorder border = w.getWorldBorder();
-        border.setCenter(center.getX(), center.getZ());
-        border.setSize(1200);
+        border.setCenter(layout.cx + 0.5, layout.cz + 0.5);
+        border.setSize(BORDER);
         border.setWarningDistance(16);
-        return center;
+        prefetch(w, nextArea);
+        return layout;
     }
 
-    private static boolean badBiome(org.bukkit.block.Biome b) {
-        if (b == null) return true;
-        String k = b.getKey().getKey();
-        return k.contains("ocean") || k.contains("river") || k.equals("beach") || k.equals("stony_shore");
-    }
-
-    /** Spiral search (step 96, up to ~500 blocks out) for a spot whose centre and ring of radius 40 are on land. */
-    private static int[] findLand(World w, int bx, int bz) {
-        org.bukkit.generator.BiomeProvider bp;
-        try {
-            bp = w.vanillaBiomeProvider();
-        } catch (Throwable t) {
-            return new int[]{bx, bz};
-        }
-        int[] fallback = null;
-        int y = 64;
-        for (int ring = 0; ring <= 5; ring++) {
-            for (int dx = -ring; dx <= ring; dx++)
-                for (int dz = -ring; dz <= ring; dz++) {
-                    if (Math.max(Math.abs(dx), Math.abs(dz)) != ring) continue;
-                    int x = bx + dx * 96, z = bz + dz * 96;
-                    if (badBiome(bp.getBiome(w, x, y, z))) continue;
-                    if (fallback == null) fallback = new int[]{x, z};
-                    boolean ok = true;
-                    for (int a = 0; a < 8 && ok; a++) {
-                        double ang = Math.PI * a / 4;
-                        int sx = x + (int) Math.round(Math.cos(ang) * 40), sz = z + (int) Math.round(Math.sin(ang) * 40);
-                        if (badBiome(bp.getBiome(w, sx, y, sz))) ok = false;
-                    }
-                    if (ok) return new int[]{x, z};
-                }
-        }
-        return fallback != null ? fallback : new int[]{bx, bz};
+    private boolean biomesAttached(World w) {
+        return w.getBiomeProvider() == biomes;
     }
 
     /** Unload + delete any previous mcc_bingo, then generate a new one with a random seed (enable only). */
@@ -137,12 +139,15 @@ public final class BingoWorld {
                 .environment(World.Environment.NORMAL)
                 .type(WorldType.NORMAL)
                 .generateStructures(true)
+                .biomeProvider(biomes)
                 .seed(seed);
         World w = wc.createWorld();
         if (w == null) {
             log.severe("Failed to create world " + NAME);
             return null;
         }
+        biomes.attachVanilla(w.vanillaBiomeProvider());
+        w.getPopulators().add(new ExtraCaves(settings.caveChance, settings.caveEntranceShare));
         log.info("Generated " + NAME + " with seed " + seed);
         configure(w);
         // Don't keep spawn chunks loaded and ticking for the whole session; each game preloads its own area.
@@ -166,14 +171,9 @@ public final class BingoWorld {
         w.setStorm(false);
         w.setThundering(false);
         w.setClearWeatherDuration(20 * 60 * 60);
-        w.setPVP(false);
+        w.setPVP(true);
         w.setDifficulty(Difficulty.NORMAL);
         w.setAutoSave(false);
-        Location spawn = w.getSpawnLocation();
-        WorldBorder border = w.getWorldBorder();
-        border.setCenter(spawn.getX(), spawn.getZ());
-        border.setSize(1200);
-        border.setWarningDistance(16);
     }
 
     /**

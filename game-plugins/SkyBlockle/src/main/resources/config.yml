@@ -114,8 +114,8 @@ map:
 
 # ---------------------------------------------------------------- loot
 loot:
-  # Observed chests are fixed layouts ("slots" in loot.yml). This only affects weighted "rolls" tables
-  # (the not-researched defaults): random empty slots (true) or the first empty slots (false).
+  # Rolled chests (every table with "fixed"/"categories"): random empty slots (true) or the first empty slots
+  # (false). Fixed "slots" layouts (start, generator, hidden chest) always keep their slots.
   random-slots: true
   # Chest refills: seconds after GO at which every map chest gets a fresh roll in its empty slots.
   # Empty list = never (video research: no refill seen, L).

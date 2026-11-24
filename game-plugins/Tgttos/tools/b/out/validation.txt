@@ -1,102 +1,28 @@
 TGTTOS maps, builder B - validation report (seed 20261124)
 
-=== kite_festival ===
-  88471 blocks, 38 block types, generated in 161 ms, bounds x -47..47 y -6..79 z -14..171, scenery share 84%
-  ok    inside the contract box (x/z -250..250, y -60..180)
-  ok    material richness: 38 block types (>= 25)
-  ok    contract check (TgMapData.check): clean
-  ok    no concrete of any colour in blocks or variants (0); reserved team colours: white,orange,magenta,light_blue,yellow,lime,pink,cyan,purple,blue,green,red
-  ok    start holds 45 players (45 inside the strip, 45 on solid floor with headroom, closest pair 2.33 apart)
-        start strip 36 x 7 (x -18..17, z 0..6), barrier 108 blocks, drop floor 252 blocks
-  ok    every barrier / drop-floor position holds a real block (0 missing)
-  ok    connection post-pass: 313 fence/pane/wall/bar states set, 2114 leaves, 145 unsupported carpets dropped; re-run changes 0
-  ok    staircase helper: 1 flights (12 columns) walked bottom to top
-  ok    12 chicken spawns inside the pen 12 x 12
-  ok    landmark visible from the start: 12 of 12 sampled spawn eyes see it (ray-cast)
-  ok    gantry floor drops at GO: 252 floor blocks removed, 0 blocks below the gantry (free fall into the valley)
-  ok    3 arch walls seal valley + ridges except a 5 x 5 window (skill gate, straight) and a 9 x 10 gate at alternating walls (choke for the slalom): z45: window y 19-23 at x 3, gate right x 19..27 y 24-33, wall top y 48; z80: window y 15-19 at x -3, gate left x -24..-16 y 19-28, wall top y 53; z112: window y 12-16 at x -6, gate right x 10..18 y 15-24, wall top y 57;
-  ok    an obstacle every <= 25 blocks along the glide (z [7, 22, 33, 45, 60, 70, 80, 93, 102, 112, 117]; largest gap 15)
-  vanilla elytra steady glide (pitch: ratio, speed): -10°: 1:6.9 10.2 b/s; 0°: 1:10.1 30.3 b/s; 10°: 1:9.7 32.9 b/s; 20°: 1:8.8 40.1 b/s; 30°: 1:7.4 50.4 b/s; 40°: 1:5.7 61.2 b/s; 
-  glide lines (vanilla elytra tick, pitch controller on altitude targets, swept 0.6 box through the blocks; 0.6 s free fall before gliding):
-  ok    SAFE  firework at the drop, slalom through the three big gates: 182 blocks flown, total 8.3 s, top speed 34 b/s, 2 fireworks, closest clearance 0.33; gate 1 at y 28.9 (window 24..33) OK; gate 2 at y 22.2 (window 19..28) OK; gate 3 at y 20.2 (window 15..24) OK; into the pen at y 19.3 (window 19..24) OK
-  ok    FAST' one firework at the drop, three windows, land on the ledge (+4.9 s on foot into the pen): 125 blocks flown, total 10.0 s, top speed 35 b/s, 1 fireworks, closest clearance 0.44; window 1 at y 22.0 (window 19..23) OK; window 2 at y 17.0 (window 15..19) OK; window 3 at y 14.0 (window 12..16) OK; landing ledge at y 11.5 (window 11..13) OK
-  ok    FAST  same windows with both fireworks, pull up over the hedge into the pen: 144 blocks flown, total 5.7 s, top speed 35 b/s, 2 fireworks, closest clearance 0.20; window 1 at y 22.0 (window 19..23) OK; window 2 at y 17.0 (window 15..19) OK; window 3 at y 14.4 (window 12..16) OK; into the pen at y 19.5 (window 19..23) OK
-  ok    fast line saves 31% vs the safe line (>= 20%)
-  time profile: elytra is fast - expert 6 s fast / 8 s safe incl. the drop; a missed window = void respawn (+~4 s and another try), median ~18 s. Inherently below the 20-35 s target (reported).
-  RESULT: all checks passed
-
-=== frozen_canal ===
-  80998 blocks, 38 block types, generated in 90 ms, bounds x -45..64 y -4..50 z -18..180, scenery share 84%
-  ok    inside the contract box (x/z -250..250, y -60..180)
-  ok    material richness: 38 block types (>= 25)
-  ok    contract check (TgMapData.check): clean
-  ok    no concrete of any colour in blocks or variants (0); reserved team colours: white,orange,magenta,light_blue,yellow,lime,pink,cyan,purple,blue,green,red
-  ok    start holds 40 players (40 inside the strip, 40 on solid floor with headroom, closest pair 2.10 apart)
-        start strip 42 x 9 (x -21..20, z 0..8), barrier 126 blocks, drop floor 0 blocks
-  ok    every barrier / drop-floor position holds a real block (0 missing)
-  ok    connection post-pass: 2116 fence/pane/wall/bar states set, 6731 leaves, 0 unsupported carpets dropped; re-run changes 0
-  ok    staircase helper: 0 flights (0 columns) walked bottom to top
-  ok    12 chicken spawns inside the pen 12 x 12
-  ok    landmark visible from the start: 10 of 10 sampled spawn eyes see it (ray-cast)
-  ok    40 boat spawns (40 on ice inside the tray with headroom), closest pair 2.10 apart (boat is 1.375 wide)
-  ok    canal at least 20 wide quay to quay on the straights (rows: 20 32 34 20)
-  ok    choke: the lock is 5 wide (13 long); the bypass channel round the island is 8 wide and longer
-  ok    3 low footbridges: 171/171 lane cells under them have exactly 2 headroom (boat fits, standing player does not jump over)
-  ok    49 thin-ice holes beside the lane, 49 drop straight into the void (respawn)
-  boat lines (vanilla boat on ice: +0.04 b/tick^2, friction 0.98 ice / 0.989 blue ice / 0.6 snow; braking for bends):
-  ok    SAFE  middle of the bends (5+ wide), bypass round the lock: 179 blocks, 2 slush cells, 0 blue-ice cells, narrowest 5, longest featureless stretch 16 (ends at (-5,114); limit 25), est. 11.3 s
-  ok    FAST  blue-ice insides between the holes, through the lock: 144 blocks, 0 slush cells, 29 blue-ice cells, narrowest 3, longest featureless stretch 18 (ends at (22,47); limit 25), est. 7.8 s
-  ok    fast line saves 31% vs the safe line (>= 20%)
-  time profile: boats are fast on ice - expert 8 s fast / 11 s safe; median with collisions, wall hits and the boat scramble ~26 s
-  RESULT: all checks passed
-
 === ticket_gates ===
-  32372 blocks, 53 block types, generated in 58 ms, bounds x -35..23 y -7..23 z -4..93, scenery share 82%
+  45713 blocks, 55 block types, generated in 292 ms, bounds x -35..23 y -7..23 z -4..150, scenery share 82%
   ok    inside the contract box (x/z -250..250, y -60..180)
-  ok    material richness: 53 block types (>= 25)
+  ok    material richness: 55 block types (>= 25)
   ok    contract check (TgMapData.check): clean
   ok    no concrete of any colour in blocks or variants (0); reserved team colours: white,orange,magenta,light_blue,yellow,lime,pink,cyan,purple,blue,green,red
   ok    start holds 45 players (45 inside the strip, 45 on solid floor with headroom, closest pair 2.33 apart)
         start strip 36 x 7 (x -18..17, z 0..6), barrier 108 blocks, drop floor 0 blocks
   ok    every barrier / drop-floor position holds a real block (0 missing)
-  ok    connection post-pass: 1443 fence/pane/wall/bar states set, 36 leaves, 0 unsupported carpets dropped; re-run changes 0
+  ok    connection post-pass: 2274 fence/pane/wall/bar states set, 36 leaves, 0 unsupported carpets dropped; re-run changes 0
   ok    staircase helper: 2 flights (6 columns) walked bottom to top
   ok    12 chicken spawns inside the pen 12 x 12
   --    landmark ray-cast not required (indoor map)
   ok    12 turnstile groups with OPEN / JAMMED / DROP, rule: at least 4 OPEN per round
   ok    turnstile variants consistent: 12/12 (OPEN passes, JAMMED blocks after 1 block, DROP falls to the tunnel that rejoins at platform A)
   route lines (walk: sprint 5.6 b/s; variants as stated):
-  ok    SAFE  staff corridor + carriage doors (all gates jammed): path 129 blocks, 1 jumps, hardest jump gap 3.2 down 3 at (-19,-2,37) (difficulty 3.2), 0 blocks placed, longest straight free stretch 14 (at -17,1,7; limit 15), est. 21.5 s (expert pace)
-  ok    FAST  open turnstile + coupling jumps (all gates open): path 84 blocks, 3 jumps, hardest jump gap 3.0 at (10,1,58) (difficulty 3.0), 0 blocks placed, longest straight free stretch 14 (at 1,1,16; limit 15), est. 14.7 s (expert pace)
-  ok    MID   open turnstile + carriage doors: path 87 blocks, 1 jumps, hardest jump gap 3.2 down 1 at (-17,1,42) (difficulty 3.2), 0 blocks placed, longest straight free stretch 14 (at -14,1,10; limit 15), est. 15.1 s (expert pace)
-  ok    DROP  through a dropping turnstile + tunnel stairs + couplers: path 99 blocks, 0 jumps, hardest none (difficulty 0.0), 0 blocks placed, longest straight free stretch 14 (at -14,1,10; limit 15), est. 16.0 s (expert pace)
-  ok    fast line saves 32% vs the safe line (>= 20%)
-  gamble estimate (1/3 open, 1/3 jammed, 1/3 drop, crowd-following): ~17 s expert; median ~33 s; safe line median ~36 s
-  RESULT: all checks passed
-
-=== quarry_steps ===
-  108779 blocks, 72 block types, generated in 75 ms, bounds x -64..64 y -33..70 z -24..124, scenery share 67%
-  ok    inside the contract box (x/z -250..250, y -60..180)
-  ok    material richness: 72 block types (>= 25)
-  ok    contract check (TgMapData.check): clean
-  ok    no concrete of any colour in blocks or variants (0); reserved team colours: white,orange,magenta,light_blue,yellow,lime,pink,cyan,purple,blue,green,red
-  ok    start holds 45 players (45 inside the strip, 45 on solid floor with headroom, closest pair 2.33 apart)
-        start strip 36 x 7 (x -18..17, z 0..6), barrier 108 blocks, drop floor 0 blocks
-  ok    every barrier / drop-floor position holds a real block (0 missing)
-  ok    connection post-pass: 728 fence/pane/wall/bar states set, 989 leaves, 0 unsupported carpets dropped; re-run changes 0
-  ok    staircase helper: 6 flights (25 columns) walked bottom to top
-  ok    12 chicken spawns inside the pen 12 x 12
-  ok    landmark visible from the start: 12 of 12 sampled spawn eyes see it (ray-cast)
-  route lines (walk: sprint 5.6 b/s, flat gap <= 4, -1 per block of rise; bridging inside buildBounds):
-  ok    SAFE  haul road + cut (choke 3 wide): path 161 blocks, 4 jumps, hardest jump gap 3.2 at (-13,-9,45) (difficulty 3.2), 0 blocks placed, longest straight free stretch 13 (at -11,-9,45; limit 15), est. 26.2 s (expert pace)
-  ok    SAFE' haul road + wide ramp: path 163 blocks, 5 jumps, hardest jump gap 3.2 at (-13,-9,45) (difficulty 3.2), 0 blocks placed, longest straight free stretch 13 (at -11,-9,45; limit 15), est. 26.5 s (expert pace)
-  ok    FAST  bridge straight across (expert 4 b/s): path 67 blocks, 1 jumps, hardest jump gap 3.0 up 1.0 at (-2,6,49) (difficulty 4.0), 41 blocks placed, longest straight free stretch 13 (at 0,6,51; limit 15), est. 15.2 s (expert pace)
-  ok    FAST  same line, average bridger 2.2 b/s: path 67 blocks, 1 jumps, hardest jump gap 3.0 up 1.0 at (-2,6,49) (difficulty 4.0), 41 blocks placed, longest straight free stretch 13 (at 0,6,51; limit 15), est. 23.6 s (expert pace)
-  ok    straight-line bridging need (central corridor |x| <= 12, least-blocks search): 41 blocks (>= 40 of 64)
-        (mixed: bridge, drop onto the far bench and take the cut: least 41 blocks)
-  ok    MIXED bridge to the ramp pad, ramp E up (avg bridger): path 94 blocks, 2 jumps, hardest jump gap 4.0 down 2 at (16,-1,32) (difficulty 4.0), 17 blocks placed, longest straight free stretch 13 (at 27,6,36; limit 15), est. 20.8 s (expert pace)
-  ok    the built route is completable without placing blocks
-  ok    fast line saves 42% vs the safe line for an expert (>= 20%)
-  time profile: expert bridge 15 s, expert road 26 s; median players (x1.6 + crowd) road ~48 s, bridge ~36 s
+  ok    SAFE  staff corridor + carriage doors (all gates jammed): path 203 blocks, 1 jumps, hardest jump gap 3.2 down 3 at (-19,-2,37) (difficulty 3.2), 0 blocks placed, longest straight free stretch 14 (at -17,1,7; limit 15), est. 33.6 s (expert pace)
+  ok    FAST  open turnstile + coupling jumps (all gates open): path 146 blocks, 2 jumps, hardest jump gap 3.0 at (0,1,48) (difficulty 3.0), 0 blocks placed, longest straight free stretch 14 (at 1,1,16; limit 15), est. 25.1 s (expert pace)
+  ok    MID   open turnstile + carriage doors: path 154 blocks, 0 jumps, hardest none (difficulty 0.0), 0 blocks placed, longest straight free stretch 14 (at 1,1,16; limit 15), est. 26.1 s (expert pace)
+  ok    DROP  through a dropping turnstile + tunnel stairs + couplers: path 173 blocks, 0 jumps, hardest none (difficulty 0.0), 0 blocks placed, longest straight free stretch 14 (at -14,1,10; limit 15), est. 28.1 s (expert pace)
+  ok    fast line saves 25% vs the safe line (>= 20%)
+  ok    expert time 25.1 s within 25-35 s (owner, playtest 2: longer map: third track + queue hall, plaza moved 56 along)
+  gamble estimate (1/3 open, 1/3 jammed, 1/3 drop, crowd-following): ~28 s expert; median ~50 s; safe line median ~54 s
+  ok    3 coupling anvil traps (creak 0.4 s after a racer lands, drop into the live pit, back 3.0 s later): track 1 coupling anvil at (0,0,44); track 2 coupling anvil at (10,0,58); track 3 coupling anvil at (-8,0,72);
   RESULT: all checks passed
 

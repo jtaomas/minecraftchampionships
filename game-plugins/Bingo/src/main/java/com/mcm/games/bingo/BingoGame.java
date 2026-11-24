@@ -3,6 +3,7 @@ package com.mcm.games.bingo;
 import com.mcm.api.McmGame;
 import com.mcm.api.McmGameContext;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
@@ -10,6 +11,7 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -20,13 +22,17 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.CompassMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -34,51 +40,48 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Bingo but Fast (shared card, placement-based points per square, line bonuses) and,
- * with {@code lockout = true}, Lockout Bingo (first side to obtain a square claims it).
+ * Bingo but Fast (shared card, tier points scaled by completion order, line bonuses) and, with {@code lockout = true},
+ * Lockout Bingo (first side to obtain an item claims its square, tier points).
+ *
+ * <p>Flow: start → PREPARING (async chunk loads for the shared start and the structure sites, then structures placed
+ * one per tick) → card generated from what this area really has → COUNTDOWN → PLAYING.
  */
 public final class BingoGame implements McmGame, Listener {
 
-    // ---------------------------------------------------------------- tuning
+    // ---------------------------------------------------------------- fixed tuning
     private static final int BINGO_SECONDS = 600;
     private static final int LOCKOUT_SECONDS = 720;
     private static final int COUNTDOWN_SECONDS = 5;
-
-    /** Bingo: points to each member of the side for completing a square, by completion order (1st..5th+). */
-    private static final int[] PLACE_PTS = {6, 5, 4, 3, 2};
-    private static final int LINE_PTS_FIRST4 = 12;
-    private static final int LINE_PTS_LATER = 6;
-    private static final int FULL_CARD_PTS = 30;
-
-    /** Lockout: per member. */
-    private static final int LOCK_CLAIM_PTS = 8;
-    private static final int LOCK_LINE_PTS = 15;
-    private static final int[] LOCK_PLACE_PTS = {20, 12, 6};
-
-    private static final long TP_COOLDOWN_MS = 45_000;
+    private static final int START_CHUNK_RADIUS = 3;
 
     private enum Phase { IDLE, PREPARING, COUNTDOWN, PLAYING }
 
     private final BingoPlugin plugin;
     private final BingoWorld worldMgr;
     private final boolean lockout;
+    private final CaveFinder finder;
 
     // ---------------------------------------------------------------- per-game state
     private McmGameContext ctx;
     private World world;
+    private Settings cfg = new Settings();
     private Phase phase = Phase.IDLE;
-    private BukkitTask task;
+    private BukkitTask task, placeTask;
     private boolean halfSecond;
     private int countdown;
     private int secondsLeft;
     private int totalSeconds;
 
+    private AreaLayout layout;
+    private Env env;
+    private final List<AreaLayout.Site> placed = new ArrayList<>();
     private List<BingoItem> card = List.of();
     private final Map<String, boolean[]> got = new HashMap<>();
     private final Map<String, Set<Integer>> linesDone = new HashMap<>();
@@ -87,10 +90,16 @@ public final class BingoGame implements McmGame, Listener {
     private String[] claimedBy = new String[25];
     private final Map<UUID, String> sideOf = new HashMap<>();
     private final List<String> sideOrder = new ArrayList<>();
-    private final Map<String, Location> sideSpawn = new HashMap<>();
     private final Map<UUID, Long> tpCooldown = new HashMap<>();
-    /** Centre of this game's area (Y not meaningful until the chunks are loaded) and its surface spawn. */
-    private Location areaCenter, areaSpawn;
+    private final Map<UUID, Long> topCooldown = new HashMap<>();
+    private final Map<UUID, Long> combatUntil = new HashMap<>();
+    private final Map<UUID, Long> finderCooldown = new HashMap<>();
+    private final Set<UUID> finderBusy = new HashSet<>();
+    /** Centre of this game's area (Y not meaningful until the chunks are loaded) and the shared start point. */
+    private Location areaCenter, startSpot;
+    /** Spots within a few blocks of the start, handed out round-robin so players don't stack. */
+    private final List<Location> startSpots = new ArrayList<>();
+    private int spotIdx;
     /** Bumped by every start and cleanup so stale async chunk callbacks do nothing. */
     private int prepGen;
     private BukkitTask prepTimeout, ticketRelease;
@@ -100,6 +109,7 @@ public final class BingoGame implements McmGame, Listener {
         this.plugin = plugin;
         this.worldMgr = worldMgr;
         this.lockout = lockout;
+        this.finder = new CaveFinder(plugin);
     }
 
     // ================================================================ McmGame
@@ -113,8 +123,8 @@ public final class BingoGame implements McmGame, Listener {
     @Override
     public String description() {
         return lockout
-                ? "Survival race: the first side to obtain an item claims its square."
-                : "Survival race: collect the 25 items on the shared card, lines give bonuses.";
+                ? "Survival race: the first side to obtain an item claims its square. Harder items are worth more."
+                : "Survival race: collect the 25 items on the shared card, harder items and lines pay more.";
     }
 
     @Override public boolean useCoreScoreboard() { return true; }
@@ -124,24 +134,22 @@ public final class BingoGame implements McmGame, Listener {
         if (phase != Phase.IDLE) cleanup(false);
         this.ctx = ctx;
         resetState();
+        cfg = plugin.loadSettings();
         if (guard == null) guard = new SpectatorGuard(plugin, this::spectatorZone);
 
-        Location center = worldMgr.nextAreaCenter();
-        world = center == null ? null : center.getWorld();
+        layout = worldMgr.nextArea();
+        world = layout == null ? null : worldMgr.get();
         if (world == null) {
             McmGameContext c = this.ctx;
             this.ctx = null;
-            c.broadcast("§c[" + displayName() + "] Could not generate the world, skipping.");
+            c.broadcast("§c[" + displayName() + "] Could not prepare the world, skipping.");
             c.finish("World generation failed");
             return;
         }
 
-        Random rnd = ThreadLocalRandom.current();
-        card = lockout ? BingoItem.generateCard(rnd, 8, 12, 5) : BingoItem.generateCard(rnd, 10, 11, 4);
         totalSeconds = lockout ? LOCKOUT_SECONDS : BINGO_SECONDS;
         secondsLeft = totalSeconds;
 
-        // Sides
         for (Map.Entry<String, List<Player>> e : ctx.sides().entrySet()) {
             if (e.getValue() == null || e.getValue().isEmpty()) continue;
             String key = e.getKey();
@@ -161,7 +169,7 @@ public final class BingoGame implements McmGame, Listener {
             fullCard.put(s, false);
         }
 
-        areaCenter = center;
+        areaCenter = new Location(world, layout.cx + 0.5, 64, layout.cz + 0.5);
         phase = Phase.PREPARING;
         ctx.setTimer(totalSeconds, totalSeconds);
         ctx.setSidebarLines(List.of("§7Preparing the world..."));
@@ -169,29 +177,34 @@ public final class BingoGame implements McmGame, Listener {
         preloadArea(++prepGen);
     }
 
+    // ================================================================ preparing
+
+    /** Chunk keys around a block position. */
+    private static Set<Long> chunksAround(int x, int z, int r) {
+        Set<Long> out = new LinkedHashSet<>();
+        for (int dx = -r; dx <= r; dx++) for (int dz = -r; dz <= r; dz++) out.add(chunkKey((x >> 4) + dx, (z >> 4) + dz));
+        return out;
+    }
+
     /**
-     * Loads (generating as needed) every chunk the side start points can land in, asynchronously, with a plugin
-     * ticket each so they stay loaded until everyone is in. Nothing here blocks the main thread; when the last
-     * chunk arrives (or after 60 s), {@link #beginAfterPreload} teleports everyone and starts the countdown.
+     * Loads (generating as needed) the chunks around the shared start and around every structure site,
+     * asynchronously, with a plugin ticket each. Nothing here blocks the main thread; when the last chunk arrives
+     * (or after 60 s) the structures are placed one per tick, then {@link #beginAfterPreload} runs.
      */
     private void preloadArea(int gen) {
         final World w = world;
         final long t0 = System.nanoTime();
-        List<int[]> bases = basePoints();
-        Set<Long> keys = new LinkedHashSet<>();
-        int r = 3; // safeSpot() searches up to 41 blocks from a base point: 3 chunks around its chunk covers that
-        for (int[] b : bases)
-            for (int dx = -r; dx <= r; dx++) for (int dz = -r; dz <= r; dz++)
-                keys.add(chunkKey((b[0] >> 4) + dx, (b[1] >> 4) + dz));
+        Set<Long> keys = new LinkedHashSet<>(chunksAround(layout.cx, layout.cz, START_CHUNK_RADIUS));
+        for (AreaLayout.Site s : layout.sites) keys.addAll(chunksAround(s.x(), s.z(), s.chunkRadius()));
         final int[] pending = {keys.size()};
         final boolean[] fired = {false};
         final Runnable fire = () -> {
             if (fired[0]) return;
             fired[0] = true;
             if (prepTimeout != null) { prepTimeout.cancel(); prepTimeout = null; }
-            if (debugTiming()) plugin.getLogger().info(String.format("[debug-timing] %s area preload: %d chunks in %.0f ms (%d unanswered)",
+            if (cfg.debugTiming) plugin.getLogger().info(String.format("[debug-timing] %s area preload: %d chunks in %.0f ms (%d unanswered)",
                     displayName(), keys.size(), (System.nanoTime() - t0) / 1e6, pending[0]));
-            beginAfterPreload(gen);
+            placeStructures(gen);
         };
         for (long k : keys) {
             final int cx = (int) (k >> 32), cz = (int) k;
@@ -205,16 +218,70 @@ public final class BingoGame implements McmGame, Listener {
         else if (!fired[0]) prepTimeout = Bukkit.getScheduler().runTaskLater(plugin, fire, 1200L);
     }
 
-    private static long chunkKey(int cx, int cz) { return ((long) cx << 32) | (cz & 0xFFFFFFFFL); }
+    /** Places the planned structures with the vanilla /place command, one per tick, only where all chunks are loaded. */
+    private void placeStructures(int gen) {
+        if (gen != prepGen || phase != Phase.PREPARING || world == null) return;
+        Deque<AreaLayout.Site> queue = new ArrayDeque<>(layout.sites);
+        placeTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            if (gen != prepGen || phase != Phase.PREPARING || world == null) {
+                if (placeTask != null) { placeTask.cancel(); placeTask = null; }
+                return;
+            }
+            AreaLayout.Site s = queue.poll();
+            if (s == null) {
+                if (placeTask != null) { placeTask.cancel(); placeTask = null; }
+                beginAfterPreload(gen);
+                return;
+            }
+            if (!allLoaded(s)) {
+                plugin.getLogger().warning("Bingo: skipped " + s.kind() + " (chunks not loaded in time)");
+                return;
+            }
+            long t0 = System.nanoTime();
+            boolean ok = placeOne(s);
+            if (ok) placed.add(s);
+            plugin.getLogger().info(String.format("Bingo: %s %s at %d,%d (%s, %.0f ms)", ok ? "placed" : "could not place",
+                    s.id(), s.x(), s.z(), s.kind(), (System.nanoTime() - t0) / 1e6));
+        }, 1L, 1L);
+    }
 
-    private boolean debugTiming() {
+    private boolean allLoaded(AreaLayout.Site s) {
+        for (long k : chunksAround(s.x(), s.z(), s.chunkRadius())) if (!world.isChunkLoaded((int) (k >> 32), (int) k)) return false;
+        return true;
+    }
+
+    private boolean placeOne(AreaLayout.Site s) {
+        String cmd = "execute in " + world.getKey().asString() + " run place structure " + s.id() + " " + s.x() + " 64 " + s.z();
+        List<String> keys = new ArrayList<>();
         try {
-            plugin.reloadConfig();
-            return plugin.getConfig().getBoolean("debug-timing", false);
+            CommandSender snd = Bukkit.createCommandSender(c -> collectKeys(c, keys));
+            Bukkit.dispatchCommand(snd, cmd);
         } catch (Throwable t) {
+            plugin.getLogger().warning("Bingo: /place failed: " + t);
             return false;
         }
+        boolean success = false, failure = false;
+        for (String k : keys) {
+            if (k.startsWith("commands.place.structure.success")) success = true;
+            else if (k.startsWith("commands.") || k.startsWith("argument") || k.contains("failed") || k.contains("invalid")) failure = true;
+        }
+        if (!success && !failure && keys.isEmpty()) {
+            plugin.getLogger().warning("Bingo: /place gave no feedback for " + s.id() + "; assuming it worked.");
+            return true;
+        }
+        if (!success) plugin.getLogger().warning("Bingo: /place feedback for " + s.id() + ": " + keys);
+        return success;
     }
+
+    private static void collectKeys(Component c, List<String> out) {
+        if (c instanceof TranslatableComponent tc) {
+            out.add(tc.key());
+            for (Component a : tc.args()) collectKeys(a, out);
+        }
+        for (Component ch : c.children()) collectKeys(ch, out);
+    }
+
+    private static long chunkKey(int cx, int cz) { return ((long) cx << 32) | (cz & 0xFFFFFFFFL); }
 
     private void releaseTickets() {
         if (ticketRelease != null) { ticketRelease.cancel(); ticketRelease = null; }
@@ -222,34 +289,44 @@ public final class BingoGame implements McmGame, Listener {
         if (w != null) w.removePluginChunkTickets(plugin);
     }
 
-    /** Spawn of the current area (surface), for respawns and late joiners. */
-    private Location areaSpawn() {
-        return areaSpawn != null ? areaSpawn.clone() : (areaCenter != null ? areaCenter.clone() : world.getSpawnLocation());
+    /** The shared start point (surface), for respawns, the card teleport and late joiners. */
+    private Location start() {
+        return startSpot != null ? startSpot.clone() : (areaCenter != null ? areaCenter.clone() : world.getSpawnLocation());
+    }
+
+    /** One of the spread-out spots around the start. */
+    private Location nextStartSpot() {
+        if (startSpots.isEmpty()) return start();
+        Location l = startSpots.get(spotIdx++ % startSpots.size()).clone();
+        l.setYaw(ThreadLocalRandom.current().nextFloat() * 360f);
+        return l;
     }
 
     private void beginAfterPreload(int gen) {
         if (gen != prepGen || phase != Phase.PREPARING || ctx == null || world == null) return;
         McmGameContext ctx = this.ctx;
         long t0 = System.nanoTime();
-        int cx = areaCenter.getBlockX(), cz = areaCenter.getBlockZ();
-        areaSpawn = world.isChunkLoaded(cx >> 4, cz >> 4)
-                ? new Location(world, cx + 0.5, world.getHighestBlockYAt(cx, cz) + 1, cz + 0.5)
-                : areaCenter.clone();
-        computeSpawns();
+        computeStart();
+
+        Set<String> structures = new LinkedHashSet<>(Env.ALWAYS_STRUCTURES);
+        for (AreaLayout.Site s : placed) structures.add(s.kind());
+        env = new Env(layout.biomes, structures);
+        Random rnd = ThreadLocalRandom.current();
+        card = BingoItem.generateCard(rnd, env, lockout ? cfg.lockoutMix : cfg.bingoMix, cfg.woodCap);
+        plugin.getLogger().info("Bingo card env " + env);
 
         for (Player p : new ArrayList<>(ctx.participants())) {
-            String side = sideOf.get(p.getUniqueId());
-            Location loc = sideSpawn.getOrDefault(side, areaSpawn());
             preparePlayer(p);
-            p.teleport(loc);
+            p.teleport(nextStartSpot());
             p.showTitle(Title.title(txt("§6§l" + displayName()),
                     txt(lockout ? "§fFirst to get an item claims it!" : "§fCollect the items on your card!"),
                     Title.Times.times(Duration.ofMillis(200), Duration.ofMillis(3000), Duration.ofMillis(500))));
         }
 
         ctx.broadcast("§6§l" + displayName() + "§r§7 - " + (lockout
-                ? "Get items before anyone else to claim their squares. Right-click your card to see it."
-                : "Collect the 25 items on the card. Earlier completions and full lines pay more. Right-click your card to see it."));
+                ? "Get items before anyone else to claim their squares; harder items are worth more."
+                : "Collect the 25 items on the card; harder items, early finds and full lines pay more.")
+                + " §7Click your card to see it. PvP is on (keep inventory). §f/top§7 takes you to the surface.");
 
         phase = Phase.COUNTDOWN;
         countdown = FastTest.secs(COUNTDOWN_SECONDS);
@@ -259,8 +336,43 @@ public final class BingoGame implements McmGame, Listener {
         task = Bukkit.getScheduler().runTaskTimer(plugin, this::tick, 10L, 10L);
         // Players hold their own chunks now; drop ours once everyone has arrived.
         ticketRelease = Bukkit.getScheduler().runTaskLater(plugin, () -> { ticketRelease = null; releaseTickets(); }, 200L);
-        if (debugTiming()) plugin.getLogger().info(String.format("[debug-timing] %s spawn + teleport tick: %.2f ms",
+        if (cfg.debugTiming) plugin.getLogger().info(String.format("[debug-timing] %s card + spawn + teleport tick: %.2f ms",
                 displayName(), (System.nanoTime() - t0) / 1e6));
+    }
+
+    /** Finds a dry, solid start near the centre and up to 16 spread spots within 3 blocks of it. */
+    private void computeStart() {
+        startSpots.clear();
+        spotIdx = 0;
+        int bx = areaCenter.getBlockX(), bz = areaCenter.getBlockZ();
+        Location s = null;
+        Random r = ThreadLocalRandom.current();
+        for (int attempt = 0; attempt < 60 && s == null; attempt++) {
+            int spread = attempt == 0 ? 0 : Math.min(40, 2 + attempt);
+            int x = bx + (attempt == 0 ? 0 : r.nextInt(-spread, spread + 1));
+            int z = bz + (attempt == 0 ? 0 : r.nextInt(-spread, spread + 1));
+            if (!world.isChunkLoaded(x >> 4, z >> 4)) continue;
+            if (safeGround(x, z)) s = new Location(world, x + 0.5, world.getHighestBlockYAt(x, z) + 1, z + 0.5);
+        }
+        if (s == null) s = new Location(world, bx + 0.5, world.getHighestBlockYAt(bx, bz) + 1, bz + 0.5);
+        startSpot = s;
+        for (int dx = -3; dx <= 3; dx++)
+            for (int dz = -3; dz <= 3; dz++) {
+                int x = s.getBlockX() + dx, z = s.getBlockZ() + dz;
+                if (!safeGround(x, z)) continue;
+                int y = world.getHighestBlockYAt(x, z) + 1;
+                if (Math.abs(y - s.getBlockY()) > 2) continue;
+                startSpots.add(new Location(world, x + 0.5, y, z + 0.5));
+            }
+        Collections.shuffle(startSpots, r);
+        if (startSpots.isEmpty()) startSpots.add(s.clone());
+    }
+
+    private boolean safeGround(int x, int z) {
+        Block b = world.getHighestBlockAt(x, z);
+        Material t = b.getType();
+        return t.isSolid() && !t.name().endsWith("_LEAVES") && t != Material.MAGMA_BLOCK && t != Material.CACTUS
+                && t != Material.POWDER_SNOW;
     }
 
     @Override
@@ -286,9 +398,9 @@ public final class BingoGame implements McmGame, Listener {
     /** How far (blocks, horizontally) from the area centre spectators may fly. */
     private static final double WATCH_RADIUS = 320;
 
-    /** Above the area centre, looking out over the start circle. */
+    /** Above the start, looking out over it. */
     private Location overview() {
-        Location l = areaSpawn().add(0, 15, 0);
+        Location l = start().add(0, 15, 0);
         l.setPitch(35f);
         return l;
     }
@@ -318,16 +430,24 @@ public final class BingoGame implements McmGame, Listener {
         claimedBy = new String[25];
         sideOf.clear();
         sideOrder.clear();
-        sideSpawn.clear();
         tpCooldown.clear();
+        topCooldown.clear();
+        combatUntil.clear();
+        finderCooldown.clear();
+        finderBusy.clear();
+        placed.clear();
+        startSpots.clear();
         card = List.of();
         areaCenter = null;
-        areaSpawn = null;
+        startSpot = null;
+        layout = null;
+        env = null;
     }
 
     private void cleanup(boolean scheduleWorldCleanup) {
         prepGen++;
         if (prepTimeout != null) { prepTimeout.cancel(); prepTimeout = null; }
+        if (placeTask != null) { placeTask.cancel(); placeTask = null; }
         releaseTickets();
         if (task != null) { task.cancel(); task = null; }
         phase = Phase.IDLE;
@@ -350,14 +470,13 @@ public final class BingoGame implements McmGame, Listener {
 
         List<String> ranking = ranking();
         if (lockout) {
-            // Placement bonus by squares claimed (ties share the higher placement).
             int place = 0, prevCount = -1, idx = 0;
             for (String s : ranking) {
                 int n = count(s);
                 idx++;
                 if (n != prevCount) { place = idx; prevCount = n; }
-                if (n == 0 || place > LOCK_PLACE_PTS.length) continue;
-                awardSide(c, s, LOCK_PLACE_PTS[place - 1], "Lockout " + ordinal(place) + " place");
+                if (n == 0 || place > cfg.lockoutPlacement.length) continue;
+                awardSide(c, s, cfg.lockoutPlacement[place - 1], "Lockout " + ordinal(place) + " place");
             }
         }
 
@@ -393,6 +512,7 @@ public final class BingoGame implements McmGame, Listener {
         p.setExp(0f);
         p.setFireTicks(0);
         p.setFallDistance(0f);
+        clearBingoRespawn(p);
         giveKit(p);
         applySpeed(p);
     }
@@ -406,6 +526,15 @@ public final class BingoGame implements McmGame, Listener {
         p.setLevel(0);
         p.setExp(0f);
         p.setFireTicks(0);
+        clearBingoRespawn(p);
+    }
+
+    /** A bed set in an earlier Bingo area must not pull the player out of this one. */
+    private static void clearBingoRespawn(Player p) {
+        try {
+            Location r = p.getRespawnLocation();
+            if (r != null && r.getWorld() != null && BingoWorld.NAME.equals(r.getWorld().getName())) p.setRespawnLocation(null);
+        } catch (Throwable ignored) { }
     }
 
     private void applySpeed(Player p) {
@@ -414,63 +543,22 @@ public final class BingoGame implements McmGame, Listener {
         }
     }
 
+    private static ItemStack tool(Material m) {
+        ItemStack it = new ItemStack(m);
+        it.addUnsafeEnchantment(Enchantment.EFFICIENCY, 2);
+        ItemMeta meta = it.getItemMeta();
+        meta.setUnbreakable(true);
+        it.setItemMeta(meta);
+        return it;
+    }
+
     private void giveKit(Player p) {
-        ItemStack pick = new ItemStack(Material.IRON_PICKAXE);
-        pick.addUnsafeEnchantment(Enchantment.EFFICIENCY, 2);
-        pick.addUnsafeEnchantment(Enchantment.UNBREAKING, 2);
-        ItemStack axe = new ItemStack(Material.IRON_AXE);
-        axe.addUnsafeEnchantment(Enchantment.EFFICIENCY, 2);
-        ItemStack shovel = new ItemStack(Material.IRON_SHOVEL);
-        shovel.addUnsafeEnchantment(Enchantment.EFFICIENCY, 2);
-        p.getInventory().setItem(0, pick);
-        p.getInventory().setItem(1, axe);
-        p.getInventory().setItem(2, shovel);
-        p.getInventory().setItem(3, new ItemStack(Material.COOKED_BEEF, 12));
+        p.getInventory().setItem(0, tool(Material.IRON_PICKAXE));
+        p.getInventory().setItem(1, tool(Material.IRON_AXE));
+        p.getInventory().setItem(2, tool(Material.IRON_SHOVEL));
+        if (cfg.beef > 0) p.getInventory().setItem(3, new ItemStack(Material.COOKED_BEEF, cfg.beef));
+        p.getInventory().setItem(7, finderItem());
         p.getInventory().setItem(8, cardItem());
-    }
-
-    /** Each side's start column {x, z} around the area centre (same circle as before). */
-    private List<int[]> basePoints() {
-        Location base = areaCenter;
-        List<int[]> out = new ArrayList<>();
-        int n = sideOrder.size();
-        double radius = n <= 1 ? 0 : Math.min(6 + n * 2.0, 30);
-        for (int i = 0; i < n; i++) {
-            double a = 2 * Math.PI * i / Math.max(1, n);
-            out.add(new int[]{(int) Math.round(base.getX() + Math.cos(a) * radius), (int) Math.round(base.getZ() + Math.sin(a) * radius)});
-        }
-        if (out.isEmpty()) out.add(new int[]{base.getBlockX(), base.getBlockZ()});
-        return out;
-    }
-
-    private void computeSpawns() {
-        Location base = areaCenter;
-        int n = sideOrder.size();
-        List<int[]> pts = basePoints();
-        for (int i = 0; i < n; i++) {
-            int x = pts.get(i)[0];
-            int z = pts.get(i)[1];
-            Location loc = safeSpot(x, z);
-            loc.setYaw((float) Math.toDegrees(Math.atan2(-(base.getX() - loc.getX()), base.getZ() - loc.getZ())));
-            sideSpawn.put(sideOrder.get(i), loc);
-        }
-    }
-
-    private Location safeSpot(int bx, int bz) {
-        Random r = ThreadLocalRandom.current();
-        for (int attempt = 0; attempt < 40; attempt++) {
-            int spread = 2 + attempt;
-            int x = attempt == 0 ? bx : bx + r.nextInt(-spread, spread + 1);
-            int z = attempt == 0 ? bz : bz + r.nextInt(-spread, spread + 1);
-            Block b = world.getHighestBlockAt(x, z);
-            Material t = b.getType();
-            if (t.isSolid() && !t.name().endsWith("_LEAVES") && t != Material.MAGMA_BLOCK && t != Material.CACTUS) {
-                return new Location(world, x + 0.5, b.getY() + 1, z + 0.5);
-            }
-        }
-        Location s = areaSpawn();
-        Block top = world.getHighestBlockAt(s);
-        return new Location(world, s.getBlockX() + 0.5, top.getY() + 1, s.getBlockZ() + 0.5);
     }
 
     // ================================================================ main loop
@@ -509,7 +597,7 @@ public final class BingoGame implements McmGame, Listener {
             } else {
                 phase = Phase.PLAYING;
                 for (Player p : ctx.participants()) {
-                    p.showTitle(Title.title(txt("§a§lGO!"), txt("§7Right-click your card to see it"),
+                    p.showTitle(Title.title(txt("§a§lGO!"), txt("§7Click your card to see it"),
                             Title.Times.times(Duration.ZERO, Duration.ofMillis(1200), Duration.ofMillis(300))));
                     p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.2f);
                 }
@@ -526,9 +614,9 @@ public final class BingoGame implements McmGame, Listener {
         for (Player p : new ArrayList<>(ctx.participants())) {
             if (!p.isDead() && p.getGameMode() == GameMode.SURVIVAL) applySpeed(p);
             String side = sideOf.get(p.getUniqueId());
-            if (side == null) continue;
+            if (side == null || finderBusy.contains(p.getUniqueId())) continue;
             p.sendActionBar(txt("§a" + count(side) + "§7/25 items  §e" + linesDone.get(side).size()
-                    + "§7 lines  §8|  §fRight-click your card"));
+                    + "§7 lines  §8|  §fClick your card"));
         }
         updateSidebar();
         if (secondsLeft == 60 || secondsLeft == 30 || secondsLeft == 10) {
@@ -546,21 +634,27 @@ public final class BingoGame implements McmGame, Listener {
             if (side == null) continue;
 
             Set<Material> held = EnumSet.noneOf(Material.class);
-            boolean hasCard = false;
+            boolean hasCard = false, hasFinder = false;
             for (ItemStack it : p.getInventory().getContents()) {
                 if (it == null || it.getType().isAir()) continue;
                 if (isCard(it)) { hasCard = true; continue; }
+                if (isFinder(it)) { hasFinder = true; continue; }
                 held.add(it.getType());
             }
             ItemStack cursor = p.getItemOnCursor();
             if (cursor != null && !cursor.getType().isAir()) {
-                if (isCard(cursor)) hasCard = true; else held.add(cursor.getType());
+                if (isCard(cursor)) hasCard = true;
+                else if (isFinder(cursor)) hasFinder = true;
+                else held.add(cursor.getType());
             }
-            if (!hasCard && p.getGameMode() == GameMode.SURVIVAL) p.getInventory().addItem(cardItem());
+            if (p.getGameMode() == GameMode.SURVIVAL) {
+                if (!hasCard) p.getInventory().addItem(cardItem());
+                if (!hasFinder) p.getInventory().addItem(finderItem());
+            }
             if (held.isEmpty()) continue;
 
             boolean[] mine = got.get(side);
-            for (int i = 0; i < 25 && phase == Phase.PLAYING; i++) {
+            for (int i = 0; i < 25 && i < card.size() && phase == Phase.PLAYING; i++) {
                 if (mine[i]) continue;
                 if (lockout && claimedBy[i] != null) continue;
                 if (!card.get(i).matches(held)) continue;
@@ -576,27 +670,38 @@ public final class BingoGame implements McmGame, Listener {
         }
     }
 
+    /** Bingo points for a square of {@code tier} completed {@code place}-th. */
+    private int bingoPoints(int tier, int place) {
+        int base = cfg.bingoTierPoints[BingoItem.clampTier(tier)];
+        int[] pct = cfg.placementPercent;
+        int p = pct.length == 0 ? 100 : pct[Math.min(place, pct.length) - 1];
+        return Math.max(1, (int) Math.round(base * p / 100.0));
+    }
+
+    private int lockoutPoints(int tier) { return cfg.lockoutTierPoints[BingoItem.clampTier(tier)]; }
+
     private void complete(String side, int cell, Player finder) {
         boolean[] mine = got.get(side);
         mine[cell] = true;
         completions[cell]++;
         int place = completions[cell];
-        int pts = PLACE_PTS[Math.min(place, PLACE_PTS.length) - 1];
         BingoItem item = card.get(cell);
+        int pts = bingoPoints(item.tier, place);
         awardSide(ctx, side, pts, "Bingo: " + item.name);
         for (Player m : members(side)) {
-            m.sendMessage(txt("§a✔ " + (m.equals(finder) ? "You" : finder.getName()) + " got §e" + item.name
-                    + " §7(" + ordinal(place) + ", +" + pts + ")"));
+            m.sendMessage(txt("§a✔ " + (m.equals(finder) ? "You" : finder.getName()) + " got " + BingoItem.TIER_COLORS[item.tier]
+                    + item.name + " §7(" + ordinal(place) + ", +" + pts + ")"));
             m.playSound(m.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.4f);
         }
-        if (place == 1) ctx.broadcast("§7[Bingo] " + ctx.sideLabel(side) + " §7was first to get §e" + item.name + "§7!");
+        if (place == 1) ctx.broadcast("§7[Bingo] " + ctx.sideLabel(side) + " §7was first to get "
+                + BingoItem.TIER_COLORS[item.tier] + item.name + "§7!");
         checkLines(side);
         if (count(side) == 25 && !fullCard.get(side)) {
             fullCard.put(side, true);
-            awardSide(ctx, side, FULL_CARD_PTS, "Bingo: full card");
+            awardSide(ctx, side, cfg.bingoFullCard, "Bingo: full card");
             ctx.broadcast("§6§lFULL CARD! " + ctx.sideLabel(side) + " §6completed the entire card!");
             for (Player m : members(side)) {
-                m.showTitle(Title.title(txt("§6§lFULL CARD!"), txt("§f+" + FULL_CARD_PTS + " points"),
+                m.showTitle(Title.title(txt("§6§lFULL CARD!"), txt("§f+" + cfg.bingoFullCard + " points"),
                         Title.Times.times(Duration.ofMillis(100), Duration.ofMillis(2500), Duration.ofMillis(500))));
                 m.playSound(m.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
             }
@@ -608,8 +713,10 @@ public final class BingoGame implements McmGame, Listener {
         got.get(side)[cell] = true;
         claimedBy[cell] = side;
         BingoItem item = card.get(cell);
-        awardSide(ctx, side, LOCK_CLAIM_PTS, "Lockout: " + item.name);
-        ctx.broadcast("§7[Lockout] " + ctx.sideLabel(side) + " §7claimed §e" + item.name + " §7(" + finder.getName() + ")");
+        int pts = lockoutPoints(item.tier);
+        awardSide(ctx, side, pts, "Lockout: " + item.name);
+        ctx.broadcast("§7[Lockout] " + ctx.sideLabel(side) + " §7claimed " + BingoItem.TIER_COLORS[item.tier] + item.name
+                + " §7(" + finder.getName() + ", +" + pts + ")");
         for (Player p : ctx.participants()) {
             boolean mineSide = side.equals(sideOf.get(p.getUniqueId()));
             p.playSound(p.getLocation(), mineSide ? Sound.ENTITY_EXPERIENCE_ORB_PICKUP : Sound.BLOCK_NOTE_BLOCK_BASS,
@@ -627,7 +734,7 @@ public final class BingoGame implements McmGame, Listener {
             for (int c : BingoItem.LINES[li]) if (!mine[c]) { all = false; break; }
             if (!all) continue;
             done.add(li);
-            int pts = lockout ? LOCK_LINE_PTS : (done.size() <= 4 ? LINE_PTS_FIRST4 : LINE_PTS_LATER);
+            int pts = lockout ? cfg.lockoutLine : (done.size() <= 4 ? cfg.bingoLineFirst4 : cfg.bingoLineLater);
             awardSide(ctx, side, pts, "Bingo line");
             ctx.broadcast("§6§lBINGO! " + ctx.sideLabel(side) + " §6completed " + BingoItem.lineName(li)
                     + " §7(" + done.size() + (done.size() == 1 ? " line" : " lines") + ")");
@@ -719,14 +826,15 @@ public final class BingoGame implements McmGame, Listener {
         return LegacyComponentSerializer.legacySection().deserialize(legacy).decoration(TextDecoration.ITALIC, false);
     }
 
-    // ================================================================ card item + GUI
+    // ================================================================ kit items
 
     private ItemStack cardItem() {
         ItemStack it = new ItemStack(Material.KNOWLEDGE_BOOK);
         ItemMeta meta = it.getItemMeta();
-        meta.displayName(txt("§6§lBingo Card §7(right-click)"));
+        meta.displayName(txt("§6§lBingo Card §7(click)"));
         meta.lore(List.of(txt(lockout ? "§7Lockout: first side to get an item claims it." : "§7Collect the items on the card."),
-                txt("§7Right-click to view the card and teleport.")));
+                txt("§7Right-click in hand, or click it in your inventory,"),
+                txt("§7to view the card and teleport.")));
         meta.getPersistentDataContainer().set(plugin.cardKey(), PersistentDataType.BYTE, (byte) 1);
         meta.setEnchantmentGlintOverride(true);
         it.setItemMeta(meta);
@@ -737,6 +845,127 @@ public final class BingoGame implements McmGame, Listener {
         if (it == null || it.getType() != Material.KNOWLEDGE_BOOK || !it.hasItemMeta()) return false;
         return it.getItemMeta().getPersistentDataContainer().has(plugin.cardKey(), PersistentDataType.BYTE);
     }
+
+    private ItemStack finderItem() {
+        ItemStack it = new ItemStack(Material.COMPASS);
+        ItemMeta meta = it.getItemMeta();
+        meta.displayName(txt("§b§lCave Finder §7(right-click)"));
+        meta.lore(List.of(txt("§7Points to the nearest big cave"), txt("§7under the ground around you."),
+                txt("§8Does not count as a Compass for the card.")));
+        meta.getPersistentDataContainer().set(plugin.toolKey(), PersistentDataType.BYTE, (byte) 1);
+        it.setItemMeta(meta);
+        return it;
+    }
+
+    private boolean isFinder(ItemStack it) {
+        if (it == null || it.getType() != Material.COMPASS || !it.hasItemMeta()) return false;
+        return it.getItemMeta().getPersistentDataContainer().has(plugin.toolKey(), PersistentDataType.BYTE);
+    }
+
+    // ================================================================ cave finder
+
+    private void useFinder(Player p) {
+        if (phase != Phase.PLAYING) { p.sendActionBar(txt("§7The Cave Finder works once the game has started.")); return; }
+        UUID id = p.getUniqueId();
+        long now = System.currentTimeMillis();
+        long until = finderCooldown.getOrDefault(id, 0L);
+        if (now < until) { p.sendActionBar(txt("§cCave Finder recharging: " + ((until - now) / 1000 + 1) + "s")); return; }
+        if (finderBusy.contains(id)) return;
+        finderCooldown.put(id, now + cfg.finderCooldown * 1000L);
+        finderBusy.add(id);
+        p.setCooldown(Material.COMPASS, cfg.finderCooldown * 20);
+        p.sendActionBar(txt("§bScanning for caves..."));
+        p.playSound(p.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1f, 0.8f);
+        final int gen = prepGen;
+        finder.find(p, cfg.finderRadiusChunks, (target, ms) -> {
+            finderBusy.remove(id);
+            if (gen != prepGen || !isPlayer(p) || !p.getWorld().equals(world)) return;
+            if (cfg.debugTiming) plugin.getLogger().info(String.format("[debug-timing] cave finder scan %.1f ms (async)", ms));
+            if (target == null) {
+                int r = cfg.finderRadiusChunks * 16 + 8;
+                p.sendActionBar(txt("§7No big cave within about " + r + " blocks. Try somewhere else."));
+                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1f, 0.7f);
+                return;
+            }
+            showCave(p, target);
+        });
+    }
+
+    private void showCave(Player p, Location target) {
+        Location eye = p.getEyeLocation();
+        Vector d = target.toVector().subtract(eye.toVector());
+        double horiz = Math.hypot(d.getX(), d.getZ());
+        int dy = (int) Math.round(target.getY() - p.getLocation().getY());
+        String vert = dy < -1 ? "§f" + (-dy) + " below you" : dy > 1 ? "§f" + dy + " above you" : "§fat your level";
+        p.sendActionBar(txt("§bCave: §f" + Math.round(horiz) + " blocks " + CaveFinder.compass(d) + "§7, " + vert));
+        p.playSound(p.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1f, 1.2f);
+        // Point the compass needle there.
+        for (ItemStack it : p.getInventory().getContents()) {
+            if (!isFinder(it)) continue;
+            if (it.getItemMeta() instanceof CompassMeta cm) {
+                cm.setLodestone(target);
+                cm.setLodestoneTracked(false);
+                it.setItemMeta(cm);
+            }
+        }
+        // A short particle trail from the player towards the cave, visible only to them.
+        final int[] runs = {0};
+        final BukkitTask[] t = {null};
+        t[0] = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            if (!p.isOnline() || !p.getWorld().equals(target.getWorld()) || ++runs[0] > 8) { t[0].cancel(); return; }
+            Location from = p.getEyeLocation();
+            Vector dir = target.toVector().subtract(from.toVector());
+            double len = dir.length();
+            if (len < 0.5) { t[0].cancel(); return; }
+            dir.multiply(1.0 / len);
+            for (double s = 1.5; s <= Math.min(8, len); s += 0.75) {
+                p.spawnParticle(Particle.END_ROD, from.clone().add(dir.clone().multiply(s)), 1, 0, 0, 0, 0);
+            }
+        }, 0L, 8L);
+    }
+
+    // ================================================================ /top
+
+    /** Handles /top for a player of this game; false if the player isn't in this game. */
+    public boolean handleTop(Player p) {
+        if (!isPlayer(p)) return false;
+        if (phase != Phase.PLAYING || !p.getWorld().equals(world) || p.getGameMode() != GameMode.SURVIVAL) {
+            p.sendMessage(txt("§c/top works while the game is running."));
+            return true;
+        }
+        UUID id = p.getUniqueId();
+        long now = System.currentTimeMillis();
+        if (cfg.topBlockedInCombat && now < combatUntil.getOrDefault(id, 0L)) {
+            p.sendMessage(txt("§cYou were just hit by a player - /top is blocked for "
+                    + ((combatUntil.get(id) - now) / 1000 + 1) + "s."));
+            return true;
+        }
+        long until = topCooldown.getOrDefault(id, 0L);
+        if (now < until) {
+            p.sendMessage(txt("§c/top on cooldown for " + ((until - now) / 1000 + 1) + "s."));
+            return true;
+        }
+        Location l = p.getLocation();
+        int x = l.getBlockX(), z = l.getBlockZ();
+        Block top = world.getHighestBlockAt(x, z, HeightMap.MOTION_BLOCKING_NO_LEAVES);
+        if (top.getY() < l.getBlockY()) {
+            p.sendMessage(txt("§7You are already at the surface."));
+            return true;
+        }
+        Material t = top.getType();
+        if (t == Material.LAVA || t == Material.MAGMA_BLOCK || t == Material.FIRE || t == Material.CAMPFIRE) {
+            p.sendMessage(txt("§cThe surface above you isn't safe."));
+            return true;
+        }
+        topCooldown.put(id, now + cfg.topCooldown * 1000L);
+        Location dest = new Location(world, x + 0.5, top.getY() + 1, z + 0.5, l.getYaw(), l.getPitch());
+        p.setFallDistance(0f);
+        p.teleport(dest);
+        p.playSound(dest, Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1.2f);
+        return true;
+    }
+
+    // ================================================================ card GUI
 
     private static final class CardMenu implements InventoryHolder {
         final BingoGame game;
@@ -752,6 +981,7 @@ public final class BingoGame implements McmGame, Listener {
     private static int cellSlot(int cell) { return (cell / 5) * 9 + 2 + (cell % 5); }
 
     private void openCard(Player p) {
+        if (!isPlayer(p) || card.isEmpty()) return;
         CardMenu m = new CardMenu(this, p.getUniqueId());
         m.inv = Bukkit.createInventory(m, 54, txt("§8" + displayName() + " card"));
         render(m, p);
@@ -765,6 +995,11 @@ public final class BingoGame implements McmGame, Listener {
         }
     }
 
+    private static String dirFrom(Location from, int x, int z) {
+        Vector d = new Vector(x - from.getX(), 0, z - from.getZ());
+        return Math.round(d.length()) + " blocks " + CaveFinder.compass(d);
+    }
+
     private void render(CardMenu m, Player viewer) {
         Inventory inv = m.inv;
         inv.clear();
@@ -776,33 +1011,66 @@ public final class BingoGame implements McmGame, Listener {
         }
         for (int s = 45; s < 54; s++) inv.setItem(s, simple(Material.GRAY_STAINED_GLASS_PANE, " ", List.of()));
 
-        // Info
+        // Info column
         if (side != null && ctx != null) {
             inv.setItem(0, simple(Material.NETHER_STAR, ctx.sideLabel(side), List.of(
                     "§7Items: §a" + count(side) + "§7/25",
                     "§7Lines: §e" + linesDone.get(side).size() + "§7/12",
                     "§7Time left: §f" + (secondsLeft / 60) + ":" + String.format("%02d", Math.max(0, secondsLeft % 60)))));
         }
-        inv.setItem(9, simple(Material.OAK_HANGING_SIGN, "§eScoring", lockout
-                ? List.of("§7Claim a square: §f+" + LOCK_CLAIM_PTS + " each", "§7Own a full line: §f+" + LOCK_LINE_PTS,
-                "§7Final placement: §f+20 / +12 / +6", "§7Items count while in your inventory.")
-                : List.of("§7Square, by order: §f+6 +5 +4 +3 +2", "§7Line (first 4): §f+" + LINE_PTS_FIRST4,
-                "§7Line (after that): §f+" + LINE_PTS_LATER, "§7Full card: §f+" + FULL_CARD_PTS,
-                "§7Items count while in your inventory.")));
+        int[] tp = lockout ? cfg.lockoutTierPoints : cfg.bingoTierPoints;
+        List<String> scoring = new ArrayList<>();
+        scoring.add("§7Square value by difficulty:");
+        for (int t = 1; t <= 4; t++) scoring.add("  " + BingoItem.TIER_COLORS[t] + BingoItem.TIER_NAMES[t] + "§7: §f+" + tp[t]);
+        if (lockout) {
+            scoring.add("§7Own a full line: §f+" + cfg.lockoutLine);
+            scoring.add("§7Final placement: §f+" + join(cfg.lockoutPlacement, " / +"));
+        } else {
+            scoring.add("§7Later finders get " + join(cfg.placementPercent, "% / ") + "%");
+            scoring.add("§7Line (first 4): §f+" + cfg.bingoLineFirst4 + "§7, later §f+" + cfg.bingoLineLater);
+            scoring.add("§7Full card: §f+" + cfg.bingoFullCard);
+        }
+        scoring.add("§7Items count while in your inventory.");
+        inv.setItem(9, simple(Material.OAK_HANGING_SIGN, "§eScoring", scoring));
+        List<String> places = new ArrayList<>();
+        Location s0 = start();
+        for (AreaLayout.Site s : placed) {
+            // Buried treasure's chest sits at block 9,9 of its chunk; other sites are approximate.
+            int sx = s.kind().equals("buried_treasure") ? (s.x() & ~15) + 9 : s.x();
+            int sz = s.kind().equals("buried_treasure") ? (s.z() & ~15) + 9 : s.z();
+            places.add("§f" + BingoItem.pretty(s.kind()) + "§7: " + dirFrom(s0, sx, sz) + " §8(" + sx + ", " + sz + ")");
+        }
+        places.add("§7Mineshafts are underground all over.");
+        places.add("§8Directions are from the start point.");
+        inv.setItem(18, simple(Material.FILLED_MAP, "§eStructures in this area", places));
+        List<String> bl = new ArrayList<>();
+        if (layout != null) {
+            List<String> names = new ArrayList<>();
+            for (AreaLayout.Cell c : layout.cells) {
+                if (!layout.biomes.contains(c.surface())) continue;
+                names.add(BingoItem.pretty(c.surface().name()) + (c.inner() ? " §7(near start)" : "") + "§f");
+            }
+            for (int i = 0; i < names.size(); i += 2) bl.add("§f" + names.get(i) + (i + 1 < names.size() ? "§7, §f" + names.get(i + 1) : ""));
+            if (layout.biomes.contains(org.bukkit.block.Biome.LUSH_CAVES)) bl.add("§aLush caves §7underground");
+            if (layout.biomes.contains(org.bukkit.block.Biome.DRIPSTONE_CAVES)) bl.add("§6Dripstone caves §7underground");
+        }
+        inv.setItem(27, simple(Material.GRASS_BLOCK, "§eBiomes in this area", bl));
 
         // Cells
         for (int i = 0; i < 25 && i < card.size(); i++) {
             BingoItem item = card.get(i);
             boolean mine = side != null && got.containsKey(side) && got.get(side)[i];
             List<String> lore = new ArrayList<>();
-            lore.add("§7Difficulty: " + (item.tier == 1 ? "§aEasy" : item.tier == 2 ? "§eMedium" : "§cHard"));
-            if (item.anyVariant) lore.add("§7Any variant counts");
+            lore.add("§7Difficulty: " + BingoItem.TIER_COLORS[item.tier] + BingoItem.TIER_NAMES[item.tier]);
+            if (item.hint != null) lore.add("§7Where: §f" + item.hint);
+            if (item.anyVariant) lore.add("§7Any of: §f" + variants(item));
             ItemStack icon;
             if (lockout) {
                 String owner = claimedBy[i];
                 if (owner == null) {
+                    lore.add("§7Worth: §f+" + lockoutPoints(item.tier));
                     lore.add("§fUnclaimed §7- first to get it claims it!");
-                    icon = simple(item.icon, "§f" + item.name, lore);
+                    icon = simple(item.icon, "§f" + item.name + " §7(+" + lockoutPoints(item.tier) + ")", lore);
                 } else if (owner.equals(side)) {
                     lore.add("§aClaimed by your side");
                     icon = simple(item.icon, "§a✔ " + item.name, lore);
@@ -819,16 +1087,17 @@ public final class BingoGame implements McmGame, Listener {
                     icon = simple(item.icon, "§a✔ " + item.name, lore);
                     glint(icon);
                 } else {
-                    lore.add("§7Worth now: §f+" + PLACE_PTS[Math.min(n + 1, PLACE_PTS.length) - 1]);
-                    icon = simple(item.icon, "§f" + item.name, lore);
+                    int worth = bingoPoints(item.tier, n + 1);
+                    lore.add("§7Worth now: §f+" + worth + " §8(full value +" + bingoPoints(item.tier, 1) + ")");
+                    icon = simple(item.icon, "§f" + item.name + " §7(+" + worth + ")", lore);
                 }
             }
             inv.setItem(cellSlot(i), icon);
         }
 
         // Teleports
-        inv.setItem(45, simple(Material.ENDER_PEARL, "§bTeleport to your start point",
-                List.of("§7Cooldown: " + (TP_COOLDOWN_MS / 1000) + "s")));
+        inv.setItem(45, simple(Material.ENDER_PEARL, "§bTeleport to the start point",
+                List.of("§7Cooldown: " + cfg.teleportCooldown + "s")));
         if (side != null) {
             int slot = 47;
             for (Player mate : members(side)) {
@@ -838,13 +1107,25 @@ public final class BingoGame implements McmGame, Listener {
                 SkullMeta sm = (SkullMeta) head.getItemMeta();
                 sm.setOwningPlayer(mate);
                 sm.displayName(txt("§bTeleport to " + mate.getName()));
-                sm.lore(List.of(txt("§7Cooldown: " + (TP_COOLDOWN_MS / 1000) + "s")));
+                sm.lore(List.of(txt("§7Cooldown: " + cfg.teleportCooldown + "s")));
                 head.setItemMeta(sm);
                 inv.setItem(slot, head);
                 m.tpTargets.put(slot, mate.getUniqueId());
                 slot++;
             }
         }
+    }
+
+    private static String variants(BingoItem item) {
+        List<String> n = new ArrayList<>();
+        for (Material mat : item.accepted) n.add(BingoItem.pretty(mat.name()));
+        return String.join(", ", n);
+    }
+
+    private static String join(int[] a, String sep) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < a.length; i++) { if (i > 0) sb.append(sep); sb.append(a[i]); }
+        return sb.toString();
     }
 
     private static ItemStack simple(Material mat, String name, List<String> lore) {
@@ -891,7 +1172,7 @@ public final class BingoGame implements McmGame, Listener {
         if (side == null) return;
         Location dest = null;
         if (slot == 45) {
-            dest = sideSpawn.getOrDefault(side, areaSpawn());
+            dest = nextStartSpot();
         } else if (m.tpTargets.containsKey(slot)) {
             Player mate = Bukkit.getPlayer(m.tpTargets.get(slot));
             if (mate == null || !mate.isOnline() || mate.isDead() || !mate.getWorld().equals(world)
@@ -909,7 +1190,11 @@ public final class BingoGame implements McmGame, Listener {
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1f, 0.6f);
             return;
         }
-        tpCooldown.put(p.getUniqueId(), now + TP_COOLDOWN_MS);
+        if (cfg.topBlockedInCombat && now < combatUntil.getOrDefault(p.getUniqueId(), 0L)) {
+            p.sendMessage(txt("§cYou were just hit by a player - teleports are blocked for a few seconds."));
+            return;
+        }
+        tpCooldown.put(p.getUniqueId(), now + cfg.teleportCooldown * 1000L);
         Location target = dest.clone();
         p.closeInventory();
         p.setFallDistance(0f);
@@ -930,48 +1215,107 @@ public final class BingoGame implements McmGame, Listener {
         if (!running()) return;
         Action a = e.getAction();
         if (a != Action.RIGHT_CLICK_AIR && a != Action.RIGHT_CLICK_BLOCK) return;
-        if (!isCard(e.getItem())) return;
-        e.setCancelled(true);
-        if (isPlayer(e.getPlayer())) openCard(e.getPlayer());
+        ItemStack it = e.getItem();
+        if (isCard(it)) {
+            e.setCancelled(true);
+            if (isPlayer(e.getPlayer())) openCard(e.getPlayer());
+        } else if (isFinder(it)) {
+            e.setCancelled(true);
+            if (isPlayer(e.getPlayer()) && e.getHand() == org.bukkit.inventory.EquipmentSlot.HAND) useFinder(e.getPlayer());
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onDrop(PlayerDropItemEvent e) {
         if (!running()) return;
-        if (isCard(e.getItemDrop().getItemStack())) e.setCancelled(true);
+        ItemStack it = e.getItemDrop().getItemStack();
+        if (isCard(it) || isFinder(it)) e.setCancelled(true);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onSwapHands(PlayerSwapHandItemsEvent e) {
+        if (!isPlayer(e.getPlayer())) return;
+        if (isCard(e.getMainHandItem()) || isCard(e.getOffHandItem())) e.setCancelled(true);
+    }
+
+    /** No crafting with the kit items (the Cave Finder is a compass; it must not become a Map). */
+    @EventHandler
+    public void onCraft(PrepareItemCraftEvent e) {
+        if (!running()) return;
+        for (ItemStack it : e.getInventory().getMatrix()) {
+            if (isFinder(it) || isCard(it)) { e.getInventory().setResult(null); return; }
+        }
     }
 
     @EventHandler
     public void onMenuClick(InventoryClickEvent e) {
-        if (!(e.getInventory().getHolder() instanceof CardMenu m) || m.game != this) return;
+        if (e.getInventory().getHolder() instanceof CardMenu m && m.game == this) {
+            e.setCancelled(true);
+            if (!(e.getWhoClicked() instanceof Player p)) return;
+            if (e.getClickedInventory() == null || e.getClickedInventory() != e.getView().getTopInventory()) return;
+            handleMenuClick(p, m, e.getRawSlot());
+            return;
+        }
+        // Any click on the card in the player's own inventory opens the card; the card never moves.
+        if (!(e.getWhoClicked() instanceof Player p) || !isPlayer(p)) return;
+        boolean onCard = isCard(e.getCurrentItem());
+        boolean touchesCard = onCard || isCard(e.getCursor())
+                || (e.getClick() == ClickType.NUMBER_KEY && e.getHotbarButton() >= 0 && isCard(p.getInventory().getItem(e.getHotbarButton())))
+                || (e.getClick() == ClickType.SWAP_OFFHAND && isCard(p.getInventory().getItemInOffHand()));
+        if (!touchesCard) return;
         e.setCancelled(true);
-        if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (e.getClickedInventory() == null || e.getClickedInventory() != e.getView().getTopInventory()) return;
-        handleMenuClick(p, m, e.getRawSlot());
+        if (onCard && e.getClickedInventory() != null && e.getClickedInventory().getType() == org.bukkit.event.inventory.InventoryType.PLAYER) {
+            Bukkit.getScheduler().runTask(plugin, () -> { if (isPlayer(p) && p.isOnline()) openCard(p); });
+        }
     }
 
     @EventHandler
     public void onMenuDrag(InventoryDragEvent e) {
-        if (e.getInventory().getHolder() instanceof CardMenu m && m.game == this) e.setCancelled(true);
+        if (e.getInventory().getHolder() instanceof CardMenu m && m.game == this) { e.setCancelled(true); return; }
+        if (e.getWhoClicked() instanceof Player p && isPlayer(p) && isCard(e.getOldCursor())) e.setCancelled(true);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    private static Player attackerOf(Entity d) {
+        if (d instanceof Player p) return p;
+        if (d instanceof Projectile pr) {
+            ProjectileSource src = pr.getShooter();
+            if (src instanceof Player p) return p;
+        }
+        if (d instanceof TNTPrimed tnt && tnt.getSource() instanceof Player p) return p;
+        return null;
+    }
+
+    /** PvP between sides while playing; no friendly fire; nothing during the countdown. */
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPvp(EntityDamageByEntityEvent e) {
         if (!(e.getEntity() instanceof Player victim) || !inWorld(victim)) return;
-        Player attacker = null;
-        Entity d = e.getDamager();
-        if (d instanceof Player p) attacker = p;
-        else if (d instanceof Projectile pr) {
-            ProjectileSource src = pr.getShooter();
-            if (src instanceof Player p) attacker = p;
-        } else if (d instanceof TNTPrimed tnt && tnt.getSource() instanceof Player p) attacker = p;
-        if (attacker != null && !attacker.equals(victim)) e.setCancelled(true);
+        Player attacker = attackerOf(e.getDamager());
+        if (attacker == null || attacker.equals(victim)) return;
+        String vs = sideOf.get(victim.getUniqueId()), as = sideOf.get(attacker.getUniqueId());
+        if (phase != Phase.PLAYING || vs == null || as == null || vs.equals(as)) { e.setCancelled(true); return; }
+        combatUntil.put(victim.getUniqueId(), System.currentTimeMillis() + cfg.combatSeconds * 1000L);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onDamage(EntityDamageEvent e) {
         if (phase != Phase.COUNTDOWN) return;
         if (e.getEntity() instanceof Player p && inWorld(p)) e.setCancelled(true);
+    }
+
+    /** Keep inventory and levels, nothing drops (no items for the killer). */
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onDeath(PlayerDeathEvent e) {
+        Player p = e.getEntity();
+        if (!isPlayer(p) || !p.getWorld().equals(world)) return;
+        e.setKeepInventory(true);
+        e.getDrops().clear();
+        e.setKeepLevel(true);
+        e.setDroppedExp(0);
+        Player killer = p.getKiller();
+        if (killer != null && cfg.killPoints > 0 && phase == Phase.PLAYING && ctx != null) {
+            String ks = sideOf.get(killer.getUniqueId());
+            if (ks != null && !ks.equals(sideOf.get(p.getUniqueId()))) ctx.addPoints(killer.getUniqueId(), cfg.killPoints, "Bingo kill");
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -984,8 +1328,10 @@ public final class BingoGame implements McmGame, Listener {
     public void onRespawn(PlayerRespawnEvent e) {
         Player p = e.getPlayer();
         if (!isPlayer(p)) return;
-        String side = sideOf.get(p.getUniqueId());
-        e.setRespawnLocation(sideSpawn.getOrDefault(side, areaSpawn()));
+        Location r = e.getRespawnLocation();
+        boolean ownSpawn = (e.isBedSpawn() || e.isAnchorSpawn()) && r != null && world.equals(r.getWorld())
+                && world.getWorldBorder().isInside(r);
+        if (!ownSpawn) e.setRespawnLocation(nextStartSpot());
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             if (isPlayer(p) && p.isOnline()) applySpeed(p);
         }, 2L);

@@ -52,6 +52,19 @@ Paper 1.21.1 tournament server featuring the custom **MinecraftMondayCore** plug
   In spectator mode (no inventory) use `/mcm tools`.
 - The Tournament Controller also has Fast test / Skip wait / Skip round buttons (bottom row).
 
+## Playtest feedback
+
+Two commands write structured feedback for AI review while testing:
+
+- `/pfb <message>` — **point feedback**: records the current game, map, world, exact player coordinates, yaw/pitch, player and your message.
+- `/gfb <message>` — **general feedback**: records the current game, map, player and your message, without coordinates. Use it for balance or whole-game notes.
+
+Both append one JSON object per line to `plugins/MinecraftMondayCore/feedback/feedback.jsonl` (UTF-8, AI-readable). The file is created on first use; existing lines are kept. Example:
+
+```json
+{"v":1,"time":"2026-11-24T12:34:56Z","kind":"point","player":"Name","uuid":"...","event":"MCC","championship":true,"game":"battlebox","gameName":"Battle Box","map":"greenhouse","mapName":"greenhouse","world":"mcc_battlebox","x":12.34,"y":65.0,"z":-8.9,"yaw":90.0,"pitch":12.3,"message":"centre block is hard to reach"}
+```
+
 ## Games
 
 - **Minecraft Monday (MM):** the 7 built-ins (Survival Games, Parkour Spiral, Multi-Stage Dropper, TNT Run, Spleef/Splegg, Battle Arena,

@@ -70,6 +70,13 @@ public final class SkyBlockleGame implements McmGame {
     final Map<UUID, Integer> kills = new HashMap<>();
     final Map<UUID, String> names = new HashMap<>();
     final Map<UUID, UUID> lastDamager = new HashMap<>();
+    /** How each eliminated player died: true = killed by an enemy player (for the admin respawn command). */
+    final Map<UUID, Boolean> diedToPlayer = new HashMap<>();
+    /** Seconds x20 the end of the game is held after a non-PvP death so an admin can /sbl respawn (default, not researched). */
+    private static final int RESPAWN_WINDOW_TICKS = 20 * 20;
+    private boolean lastDeathRespawnable;
+    private String lastDeathName;
+    private org.bukkit.scheduler.BukkitTask endHoldTask;
     final Map<UUID, Long> lastDamageAt = new HashMap<>();
     int totalSides;
     /** Lootable graves of dead players (video research). */
@@ -327,7 +334,9 @@ public final class SkyBlockleGame implements McmGame {
         sidePlace.clear(); earned.clear();
         sideOf.clear(); sideMembers.clear(); sideWedge.clear(); sideColour.clear();
         alive.clear(); eliminatedSides.clear(); kills.clear(); names.clear();
-        lastDamager.clear(); lastDamageAt.clear(); refillsDone.clear();
+        lastDamager.clear(); lastDamageAt.clear(); refillsDone.clear(); diedToPlayer.clear();
+        lastDeathRespawnable = false; lastDeathName = null;
+        if (endHoldTask != null) { endHoldTask.cancel(); endHoldTask = null; }
         totalSides = 0; elapsed = 0; lastSegment = Integer.MIN_VALUE;
     }
 
@@ -585,6 +594,9 @@ public final class SkyBlockleGame implements McmGame {
         UUID killer = creditFor(victim);
         boolean scoring = state == State.LIVE;
         boolean enemyKill = killer != null && !sameSide(killer, victim);
+        diedToPlayer.put(victim, enemyKill);
+        lastDeathRespawnable = !enemyKill && p != null && p.isOnline() && spectate;
+        lastDeathName = names.get(victim);
         if (killer != null) {
             if (enemyKill) {
                 kills.merge(killer, 1, Integer::sum);
@@ -668,6 +680,50 @@ public final class SkyBlockleGame implements McmGame {
         checkEnd();
     }
 
+    /**
+     * Admin respawn (owner request): put an eliminated player back in the game on their side's start island with
+     * the starting kit. By default only for deaths that were not caused by an enemy player (void, fall, border...);
+     * {@code force} allows any. Returns null on success or the reason it was refused.
+     */
+    String adminRespawn(Player p, boolean force) {
+        if (ctx == null || state != State.LIVE) return "No Sky Blockle game is live (a game that has already ended cannot be re-opened).";
+        UUID u = p.getUniqueId();
+        String side = sideOf.get(u);
+        if (side == null) return p.getName() + " is not a participant of this game.";
+        if (alive.contains(u)) return p.getName() + " is still alive.";
+        if (!force && Boolean.TRUE.equals(diedToPlayer.get(u))) return p.getName() + " was killed by a player. Add 'force' to respawn them anyway.";
+        World w = map.world();
+        if (w == null) return "The map world is not loaded.";
+        List<MapModel.Spawn> spawns = map.model().spawnsFor(sideWedge.getOrDefault(side, 0));
+        Location to;
+        if (spawns.isEmpty()) to = map.castleCentre();
+        else {
+            MapModel.Spawn sp = spawns.get(random.nextInt(spawns.size()));
+            to = map.toWorld(sp.x(), sp.y(), sp.z());
+            to.setYaw(sp.yaw());
+        }
+        // the start island may have been mined away or be outside the border: make sure there is something to stand on
+        org.bukkit.block.Block below = to.clone().add(0, -1, 0).getBlock();
+        if (below.getType().isAir()) below.setType(org.bukkit.Material.COBBLESTONE, false);
+        alive.add(u);
+        diedToPlayer.remove(u);
+        lastDamager.remove(u);
+        lastDamageAt.remove(u);
+        if (eliminatedSides.remove(side)) sidePlace.remove(side);
+        preparePlayer(p);
+        p.teleport(to);
+        PlayerInventory inv = p.getInventory();
+        for (ItemSpec is : settings.startInventory) {
+            Map<Integer, ItemStack> left = inv.addItem(is.build(random));
+            for (ItemStack it : left.values()) p.getWorld().dropItem(p.getLocation(), it);
+        }
+        if (endHoldTask != null) { endHoldTask.cancel(); endHoldTask = null; }
+        ctx.broadcast(ChatColor.AQUA + "[▶] " + coloured(u) + ChatColor.AQUA + " was respawned by an admin.");
+        McmFx.title(p, ChatColor.AQUA + "" + ChatColor.BOLD + "RESPAWNED", ChatColor.GRAY + "back on your island", 0, 40, 15);
+        updateSidebar();
+        return null;
+    }
+
     List<String> aliveSides() {
         List<String> out = new ArrayList<>();
         for (Map.Entry<String, List<UUID>> e : sideMembers.entrySet()) {
@@ -679,8 +735,23 @@ public final class SkyBlockleGame implements McmGame {
     private void checkEnd() {
         if (state != State.LIVE && state != State.COUNTDOWN && state != State.PREPARING) return;
         int n = aliveSides().size();
+        boolean over = n == 0 || (totalSides >= 2 && n == 1);
+        if (!over) return;
+        // Owner request: a death that was not caused by a player can be undone with /sbl respawn. Hold the end of
+        // the game for a short window so an admin has time to do it (only while live, only once per death).
+        if (state == State.LIVE && lastDeathRespawnable && RESPAWN_WINDOW_TICKS > 0) {
+            lastDeathRespawnable = false;
+            if (endHoldTask != null) endHoldTask.cancel();
+            String who = lastDeathName == null ? "the player" : lastDeathName;
+            for (Player o : Bukkit.getOnlinePlayers()) if (o.isOp())
+                o.sendMessage(ChatColor.AQUA + "[Admin] " + who + " did not die to a player. /sbl respawn " + who
+                        + ChatColor.GRAY + " within " + (RESPAWN_WINDOW_TICKS / 20) + " s to bring them back; otherwise the game ends.");
+            endHoldTask = Bukkit.getScheduler().runTaskLater(plugin, () -> { endHoldTask = null; checkEnd(); }, RESPAWN_WINDOW_TICKS);
+            return;
+        }
+        if (endHoldTask != null) return; // still inside the respawn window
         if (n == 0) endGame(false, "Everyone was eliminated");
-        else if (totalSides >= 2 && n == 1) endGame(false, "Last side standing");
+        else endGame(false, "Last side standing");
     }
 
     /** End: +alive-at-end to every survivor, rank surviving sides (tiebreak at time-out), celebrate, then finish. */

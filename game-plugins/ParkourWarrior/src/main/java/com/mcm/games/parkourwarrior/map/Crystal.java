@@ -24,13 +24,13 @@ final class Crystal {
     // ---------------------------------------------------------------- M5-1 (POST)
     static Ob m1(W w, Ob.Slot s) {
         Ob o = new Ob(w, s, "Geode Steps", "POST");
-        int[][] p = {{0, 5, 0}, {1, 9, 1}, {0, 13, 1}, {-1, 16, 2}, {0, 20, 2}};
+        int[][] p = {{0, 5, 0}, {1, 9, 1}, {0, 13, 1}, {-1, 17, 2}, {0, 21, 2}};
         for (int[] c : p) {
             crystalPillar(o, c[0], c[0] + 1, c[1], c[2]);
             o.area(c[0], c[2], c[1], c[0] + 1, c[1]);
         }
-        o.end(0, 2, 24);
-        Sh.padBase(o, 0, 2, 24, "polished_deepslate", "deepslate_tiles", "cobbled_deepslate", 3);
+        o.end(0, 2, 25);
+        Sh.padBase(o, 0, 2, 25, "polished_deepslate", "deepslate_tiles", "cobbled_deepslate", 3);
         return o;
     }
 
@@ -71,23 +71,21 @@ final class Crystal {
     // ---------------------------------------------------------------- M5-3 (TIMED lift)
     static Ob m3(W w, Ob.Slot s) {
         Ob o = new Ob(w, s, "Rattling Lift", "TIMED");
-        int[][] p = {{4, 0}, {7, 1}, {10, 2}, {13, 3}, {16, 4}};
+        int[][] p = {{4, 0}, {7, 1}, {11, 1}, {14, 2}, {18, 2}, {21, 3}};
         // inclined shaft: timber arches over the path
         for (int k = 0; k < p.length; k++) {
             int z = p[k][0], y = p[k][1];
             for (int yy = y - 6; yy <= y + 5; yy++) for (int sx = -3; sx <= 3; sx += 6) o.set(sx, yy, z, "stripped_spruce_log[axis=y]");
             for (int x = -3; x <= 3; x++) o.set(x, y + 6, z, "stripped_spruce_log[axis=x]");
             o.set(0, y + 5, z, "lantern[hanging=true,waterlogged=false]");
-            // brass guide rails at both sides of the cage track (below the cage level)
-            for (int sx = -2; sx <= 2; sx += 4) o.set(sx, y - 1, z, "rail[shape=north_south,waterlogged=false]");
-            for (int sx = -2; sx <= 2; sx += 4) o.set(sx, y - 2, z, "polished_deepslate");
-            o.timed("waxed_cut_copper", 90, 40, -k * 18, 15, null,
-                    new int[]{-1, y, z}, new int[]{0, y, z}, new int[]{1, y, z});
+            // the lift cage is a single copper step on a chain (the old side guide rails were a bypass and are gone)
+            for (int yy = y + 1; yy <= y + 5; yy++) o.set(1, yy, z, "chain[axis=y,waterlogged=false]");
+            o.timed("waxed_cut_copper", 90, 22, Math.floorMod(-k * 15, 90), 15, null, new int[]{0, y, z});
         }
-        for (int z = 2; z <= 18; z++) o.set(-3, -8, z, "stripped_spruce_log[axis=z]");
-        for (int z = 2; z <= 18; z++) o.set(3, -8, z, "stripped_spruce_log[axis=z]");
-        o.end(0, 4, 20);
-        Sh.padBase(o, 0, 4, 20, "polished_deepslate", "deepslate_tiles", "cobbled_deepslate", 3);
+        for (int z = 2; z <= 23; z++) o.set(-3, -8, z, "stripped_spruce_log[axis=z]");
+        for (int z = 2; z <= 23; z++) o.set(3, -8, z, "stripped_spruce_log[axis=z]");
+        o.end(0, 4, 25);
+        Sh.padBase(o, 0, 4, 25, "polished_deepslate", "deepslate_tiles", "cobbled_deepslate", 3);
         return o;
     }
 
@@ -118,7 +116,7 @@ final class Crystal {
     // ---------------------------------------------------------------- B5-2 (DROP)
     static Ob b2(W w, Ob.Slot s) {
         Ob o = new Ob(w, s, "Dripstone Descent", "DROP");
-        o.difficultyTag = "HARD";
+        o.difficultyTag = "MEDIUM";
         int[][] p = {{0, 5, -1}, {1, 10, -3}, {0, 15, -4}, {1, 20, -6}, {0, 24, -7}};
         for (int[] c : p) {
             for (int y = c[2] - 9; y <= c[2]; y++) {
@@ -138,29 +136,29 @@ final class Crystal {
         return o;
     }
 
-    // ---------------------------------------------------------------- B5-3 (NEO)
+    // ---------------------------------------------------------------- B5-2 (NEO, silver)
     static Ob b3(W w, Ob.Slot s) {
         Ob o = new Ob(w, s, "Crystal Curtain", "NEO");
         o.difficultyTag = "HARD";
-        // geode wall on the left with amethyst ledges; crystal blades jut out between them
-        for (int z = 2; z <= 24; z++) for (int y = -8; y <= 9; y++) for (int x = -6; x <= -3; x++)
+        // geode wall on the left with one-wide amethyst ledges (3 long); single crystal blades stand between the
+        // first ledges, flush with their outer edge (three single neos), then two 3+1 jumps up the bare ledges
+        for (int z = 1; z <= 33; z++) for (int y = -8; y <= 9; y++) for (int x = -6; x <= -3; x++)
             o.set(x, y, z, x == -3 ? (W.h(x, y, z, 5) < 0.3 ? "amethyst_block" : "calcite") : x == -6 ? "smooth_basalt" : "calcite");
-        int[][] ledge = {{4, 0}, {7, 1}, {10, 2}, {13, 3}, {16, 4}};
-        o.set(-2, 0, 4, "amethyst_block"); o.set(-1, 0, 4, "amethyst_block");
-        o.area(-2, 0, 4, -1, 4);
-        for (int i = 1; i < ledge.length; i++) {
-            int bz = ledge[i][0] - 2, y = ledge[i - 1][1];
-            for (int x = -2; x <= 0; x++) for (int yy = y + 1; yy <= y + 5; yy++)
-                o.set(x, yy, bz + 1, x == 0 ? "purple_stained_glass" : "amethyst_block");
-            o.set(1, y + 3, bz + 1, "amethyst_cluster[facing=east,waterlogged=false]");
-            o.set(-2, ledge[i][1], ledge[i][0], "amethyst_block");
-            o.set(-1, ledge[i][1], ledge[i][0], "amethyst_block");
-            o.set(-2, ledge[i][1] - 1, ledge[i][0], "calcite");
-            Ob.Node n = o.area(-2, ledge[i][1], ledge[i][0], -1, ledge[i][0]);
-            n.neo = true;
+        // ledge: z0, y, blade after it (1) or none (0)
+        int[][] L = {{4, 0, 1}, {8, 0, 1}, {12, 0, 1}, {16, 0, 0}, {22, 1, 0}, {28, 2, 0}};
+        for (int i = 0; i < L.length; i++) {
+            int z0 = L[i][0], y = L[i][1];
+            for (int z = z0; z < z0 + 3; z++) { o.set(-2, y, z, "amethyst_block"); o.set(-2, y - 1, z, "calcite"); }
+            Ob.Node n = o.area(-2, y, z0, -2, z0 + 2);
+            if (i > 0 && L[i - 1][2] > 0) n.neo = true;
+            if (L[i][2] > 0) {
+                int bz = z0 + 3;
+                for (int yy = y - 1; yy <= y + 4; yy++) o.set(-2, yy, bz, yy == y + 4 ? "budding_amethyst" : "purple_stained_glass");
+                o.set(-2, y + 5, bz, "amethyst_cluster[facing=up,waterlogged=false]");
+            }
         }
-        o.end(0, 4, 20);
-        Sh.padBase(o, 0, 4, 20, "polished_deepslate", "deepslate_tiles", "cobbled_deepslate", 3);
+        o.end(-1, 2, 34);
+        Sh.padBase(o, -1, 2, 34, "polished_deepslate", "deepslate_tiles", "cobbled_deepslate", 3);
         return o;
     }
 }

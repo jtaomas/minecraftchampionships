@@ -9,6 +9,7 @@ import com.mcm.games.tgttos.maps.b.util.G;
 import com.mcm.games.tgttos.maps.b.util.Noise;
 import com.mcm.games.tgttos.maps.b.util.Noise.Pal;
 import com.mcm.games.tgttos.model.Kit;
+import com.mcm.games.tgttos.model.MapFeatures;
 import com.mcm.games.tgttos.model.MapType;
 import com.mcm.games.tgttos.model.TgMap;
 import com.mcm.games.tgttos.model.TgMapData;
@@ -47,14 +48,15 @@ public final class KiteFestival implements TgMap {
     @Override
     public TgMapData build(long seed) { return generate(seed).d; }
 
-    /** Extra rockets on top of the kit's {@code kit.fireworks} (2): total 16. */
-    public static final int EXTRA_ROCKETS = 14;
+    /** Extra rockets on top of the kit's {@code kit.fireworks} (2): 6 up front; gold refill rings add 2 each (playtest 2). */
+    public static final int EXTRA_ROCKETS = 4;
 
     /** Decoy chickens on hay bales in the landing field (no name tag; punching them does nothing). */
     public static final List<int[]> DECOYS = List.of(new int[]{151, FIELD_Y + 2, 112}, new int[]{180, FIELD_Y + 2, 106},
             new int[]{149, FIELD_Y + 2, 90}, new int[]{181, FIELD_Y + 2, 88});
 
-    @Override public List<int[]> decoyChickens() { return DECOYS; }
+    /** Owner (playtest 2): decoys wander the later part of the map (runtime scatter); the hay bales stay as field props. */
+    @Override public List<int[]> decoyChickens() { return List.of(); }
 
     /** Wall ledges (relaunch points): {x, z of the ladder, platform y, inward dx, inward dz}. Filled by generate. */
     public static final List<int[]> LEDGES = new ArrayList<>();
@@ -98,7 +100,9 @@ public final class KiteFestival implements TgMap {
                 KiteCourse.LEN, GANTRY_Y, FIELD_Y, KiteCourse.SCREENS.size()));
         d.notes.put("safeLine", "lime 9-11 openings, outside of the hairpins, 11x11 tunnel, low ring of the stack, slalom round the needles");
         d.notes.put("fastLine", "orange 6-7 openings on the inside, 5x5 tunnel with two bends, high red 5 of the stack, three 4x4 red needles");
-        d.notes.put("rockets", "kit " + 2 + " + " + EXTRA_ROCKETS + " extra (TgMapData.extraItems); no refills (not supported by the runtime)");
+        d.notes.put("rockets", "kit " + 2 + " + " + EXTRA_ROCKETS + " extra (TgMapData.extraItems); +" + REFILL + " per gold refill ring (" + String.join(", ", REFILL_SCREENS) + ")");
+        d.notes.put("features", "6 movers (3 pendulums, 2 rotors, 1 shutter), " + feats().gates.size() + " bonus openings in 5 groups, 5 ledge checkpoints, " + feats().refills.size() + " refill openings");
+        d.hazardBlocks.add("minecraft:fire");
         d.notes.put("failure", "landing on the meadow floor is not a fail: relaunch with a rocket or climb a wall ledge; leaving the canyon = back to start");
         g.finish();
         return g;
@@ -173,10 +177,11 @@ public final class KiteFestival implements TgMap {
                     if (m <= 2 && (frame == 0 || m < frame)) { frame = m; in = h; }
                 }
                 if (in != null && frame == 0) { g.set(x, y, z, null); continue; }
+                boolean fire = sc.name().equals("ring stack") && (in != null && (in.k() == K.NEEDLE || in.k() == K.BRUTAL));
                 if (in != null && frame == 1 && !(in.slot() && (y == c))) {
-                    b = ringBlock(in, x, y, f, c);
+                    b = fire ? "fire" : refillHole(sc, in) ? (ringBlock(in, x, y, f, c).contains("froglight") ? "glowstone" : "gold_block") : ringBlock(in, x, y, f, c);
                 } else if (in != null && frame == 2 && in.k() != K.FINISH && sc.style() != 1) {
-                    b = "black_wool";
+                    b = fire ? "netherrack" : "black_wool";
                 } else if (y == c) {
                     b = sc.style() == 1 ? "stripped_spruce_log[axis=x]" : "dark_oak_planks";
                 } else if (sc.style() == 1) {
@@ -213,6 +218,7 @@ public final class KiteFestival implements TgMap {
             case SAFE -> glow ? "verdant_froglight" : "lime_wool";
             case FAST -> glow ? "ochre_froglight" : "orange_wool";
             case NEEDLE -> glow ? "pearlescent_froglight" : "red_wool";
+            case BRUTAL -> glow || (h.w() == 1 && (x + y) % 2 == 0) ? "pearlescent_froglight" : "red_concrete";
             case FINISH -> corner || Math.floorMod(x + y, 3) == 0 ? "sea_lantern" : "red_stained_glass";
         };
     }
@@ -278,18 +284,14 @@ public final class KiteFestival implements TgMap {
 
     private void ledges(G g) {
         // turn mids (outer wall) and two on the long legs, each 1 below the safe line there
-        ledge(g, -110, 231, 0, -1);
-        ledge(g, 0, -232, 0, 1);
-        ledge(g, 110, 231, 0, -1);
-        ledge(g, -39, -49, -1, 0);
-        ledge(g, 39, -20, 1, 0);
+        for (int[] l : LEDGE_SPOTS) ledge(g, l[0], l[1], l[2], l[3]);
     }
 
     /** Ladder cell (lx, lz) in front of a tower against the wall; (ix, iz) = inward direction (towards the canyon). */
     private void ledge(G g, int lx, int lz, int ix, int iz) {
         double s = KiteCourse.nearest(lx + 0.5, lz + 0.5)[0];
         int f = floorY(s);
-        int py = (int) Math.round(KiteCourse.safeY(s)) - 2;
+        int py = ledgePy(lx, lz);
         int tx = -iz, tz = ix;  // tangential
         String facing = ix > 0 ? "east" : ix < 0 ? "west" : iz > 0 ? "south" : "north";
         // tower: 3 wide (tangential) x 2 deep behind the ladder, floor to platform
@@ -478,5 +480,127 @@ public final class KiteFestival implements TgMap {
                 for (int a = i; a <= i2; a++) for (int b = j; b <= j2; b++) used[a][b] = true;
                 d.hazardRegions.add(Region.of(i * cs - 250, -64, j * cs - 250, (i2 + 1) * cs - 251, 320, (j2 + 1) * cs - 251));
             }
+    }
+
+    // ------------------------------------------------------------------ interactive features (playtest 2)
+
+    /** Wall ledges {ladder x, ladder z, inward dx, inward dz}: relaunch points and the 5 checkpoints. */
+    static final int[][] LEDGE_SPOTS = {{-110, 231, 0, -1}, {0, -232, 0, 1}, {110, 231, 0, -1}, {-39, -49, -1, 0}, {39, -20, 1, 0}};
+    static final String[] LEDGE_NAMES = {"Turn 1 ledge", "Turn 2 ledge", "Turn 3 ledge", "Tether Forest ledge", "Needle ledge"};
+
+    /** Ledge platform y (1 below the safe line there - 1). */
+    static int ledgePy(int lx, int lz) { return (int) Math.round(KiteCourse.safeY(KiteCourse.nearest(lx + 0.5, lz + 0.5)[0])) - 2; }
+
+    /** Screens whose openings refill rockets (gold frames): +REFILL each, once per opening per attempt. */
+    public static final List<String> REFILL_SCREENS = List.of("tunnel exit", "ring stack", "low arch", "swing 2");
+    public static final int REFILL = 2;
+
+    /** Bonus group of a segment (about five per map, so the orange line earns ~5 and the red / brutal line hits the cap). */
+    public static String group(String seg) {
+        return switch (seg) {
+            case "Drop Gate Run", "Canyon Slalom" -> "opening";
+            case "Tunnel Split", "Lift Hill" -> "tunnel & lift";
+            case "Ring Stack", "Tether Forest" -> "stack & masts";
+            case "Dive & Pull-up", "Needle" -> "dive & needle";
+            default -> "S-canyon";
+        };
+    }
+
+    public static boolean refillHole(Screen sc, Hole h) {
+        if (!REFILL_SCREENS.contains(sc.name())) return false;
+        return !sc.name().equals("ring stack") || h.k() == K.SAFE || h.k() == K.FAST;
+    }
+
+    /** Opening cells as a region at the screen plane (slots: floor + 1 .. crest - 1). */
+    public static Region holeBox(Screen sc, Hole h) {
+        int f = floorY(sc.s()), c = crestY(sc.s());
+        int y0 = h.slot() ? f + 1 : h.y0(), y1 = h.slot() ? c - 1 : h.y0() + h.h() - 1;
+        return Region.of(h.x0(), y0, sc.z(), h.x0() + h.w() - 1, y1, sc.z());
+    }
+
+    private static MapFeatures FEATURES;
+
+    @Override public MapFeatures features() { return feats(); }
+
+    public static synchronized MapFeatures feats() {
+        if (FEATURES != null) return FEATURES;
+        MapFeatures f = new MapFeatures();
+        for (Screen sc : KiteCourse.SCREENS)
+            for (Hole h : sc.holes()) {
+                if (h.k().tier > 0) f.gates.add(new MapFeatures.BonusGate(group(sc.seg()), sc.name() + " " + h.k().name().toLowerCase(), h.k().tier, holeBox(sc, h)));
+                if (refillHole(sc, h)) f.refills.add(new MapFeatures.Refill(sc.name() + " ring", holeBox(sc, h), REFILL));
+            }
+        // the fast tube itself is an orange choice (its mouth is in the gate list above as a FAST hole)
+        // checkpoints: the five wall ledges, ordered along the course; crossing the canyon at a ledge saves it
+        List<int[]> ord = new ArrayList<>();
+        for (int i = 0; i < LEDGE_SPOTS.length; i++) ord.add(new int[]{i, (int) Math.round(KiteCourse.nearest(LEDGE_SPOTS[i][0] + 0.5, LEDGE_SPOTS[i][1] + 0.5)[0])});
+        ord.sort((a, b) -> Integer.compare(a[1], b[1]));
+        int order = 0;
+        for (int[] o : ord) {
+            int[] l = LEDGE_SPOTS[o[0]];
+            double s = o[1];
+            double[] c = KiteCourse.at(s), c2 = KiteCourse.at(s + 1);
+            boolean alongZ = Math.abs(c2[1] - c[1]) > Math.abs(c2[0] - c[0]);
+            int fl = floorY(s), cr = crestY(s);
+            Region trig = alongZ
+                    ? Region.of((int) Math.floor(c[0] - HW), fl, (int) Math.floor(c[1]) - 1, (int) Math.floor(c[0] + HW), cr, (int) Math.floor(c[1]) + 1)
+                    : Region.of((int) Math.floor(c[0]) - 1, fl, (int) Math.floor(c[1] - HW), (int) Math.floor(c[0]) + 1, cr, (int) Math.floor(c[1] + HW));
+            int py = ledgePy(l[0], l[1]);
+            int tx = -l[3], tz = l[2];
+            float yaw = (float) Math.toDegrees(Math.atan2(-(c2[0] - c[0]), c2[1] - c[1]));
+            List<Spawn> sp = new ArrayList<>();
+            for (int t = -1; t <= 1; t++) sp.add(new Spawn(l[0] + t * tx + l[2] + 0.5, py + 1, l[1] + t * tz + l[3] + 0.5, yaw, 0f));
+            f.checkpoints.add(new MapFeatures.Checkpoint(order++, LEDGE_NAMES[o[0]], trig, sp, List.of()));
+        }
+        f.movers.addAll(movers());
+        FEATURES = f;
+        return f;
+    }
+
+    /**
+     * Six moving hazards, all on the orange / red side of the canyon and clear of the lime line at every phase
+     * (KiteV proves it): two pendulum wrecking balls over the hairpin insides and one after the slalom, a fan rotor in
+     * front of the fast lift 6s, a windmill rotor below the swing-3 orange ring, and a portcullis shutter on needle 3.
+     */
+    public static List<MapFeatures.Mover> movers() {
+        List<MapFeatures.Mover> m = new ArrayList<>();
+        // wrecking ball after slalom 2 (leg A, +Z): swings along the course over the fast line (x -152), 5 s, +-65 deg
+        m.add(MapFeatures.Mover.pendulum("wrecking ball", -152, KiteCourse.fastY(KiteCourse.sOn(0, 150)) + 12.3, 150, 'x', 65, 100, 0, ball(12, 1.5)));
+        // turn 1 / turn 2 pendulums at the hairpin apexes, over the inside line (r 44), swinging radially (r 34..54)
+        double s1 = 168 + Math.PI * KiteCourse.R / 2, s2 = 660.8 + Math.PI * KiteCourse.R / 2;
+        m.add(MapFeatures.Mover.pendulum("turn 1 pendulum", -109, KiteCourse.fastY(s1) + 12.3, 160 + KiteCourse.R_FAST, 'x', 50, 90, 20, ball(12, 2)));
+        m.add(MapFeatures.Mover.pendulum("turn 2 pendulum", 1, KiteCourse.fastY(s2) + 12.3, -160 - KiteCourse.R_FAST, 'x', 50, 90, 45, ball(12, 2)));
+        // lift 2 fan: 4 blades 2 x 10 round a hub 7 above the fast 6 (leg B, -Z, z 10), 8 s per turn
+        Hole lf = screen("lift 2").get(K.FAST);
+        m.add(MapFeatures.Mover.rotor("lift fan", lf.cx(), lf.y0() + lf.h() / 2.0 + 7, 13.5, 'z', 0, 160, 0, blades(10, 1)).withSound("block.grindstone.use"));
+        // windmill below the swing 3 orange ring (leg C, +Z, z 84): 4 arms 2 x 12, hub 8 below the ring, 10 s per turn
+        Hole sw = screen("swing 3").get(K.FAST);
+        m.add(MapFeatures.Mover.rotor("windmill", sw.cx(), sw.y0() + sw.h() / 2.0 - 8, 80.5, 'z', 45, 200, 0, blades(12, 1)).withSound("block.wood.break"));
+        // needle 3 shutter: a 4 x 4 portcullis in front of the red 4x4, open 2 s, closes in 0.25 s, shut 1 s
+        Hole nd = screen("needle 3").get(K.NEEDLE);
+        m.add(MapFeatures.Mover.slider("needle shutter", nd.x0(), nd.y0() + nd.h(), -2.6, 0, -nd.h(), 0, 40, 5, 20, 0,
+                List.of(new MapFeatures.Box(0, 0, 0, nd.w(), nd.h(), 0.5, "iron_bars", true))).withSound("block.iron_door.close"));
+        return m;
+    }
+
+    private static Screen screen(String name) {
+        for (Screen sc : KiteCourse.SCREENS) if (sc.name().equals(name)) return sc;
+        throw new IllegalStateException(name);
+    }
+
+    /** Pendulum: chain from the pivot down to a (2r+1)-cube ball centred `len` below the pivot. */
+    private static List<MapFeatures.Box> ball(double len, double r) {
+        return List.of(new MapFeatures.Box(-0.15, -(len - r), -0.15, 0.15, 0, 0.15, "chain", false),
+                new MapFeatures.Box(-r - 0.5, -len - r - 0.5, -r - 0.5, r + 0.5, -len + r + 0.5, r + 0.5, "polished_blackstone", true),
+                new MapFeatures.Box(-r, -len - r - 0.7, -r, r, -len - r - 0.5, r, "red_concrete", true));
+    }
+
+    /** Rotor: hub + four blades `len` long, 2*hw wide (in the rotor plane), 1 thick. */
+    private static List<MapFeatures.Box> blades(double len, double hw) {
+        return List.of(new MapFeatures.Box(-1.5, -1.5, -0.6, 1.5, 1.5, 0.6, "yellow_concrete", true),
+                new MapFeatures.Box(-hw, 1.5, -0.5, hw, len, 0.5, "white_concrete", true),
+                new MapFeatures.Box(-hw, -len, -0.5, hw, -1.5, 0.5, "orange_concrete", true),
+                new MapFeatures.Box(1.5, -hw, -0.5, len, hw, 0.5, "white_concrete", true),
+                new MapFeatures.Box(-len, -hw, -0.5, -1.5, hw, 0.5, "orange_concrete", true));
     }
 }

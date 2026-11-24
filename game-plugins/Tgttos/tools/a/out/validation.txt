@@ -2,112 +2,11 @@ Builder-A TGTTOS maps: validation report (seed 20261124)
 Movement model: walk/sprint 5.6 b/s (median 4.3), step 0.6 / stairs 1, jumps edge-to-edge gap <= 4 flat, -1 per block of rise,
 drops reach further (vanilla fall time), bridging 0.30 s/block (median 0.55), pillar 0.40 s/block (median 0.55), ladders 2.35 b/s.
 
-==== Laundry Line  (com.mcm.games.tgttos.maps.a.LaundryLineMap, BRIDGE, kit CONCRETE_PICKAXE_SNOWBALLS) ====  [generate 171 ms, validate 1064 ms, 102863 blocks]
-  [ok]   contract check 
-  [ok]   no concrete / concrete powder in the build (0)
-  [ok]   distinct block types >= 25 (69)
-  [ok]   scenery share 40-60% (56% of 102863 blocks outside the route envelope)
-  [ok]   connection post-pass holds (fences/panes/walls/bars: 0 mismatches)
-  [ok]   staircase helper: 0 flights walkable
-  [ok]   start strip holds 40 (252 standable cells, 60/60 spawns valid)
-  [ok]   start strip fenced in before GO (cells reachable outside: 0)
-  [ok]   start barrier blocks present (108)
-  [ok]   landmark visible from the start (ray-cast): 60/60 spawns (100%)
-  [ok]   built route start -> pen without placing blocks (17.1 s expert, 12 jumps, hardest gap 3.0 rise +1.0)
-  -- line FAST: chimney-stack jumps left of centre (gaps 2-3, +1 rises, head-hitter towel), centre ridge choke, second chimney row with a 4-gap
-  [ok]   FAST line completes
-         path 74 blocks, blocks placed 0, jumps 12 (3+ gaps: 5, falls 0), hardest jump gap 3.0 rise +1.0, max rise 1.0
-         estimated time: expert 17.1 s, median 24.0 s (+ fails)
-  [ok]   FAST longest obstacle-free straight sprint 6.0 <= 15 (-5,1,6)->(-5,1,12)
-  [ok]   FAST blocks within the 64 kit (0)
-  -- line SAFE: own bridge on the right weaving between sheets, over the roof through the wide right ridge gap, bridge again
-  [ok]   SAFE line completes
-         path 94 blocks, blocks placed 45, jumps 3 (3+ gaps: 0, falls 0), hardest jump gap 2.0 rise +1.0, max rise 1.0
-         estimated time: expert 23.6 s, median 38.0 s (+ fails)
-  [ok]   SAFE longest obstacle-free straight sprint 6.0 <= 15 (6,1,6)->(6,1,12)
-  [ok]   SAFE blocks within the 64 kit (45)
-  [ok]   FAST saves >= 20% vs SAFE (expert 28%, median 37%)
-  [ok]   best line by an expert <= 35 s (17.1 s)
-  [ok]   lazy straight line (walk + bridge, no jumps) needs >= 40 blocks (44 blocks, corridor x -2..2)
-  [ok]   map-wide: longest straight flat run along the course (z) 14 <= 15 at (20,1,-2)  [2808 reachable cells]
-         longest straight flat run across (x): 45 at (-23,4,40)
-  [ok]   lines and pen inside playBounds
-  RESULT PASS
-
-==== Dam Face  (com.mcm.games.tgttos.maps.a.DamFaceMap, CLIMB, kit CONCRETE_PICKAXE_SNOWBALLS) ====  [generate 51 ms, validate 1036 ms, 83926 blocks]
-  [ok]   contract check 
-  [ok]   no concrete / concrete powder in the build (0)
-  [ok]   distinct block types >= 25 (69)
-  [ok]   scenery share 40-60% (59% of 83926 blocks outside the route envelope)
-  [ok]   connection post-pass holds (fences/panes/walls/bars: 0 mismatches)
-  [ok]   staircase helper: 3 flights walkable
-  [ok]   start strip holds 40 (252 standable cells, 60/60 spawns valid)
-  [ok]   start strip fenced in before GO (cells reachable outside: 0)
-  [ok]   start barrier blocks present (108)
-  [ok]   landmark visible from the start (ray-cast): 60/60 spawns (100%)
-  [ok]   built route start -> pen without placing blocks (29.6 s expert, 14 jumps, hardest gap 3.0 rise +1.0)
-  -- line FAST: jump the baffle blocks, pillar up the middle stepping out under each terrace lip, centre stair cut (choke)
-  [ok]   FAST line completes
-         path 74 blocks, blocks placed 33, jumps 6 (3+ gaps: 1, falls 0), hardest jump gap 4.0 drop 3.0, max rise 1.0
-         estimated time: expert 22.5 s, median 30.9 s (+ fails)
-  [ok]   FAST longest obstacle-free straight sprint 5.0 <= 15 (1,37,37)->(1,37,42)
-  [ok]   FAST blocks within the 64 kit (33)
-  -- line SAFE: left training wall, ladder banks left/right/left/right between the catwalks, side or centre to the crest
-  [ok]   SAFE line completes
-         path 145 blocks, blocks placed 0, jumps 14 (3+ gaps: 0, falls 0), hardest jump gap 2.0 rise +1.0, max rise 1.0
-         estimated time: expert 30.0 s, median 40.1 s (+ fails)
-  [ok]   SAFE longest obstacle-free straight sprint 12.0 <= 15 (-14,1,6)->(-14,1,18)
-  [ok]   SAFE blocks within the 64 kit (0)
-  [ok]   FAST saves >= 20% vs SAFE (expert 25%, median 23%)
-  [ok]   best line by an expert <= 35 s (22.5 s)
-  [ok]   lazy straight line (walk + bridge, no jumps) needs >= 40 blocks (47 blocks, corridor x -2..1)
-  [ok]   map-wide: longest straight flat run along the course (z) 12 <= 15 at (-6,38,43)  [2458 reachable cells]
-         longest straight flat run across (x): 37 at (-19,37,39)
-  [ok]   lines and pen inside playBounds
-  RESULT PASS
-
-==== Bookshelf Run  (com.mcm.games.tgttos.maps.a.BookshelfRunMap, PARKOUR, kit SNOWBALLS_ONLY) ====  [generate 17 ms, validate 892 ms, 56620 blocks]
-  [ok]   contract check 
-  [ok]   no concrete / concrete powder in the build (0)
-  [ok]   distinct block types >= 25 (65)
-  [ok]   scenery share 40-60% (53% of 56620 blocks outside the route envelope)
-  [ok]   connection post-pass holds (fences/panes/walls/bars: 0 mismatches)
-  [ok]   staircase helper: 4 flights walkable
-  [ok]   start strip holds 40 (261 standable cells, 60/60 spawns valid)
-  [ok]   start strip fenced in before GO (cells reachable outside: 0)
-  [ok]   start barrier blocks present (87)
-  [ok]   landmark visible from the start (ray-cast): 60/60 spawns (100%)
-  [ok]   built route start -> pen without placing blocks (26.5 s expert, 11 jumps, hardest gap 3.0 rise +1.0)
-  -- line FAST: three chained books over the void (gaps 3-4, +1/-1), the open atlas, the 3-wide pencil (choke), the dictionary stack, two chained notebooks (gaps 4), the dictionary, two coin stacks down, the 2-wide letter opener onto the teacup rim, drop in
-  [ok]   FAST line completes
-         path 130 blocks, blocks placed 0, jumps 11 (3+ gaps: 8, falls 0), hardest jump gap 3.0 rise +1.0, max rise 1.0
-         estimated time: expert 26.6 s, median 37.0 s (+ fails)
-  [ok]   FAST longest obstacle-free straight sprint 11.0 <= 15 (-13,3,41)->(-13,3,52)
-  [ok]   FAST blocks within the 64 kit (0)
-  -- line SAFE: boards against the wall (2-gaps), 3-wide ruler bridge, the open atlas, 3-wide ruler stair down, 2-gap, 2-wide bookmark ribbon, 2-gap, stair up to the dictionary, stair down to the drawer, round the saucer, up the spoon, drop in
-  [ok]   SAFE line completes
-         path 171 blocks, blocks placed 0, jumps 9 (3+ gaps: 1, falls 1), hardest jump gap 2.2 rise +1.0, max rise 1.0
-         estimated time: expert 33.7 s, median 44.2 s (+ fails)
-  [ok]   SAFE longest obstacle-free straight sprint 12.0 <= 15 (4,2,22)->(5,2,34)
-  [ok]   SAFE blocks within the 64 kit (0)
-  [ok]   FAST saves >= 20% vs SAFE (expert 21%, median 16%)
-  [ok]   best line by an expert <= 35 s (26.6 s)
-  [ok]   map-wide: longest straight flat run along the course (z) 14 <= 15 at (-11,3,62)  [2830 reachable cells]
-         longest straight flat run across (x): 28 at (-19,3,9)
-  [ok]   lines and pen inside playBounds
-  [ok]   FAST crosses open void 10 times (>= 6), gaps [3.0, 3.0+1, 4.0-1, 3.0, 4.0, 4.0-1, 4.0-1, 2.2-2, 2.8-2, 2.0-1], widest 4.0
-         FAST: 38 of 79 walked cells (48%) have a void drop right beside them (knock-off exposure)
-  [ok]   SAFE crosses open void 6 times (>= 6), gaps [2.0-1, 2.0, 2.0+1, 2.0, 2.0, 7.1-11], widest 7.1
-         SAFE: 43 of 120 walked cells (36%) have a void drop right beside them (knock-off exposure)
-  [ok]   brawl spot 1: 26 x 13 box, 320 standable cells, 50 on a void edge (>= 80 / >= 10)
-  [ok]   brawl spot 2: 24 x 12 box, 288 standable cells, 53 on a void edge (>= 80 / >= 10)
-  RESULT PASS
-
-==== Orchard Drop  (com.mcm.games.tgttos.maps.a.OrchardDropMap, DROP, kit SNOWBALLS_ONLY) ====  [generate 193 ms, validate 2539 ms, 148297 blocks]
+==== Orchard Drop  (com.mcm.games.tgttos.maps.a.OrchardDropMap, DROP, kit SNOWBALLS_ONLY) ====  [generate 374 ms, validate 3088 ms, 148399 blocks]
   [ok]   contract check 
   [ok]   no concrete / concrete powder in the build (0)
   [ok]   distinct block types >= 25 (64)
-  [ok]   scenery share 40-60% (54% of 148297 blocks outside the route envelope)
+  [ok]   scenery share 40-60% (54% of 148399 blocks outside the route envelope)
   [ok]   connection post-pass holds (fences/panes/walls/bars: 0 mismatches)
   [ok]   staircase helper: 0 flights walkable
   [ok]   start strip holds 40 (252 standable cells, 52/52 spawns valid)
@@ -123,8 +22,8 @@ drops reach further (vanilla fall time), bridging 0.30 s/block (median 0.55), pi
   [ok]   FAST blocks within the 64 kit (0)
   -- line SAFE: left: jump out 7 into the 5-wide pool of the big apple (20-block fall), cross it, 8 out into the next big apple (19), drop into the big pond; hedge gaps left, the 5-wide plank bridge far left, up the west side and round the yard to the pen
   [ok]   SAFE line completes
-         path 163 blocks, blocks placed 0, jumps 8 (3+ gaps: 0, falls 3), hardest jump gap 2.0 rise +1.0, max rise 1.0
-         estimated time: expert 32.4 s, median 42.2 s (+ fails)
+         path 164 blocks, blocks placed 0, jumps 8 (3+ gaps: 0, falls 3), hardest jump gap 2.0 rise +1.0, max rise 1.0
+         estimated time: expert 32.5 s, median 42.3 s (+ fails)
   [ok]   SAFE longest obstacle-free straight sprint 10.6 <= 15 (-16,1,76)->(-24,1,83)
   [ok]   SAFE blocks within the 64 kit (0)
   [ok]   FAST saves >= 20% vs SAFE (expert 21%, median 22%)
@@ -150,6 +49,6 @@ drops reach further (vanilla fall time), bridging 0.30 s/block (median 0.55), pi
   [ok]   dry descent from the start stops at h 60.0 (start 60): no way down without a water landing
   [ok]   dry descent: pen not reachable dry from the start, and no pool above the bottom leads lower than 8 without water (7 pools: [21 cells @y40 (-13,17): min 39] [9 cells @y34 (20,18): min 34] [21 cells @y22 (-21,33): min 21] [9 cells @y14 (12,32): min 14] [13 cells @y0 (12,42): min 0] [37 cells @y0 (-17,49): min 0] [21 cells @y0 (-1,57): min 0])
          lower pools (below the first stage) visible from 0/52 start spawns
-  [ok]   decoy chickens on solid ground, inside playBounds, outside the goal pen (9/9)
+  [ok]   6 wandering decoy chickens (scattered over the later part by DecoySpots) on solid ground, inside playBounds, outside the goal pen (6/6)
   RESULT PASS
 

@@ -17,6 +17,8 @@ stub-map: auto
 # false = every map uses a fixed seed (validated layout); true = new seed each game (variants are re-rolled anyway).
 random-seeds: false
 
+debug-timing: true           # log ms per map-paste tick (chunks loaded async, <= 15 ms of block writes per tick)
+
 rounds: 6
 round-seconds: 100
 pre-round-seconds: 15        # in the start strip with the kit in hand; the last 3 s are the 3-2-1 title
@@ -32,7 +34,7 @@ world:
 
 kit:
   concrete: 64
-  snowballs: 10              # owner (playtest 1): 10 per attempt, refilled on every respawn
+  snowballs: 25              # owner (playtest 2): 25 per attempt, refilled on every respawn
   fireworks: 2               # elytra maps (default)
   pickaxe: IRON_PICKAXE      # (default) no enchantments
 
@@ -40,8 +42,8 @@ knockback:                   # (default) vanilla-like values; no damage is ever 
   punch-horizontal: 0.42
   punch-vertical: 0.36
   sprint-bonus: 0.35
-  snowball: 0.55             # (default) horizontal push of a snowball hit, in the snowball's travel direction
-  snowball-vertical: 0.30    # (default) upward part of a snowball hit
+  snowball: 1.375            # owner (playtest 2): 2.5x the old 0.55; horizontal push in the snowball's travel direction
+  snowball-vertical: 0.45    # owner (playtest 2): was 0.30; upward part of a snowball hit (on-foot vertical push is capped at 0.45)
   log-snowball-hits: true    # log every snowball hit on a player and why it was accepted / rejected
   hit-cooldown-ticks: 10     # min ticks between two knockbacks on the same victim (vanilla i-frames)
   glide-multiplier: 1.6      # (default) knockback on a gliding victim is added to its flight velocity, times this
@@ -55,6 +57,7 @@ elytra:
                                # so racers can shove each other off before it drops. 0 = drop at GO.
 
 karma:                       # (default) thresholds; karma decays every second
+  enabled: false             # owner (playtest 2): karma off - no karma gain, glow, slowness, punch lock, extra or reduced knockback
   per-punch: 1.0
   same-victim-bonus: 0.5     # extra karma when punching the same player again within same-victim-seconds
   same-victim-seconds: 5
@@ -79,6 +82,11 @@ points:                      # scaled /5 from the researched MCC table
   top10-bonus: [16, 15, 14, 13, 12, 11, 10, 9, 8, 7]
   team-bonus: [20, 15, 10, 5]   # first 4 sides (2+ members) with every online member finished, split evenly
 
+bonus:                       # line bonus (maps with colour-coded gates: Kite Festival, Frozen Canal)
+  enabled: true
+  tier-points: [1, 2, 3]     # per gate group, the best tier flown/driven pays once: orange 1, red 2, brutal (1x1 / 1-wide) 3
+  cap: 8                     # max line bonus per racer per round; paid only on finishing (1st = 24 placement pts)
+
 chickens:
   count: 10
   wander: true               # AI on, but put back into the pen if they leave it
@@ -86,6 +94,8 @@ chickens:
 goal:
   chicken-name: "&e&lPunch me!"  # always-visible name tag of real goal chickens (& colour codes); decoys have none
   decoy-penalty-seconds: 0       # reserved for later: punching a decoy currently does nothing
+  decoy-message: "haha lol"      # owner (playtest 2): what a punched decoy answers (to the puncher)
+  decoy-leash-radius: 4          # wandering decoys are put back when they stray further than this from home
   log-punches: true              # log every chicken punch and why it was accepted / rejected
 
 # Pun death lines (%s = player name). Leave empty to use the built-in list.

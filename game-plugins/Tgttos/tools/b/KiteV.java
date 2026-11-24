@@ -20,7 +20,7 @@ import java.util.List;
 final class KiteV {
     private KiteV() {}
 
-    static KiteGlide.Flight lastSafe, lastFast;
+    static KiteGlide.Flight lastSafe, lastFast, lastHard;
     static final double SAFE_LAND_Z = 104;
     static final int LEDGE_ROCKETS = 3;
 
@@ -47,6 +47,14 @@ final class KiteV {
         KiteGlide.EAGER = 0;
         lastFast = flown;
         double tf0 = fly(r, "FAST' same openings without rockets", go, d, fast0, 0, false, walkF);
+        KiteGlide.EAGER = 1.4;
+        double th = fly(r, "HARD  brutal openings first (1x1 fire ring, 1-wide mast slits, 1x1 pinhole, 1x3 slit), then red 3x3s / 4x4s, orange elsewhere; same rocket habit as FAST", go, d, line(2, true), rk, false, walkF);
+        KiteGlide.EAGER = 0;
+        lastHard = flown;
+        r.line(String.format("        HARD line tightest clearance against the 0.6 gliding box: %.2f flown (a 1x1 opening leaves 0.20 per side; the 1-wide slits 0.20 sideways)%s",
+                lastHard.minClear, th > 0 ? String.format(", %.0f s", th) : " (the model pilot cannot hold the 1x1 windows: informational, see above)"));
+        movers(r);
+        features(d, r);
         if ((ts > 0 || tsr > 0) && tf > 0) {
             double base = tsr > 0 ? tsr : ts;
             r.check(tf <= base * 0.8, String.format("fast line saves %.0f%% vs the safe line with the same rocket habit (>= 20%%)", 100 * (1 - tf / base)));
@@ -84,7 +92,7 @@ final class KiteV {
         String msg = String.format("%s: %.0f blocks flown, total %.1f s (flight %.1f s, avg %.0f b/s), speed %.0f..%.0f b/s, %d rockets, gates %d/%d, closest clearance %.2f, lowest %.1f above the floor%s",
                 name, f.length, t, f.time, f.length / Math.max(0.1, f.time), f.minSpeed, f.maxSpeed, f.rockets, f.gatesOk, f.gates, f.minClear, f.minFloorMargin,
                 f.notes.isEmpty() ? "" : "; " + String.join("; ", f.notes));
-        if (rockets == 0) r.line("  info  " + msg + (f.ok ? "" : "  (informational: the course is built to be flown with rockets)"));
+        if (rockets == 0 || name.startsWith("HARD")) r.line("  info  " + msg + (f.ok ? "" : "  (informational: the course is built to be flown with rockets)"));
         else r.check(f.ok, msg);
         if (System.getenv("KITE_SPLITS") != null) r.line("        splits: " + String.join(", ", f.splits));
         return f.ok ? t : -1;
@@ -92,18 +100,23 @@ final class KiteV {
 
     // ------------------------------------------------------------------ lines
 
-    static Hole pick(Screen sc, boolean fast) {
-        if (fast) for (K k : new K[]{K.NEEDLE, K.FAST, K.SAFE, K.FINISH}) { Hole h = sc.get(k); if (h != null) return h; }
+    static Hole pick(Screen sc, int mode) {
+        if (mode == 2) for (K k : new K[]{K.BRUTAL, K.NEEDLE, K.FAST, K.SAFE, K.FINISH}) { Hole h = sc.get(k); if (h != null) return h; }
+        if (mode == 1) for (K k : new K[]{K.NEEDLE, K.FAST, K.SAFE, K.FINISH}) { Hole h = sc.get(k); if (h != null) return h; }
         for (K k : new K[]{K.SAFE, K.FINISH}) { Hole h = sc.get(k); if (h != null) return h; }
         return sc.holes().get(0);
     }
 
     /** Waypoints of a line, ordered along the centre line. */
-    static List<KiteGlide.Wp> line(boolean fast, boolean rockets) {
+    static List<KiteGlide.Wp> line(boolean fast, boolean rockets) { return line(fast ? 1 : 0, rockets); }
+
+    /** mode 0 = SAFE (lime), 1 = FAST (orange, red needles), 2 = HARD (brutal 1x1 / 1-wide / fire rings first, then red, orange). */
+    static List<KiteGlide.Wp> line(int mode, boolean rockets) {
+        boolean fast = mode >= 1;
         List<Object[]> e = new ArrayList<>();
         e.add(new Object[]{14.5, KiteGlide.Wp.at(KiteCourse.LA, 7.5, KiteCourse.GANTRY_Y + 1)});
         for (Screen sc : KiteCourse.SCREENS) {
-            Hole h = pick(sc, fast);
+            Hole h = pick(sc, mode);
             double s = sc.s();
             KiteGlide.Wp w;
             if (h.slot()) {
@@ -111,6 +124,7 @@ final class KiteV {
                 w = KiteGlide.Wp.gate(h.cx(), sc.z() + 0.5, y, KiteCourse.floorY(s) + 1.05, KiteCourse.crestY(s) - 0.65, sc.name());
             } else w = KiteGlide.Wp.gate(h.cx(), sc.z() + 0.5, h.feetMid(), h.feetMin(), h.feetMax(), sc.name());
             if (rockets && fast && List.of("tunnel mouth", "tunnel exit", "lift 2", "low arch", "needle 2").contains(sc.name())) w = w.withRocket();
+            if (KiteFestival.refillHole(sc, h)) w = w.withRefill(KiteFestival.REFILL);
             e.add(new Object[]{s, w});
         }
         for (Tube t : KiteCourse.TUBES) {
@@ -308,9 +322,108 @@ final class KiteV {
             for (int[] l : KiteFestival.LEDGES) if (h.contains(l[0] + 0.5, l[2] + 1, l[1] + 0.5)) bad++;
             for (int[] dc : KiteFestival.DECOYS) if (h.contains(dc[0] + 0.5, dc[1], dc[2] + 0.5)) bad++;
         }
+        List<int[]> wander = com.mcm.games.tgttos.model.DecoySpots.effective(new KiteFestival(), d);
         int dec = 0;
-        for (int[] dc : KiteFestival.DECOYS) if (d.playBounds.contains(dc[0] + 0.5, dc[1], dc[2] + 0.5) && Bs.passable(d.blocks.get(dc[0], dc[1], dc[2]))) dec++;
-        r.check(bad == 0 && dec == KiteFestival.DECOYS.size(), String.format("%d hazard boxes cover everything outside the canyon walls (leaving the canyon = back to the start); none touches a spawn, the pen, a ledge or a decoy; %d decoy chickens on hay bales in the field",
+        for (int[] dc : wander) {
+            for (Region h : d.hazardRegions) if (h.contains(dc[0] + 0.5, dc[1], dc[2] + 0.5)) bad++;
+            if (d.playBounds.contains(dc[0] + 0.5, dc[1], dc[2] + 0.5) && Bs.passable(d.blocks.get(dc[0], dc[1], dc[2])) && !d.pen.contains(dc[0] + 0.5, dc[1], dc[2] + 0.5)) dec++;
+        }
+        r.check(bad == 0 && dec == wander.size() && dec > 0, String.format("%d hazard boxes cover everything outside the canyon walls (leaving the canyon = back to checkpoint); none touches a spawn, the pen, a ledge, a hay bale or a decoy; %d wandering decoys in the low end (turn 3 / field), outside the pen",
                 d.hazardRegions.size(), dec));
+    }
+
+    // ------------------------------------------------------------------ moving hazards (playtest 2)
+
+    /**
+     * Every mover against every flown line, at every phase: the flight is shifted by 0..period-1 ticks against the
+     * mover clock and tested tick by tick with the runtime's own hit test (sphere r 0.35 at the gliding box centre).
+     * SAFE must be clear at every phase; FAST / HARD must have an open window (>= 30% of the phases) where they meet it.
+     */
+    static void movers(Check.Report r) {
+        List<com.mcm.games.tgttos.model.MapFeatures.Mover> ms = KiteFestival.movers();
+        StringBuilder sb = new StringBuilder();
+        int bad = 0;
+        for (com.mcm.games.tgttos.model.MapFeatures.Mover m : ms) {
+            sb.append(String.format("%n        %s (%s, period %.1f s, reach %.1f):", m.name(), m.motion().name().toLowerCase(), m.periodTicks() / 20.0, m.reach()));
+            String[] names = {"SAFE'", "FAST", "HARD"};
+            KiteGlide.Flight[] fs = {lastSafe, lastFast, lastHard};
+            for (int k = 0; k < 3; k++) {
+                KiteGlide.Flight f = fs[k];
+                if (f == null) continue;
+                List<Integer> near = new ArrayList<>();
+                double rr = m.reach() + 1.5;
+                for (int i = 0; i < f.pts.size(); i++) {
+                    double[] p = f.pts.get(i);
+                    double dx = p[0] - m.px(), dy = p[1] + 0.3 - m.py(), dz = p[2] - m.pz();
+                    if (dx * dx + dy * dy + dz * dz <= rr * rr) near.add(i);
+                }
+                if (near.isEmpty()) { sb.append(" ").append(names[k]).append(" never within reach;"); continue; }
+                int open = 0, period = Math.max(1, m.periodTicks());
+                double minD = 99;
+                for (int off = 0; off < period; off++) {
+                    boolean hit = false;
+                    for (int i : near) {
+                        double[] p = f.pts.get(i), q = i + 1 < f.pts.size() ? f.pts.get(i + 1) : p;
+                        for (int u = 0; u < 4 && !hit; u++) {   // sub-tick samples, like the runtime's segment test
+                            double w = u / 4.0;
+                            if (m.hits(i + off + w, p[0] + (q[0] - p[0]) * w, p[1] + (q[1] - p[1]) * w + 0.3, p[2] + (q[2] - p[2]) * w, 0.35)) hit = true;
+                        }
+                        if (hit) break;
+                    }
+                    if (k == 1 && off == 0 && System.getenv("KITE_MOVERDBG") != null) {
+                        double[] c = f.pts.get(near.get(near.size() / 2));
+                        System.out.printf("DBG %s fast mid-approach at (%.1f, %.1f, %.1f), pivot (%.1f, %.1f, %.1f)%n", m.name(), c[0], c[1], c[2], m.px(), m.py(), m.pz());
+                    }
+                    if (!hit) open++;
+                }
+                // closest approach over all phases (SAFE only, as a margin)
+                if (k == 0)
+                    for (int off = 0; off < period; off += 2)
+                        for (int i : near) {
+                            double[] p = f.pts.get(i);
+                            for (double rad = 0.35; rad < 6; rad += 0.25) if (m.hits(i + off, p[0], p[1] + 0.3, p[2], rad)) { minD = Math.min(minD, rad - 0.35); break; }
+                        }
+                double frac = open / (double) period;
+                boolean ok = k == 0 ? open == period : frac >= 0.3;
+                if (!ok) bad++;
+                sb.append(String.format(" %s within reach for %.1f s, open at %.0f%% of the phases%s%s;", names[k], near.size() / 20.0, frac * 100,
+                        k == 0 ? (minD < 99 ? String.format(" (closest %.2f)", minD) : " (never closer than 5.6)") : "", ok ? "" : " FAIL"));
+            }
+        }
+        r.check(bad == 0 && ms.size() >= 6, ms.size() + " moving hazards (block displays, our hit test = back to the last checkpoint): the lime line is clear of every one at every phase, the orange / red lines meet each with an open window >= 30%" + sb);
+    }
+
+    /** Bonus openings, refills, checkpoints: every box sits on an opening the lines can fly; checkpoints on the 5 ledges. */
+    static void features(TgMapData d, Check.Report r) {
+        com.mcm.games.tgttos.model.MapFeatures f = KiteFestival.feats();
+        java.util.Map<String, int[]> groups = new java.util.LinkedHashMap<>();
+        int open = 0;
+        for (var g : f.gates) {
+            groups.computeIfAbsent(g.group(), k -> new int[4])[g.tier()]++;
+            boolean any = false;
+            for (int x = g.box().minX(); x <= g.box().maxX() && !any; x++)
+                for (int y = g.box().minY(); y <= g.box().maxY() && !any; y++) if (d.blocks.get(x, y, g.box().minZ()) == null) any = true;
+            if (any) open++;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (var e : groups.entrySet()) sb.append(String.format(" %s: %d orange, %d red, %d brutal;", e.getKey(), e.getValue()[1], e.getValue()[2], e.getValue()[3]));
+        int bestOrange = groups.size(), bestHard = 0;
+        for (var e : groups.values()) bestHard += e[3] > 0 ? 3 : e[2] > 0 ? 2 : 1;
+        r.check(open == f.gates.size() && groups.size() == 5, String.format("%d bonus openings in %d groups (best tier per group pays once, only on finishing, cap 8):%s orange line earns %d, the hardest line %d -> capped at 8",
+                f.gates.size(), groups.size(), sb, bestOrange, bestHard));
+        r.check(f.refills.size() >= 6, f.refills.size() + " gold refill openings (+" + KiteFestival.REFILL + " rockets each, once per opening per attempt): " + KiteFestival.REFILL_SCREENS
+                + "; SAFE' refilled " + (lastSafe == null ? 0 : lastSafe.refilled) + ", FAST " + (lastFast == null ? 0 : lastFast.refilled) + " on the way (6 up front)");
+        StringBuilder cb = new StringBuilder();
+        int cbad = 0;
+        for (var c : f.checkpoints) {
+            int stand = 0;
+            for (var sp : c.spawns()) {
+                int x = (int) Math.floor(sp.x()), y = (int) Math.floor(sp.y()), z = (int) Math.floor(sp.z());
+                if (d.blocks.get(x, y, z) == null && d.blocks.get(x, y + 1, z) == null && d.blocks.get(x, y - 1, z) != null) stand++;
+            }
+            if (stand != c.spawns().size()) cbad++;
+            cb.append(String.format(" %d %s (%d/%d spawns on the platform);", c.order(), c.name(), stand, c.spawns().size()));
+        }
+        r.check(cbad == 0 && f.checkpoints.size() == 5, "5 ledge checkpoints (crossing the canyon at a ledge saves it; void / hazard / mover respawns go there with a fresh kit):" + cb);
     }
 }

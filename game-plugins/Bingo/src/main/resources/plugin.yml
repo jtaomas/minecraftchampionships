@@ -1,6 +1,13 @@
 name: McmBingo
-version: 1.0.0
+version: 1.1.0
 main: com.mcm.games.bingo.BingoPlugin
 api-version: '1.21'
 depend: [MinecraftMondayCore]
 description: Bingo but Fast and Lockout Bingo for MinecraftMondayCore
+commands:
+  top:
+    description: Teleport to the surface above you (Bingo games only)
+    usage: /top
+permissions:
+  mcmbingo.top:
+    default: true

@@ -62,7 +62,8 @@ final class Settings {
         s.startLeash = Math.max(1, c.getInt("game.start-leash-blocks", s.startLeash));
         s.dayStart = c.getLong("daylight.start-time", s.dayStart);
         s.dayEnd = c.getLong("daylight.end-time", s.dayEnd);
-        s.translucent = c.getBoolean("players.translucent", s.translucent);
+        // ghost-players (set by /pw ghost) wins; players.translucent is the older name of the same switch
+        s.translucent = c.getBoolean("ghost-players", c.getBoolean("players.translucent", s.translucent));
         s.hideWithin = Math.max(0, c.getDouble("players.hide-within", s.hideWithin));
         s.hideShowAt = Math.max(s.hideWithin + 1, c.getDouble("players.show-again-at", s.hideShowAt));
         s.fallMarginBelowCourse = Math.max(1, c.getInt("players.fall-margin-below-course", s.fallMarginBelowCourse));

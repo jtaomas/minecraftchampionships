@@ -54,6 +54,7 @@ public final class DamFaceMap extends AMap {
         crest(d, de);
         canyon();
         reservoir();
+        sealSides();
         startStrip(d);
 
         d.voidY = -12;
@@ -68,6 +69,8 @@ public final class DamFaceMap extends AMap {
         de.lane.add(Region.of(-19, -40, -12, 18, 90, 130));
         de.lazyCorridor = Region.of(-2, -8, 0, 1, 44, 60);
         de.sprintExempt.add(Region.of(-19, 8, 20, 18, 34, 40));   // catwalks run across (x); checked per line
+        // playtest 2: no walkable surface may touch an open drop to the void (the owner fell through one)
+        de.holeScan = true;
 
         Design.Line fast = de.line("FAST", true, true);
         fast.description = "jump the baffle blocks, pillar up the middle stepping out under each terrace lip, centre stair cut (choke)";
@@ -115,7 +118,9 @@ public final class DamFaceMap extends AMap {
             g.set(b[0] + 1, TOE, b[1] + 1, "dark_prismarine");
         }
         // dam toe walkway y = -3, from z 20 up to the face
-        for (int x = -18; x <= 17; x++) for (int z = 20; z < zf(x); z++) {
+        // x -19 / 18 included (playtest 2 fix): the walkway used to stop one column short of the dam's side columns,
+        // leaving a 1 x 3 hole to the void at each end of the toe (x -19 / 18, z 20..22)
+        for (int x = -19; x <= 18; x++) for (int z = 20; z < zf(x); z++) {
             g.fill(x, -9, z, x, TOE, z, z == 20 ? "dark_prismarine" : faceLow.at(x, -4, z, g.seed));
         }
         g.underside(-18, 20, 17, 25, -9, 6, rockDeep, 7);
@@ -173,6 +178,10 @@ public final class DamFaceMap extends AMap {
             int hx = (k % 2 == 0) ? 1 : -7;
             for (int x = hx; x <= hx + 1; x++) for (int z = zf(x) + 3 * k - 1; z <= zf(x) + 3 * k + 2; z++) g.set(x, ty, z, null);
             for (int x = hx; x <= hx + 1; x++) { g.set(x, ty + 1, zf(x) + 3 * k - 1, null); g.set(x, ty - 1, zf(x) + 3 * k - 1, null); }
+            // playtest 2 fix: the back row of each grating hole (z = face + 2) sits over the hollow inside of the dam, so a
+            // racer who missed the jump fell straight into the void. A grate one block down makes it a 1-deep pit there;
+            // the front row still drops onto the terrace below (intended)
+            for (int x = hx; x <= hx + 1; x++) g.set(x, ty - 1, zf(x) + 3 * k + 2, "polished_deepslate");
             // valve boxes and lamps against the face of the next tier
             for (int x = -16; x <= 16; x += 8) {
                 int z = zf(x) + 3 * k + 3;
@@ -309,6 +318,28 @@ public final class DamFaceMap extends AMap {
         }
         // a waterfall-coloured spill chute on the left canyon wall (blue ice column - no flowing water)
         for (int y = -10; y <= 34; y++) for (int x = -23; x <= -22; x++) g.set(x, y, 30, g.rnd(x, y, 30) < 0.5 ? "packed_ice" : "blue_ice");
+    }
+
+    /**
+     * Playtest 2 fix: the canyon rock band wanders with noise and in places stood 1-3 blocks off the dam's side columns
+     * (x -19 / 18), leaving open slits to the void beside every terrace end and along both crest edges. Fill the air
+     * between the dam edge and the rock, flush with the dam surface at that z (a 3-deep lid, no new kerb; the look is unchanged).
+     */
+    private void sealSides() {
+        for (int z = 18; z <= 106; z++)
+            for (int side = -1; side <= 1; side += 2) {
+                int ex = side < 0 ? -19 : 18;
+                // every surface of the dam's side column (toe, each terrace, crest, reservoir) gets a lid out to the rock
+                for (int top = -9; top <= CREST + 1; top++) {
+                    if (g.air(ex, top, z) || !g.air(ex, top + 1, z)) continue;
+                    for (int t = 1; t <= 6; t++) {
+                        int x = ex + side * t;
+                        boolean rockHere = !g.air(x, top, z);
+                        for (int y = top - 2; y <= top; y++) if (g.air(x, y, z)) g.set(x, y, z, y < 6 ? rockDeep.at(x, y, z, g.seed) : rock.at(x, y, z, g.seed));
+                        if (rockHere) break;
+                    }
+                }
+            }
     }
 
     private void pine(int x, int y, int z, int h) {

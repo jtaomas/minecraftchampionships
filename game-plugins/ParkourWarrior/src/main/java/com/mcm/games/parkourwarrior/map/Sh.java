@@ -67,7 +67,20 @@ final class Sh {
         }
     }
 
-    static final String[] TOY = {"red", "yellow", "blue", "lime", "orange", "light_blue", "magenta", "white"};
+    /**
+     * A foothold column: top block {@code top} over x0..x1, z0..z1 at yTop, {@code body} for depth blocks below,
+     * then a one-block {@code foot}. Registers the top as a route area when {@code reg}.
+     */
+    static Ob.Node column(Ob o, int x0, int z0, int x1, int z1, int yTop, int depth, String top, String body, String foot, boolean reg) {
+        for (int x = Math.min(x0, x1); x <= Math.max(x0, x1); x++) for (int z = Math.min(z0, z1); z <= Math.max(z0, z1); z++) {
+            o.set(x, yTop, z, top);
+            for (int y = yTop - 1; y >= yTop - depth; y--) o.set(x, y, z, body);
+            if (foot != null) o.set(x, yTop - depth - 1, z, foot);
+        }
+        return reg ? o.area(x0, yTop, z0, x1, z1) : null;
+    }
+
+    static final String[] TOY ={"red", "yellow", "blue", "lime", "orange", "light_blue", "magenta", "white"};
 
     /** Stud (button) on top of a toy brick cell. */
     static String stud(String colour) {

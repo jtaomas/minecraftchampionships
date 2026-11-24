@@ -30,7 +30,35 @@ final class ExtraChecks {
         int lethal = map.lethalFallHeight();
         if (lethal > 0) lethal(v, map, g, strip, gone, lethal);
         if (g.design.voidReport) voids(v, g);
-        if (!map.decoyChickens().isEmpty()) decoys(v, map, g, gone);
+        decoys(v, map, g, gone);
+        if (g.design.holeScan) holes(v, g, strip, gone);
+    }
+
+    // ------------------------------------------------------------------ unintended holes (walkable surfaces next to the void)
+
+    private static void holes(Validate v, Gen g, List<int[]> strip, List<Pos> gone) {
+        TgMapData d = g.d;
+        Design de = g.design;
+        Route.Params wp = Route.Params.expert(false);
+        wp.searchBox = de.searchBox;
+        wp.falls = true;
+        Route r = new Route(d.blocks, gone, wp);
+        Set<Long> reach = r.reachable(strip, 2_000_000);
+        java.util.TreeMap<String, String> found = new java.util.TreeMap<>();
+        int byDesign = 0;
+        for (long k : reach) {
+            int x = TgMapData.SparseBlocks.kx(k), y = TgMapData.SparseBlocks.ky(k), z = TgMapData.SparseBlocks.kz(k);
+            for (int[] o : new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {0, 0}}) {
+                int nx = x + o[0], nz = z + o[1];
+                if (!voidCol(d, nx, nz, y + 1)) continue;
+                boolean ok = false;
+                for (Region a : de.voidByDesign) if (a.contains(nx + 0.5, a.minY(), nz + 0.5)) ok = true;
+                if (ok) { byDesign++; continue; }
+                found.put(String.format("%d,%d", nx, nz), String.format("void column %d,%d (beside walkable %d,%d,%d)", nx, nz, x, y, z));
+            }
+        }
+        v.ok(found.isEmpty(), String.format("hole scan: %d walkable cells (no bridging, falls allowed); %d unintended void columns beside them%s; %d edge cells next to void by design",
+                reach.size(), found.size(), found.isEmpty() ? "" : ": " + String.join("; ", found.values()), byDesign));
     }
 
     // ------------------------------------------------------------------ lethal falls (drop maps)
@@ -271,12 +299,14 @@ final class ExtraChecks {
     private static void decoys(Validate v, TgMap map, Gen g, List<Pos> gone) {
         TgMapData d = g.d;
         int okc = 0, n = 0;
-        for (int[] c : map.decoyChickens()) {
+        List<int[]> spots = com.mcm.games.tgttos.model.DecoySpots.effective(map, d);
+        for (int[] c : spots) {
             n++;
             boolean ok = d.playBounds.contains(c[0], c[1], c[2]) && Bs.passable(d.blocks.get(c[0], c[1], c[2]))
                     && Bs.standTop(d.blocks.get(c[0], c[1] - 1, c[2])) > 0 && !d.pen.contains(c[0], c[1], c[2]);
             if (ok) okc++;
         }
-        v.ok(okc == n, "decoy chickens on solid ground, inside playBounds, outside the goal pen (" + okc + "/" + n + ")");
+        v.ok(okc == n && n > 0, n + " wandering decoy chickens (" + (map.decoyChickens().isEmpty() ? "scattered over the later part by DecoySpots" : "map list")
+                + ") on solid ground, inside playBounds, outside the goal pen (" + okc + "/" + n + ")");
     }
 }

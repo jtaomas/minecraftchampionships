@@ -53,7 +53,7 @@ public final class KiteMain {
                 d.chickenSpawns.size() + " chicken spawns inside the pen " + (d.pen.maxX() - d.pen.minX() + 1) + " x " + (d.pen.maxZ() - d.pen.minZ() + 1));
         Check.landmark(d, Check.afterGo(d, d.blocks), g.landmark, r);
         r.line("        (offline ray only: the goal kite is ~330 blocks from the gantry, beyond a normal client view distance)");
-        r.line("  kit: elytra + kit.fireworks (2) + " + d.extraItems + " from extraItems = " + (2 + com.mcm.games.tgttos.maps.b.KiteFestival.EXTRA_ROCKETS) + " rockets; no mid-course refills (runtime has no ring/checkpoint hooks)");
+        r.line("  kit: elytra + kit.fireworks (2) + " + d.extraItems + " from extraItems = " + (2 + com.mcm.games.tgttos.maps.b.KiteFestival.EXTRA_ROCKETS) + " rockets up front; +" + KiteFestival.REFILL + " per gold refill opening (" + KiteFestival.feats().refills.size() + " openings)");
         KiteV.run(g, r);
         r.line(r.errors == 0 ? "  RESULT: all checks passed" : "  RESULT: " + r.errors + " problem(s)");
         System.out.print(r.text);
@@ -61,7 +61,11 @@ public final class KiteMain {
 
         Spawn mid = d.startSpawns.get(d.startSpawns.size() / 2);
         double[] cam = {mid.x(), mid.y() + 1.62, mid.z(), KiteCourse.LA, 150, 90};
-        dump(d.blocks, new File(out, "kite_festival.mcmdump.gz"), cam);
+        // previews show the movers at their rest pose (t = 0)
+        TgMapData.Blocks shown = new TgMapData.SparseBlocks();
+        d.blocks.forEach((x, y, z, b) -> shown.set(x, y, z, b));
+        for (var m : KiteFestival.movers()) for (var e : m.render(0).entrySet()) shown.set(e.getKey().x(), e.getKey().y(), e.getKey().z(), "minecraft:" + e.getValue());
+        dump(shown, new File(out, "kite_festival.mcmdump.gz"), cam);
         // profile CSV for the unfolded side view
         try (PrintWriter w = new PrintWriter(new File(out, "kite_profile.csv"), StandardCharsets.UTF_8)) {
             w.println("kind,s,a,b,c,label");

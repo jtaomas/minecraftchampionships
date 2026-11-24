@@ -30,10 +30,11 @@ final class Clockwork {
     // ---------------------------------------------------------------- M4-1 (ROUND - gear tops at varying heights)
     static Ob m1(W w, Ob.Slot s) {
         Ob o = new Ob(w, s, "Gear Train", "ROUND");
-        gear(o, 0, 0, 6, 2, "gold_block", "waxed_cut_copper", true);
-        gear(o, 2, 1, 14, 1, "waxed_exposed_copper", "waxed_cut_copper", true);
-        gear(o, -1, 1, 22, 2, "waxed_copper_block", "gold_block", true);
-        gear(o, 1, 2, 30, 1, "gold_block", "waxed_cut_copper", true);
+        // small gears only (3-wide disc, single teeth sticking out): two- and three-block jumps between them, climbing
+        gear(o, 0, 0, 6, 1, "gold_block", "waxed_cut_copper", true);
+        gear(o, 1, 0, 14, 1, "waxed_exposed_copper", "waxed_cut_copper", true);
+        gear(o, 1, 1, 22, 1, "waxed_copper_block", "gold_block", true);
+        gear(o, -1, 1, 30, 1, "gold_block", "waxed_cut_copper", true);
         // a big vertical drive wheel standing beside the train (scenery, 6+ blocks away)
         for (int dy = -7; dy <= 7; dy++) for (int dz = -7; dz <= 7; dz++) {
             double d = Math.sqrt(dy * dy + dz * dz);
@@ -50,24 +51,23 @@ final class Clockwork {
     // ---------------------------------------------------------------- M4-2 (TIMED escapement teeth)
     static Ob m2(W w, Ob.Slot s) {
         Ob o = new Ob(w, s, "Tick-Tock Teeth", "TIMED");
-        // brass frame rails below the slots, cross bars marking every slot
-        for (int z = 2; z <= 24; z++) for (int sx = -2; sx <= 2; sx += 4) o.set(sx, -2, z, "waxed_cut_copper");
-        int[] zs = {4, 7, 10, 13, 16, 19, 22};
+        // single escapement teeth on hanging pallet arms, nothing underneath (the old side rails were a bypass):
+        // the A teeth are out on 0..23 of 40, the B teeth on 20..43, a short overlap to hop across
+        int[][] zs = {{4, 0}, {7, 0}, {11, 0}, {14, 1}, {18, 1}, {21, 2}, {24, 2}};
         for (int i = 0; i < zs.length; i++) {
-            int z = zs[i];
-            for (int x = -2; x <= 2; x++) o.set(x, -2, z, x == 0 ? "gold_block" : "waxed_cut_copper");
-            o.set(-2, -1, z, "waxed_copper_bulb[lit=true,powered=false]");
-            o.set(2, -1, z, "waxed_copper_bulb[lit=true,powered=false]");
+            int z = zs[i][0], y = zs[i][1];
             boolean a = (i & 1) == 0;
-            // A teeth on 0..25 of 40, B teeth on 20..45 (phase 20): a short overlap to hop across
-            o.timed(a ? "gold_block" : "waxed_copper_block", 40, 25, a ? 0 : 20, 12, null,
-                    new int[]{-1, 0, z}, new int[]{0, 0, z}, new int[]{1, 0, z});
+            // pallet arm: a short copper bracket two blocks to the side, a bulb that lights the tooth's slot
+            o.set(a ? -3 : 3, y, z, "waxed_cut_copper");
+            o.set(a ? -3 : 3, y - 1, z, "waxed_copper_bulb[lit=true,powered=false]");
+            for (int yy = y + 1; yy <= y + 8; yy++) o.set(a ? -3 : 3, yy, z, "chain[axis=y,waterlogged=false]");
+            o.timed(a ? "gold_block" : "waxed_copper_block", 40, 23, a ? 0 : 20, 12, null, new int[]{0, y, z});
         }
         // escapement wheel standing to the left, and a clock face to the right (scenery)
         for (int dy = -6; dy <= 6; dy++) for (int dz = -6; dz <= 6; dz++) {
             double d = Math.sqrt(dy * dy + dz * dz);
-            if (d <= 6.4 && d > 5.4) o.set(7, dy, 13 + dz, (dy + dz & 1) == 0 ? "white_concrete" : "white_terracotta");
-            else if (d <= 5.4) o.set(7, dy, 13 + dz, d < 1 ? "gold_block" : "smooth_quartz");
+            if (d <= 6.4 && d > 5.4) o.set(7, dy, 14 + dz, (dy + dz & 1) == 0 ? "white_concrete" : "white_terracotta");
+            else if (d <= 5.4) o.set(7, dy, 14 + dz, d < 1 ? "gold_block" : "smooth_quartz");
         }
         for (int k = 1; k <= 4; k++) o.set(6, k, 13, "black_concrete");
         for (int k = 1; k <= 3; k++) o.set(6, 0, 13 + k, "black_concrete");
@@ -75,8 +75,8 @@ final class Clockwork {
             double a = k * Math.PI / 6;
             o.set(6, (int) Math.round(Math.sin(a) * 5), 13 + (int) Math.round(Math.cos(a) * 5), "black_concrete");
         }
-        o.end(0, 0, 26);
-        Sh.padBase(o, 0, 0, 26, "waxed_cut_copper", "waxed_copper_block", "polished_deepslate", 2);
+        o.end(0, 2, 28);
+        Sh.padBase(o, 0, 2, 28, "waxed_cut_copper", "waxed_copper_block", "polished_deepslate", 2);
         return o;
     }
 
@@ -135,10 +135,12 @@ final class Clockwork {
         int[] zs = {5, 10, 15, 20};
         for (int i = 0; i < zs.length; i++) {
             int z = zs[i];
+            int by = i == 0 ? 0 : 1;
             Sh.chain(o, 0, 5, beam - 1, z);
             o.set(0, 4, z, "waxed_copper_block");
-            int ph = i * 15;
-            o.timed("gold_block", 60, 26, ph, 15, null, new int[]{0, 0, z}, new int[]{1, 0, z}, new int[]{0, 0, z + 1}, new int[]{1, 0, z + 1});
+            // onAt(t) = (t + phase) mod period < on, so a block that comes on LATER needs a SMALLER phase
+            int ph = Math.floorMod(-i * 15, 60);
+            o.timed("gold_block", 60, 18, ph, 15, null, new int[]{0, by, z}, new int[]{0, by, z + 1});
             // swing extremes (scenery bobs, off the route)
             java.util.List<com.mcm.games.parkourwarrior.CourseModel.BlockPos> ps = new java.util.ArrayList<>();
             for (int sx : new int[]{-5, 5}) for (int dz = 0; dz <= 1; dz++) {
@@ -146,10 +148,10 @@ final class Clockwork {
                 ps.add(new com.mcm.games.parkourwarrior.CourseModel.BlockPos(X, Y, Z));
                 o.timedPreview.put(W.key(X, Y, Z), "minecraft:waxed_exposed_copper");
             }
-            o.timed.add(new com.mcm.games.parkourwarrior.CourseModel.Timed(o.id, ps, "minecraft:waxed_exposed_copper", 60, 20, ph + 30, 0, null, null));
+            o.timed.add(new com.mcm.games.parkourwarrior.CourseModel.Timed(o.id, ps, "minecraft:waxed_exposed_copper", 60, 20, Math.floorMod(ph + 30, 60), 0, null, null));
         }
-        o.end(0, 0, 25);
-        Sh.padBase(o, 0, 0, 25, "waxed_cut_copper", "waxed_copper_block", "polished_deepslate", 2);
+        o.end(0, 1, 25);
+        Sh.padBase(o, 0, 1, 25, "waxed_cut_copper", "waxed_copper_block", "polished_deepslate", 2);
         return o;
     }
 
@@ -176,13 +178,14 @@ final class Clockwork {
         Ob o = new Ob(w, s, "Cuckoo Chorus", "TIMED");
         o.difficultyTag = "HARD";
         // the cuckoo clock: a tall dark-oak case on the left with a pitched roof, doors at each perch
-        for (int z = 2; z <= 24; z++) for (int y = -6; y <= 7; y++) for (int x = -6; x <= -3; x++) {
-            boolean shell = x == -3 || y == -6 || y == 7 || z == 2 || z == 24;
+        for (int z = 2; z <= 24; z++) for (int y = -6; y <= 10; y++) for (int x = -6; x <= -3; x++) {
+            boolean shell = x == -3 || y == -6 || y == 10 || z == 2 || z == 24;
             if (!shell) { o.set(x, y, z, "spruce_planks"); continue; }
             o.set(x, y, z, (z % 6 == 2) ? "stripped_dark_oak_log[axis=y]" : (y & 3) == 0 ? "dark_oak_planks" : "spruce_planks");
         }
-        for (int z = 2; z <= 24; z++) for (int k = 0; k <= 3; k++) { o.set(-6 + k, 8 + k, z, Bs.stairs("dark_oak", "east", false)); }
-        int[][] pz = {{5, 0}, {9, 1}, {13, 1}, {17, 2}, {21, 2}};
+        for (int z = 2; z <= 24; z++) for (int k = 0; k <= 3; k++) { o.set(-6 + k, 11 + k, z, Bs.stairs("dark_oak", "east", false)); }
+        // every perch is one higher than the last: five single-block 3+1 jumps on the beat
+        int[][] pz = {{4, 1}, {8, 2}, {12, 3}, {16, 4}, {20, 5}};
         for (int i = 0; i < pz.length; i++) {
             int z = pz[i][0], y = pz[i][1];
             // door frame (gold) around a dark doorway
@@ -190,10 +193,10 @@ final class Clockwork {
             o.set(-3, y + 3, z, "gold_block");
             o.set(-3, y + 1, z - 1, "gold_block"); o.set(-3, y + 1, z + 1, "gold_block");
             o.set(-4, y, z, "waxed_cut_copper");
-            o.timed("yellow_concrete", 50, 24, i * 12, 12, null, new int[]{-2, y, z}, new int[]{-1, y, z});
+            o.timed("yellow_concrete", 50, 15, Math.floorMod(-i * 12, 50), 12, null, new int[]{-2, y, z});
         }
-        o.end(1, 2, 25);
-        Sh.padBase(o, 1, 2, 25, "waxed_cut_copper", "waxed_copper_block", "polished_deepslate", 2);
+        o.end(-1, 5, 24);
+        Sh.padBase(o, -1, 5, 24, "waxed_cut_copper", "waxed_copper_block", "polished_deepslate", 2);
         return o;
     }
 }

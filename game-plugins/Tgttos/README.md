@@ -51,7 +51,7 @@ Runtime (mechanics) lives in `com.mcm.games.tgttos`; the 8 maps are pure-Java ge
 ## Maps and world
 - World `mcc_tgttos` (void) is deleted and recreated at every plugin enable. Map slot i is pasted at x = i * 600, local y 0 = world y 64.
 - Maps are loaded from `config.yml -> maps:` (fully-qualified class names; missing classes are skipped with a warning) plus auto-discovery of any `TgMap` class under `com.mcm.games.tgttos.maps.*` in the jar. `stub.StubBridgeMap` is a dev stub used only when fewer than 6 real maps load (`stub-map: auto`).
-- Each map is built once at enable and checked (>= 40 spawns, >= 8 chickens, pen/strip/bounds present, no dyed concrete). The map is re-pasted with a BuildQueue before its round, clearing anything left from a previous paste at that slot.
+- Each map is built once, off the main thread (one worker thread, pure Java), when the plugin enables or `/tg reload` runs, and checked (>= 40 spawns, >= 8 chickens, pen/strip/bounds present, no dyed concrete). A game started before that finishes waits for it. Pasting: see "Map loading and pasting" below.
 - Map lines, time estimates and route checks are documented by the map builders (see the map packages / previews).
 
 ## Acceptance checklist mapping
@@ -160,7 +160,7 @@ Results:
 - The fast line is 30% faster than the safe line.
 - Median estimate: about 85 s. Weak players: about 115 s, so they DNF at 100 s.
 - Without rockets, the safe line runs short of height in the S-canyon, and the fast line is not flyable. The course is built for rockets.
-- Block count: about 341k blocks. Generation takes about 0.2-0.5 s, and pasting takes 9 or more ticks at the BuildQueue cap.
+- Block count: about 341k blocks. Generation takes about 0.2-0.5 s, and pasting is spread over ticks by the runtime paster (15 ms of block writes per tick, about 2-4 s of wall time, normally done during the previous round).
 
 **Defaults, not researched:**
 - rocket count (16)
@@ -208,3 +208,17 @@ Push + bridge map (`maps/b/QuarrySteps.java`, same class name / slot / start str
 
   Previews: `previews/quarry_steps_{top,iso,iso2,side,start}.png` (the top view marks the decoys in white).
 - **Defaults, not researched:** bridging rates (4 / 2.2 b/s), sheet-pile spacing, the median multipliers, and the decoy count.
+## Map loading and pasting (performance)
+- Nothing heavy runs inside one tick. Map generation (enable, `/tg reload`, `random-seeds: true` rounds) runs on a worker thread. A paste is also prepared on the worker: stale blocks from the last paste at that slot are cleared, then the map blocks are set, then the chosen variant options, all grouped per chunk.
+- On the main thread (`Paster`), chunks are loaded with `getChunkAtAsync` (12 in flight). Each chunk gets a plugin chunk ticket and is written only once it is loaded, so there is never a synchronous chunk load or generation. Block writes stop after 15 ms per tick and use no physics. Tickets stay on the slot being played and are dropped when the next round starts.
+- Pre-build: at GO the next round's map is pasted into its own slot while the current round is played, so the next round normally starts with no wait. If the next map uses the same slot (maps repeat), or an admin forces another map, it is pasted during the intermission instead. The round waits until every block is set and never starts on a half-built map. Players stay where they are and see "Preparing the next map... NN%" in the action bar.
+- `stop()` or `/mcm skip` in the middle of a paste cancels it cleanly. The next paste of that slot clears anything a cancelled paste left behind.
+- `debug-timing: true` logs ms, blocks and chunks per paste tick, plus a summary per paste (blocks, chunks, ticks, wall ms, worst tick).
+
+## Spectators and late joiners
+- Finishers become spectators where they finish (at the goal pen) and are kept inside the map's play box. Teleports from the spectator menu are cancelled if they would leave the current map's play box (other slots included).
+- `onLateJoin`:
+  - A participant who has not finished this round rejoins the race from a start spawn with a fresh kit, during the pre-round or the round.
+  - A participant who has already finished this round, or who joins during the intermission, spectates the current map. While the next map is still loading, the core default applies; the next round then places every participant at the start.
+  - Non-participants become spectators at the map's overview point and are confined to its play box. They are also kept out of other slots.
+- Round announcement: the kit text is counted from a racer's real inventory after the kit is given (base kit plus the map's `extraItems`), e.g. "Elytra, 18 fireworks" on Kite Festival.

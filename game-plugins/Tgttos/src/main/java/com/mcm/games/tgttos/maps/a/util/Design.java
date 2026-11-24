@@ -53,6 +53,13 @@ public final class Design {
     public boolean voidReport;
     /** Minimum void crossings per line when {@link #voidReport} is on. */
     public int minVoidCrossings = 0;
+    /**
+     * Unintended-hole scan ({@link ExtraChecks}): every cell a racer can walk to (no bridging, falls allowed) must not
+     * stand next to a column that is empty down to the void, unless that column lies in one of {@link #voidByDesign}.
+     */
+    public boolean holeScan;
+    /** Columns where an open drop to the void is intended (map edges, deliberate gaps). */
+    public final List<Region> voidByDesign = new ArrayList<>();
 
     public Line line(String name, boolean bridge, boolean fast) {
         Line l = new Line(name, bridge, fast);

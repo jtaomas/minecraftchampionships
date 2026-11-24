@@ -15,16 +15,18 @@ final class KiteGlide {
     private KiteGlide() {}
 
     /** Waypoint: position, target feet y, optional gate window, optional "fire a rocket here". */
-    record Wp(double x, double z, double y, double yMin, double yMax, String gate, boolean rocket) {
-        static Wp at(double x, double z, double y) { return new Wp(x, z, y, -1e9, 1e9, null, false); }
-        static Wp gate(double x, double z, double y, double lo, double hi, String name) { return new Wp(x, z, y, lo, hi, name, false); }
-        Wp withRocket() { return new Wp(x, z, y, yMin, yMax, gate, true); }
+    record Wp(double x, double z, double y, double yMin, double yMax, String gate, boolean rocket, int refill) {
+        static Wp at(double x, double z, double y) { return new Wp(x, z, y, -1e9, 1e9, null, false, 0); }
+        static Wp gate(double x, double z, double y, double lo, double hi, String name) { return new Wp(x, z, y, lo, hi, name, false, 0); }
+        Wp withRocket() { return new Wp(x, z, y, yMin, yMax, gate, true, refill); }
+        /** A gold refill ring: passing it inside the window adds n rockets. */
+        Wp withRefill(int n) { return new Wp(x, z, y, yMin, yMax, gate, rocket, n); }
     }
 
     static final class Flight {
         final List<double[]> pts = new ArrayList<>();   // x, y, z, speed b/s, path s
         double time, length, maxSpeed, minSpeed = 99, minClear = 99, minFloorMargin = 999;
-        int collisions, rockets, gates, gatesOk;
+        int collisions, rockets, gates, gatesOk, refilled;
         final List<String> notes = new ArrayList<>();
         final List<String> splits = new ArrayList<>();
         boolean ok = true;
@@ -120,7 +122,7 @@ final class KiteGlide {
                     if (g.gate() != null) {
                         fl.gates++;
                         boolean in = y >= g.yMin() && y <= g.yMax();
-                        if (in) fl.gatesOk++;
+                        if (in) { fl.gatesOk++; if (g.refill() > 0) { rockets += g.refill(); fl.refilled += g.refill(); } }
                         else { fl.ok = false; fl.notes.add(String.format("%s MISSED at y %.1f (window %.1f..%.1f)", g.gate(), y, g.yMin(), g.yMax())); }
                         fl.splits.add(String.format("%s %.1fs", g.gate(), (t + 1) / 20.0));
                     }

@@ -67,6 +67,11 @@ public final class PreviewMain {
             dump(m, new File(out, "generator0_xray.mcmdump.gz"), (x, y, z) -> Math.abs(x - hx) <= 7 && Math.abs(z - hz) <= 7
                     && Math.hypot(x, z) > 145 && y <= hidF.y() + 1 && !host.contains(m.blocks.get(x, y, z)), true);
         }
+        // enchanting deck of wedge 0 (table, bookshelves, anvil, chest)
+        for (MapModel.ChestSpot c : m.chests) if (c.wedge() == 0 && c.type() == MapModel.IslandType.ENCHANTING) {
+            final int ex = c.x(), ez = c.z(), ey = c.y();
+            dump(m, new File(out, "enchanting0.mcmdump.gz"), (x, y, z) -> Math.abs(x - ex) <= 6 && Math.abs(z - ez) <= 6 && y >= ey - 7 && y <= ey + 4);
+        }
         dump(m, new File(out, "castle.mcmdump.gz"), (x, y, z) -> Math.abs(x) <= 30 && Math.abs(z) <= 30);
         dump(m, new File(out, "castle_cut.mcmdump.gz"), (x, y, z) -> Math.abs(x) <= 30 && Math.abs(z) <= 30 && !(x >= 0 && z >= 0 && y >= 1));
         dump(m, new File(out, "castle_slice.mcmdump.gz"), (x, y, z) -> Math.abs(x) <= 30 && z >= 0 && z <= 30);

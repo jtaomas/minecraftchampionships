@@ -124,7 +124,7 @@ final class QuarryV {
         }
         r.check(ledge >= 1 && ledge <= 2, "narrow far-wall ledge x 8..16 is 2 wide with 1-wide pinches (narrowest " + ledge + "): one snowball and you are swimming");
 
-        // ---- decoys: reachable on foot from the start (bridge allowed), in or near a fake pen, away from the real pen
+        // ---- decoys (wandering, scattered by DecoySpots; no fake pens since playtest 2): reachable on foot from the start (bridge allowed), outside the real pen
         Walk wd = new Walk(v, go);
         wd.build = d.buildBounds;
         wd.maxBlocks = 999;
@@ -134,13 +134,13 @@ final class QuarryV {
             double dx = Math.max(0, Math.max(d.pen.minX() - p[0], p[0] - d.pen.maxX())), dz = Math.max(0, Math.max(d.pen.minZ() - p[2], p[2] - d.pen.maxZ()));
             double dist = Math.hypot(dx, dz);
             minDist = Math.min(minDist, dist);
-            if (dist >= 12) far++;
+            if (dist >= 4) far++;
             Walk.Result res = wd.route(starts(d), List.of(Region.of(p[0] - 1, p[1], p[2] - 1, p[0] + 1, p[1], p[2] + 1)));
             if (res.ok()) reach++;
         }
         r.check(decoys.size() >= 6 && decoys.size() <= 10 && reach == decoys.size() && far == decoys.size(),
-                String.format("%d decoys: %d reachable on foot, all >= 12 from the real pen (nearest %.0f); %d fake pens + scaffold deck",
-                        decoys.size(), reach, minDist, QuarrySteps.PENS.length - 1));
+                String.format("%d wandering decoys (scattered over the later part, no fake pens): %d reachable on foot, all >= 4 outside the real pen (nearest %.0f)",
+                        decoys.size(), reach, minDist));
 
         // ---- timing
         double safe = cut.ok() ? cut.end.cost : -1, wide = ramp.ok() ? ramp.end.cost : -1;

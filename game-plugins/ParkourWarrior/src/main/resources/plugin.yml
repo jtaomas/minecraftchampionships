@@ -6,8 +6,8 @@ depend: [MinecraftMondayCore]
 description: Parkour Warrior (shared course, medals, bonus paths, three endings) for MinecraftMondayCore
 commands:
   pw:
-    description: Parkour Warrior admin helpers (list, tp, complete, time, info, rebuild).
-    usage: /pw <list|tp|complete|time|info|rebuild>
+    description: Parkour Warrior admin helpers (list, tp, complete, time, info, ghost, rebuild).
+    usage: /pw <list|tp|complete|time|info|ghost|rebuild>
     permission: parkourwarrior.admin
   pwview:
     description: Spectator overview teleports in Parkour Warrior.

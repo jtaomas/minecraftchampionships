@@ -52,6 +52,7 @@ public final class SkyBlocklePlugin extends JavaPlugin {
                     + ChatColor.YELLOW + "/sbl tp" + ChatColor.GRAY + " go to the castle, "
                     + ChatColor.YELLOW + "/sbl info" + ChatColor.GRAY + " map + border info, "
                     + ChatColor.YELLOW + "/sbl loot <type>" + ChatColor.GRAY + " roll a chest, "
+                    + ChatColor.YELLOW + "/sbl respawn <player> [force]" + ChatColor.GRAY + " bring back a player who died (not to PvP unless force), "
                     + ChatColor.YELLOW + "/sbl clear" + ChatColor.GRAY + " wipe the map, "
                     + ChatColor.YELLOW + "/sbl reload" + ChatColor.GRAY + " reload config + loot.");
             return true;
@@ -102,6 +103,14 @@ public final class SkyBlocklePlugin extends JavaPlugin {
                 if (game.active()) { sender.sendMessage(ChatColor.RED + "A game is running."); return true; }
                 game.map.wipe(() -> sender.sendMessage(ChatColor.GREEN + "Sky Blockle map wiped."));
             }
+            case "respawn", "revive" -> {
+                if (args.length < 2) { sender.sendMessage(ChatColor.RED + "Usage: /sbl respawn <player> [force]"); return true; }
+                Player target = org.bukkit.Bukkit.getPlayerExact(args[1]);
+                if (target == null) { sender.sendMessage(ChatColor.RED + "Player not online: " + args[1]); return true; }
+                boolean force = args.length >= 3 && args[2].equalsIgnoreCase("force");
+                String refused = game.adminRespawn(target, force);
+                sender.sendMessage(refused == null ? ChatColor.GREEN + "Respawned " + target.getName() + " on their island." : ChatColor.RED + refused);
+            }
             case "reload" -> {
                 reloadConfig();
                 LootTables lt = game.loadLoot();
@@ -118,7 +127,7 @@ public final class SkyBlocklePlugin extends JavaPlugin {
         if (args.length == 1) {
             for (String s : List.of("build", "tp", "info", "loot", "clear", "reload")) if (s.startsWith(args[0].toLowerCase(Locale.ROOT))) out.add(s);
         } else if (args.length == 2 && args[0].equalsIgnoreCase("loot")) {
-            for (Map.Entry<String, LootTables.Table> e : game.loadLoot().all().entrySet())
+            for (Map.Entry<String, LootPool.Table> e : game.loadLoot().all().entrySet())
                 if (e.getKey().startsWith(args[1].toLowerCase(Locale.ROOT))) out.add(e.getKey());
         }
         return out;

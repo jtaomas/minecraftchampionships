@@ -14,7 +14,7 @@ final class Settings {
     int concrete, snowballs, fireworks; Material pickaxe;
     double kbPunchH, kbPunchV, kbSprint, kbSnowH, kbSnowV; int hitCooldownTicks;
     double kPerPunch, kSameBonus, kDecay, kMoreFrom, kPerKarma, kMaxMult, kGlowFrom, kLockFrom;
-    int kSameSeconds, kLockSeconds; boolean kSlowness;
+    int kSameSeconds, kLockSeconds; boolean kSlowness, kEnabled;
     double protPerHit, protMax, protDecay;
     int ptsFirst, ptsStepEvery, ptsMin; List<Integer> top10 = new ArrayList<>(), teamBonus = new ArrayList<>();
     int chickenCount; boolean chickenWander;
@@ -23,6 +23,8 @@ final class Settings {
     double glideKbMult; int elytraFloorDelaySeconds;
     boolean snowKarma, logSnowballs;
     boolean randomSeeds;
+    boolean bonusEnabled; List<Integer> bonusTier = new ArrayList<>(); int bonusCap;
+    String decoyMessage; int decoyRadius;
     List<String> punsVoid = new ArrayList<>(), punsHazard = new ArrayList<>();
 
     static Settings load(FileConfiguration c) {
@@ -37,18 +39,19 @@ final class Settings {
         s.baseY = c.getInt("world.base-y", 64);
         s.spacing = Math.max(520, c.getInt("world.map-spacing", 600));
         s.concrete = c.getInt("kit.concrete", 64);
-        s.snowballs = c.getInt("kit.snowballs", 10);
+        s.snowballs = c.getInt("kit.snowballs", 25);
         s.fireworks = c.getInt("kit.fireworks", 2);
         Material pk = Material.matchMaterial(c.getString("kit.pickaxe", "IRON_PICKAXE"));
         s.pickaxe = pk == null ? Material.IRON_PICKAXE : pk;
         s.kbPunchH = c.getDouble("knockback.punch-horizontal", 0.42);
         s.kbPunchV = c.getDouble("knockback.punch-vertical", 0.36);
         s.kbSprint = c.getDouble("knockback.sprint-bonus", 0.35);
-        s.kbSnowH = c.getDouble("knockback.snowball", c.getDouble("knockback.snowball-horizontal", 0.55));
-        s.kbSnowV = c.getDouble("knockback.snowball-vertical", 0.30);
+        s.kbSnowH = c.getDouble("knockback.snowball", c.getDouble("knockback.snowball-horizontal", 1.375));
+        s.kbSnowV = c.getDouble("knockback.snowball-vertical", 0.45);
         s.snowKarma = c.getBoolean("karma.snowball-hits-count", false);
         s.logSnowballs = c.getBoolean("knockback.log-snowball-hits", true);
         s.hitCooldownTicks = c.getInt("knockback.hit-cooldown-ticks", 10);
+        s.kEnabled = c.getBoolean("karma.enabled", false);
         s.kPerPunch = c.getDouble("karma.per-punch", 1.0);
         s.kSameBonus = c.getDouble("karma.same-victim-bonus", 0.5);
         s.kSameSeconds = c.getInt("karma.same-victim-seconds", 5);
@@ -80,11 +83,23 @@ final class Settings {
         s.glideKbMult = c.getDouble("knockback.glide-multiplier", 1.6);
         s.elytraFloorDelaySeconds = Math.max(0, c.getInt("elytra.floor-drop-delay-seconds", 3));
         s.randomSeeds = c.getBoolean("random-seeds", false);
+        s.bonusEnabled = c.getBoolean("bonus.enabled", true);
+        s.bonusTier = c.getIntegerList("bonus.tier-points");
+        if (s.bonusTier.isEmpty()) s.bonusTier = List.of(1, 2, 3);
+        s.bonusCap = Math.max(0, c.getInt("bonus.cap", 8));
+        s.decoyMessage = org.bukkit.ChatColor.translateAlternateColorCodes('&', c.getString("goal.decoy-message", "haha lol"));
+        s.decoyRadius = Math.max(1, c.getInt("goal.decoy-leash-radius", 4));
         s.punsVoid = c.getStringList("puns-void");
         s.punsHazard = c.getStringList("puns-hazard");
         if (s.punsVoid.isEmpty()) s.punsVoid = Puns.VOID;
         if (s.punsHazard.isEmpty()) s.punsHazard = Puns.HAZARD;
         return s;
+    }
+
+    /** Line-bonus points for a gate tier (1 = orange, 2 = red, 3 = brutal). */
+    int tierPoints(int tier) {
+        if (!bonusEnabled || tier < 1) return 0;
+        return bonusTier.get(Math.min(tier, bonusTier.size()) - 1);
     }
 
     /** Placement points for a 1-based place (without the top-10 bonus). */

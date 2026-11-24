@@ -4,11 +4,14 @@ import com.mcm.games.tgttos.maps.b.util.G;
 import com.mcm.games.tgttos.maps.b.util.Noise.Pal;
 import com.mcm.games.tgttos.maps.b.util.Stairs;
 import com.mcm.games.tgttos.model.Kit;
+import com.mcm.games.tgttos.model.MapFeatures;
 import com.mcm.games.tgttos.model.MapType;
 import com.mcm.games.tgttos.model.TgMap;
 import com.mcm.games.tgttos.model.TgMapData;
 import com.mcm.games.tgttos.model.TgMapData.Region;
 import com.mcm.games.tgttos.model.TgMapData.Spawn;
+
+import java.util.List;
 
 /**
  * Ticket Gates (doors / choice, indoor). A station concourse: weave through ticket machines and queue rails to a
@@ -27,6 +30,26 @@ public final class TicketGates implements TgMap {
     @Override public MapType type() { return MapType.DOORS; }
     @Override public Kit kit() { return Kit.SNOWBALLS_ONLY; }
 
+    /** Coupling anvil: creaks 0.4 s after a racer lands on it, then drops (with its iron-bar stand) into the live pit; back 3 s later. */
+    public static final int TRAP_DELAY = 8, TRAP_RESTORE = 60;
+    private static MapFeatures FEATURES;
+
+    @Override public MapFeatures features() { return feats(); }
+
+    public static synchronized MapFeatures feats() {
+        if (FEATURES != null) return FEATURES;
+        MapFeatures f = new MapFeatures();
+        int[][] cz = {{C1, T1}, {C2, T2}, {C3, T3}};
+        for (int i = 0; i < cz.length; i++) {
+            int cx = cz[i][0], z = cz[i][1] + 2;
+            f.traps.add(new MapFeatures.Trap("track " + (i + 1) + " coupling anvil", Region.of(cx, 0, z, cx, 1, z),
+                    List.of(new TgMapData.Pos(cx, 0, z), new TgMapData.Pos(cx, -1, z)), "anvil[facing=north]",
+                    TRAP_DELAY, TRAP_RESTORE, "block.anvil.land", "block.anvil.fall"));
+        }
+        FEATURES = f;
+        return f;
+    }
+
     @Override
     public TgMapData build(long seed) { return generate(seed).d; }
 
@@ -34,13 +57,17 @@ public final class TicketGates implements TgMap {
     public static final int CEIL = 12;
     public static final int LOW = -6;              // service tunnel floor
     public static final int T1 = 42, T2 = 56;      // first z of each track pit (6 wide)
-    public static final int END = 92;
+    /** Owner (playtest 2): the map was too short. A third track (T3) and a queue-rail hall were added before the plaza, which moved DZ along. */
+    public static final int DZ = 56, T3 = 70;
+    /** Queue-rail rows (z): wall to wall, a 3-wide gap at alternating ends (crowd) and a 1-wide ticket barrier in the middle (fast). */
+    public static final int[] QUEUE = {84, 94, 104, 114};
+    public static final int END = 92 + DZ;
 
     /** Passage x of turnstile i (2 wide: gx, gx+1). */
     public static int gateX(int i) { return -18 + 3 * i; }
 
     /** Coupling gap centre x for track 1 / 2. */
-    public static final int C1 = 0, C2 = 10;
+    public static final int C1 = 0, C2 = 10, C3 = -8;
 
     static final Pal FLOOR = new Pal("smooth_sandstone", 5, "white_terracotta", 4, "smooth_quartz", 1);
     static final Pal WALL = new Pal("smooth_sandstone", 6, "sandstone", 2, "white_terracotta", 2);
@@ -66,7 +93,8 @@ public final class TicketGates implements TgMap {
                 || (p[1] >= T1 && p[1] <= T1 + 5) || (p[1] >= T2 && p[1] <= T2 + 5)
                 || (Math.abs(p[0]) >= 18 && p[1] >= GATE_Z + 4 && p[1] <= GATE_Z + 13)
                 || (p[0] <= -21 && (p[1] >= 12 && p[1] <= 13))
-                || (p[0] >= -8 && p[0] <= 7 && p[1] >= 72 && p[1] <= 87), "polished_blackstone_wall", null);
+                || (p[1] >= T3 && p[1] <= T3 + 5) || isQueue(p[1])
+                || (p[0] >= -8 && p[0] <= 7 && p[1] >= 72 + DZ && p[1] <= 87 + DZ), "polished_blackstone_wall", null);
         g.set(-19, 1, 34, "barrel[facing=up,open=false]");
         g.set(-19, 1, 12, "barrel[facing=up,open=false]");
         g.breakRuns(-34, -24, 5, 39, 0, 11, p -> (p[0] >= -24 && (p[1] == 12 || p[1] == 13 || p[1] == 33 || p[1] == 34)), "barrel[facing=up,open=false]", null);
@@ -75,10 +103,12 @@ public final class TicketGates implements TgMap {
         d.playBounds = Region.of(-35, LOW - 10, -3, 22, CEIL + 8, END);
         d.hazardRegions.add(Region.of(-21, -5, T1, 21, -1, T1 + 5));     // live track pits
         d.hazardRegions.add(Region.of(-21, -5, T2, 21, -1, T2 + 5));
+        d.hazardRegions.add(Region.of(-21, -5, T3, 21, -1, T3 + 5));
         d.overviewPoints.add(new Spawn(0.5, CEIL - 2, 6.5, 0f, 40f));
         d.overviewPoints.add(new Spawn(0.5, CEIL - 2, 66.5, 0f, 45f));
+        d.overviewPoints.add(new Spawn(0.5, CEIL - 2, 110.5, 0f, 40f));
         d.notes.put("safeLine", "staff corridor round the left wall (always open), then through the carriage doors");
-        d.notes.put("fastLine", "gamble on a turnstile (OPEN/JAMMED/DROP, >= 4 of 12 open), jump the coupling gaps over the live track");
+        d.notes.put("fastLine", "gamble on a turnstile (OPEN/JAMMED/DROP, >= 4 of 12 open), jump the coupling gaps over the live track (the anvils drop!), single-file ticket barriers through the queue hall");
         g.finish();
         return g;
     }
@@ -94,7 +124,7 @@ public final class TicketGates implements TgMap {
                 g.set(x, -1, z, "stone_bricks");
                 g.set(x, 0, z, wall ? "polished_deepslate" : FLOOR.at(x, 0, z, g.seed));
                 if ((x + 40) % 6 == 0 && !wall) g.set(x, 0, z, "polished_deepslate");
-                int top = z >= 66 ? CEIL + 6 : CEIL;
+                int top = z >= 66 + DZ ? CEIL + 6 : CEIL;
                 if (wall) for (int y = 1; y <= top; y++) g.set(x, y, z, wallBlock(g, x, y, z));
                 // roof: barrel vault in 6-block bays
                 double arch = Math.sqrt(Math.max(0, 1 - (x / 23.0) * (x / 23.0)));
@@ -106,7 +136,7 @@ public final class TicketGates implements TgMap {
             }
         // the 'inside' of the roof vault above the ceiling line is open (vault), ceiling level marked by tie beams
         for (int z = 0; z <= END; z += 6)
-            for (int x = -21; x <= 21; x++) g.set(x, z >= 66 ? CEIL + 6 : CEIL, z, "waxed_oxidized_cut_copper_slab[type=top]");
+            for (int x = -21; x <= 21; x++) g.set(x, z >= 66 + DZ ? CEIL + 6 : CEIL, z, "waxed_oxidized_cut_copper_slab[type=top]");
         // windows in the side walls (high), pilasters
         for (int z = -2; z <= END; z++) {
             boolean win = z % 6 >= 2 && z % 6 <= 4;
@@ -357,6 +387,11 @@ public final class TicketGates implements TgMap {
         car(g, -21, C2 - 3, T2, new int[]{-13, -4, 3});
         car(g, C2 + 3, 21, T2, new int[]{17});
         coupling(g, C2, T2);
+        pit(g, T3);
+        car(g, -21, C3 - 3, T3, new int[]{-15});
+        car(g, C3 + 3, 21, T3, new int[]{-1, 9, 16});
+        coupling(g, C3, T3);
+        queue(g);
         // platform B kiosk and columns (the crowd squeezes between them)
         g.scenery = true;
         int zb = T1 + 6;
@@ -366,18 +401,45 @@ public final class TicketGates implements TgMap {
         for (int x : new int[]{-15, 6, 16})
             for (int y = 1; y < CEIL; y++) { g.set(x, y, zb + 3, GREEN.at(x, y, zb + 3, g.seed)); g.set(x, y, zb + 4, GREEN.at(x, y, zb + 4, g.seed)); }
         // platform numbers hanging over the tracks
-        for (int[] t : new int[][]{{T1, 1}, {T2, 2}}) {
+        for (int[] t : new int[][]{{T1, 1}, {T2, 2}, {T3, 3}}) {
             for (int x = -20; x <= -16; x++) for (int y = 8; y <= 10; y++) g.set(x, y, t[0] - 1, "black_wool");
             g.text(String.valueOf(t[1]), -17, 10, t[0] - 2, -1, 0, 1, "white_wool");
         }
         g.scenery = false;
     }
 
+    static boolean isQueue(int z) { for (int q : QUEUE) if (z == q) return true; return false; }
+
+    /** Queue hall (platform C to the plaza): rails wall to wall with alternating 3-wide end gaps and a 1-wide barrier in the middle. */
+    private void queue(G g) {
+        for (int k = 0; k < QUEUE.length; k++) {
+            int z = QUEUE[k];
+            boolean gapRight = (k & 1) == 0;
+            for (int x = -21; x <= 21; x++) {
+                boolean endGap = gapRight ? x >= 19 : x <= -19;
+                boolean barrier = x == (gapRight ? -3 : 2);
+                if (endGap) continue;
+                if (barrier) { g.set(x, 1, z, null); g.set(x, 2, z, null); continue; }
+                g.set(x, 1, z, (x & 3) == 0 ? "polished_blackstone_wall" : "iron_bars");
+                g.set(x, 2, z, (x & 3) == 0 ? "lantern[hanging=false]" : null);
+            }
+            g.scenery = true;
+            // barrier frame over the 1-wide ticket gate: a yellow / black lintel (reads as "single file")
+            int bx = gapRight ? -3 : 2;
+            for (int dx = -1; dx <= 1; dx++) g.set(bx + dx, 3, z, (dx & 1) == 0 ? "yellow_terracotta" : "black_terracotta");
+            g.set(bx - 1, 2, z, "polished_blackstone_wall"); g.set(bx + 1, 2, z, "polished_blackstone_wall");
+            g.scenery = false;
+        }
+        // luggage carts parked between the rails (weave obstacles, not on the barrier line)
+        int[][] carts = {{-12, 89}, {10, 99}, {-9, 109}, {14, 89}, {-16, 99}};
+        for (int[] c : carts) for (int dx = 0; dx <= 2; dx++) { g.set(c[0] + dx, 1, c[1], "barrel[facing=up,open=false]"); g.set(c[0] + dx, 1, c[1] + 1, dx == 1 ? "chest[facing=north]" : "spruce_planks"); }
+    }
+
     // ------------------------------------------------------------------ plaza + pen
 
     private void plaza(G g) {
         TgMapData d = g.d;
-        int z1 = 73, z2 = 86;
+        int z1 = 73 + DZ, z2 = 86 + DZ;
         for (int x = -7; x <= 6; x++)
             for (int z = z1; z <= z2; z++) {
                 boolean ring = x == -7 || x == 6 || z == z1 || z == z2;
@@ -385,14 +447,14 @@ public final class TicketGates implements TgMap {
                 if (ring) g.set(x, 1, z, ((x + z) & 1) == 0 ? "waxed_oxidized_cut_copper" : "red_terracotta");
             }
         for (int x = -2; x <= 1; x++) g.set(x, 1, z1, null);
-        for (int z = 78; z <= 79; z++) { g.set(-7, 1, z, null); g.set(6, 1, z, null); }
+        for (int z = 78 + DZ; z <= 79 + DZ; z++) { g.set(-7, 1, z, null); g.set(6, 1, z, null); }
         d.pen = Region.of(-6, 1, z1 + 1, 5, 3, z2 - 1);
         g.chickens(d.pen, 12);
         g.set(-5, 1, z2 - 1, "hay_block");
         g.set(4, 1, z2 - 1, "hay_block");
         // station clock tower behind the pen, reaching into the vault
         g.scenery = true;
-        int cz = 89;
+        int cz = 89 + DZ;
         for (int y = 1; y <= CEIL + 9; y++)
             for (int x = -2; x <= 1; x++)
                 for (int z = cz; z <= cz + 2; z++) g.set(x, y, z, y > CEIL + 6 ? "waxed_oxidized_cut_copper" : (x == -2 || x == 1) ? "dark_oak_planks" : "smooth_sandstone");
@@ -410,7 +472,7 @@ public final class TicketGates implements TgMap {
             g.set((int) Math.round(-0.5 + Math.sin(a) * 3.6), (int) Math.round(CEIL + 3 + Math.cos(a) * 3.6), cz - 2, "red_terracotta");
         }
         // flower planters and benches round the plaza
-        for (int[] p : new int[][]{{-14, 75}, {12, 75}, {-14, 84}, {12, 84}}) {
+        for (int[] p : new int[][]{{-14, 75 + DZ}, {12, 75 + DZ}, {-14, 84 + DZ}, {12, 84 + DZ}}) {
             g.fill(p[0], 1, p[1], p[0] + 2, 1, p[1] + 2, "waxed_oxidized_cut_copper");
             g.fill(p[0], 2, p[1], p[0] + 2, 2, p[1] + 2, "azalea_leaves");
             g.set(p[0] + 1, 3, p[1] + 1, "flowering_azalea");
@@ -428,6 +490,6 @@ public final class TicketGates implements TgMap {
             g.set(21, 3, z + 2, "red_wall_banner[facing=west]");
         }
         // potted plants on platform A / C
-        for (int x = -14; x <= 14; x += 7) { g.set(x, 1, 39, "potted_fern"); g.set(x, 1, 66, "potted_azalea_bush"); }
+        for (int x = -14; x <= 14; x += 7) { g.set(x, 1, 39, "potted_fern"); g.set(x, 1, 66, "potted_azalea_bush"); g.set(x + 3, 1, T3 + 8, "potted_fern"); }
     }
 }

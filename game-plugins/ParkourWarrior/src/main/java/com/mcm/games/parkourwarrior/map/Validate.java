@@ -6,6 +6,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -13,101 +14,169 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Offline validators for the generated course. Jump model (vanilla sprint-jump, conservative):
- * flat / drop gap <= 4, rise of up to 1 block allows gap <= 3, no rise > 1 without ladder or slime, 2 blocks of
- * headroom at takeoff, landing and along the arc, a block 2 above the takeoff feet (head-hitter) forbids rising
- * and limits the gap to 3, a neo limits the gap to 3. Ladder: catch gap <= 3 with a rung within reach; leave
- * from the top to a landing no higher than the top rung + 1 with gap <= 2. Slime: bounce rise <= drop - 1.
- * Easy table: gap <= 3 flat/drop, <= 2 with rise, ladder catch <= 2, ladder exit gap <= 1.
+ * Offline validators for the generated course (fail the build on any ERROR).
+ * <ul>
+ *   <li><b>Movement simulation</b> ({@link JumpSim} / {@link Phys}): every consecutive foothold pair of every
+ *   obstacle is simulated tick by tick; its timing window (jump ticks that land) must be at least 1 and at least the
+ *   tier minimum ({@link Tier}). Neo walls of 3+ are rejected everywhere, 2-walls outside gold / hard.</li>
+ *   <li><b>Bypass search</b> ({@link Bypass}): the pad must not be reachable without the intended footholds.</li>
+ *   <li><b>Kill-volume overlap</b>: no foothold, frame walkway or straight jump line lies in any obstacle's kill
+ *   column below its kill-Y (the runtime kills there; this was the Spine Scramble instant death).</li>
+ *   <li><b>Timed phase</b>: every run of timed footholds can be crossed for a window of start ticks per cycle.</li>
+ *   <li>Checkpoint pad after every obstacle (pad material only there), kill-Y below every foothold, footholds belong
+ *   to real objects, no foothold-height decoys, lengths, neighbour ideas, >= 3 timed obstacles, difficulty ordering
+ *   (main ramp, bronze < silver < gold per zone, gold above the Runaway Rails floor and within ~25 attempts, the
+ *   hard ending the hardest), fence/pane/wall connections set (post-pass), staircases (walk check).</li>
+ * </ul>
  */
 final class Validate {
     private Validate() {}
 
+    enum Tier {
+        Z1(3, 4, true), Z2(2, 3, true), Z3(2, 3, true), Z4(1, 2, true), Z5(1, 2, true),
+        BRONZE(1, 2, true), SILVER(0, 1, true), GOLD(0, 1, true), EASY(3, 4, true), MEDIUM(1, 2, true), HARD(0, 1, true);
+        final int minWorst, minBest;
+        final boolean late;
+        Tier(int w, int b, boolean late) { this.minWorst = w; this.minBest = b; this.late = late; }
+    }
+
+    static Tier tier(Ob o) {
+        if (o.kind == CourseModel.Kind.MAIN) return Tier.values()[o.stage - 1];
+        if (o.kind == CourseModel.Kind.BONUS) return o.index == 1 ? Tier.BRONZE : o.index == 2 ? Tier.SILVER : Tier.GOLD;
+        return o.ending == CourseModel.Difficulty.EASY ? Tier.EASY : o.ending == CourseModel.Difficulty.MEDIUM ? Tier.MEDIUM : Tier.HARD;
+    }
+
     static final class Report {
         final StringBuilder text = new StringBuilder();
         int errors, warnings;
-        final Map<String, Double> diff = new HashMap<>();
+        final Map<String, Double> attempts = new LinkedHashMap<>();
+        final Map<String, String> tableRow = new LinkedHashMap<>();
         void err(String s) { errors++; text.append("  ERROR ").append(s).append('\n'); }
         void warn(String s) { warnings++; text.append("  warn  ").append(s).append('\n'); }
         void line(String s) { text.append(s).append('\n'); }
     }
 
-    private static boolean free(W w, int x, int y, int z, Map<Long, String> timed) {
-        String s = timed.containsKey(W.key(x, y, z)) ? timed.get(W.key(x, y, z)) : w.get(x, y, z);
-        return Bs.passable(s);
+    /** Fail chance of one jump from its mean window, calibrated on the owner playtest: Runaway Rails (two 4b at window 1, one 3+1 at 1/2) about 10 tries, 3+1 at 1/2 feels easy. */
+    static double failP(double w) {
+        double[][] t = {{0, 0.97}, {0.5, 0.88}, {1, 0.65}, {1.5, 0.35}, {2, 0.18}, {2.5, 0.11}, {3, 0.06}, {4, 0.03}, {5, 0.015}, {6, 0.008}, {8, 0.003}, {12, 0.001}};
+        if (w >= 12) return 0.001;
+        for (int i = 1; i < t.length; i++) if (w <= t[i][0]) {
+            double f = (w - t[i - 1][0]) / (t[i][0] - t[i - 1][0]);
+            return t[i - 1][1] + f * (t[i][1] - t[i - 1][1]);
+        }
+        return 0.001;
     }
-
-    private static String at(W w, int x, int y, int z, Map<Long, String> timed) {
-        String t = timed.get(W.key(x, y, z));
-        return t != null ? t : w.get(x, y, z);
-    }
-
-    static double gap(int[] a, int[] b) {
-        double gx = Math.max(0, Math.abs(a[0] - b[0]) - 1), gz = Math.max(0, Math.abs(a[2] - b[2]) - 1);
-        return Math.sqrt(gx * gx + gz * gz);
-    }
-
-    record Jump(double gap, double rise, String kind, boolean ok, boolean easyOk, String why, double hard) {}
 
     static Report run(W w) {
         Report r = new Report();
         Map<Long, String> timed = new HashMap<>();
         for (Ob o : w.obs) timed.putAll(o.timedPreview);
+        Phys.World wd = new Phys.World(w, timed);
         r.line("Parkour Warrior course validation  (seed " + w.model.seed + ")");
         r.line("blocks: " + w.b.size() + ", obstacles: " + w.obs.size() + ", timed groups: " + w.model.timed.size());
+        r.line("movement model: Phys (1.21.1 tick simulation, W only 0.98, sprint, one-tick-late jump allowed, rest start at the back of each foothold, 8 alignments, chained landings)");
+        // kill volumes of every obstacle (as the runtime builds them)
+        List<double[]> areas = new ArrayList<>();
+        List<String> areaIds = new ArrayList<>();
+        for (Ob o : w.obs) {
+            if (o.built == null || o.built.area() == null) continue;
+            CourseModel.Box a = o.built.area();
+            areas.add(new double[]{a.minX(), a.minZ(), a.maxX(), a.maxZ(), o.killY});
+            areaIds.add(o.id);
+        }
 
-        int jumps = 0, easyChecked = 0, decoys = 0, ledges = 0, tiny = 0, footholds = 0;
+        int jumps = 0, decoys = 0, ledges = 0, tiny = 0, footholds = 0, bypasses = 0, killOverlaps = 0;
         Set<String> ids = new HashSet<>(), names = new HashSet<>();
         for (Ob o : w.obs) {
-            StringBuilder head = new StringBuilder();
-            List<Jump> js = new ArrayList<>();
+            Tier tier = tier(o);
             if (!ids.add(o.id)) r.err(o.id + ": duplicate id");
             if (!names.add(o.name)) r.err(o.id + ": duplicate name " + o.name);
             if (o.padBox == null) { r.err(o.id + ": no completion pad"); continue; }
-            // pad material
             for (int x = o.padBox.minX(); x <= o.padBox.maxX(); x++) for (int z = o.padBox.minZ(); z <= o.padBox.maxZ(); z++)
                 if (!W.PAD.equals(w.get(x, o.padBox.minY(), z))) r.err(o.id + ": pad block missing at " + x + "," + o.padBox.minY() + "," + z);
             int minFeet = o.minFeet();
             if (o.killY >= minFeet) r.err(o.id + ": killY " + o.killY + " not below lowest foothold feet " + minFeet);
-            double drop = 0;
-            for (int i = 1; i < o.route.size(); i++) {
-                Ob.Node a = o.route.get(i - 1), b = o.route.get(i);
-                Jump j = jump(w, timed, a, b, drop);
-                if (b.t == Ob.T.SLIME) drop = feetOf(w, timed, a) - feetOf(w, timed, b);
-                js.add(j);
+
+            // ---- movement simulation per step
+            JumpSim.Kill kill = new JumpSim.Kill(o.killY, areas, areaIds);
+            JumpSim.Cfg cfg = new JumpSim.Cfg();
+            cfg.allowLate = true;   // the one-tick-late jump (Y-first collision) is real 1.21 physics and happens unasked
+            double pass = 1.0;
+            int hardW = 99, hardB = 99;
+            String hardDesc = "-";
+            List<JumpSim.Res> stepRes = new ArrayList<>();
+            List<int[]> stepIdx = new ArrayList<>();
+            StringBuilder detail = new StringBuilder();
+            List<Phys.P> prevArr = null;
+            for (int i = 1; i < o.route.size(); ) {
+                Ob.Node a = o.route.get(i - 1);
+                List<Ob.Node> tg = new ArrayList<>();
+                int j = i;
+                tg.add(o.route.get(j));
+                while (o.route.get(j).t == Ob.T.SLIME && j + 1 < o.route.size()) { j++; tg.add(o.route.get(j)); }
+                JumpSim.Res res = JumpSim.eval(wd, a, tg, kill, cfg, prevArr);
+                prevArr = res.arrivals;
+                stepRes.add(res);
+                stepIdx.add(new int[]{i - 1, j});
                 jumps++;
-                if (!j.ok) r.err(o.id + " jump " + i + " (" + j.kind + "): " + j.why);
-                if (o.easy) { easyChecked++; if (!j.easyOk && j.ok) r.err(o.id + " jump " + i + " outside EASY table: " + j.kind + " gap " + f(j.gap) + " rise " + f(j.rise)); }
+                String tag = o.id + " step " + i + (j > i ? "-" + j : "") + " (" + res.describe() + ")";
+                detail.append(String.format(Locale.ROOT, "    %-5s %-52s window %d/%d  (rest %d/%d, chained %d/%d)%s%n", (i + (j > i ? "-" + j : "")), res.describe(),
+                        res.worst, res.best, res.restWorst, res.restBest, res.chainWorst, res.chainBest, res.trivial ? " trivial" : ""));
+                if (res.best == 0) {
+                    r.err(tag + ": IMPOSSIBLE in the simulation" + (res.killHit ? " (every landing is inside a kill volume)" : "")
+                            + (res.fail.isEmpty() ? "" : " - " + res.fail));
+                } else {
+                    if (res.worst < tier.minWorst) r.err(tag + ": window " + res.worst + " at the worst alignment < " + tier.minWorst + " (tier " + tier + ")");
+                    if (res.best < tier.minBest) r.err(tag + ": window " + res.best + " at the best alignment < " + tier.minBest + " (tier " + tier + ")");
+                }
+                if (res.curved && res.wallLen >= 1) {
+                    if (res.wallLen >= 3) r.err(tag + ": neo around a " + res.wallLen + "-block wall (never buildable)");
+                    else if (res.wallLen == 2 && tier != Tier.GOLD && tier != Tier.HARD) r.err(tag + ": double neo outside gold / hard");
+                    else if (tier == Tier.Z1 || tier == Tier.Z2 || tier == Tier.EASY) r.err(tag + ": neo in zone 1-2 / easy ending");
+                }
+                if (!res.trivial) {
+                    double we = (res.worst + res.best) / 2.0;
+                    pass *= 1 - failP(we);
+                    if (res.worst * 10 + res.best < hardW * 10 + hardB) { hardW = res.worst; hardB = res.best; hardDesc = res.describe(); }
+                }
+                i = j + 1;
             }
-            // foothold objects: each area node must belong to a solid object clearly bigger than the foothold
+            // ---- timed phase windows
+            double ph = phaseCheck(r, o, stepRes, stepIdx, tier);
+            if (ph < 1) pass *= Math.max(0.3, ph);
+            double att = 1.0 / Math.max(1e-6, pass);
+            r.attempts.put(o.id, att);
+            String hd = hardW == 99 ? "none (walk)" : hardDesc;
+            r.tableRow.put(o.id, String.format(Locale.ROOT, "| %s | %s | %s | %s | %s | %s | %.1f |", o.id, o.name, tier, o.idea, hd,
+                    hardW == 99 ? "-" : hardW + "/" + hardB, att));
+
+            // ---- footholds belong to real objects
             for (Ob.Node n : o.route) {
                 if (n.t == Ob.T.LADDER || n.t == Ob.T.TIMED) continue;
                 footholds++;
                 int obj = objectSize(w, n.cells, 400);
                 if (obj < Math.max(8, n.cells.size() * 1.5 + 4)) { tiny++; r.err(o.id + ": foothold at " + c(n.cells.get(0)) + " belongs to an object of only " + obj + " blocks (plain cube?)"); }
             }
-            // decoys and catch ledges
+            // ---- decoys near the route at foothold height
             Set<Long> legit = new HashSet<>(o.safe);
-            for (Ob.Node n : o.route) for (int[] c : n.cells) legit.add(W.key(c[0], c[1], c[2]));
+            for (Ob.Node n : o.route) for (int[] cc : n.cells) legit.add(W.key(cc[0], cc[1], cc[2]));
             int[] bb = bbox(o);
             int maxFeet = o.maxFeet();
             List<double[]> segs = new ArrayList<>();
             for (int i = 1; i < o.route.size(); i++) {
-                int[][] p = nearest(o.route.get(i - 1), o.route.get(i));
-                segs.add(new double[]{p[0][0] + .5, p[0][2] + .5, p[1][0] + .5, p[1][2] + .5,
-                        Math.min(feetCell(w, timed, p[0], o.route.get(i - 1)), feetCell(w, timed, p[1], o.route.get(i))),
-                        Math.max(feetCell(w, timed, p[0], o.route.get(i - 1)), feetCell(w, timed, p[1], o.route.get(i)))});
+                int[][] p = JumpSim.nearest(o.route.get(i - 1).cells, o.route.get(i).cells);
+                double fa = feetCell(wd, p[0], o.route.get(i - 1)), fb = feetCell(wd, p[1], o.route.get(i));
+                segs.add(new double[]{p[0][0] + .5, p[0][2] + .5, p[1][0] + .5, p[1][2] + .5, Math.min(fa, fb), Math.max(fa, fb)});
             }
             int od = 0, ol = 0;
             for (int x = bb[0] - 3; x <= bb[3] + 3; x++) for (int z = bb[2] - 3; z <= bb[5] + 3; z++) for (int y = o.killY - 1; y <= maxFeet + 1; y++) {
-                String s = at(w, x, y, z, timed);
+                String s = wd.state(x, y, z);
                 if (Bs.isAir(s)) continue;
-                double top = Bs.standTop(s);
+                double top = Phys.top(s);
                 if (top <= 0) continue;
-                if (!free(w, x, y + 1, z, timed) || !free(w, x, y + 2, z, timed)) continue;
+                if (Phys.shape(wd.state(x, y + 1, z)).length > 0 || Phys.shape(wd.state(x, y + 2, z)).length > 0) continue;
                 long k = W.key(x, y, z);
-                if (legit.contains(k) || w.frameWalk.contains(k) || w.padCells.contains(k)) continue;
-                if (isLegitElsewhere(w, k)) continue;
+                if (legit.contains(k) || w.frameWalk.contains(k) || w.padCells.contains(k) || isLegitElsewhere(w, k)) continue;
                 double feet = y + top;
                 if (feet < o.killY) continue;
                 boolean dec = false;
@@ -116,35 +185,64 @@ final class Validate {
                     if (segDist(x + .5, z + .5, sg) <= 2.0) { dec = true; break; }
                 }
                 if (dec) { od++; if (od <= 4) r.err(o.id + ": decoy standable block at foothold height near the route: " + x + "," + y + "," + z + " " + Bs.id(s)); }
-                else { ol++; if (ol <= 2) r.warn(o.id + ": catch ledge above kill-Y (not on route) " + x + "," + y + "," + z + " " + Bs.id(s)); }
+                else ol++;
             }
             if (od > 4) r.err(o.id + ": ... " + (od - 4) + " more decoys");
             decoys += od; ledges += ol;
+            // ---- bypass search
+            for (String b : Bypass.check(wd, o, o.killY)) { bypasses++; r.err(o.id + ": " + b); }
+            // ---- timed positions empty in the static store
             for (CourseModel.Timed t : o.timed) for (CourseModel.BlockPos p : t.positions())
                 if (!Bs.isAir(w.get(p.x(), p.y(), p.z()))) r.err(o.id + ": timed position not air in the static store " + p);
-            // length
+            // ---- length
             int sx = o.wx(0, 0), sz = o.wz(0, 0), ex = o.wx(o.endX, o.endZ), ez = o.wz(o.endX, o.endZ);
             double span = o.kind == CourseModel.Kind.ENDING ? Math.hypot(Math.hypot(ex - sx, ez - sz), o.endY) - 3 : Math.hypot(ex - sx, ez - sz) - 3;
             if (o.kind != CourseModel.Kind.ENDING && (span < 15 || span > 35)) r.err(o.id + ": length " + f(span) + " outside 15..35");
             if (o.kind == CourseModel.Kind.ENDING && (span < 8 || span > 35)) r.err(o.id + ": ending length " + f(span) + " outside 8..35");
-            double maxGap = 0, maxRise = 0, hard = 0;
-            List<Double> hs = new ArrayList<>();
-            for (Jump j : js) { maxGap = Math.max(maxGap, j.gap); maxRise = Math.max(maxRise, j.rise); hs.add(j.hard); }
-            hs.sort((p, q) -> Double.compare(q, p));
-            for (int i = 0; i < Math.min(4, hs.size()); i++) hard += hs.get(i);
-            hard /= Math.max(1, Math.min(4, hs.size()));
-            r.diff.put(o.id, hard);
-            int up = o.maxFeet() - o.minFeet();
-            head.append(String.format(Locale.ROOT, "%-10s %-24s %-7s len %4.1f  jumps %2d  maxGap %.1f  climb %2d  killY %d  diff %.2f%s%s",
-                    o.id, o.name, o.idea, span, js.size(), maxGap, up, o.killY, hard, o.easy ? "  [easy table]" : "",
-                    o.difficultyTag.isEmpty() ? "" : "  sign " + o.difficultyTag));
-            r.text.insert(r.text.length(), "");
-            r.line(head.toString());
+            r.line(String.format(Locale.ROOT, "%-10s %-24s %-7s %-6s len %4.1f  steps %2d  tightest %s window %s  est. attempts %.1f  killY %d",
+                    o.id, o.name, o.idea, tier, span, stepRes.size(), hardDesc, hardW == 99 ? "-" : hardW + "/" + hardB, att, o.killY));
+            r.text.append(detail);
         }
 
-        // ---- course-level checks
+        // ---- kill-volume overlap: footholds, frame walkways and jump lines vs every obstacle's kill column
         r.line("");
         r.line("== course checks");
+        List<double[]> pts = new ArrayList<>();   // x, feet, z, owner index
+        for (int oi = 0; oi < w.obs.size(); oi++) {
+            Ob o = w.obs.get(oi);
+            for (int i = 0; i < o.route.size(); i++) {
+                Ob.Node n = o.route.get(i);
+                for (int[] cc : n.cells) pts.add(new double[]{cc[0] + 0.5, feetCell(wd, cc, n), cc[2] + 0.5, oi});
+                if (i > 0) {
+                    int[][] p = JumpSim.nearest(o.route.get(i - 1).cells, n.cells);
+                    double fa = feetCell(wd, p[0], o.route.get(i - 1)), fb = feetCell(wd, p[1], n);
+                    for (int k = 1; k < 8; k++) {
+                        double t = k / 8.0;
+                        pts.add(new double[]{p[0][0] + .5 + (p[1][0] - p[0][0]) * t, Math.min(fa, fb), p[0][2] + .5 + (p[1][2] - p[0][2]) * t, oi});
+                    }
+                }
+            }
+        }
+        for (long k : w.frameWalk) {
+            String s = w.get(W.kx(k), W.ky(k), W.kz(k));
+            double t = Phys.top(s);
+            if (t > 0) pts.add(new double[]{W.kx(k) + 0.5, W.ky(k) + t, W.kz(k) + 0.5, -1});
+        }
+        Set<String> seenOverlap = new HashSet<>();
+        for (double[] p : pts) for (int i = 0; i < areas.size(); i++) {
+            double[] a = areas.get(i);
+            int bx = (int) Math.floor(p[0]), bz = (int) Math.floor(p[2]);
+            if (bx >= a[0] && bx <= a[2] && bz >= a[1] && bz <= a[3] && p[1] < a[4]) {
+                String who = p[3] < 0 ? "frame walkway" : w.obs.get((int) p[3]).id;
+                String key = who + "|" + areaIds.get(i);
+                if (seenOverlap.add(key)) {
+                    killOverlaps++;
+                    r.err("kill-volume overlap: " + who + " position " + f(p[0]) + "," + f(p[1]) + "," + f(p[2]) + " is inside the kill column of "
+                            + areaIds.get(i) + " (kill-Y " + (int) a[4] + ")");
+                }
+            }
+        }
+        r.line("kill-volume overlaps: " + killOverlaps);
         // pad material only used for pads
         Set<Long> padBoxes = new HashSet<>();
         for (Ob o : w.obs) if (o.padBox != null)
@@ -169,50 +267,145 @@ final class Validate {
         for (CourseModel.Timed t : w.model.timed) timedObs.add(t.obstacleId());
         r.line("timed obstacles: " + timedObs);
         if (timedObs.size() < 3) r.err("fewer than 3 timed obstacles");
-        // difficulty ramp
-        double[] mainD = new double[6], bonD = new double[6];
+        // ---- difficulty ordering (estimated attempts)
+        double[] mainA = new double[6];
         for (int s = 1; s <= 5; s++) {
-            for (int i = 1; i <= 3; i++) { mainD[s] += r.diff.getOrDefault("M" + s + "-" + i, 0.0) / 3; bonD[s] += r.diff.getOrDefault("B" + s + "-" + i, 0.0) / 3; }
-            r.line(String.format(Locale.ROOT, "stage %d difficulty: main %.2f  bonus %.2f", s, mainD[s], bonD[s]));
-            if (bonD[s] <= mainD[s]) r.err("bonus path " + s + " not harder than main stage " + s);
-            if (s > 1 && bonD[s] < bonD[s - 1] - 0.05) r.err("bonus path " + s + " easier than bonus path " + (s - 1));
+            double mx = 0;
+            for (int i = 1; i <= 3; i++) { double a = r.attempts.getOrDefault("M" + s + "-" + i, 1.0); mainA[s] += a / 3; mx = Math.max(mx, a); }
+            double b1 = r.attempts.getOrDefault("B" + s + "-1", 0.0), b2 = r.attempts.getOrDefault("B" + s + "-2", 0.0), b3 = r.attempts.getOrDefault("B" + s + "-3", 0.0);
+            r.line(String.format(Locale.ROOT, "stage %d est. attempts: main avg %.2f (max %.2f)  bronze %.2f  silver %.2f  gold %.2f", s, mainA[s], mx, b1, b2, b3));
+            if (b1 <= mx) r.err("bronze B" + s + "-1 (" + f(b1) + ") not harder than the hardest main obstacle of stage " + s + " (" + f(mx) + ")");
+            if (b2 <= b1) r.err("silver B" + s + "-2 not harder than bronze B" + s + "-1");
+            if (b3 <= b2) r.err("gold B" + s + "-3 not harder than silver B" + s + "-2");
+            if (b3 > 26) r.err("gold B" + s + "-3 needs about " + f(b3) + " attempts (> ~25)");
+            if (s > 1 && mainA[s] < mainA[s - 1] * 0.98) r.err("main line does not ramp: stage " + s + " (" + f(mainA[s]) + ") easier than stage " + (s - 1));
         }
-        if (mainD[5] <= mainD[1]) r.err("main line does not ramp up (stage 5 <= stage 1)");
-        double hardEnd = (r.diff.getOrDefault("E-HARD-1", 0.0) + r.diff.getOrDefault("E-HARD-2", 0.0)) / 2;
-        double medEnd = (r.diff.getOrDefault("E-MEDIUM-1", 0.0) + r.diff.getOrDefault("E-MEDIUM-2", 0.0)) / 2;
-        double easyEnd = (r.diff.getOrDefault("E-EASY-1", 0.0) + r.diff.getOrDefault("E-EASY-2", 0.0)) / 2;
-        r.line(String.format(Locale.ROOT, "endings difficulty: easy %.2f  medium %.2f  hard %.2f", easyEnd, medEnd, hardEnd));
+        if (mainA[5] < mainA[1] * 1.5) r.err("main line ramp too flat (stage 5 " + f(mainA[5]) + " vs stage 1 " + f(mainA[1]) + ")");
+        Double rr = null;
+        for (Ob o : w.obs) if (o.name.equals("Runaway Rails")) rr = r.attempts.get(o.id);
+        if (rr != null) {
+            r.line(String.format(Locale.ROOT, "Runaway Rails (owner calibration, floor of gold): est. attempts %.2f", rr));
+            for (int s = 1; s <= 5; s++) {
+                double g = r.attempts.getOrDefault("B" + s + "-3", 0.0);
+                if (g < rr * 0.95) r.err("gold B" + s + "-3 (" + f(g) + ") easier than the Runaway Rails floor (" + f(rr) + ")");
+            }
+        }
+        double e1 = avg(r, "E-EASY"), e2 = avg(r, "E-MEDIUM"), e3 = avg(r, "E-HARD");
+        r.line(String.format(Locale.ROOT, "endings est. attempts: easy %.2f  medium %.2f  hard %.2f", e1, e2, e3));
         double maxOther = 0;
-        for (Map.Entry<String, Double> e : r.diff.entrySet()) if (!e.getKey().startsWith("E-HARD")) maxOther = Math.max(maxOther, e.getValue());
-        if (hardEnd <= maxOther) r.err("Hard ending (" + f(hardEnd) + ") is not the hardest thing on the map (max other " + f(maxOther) + ")");
-        if (!(easyEnd < medEnd && medEnd < hardEnd)) r.err("endings not ordered easy < medium < hard");
+        for (Map.Entry<String, Double> e : r.attempts.entrySet()) if (!e.getKey().startsWith("E-HARD")) maxOther = Math.max(maxOther, e.getValue());
+        if (e3 <= maxOther) r.err("Hard ending (" + f(e3) + ") is not the hardest thing on the map (max other " + f(maxOther) + ")");
+        if (!(e1 < e2 && e2 < e3)) r.err("endings not ordered easy < medium < hard");
+        double m4 = (mainA[4]);
+        if (e2 < m4 * 0.9) r.err("medium ending (" + f(e2) + ") easier than main zone 4 (" + f(m4) + ")");
+        // ---- connections (post-pass ran)
+        int unconnected = 0;
+        final int[] uc = {0};
+        w.b.forEach((x, y, z, s) -> {
+            int k = Bs.kind(Bs.id(s));
+            if ((k == 1 || k == 2 || k == 3) && Bs.prop(s, "north") == null) uc[0]++;
+        });
+        unconnected = uc[0];
+        r.line("connection post-pass: " + (unconnected == 0 ? "ok" : unconnected + " fences/panes/walls without connection states"));
+        if (unconnected > 0) r.err(unconnected + " fences/panes/walls without connection states (post-pass not run?)");
         // stairs
         List<String> se = Stairs.validate(w.b, w.lanes);
         r.line("staircases: " + w.lanes.size() + " lanes, problems " + se.size());
         for (String s : se) r.err("stairs: " + s);
-        // bounds, materials
         w.model.recomputeBounds();
         r.line("bounds: x " + w.model.minX + ".." + w.model.maxX + "  y " + w.model.minY + ".." + w.model.maxY + "  z " + w.model.minZ + ".." + w.model.maxZ);
         if (w.model.minY < 40 || w.model.maxY > 250) r.err("course outside y 40..250");
         Set<String> mats = new HashSet<>();
         w.b.forEach((x, y, z, s) -> mats.add(Bs.id(s)));
         r.line("distinct block types: " + mats.size());
-        // spawns etc.
         if (w.model.spawns.isEmpty()) r.err("no spawns");
         if (w.model.hubs.size() != 5) r.err("expected 5 hubs");
         if (w.model.finishes.size() != 3) r.err("expected 3 finishes");
         if (w.model.fork == null) r.err("no fork");
         for (CourseModel.Pos p : spawnLike(w)) {
             int x = (int) Math.floor(p.x()), y = (int) Math.floor(p.y()), z = (int) Math.floor(p.z());
-            if (Bs.standTop(w.get(x, y - 1, z)) < 0 || !Bs.passable(w.get(x, y, z)) || !Bs.passable(w.get(x, y + 1, z)))
+            if (Phys.top(w.get(x, y - 1, z)) <= 0 || Phys.shape(w.get(x, y, z)).length > 0 || Phys.shape(w.get(x, y + 1, z)).length > 0)
                 r.err("respawn/spawn point not standable: " + p);
         }
         r.line("");
-        r.line(String.format(Locale.ROOT, "SUMMARY jumps %d (easy-table checked %d), footholds %d (tiny objects %d), decoys %d, catch ledges %d (warning)",
-                jumps, easyChecked, footholds, tiny, decoys, ledges));
+        r.line(String.format(Locale.ROOT, "SUMMARY steps %d, footholds %d (tiny objects %d), decoys %d, bypasses %d, kill overlaps %d, catch ledges %d (info)",
+                jumps, footholds, tiny, decoys, bypasses, killOverlaps, ledges));
         r.line("RESULT: " + (r.errors == 0 ? "PASS" : "FAIL") + "  errors " + r.errors + "  warnings " + r.warnings);
         return r;
     }
+
+    private static double avg(Report r, String prefix) {
+        double s = 0; int n = 0;
+        for (Map.Entry<String, Double> e : r.attempts.entrySet()) if (e.getKey().startsWith(prefix)) { s += e.getValue(); n++; }
+        return n == 0 ? 0 : s / n;
+    }
+
+    /**
+     * Timed runs: for every start tick in one cycle, can a player leaving the solid foothold before the run cross
+     * every timed foothold while it is on (airtime from the simulation, minimum stay = the next jump's first good
+     * tick + 1, waiting allowed while the block stays on)? Returns the fraction of good start ticks (1 when none).
+     */
+    private static double phaseCheck(Report r, Ob o, List<JumpSim.Res> res, List<int[]> idx, Tier tier) {
+        if (o.timed.isEmpty()) return 1;
+        Map<Long, CourseModel.Timed> group = new HashMap<>();
+        for (CourseModel.Timed t : o.timed) for (CourseModel.BlockPos p : t.positions()) group.put(W.key(p.x(), p.y(), p.z()), t);
+        // step index by target node
+        Map<Integer, Integer> stepInto = new HashMap<>();
+        for (int s = 0; s < idx.size(); s++) stepInto.put(idx.get(s)[1], s);
+        double worstFrac = 1;
+        for (int i = 1; i < o.route.size(); i++) {
+            if (o.route.get(i).t != Ob.T.TIMED || o.route.get(i - 1).t == Ob.T.TIMED) continue;
+            int j = i;
+            while (j + 1 < o.route.size() && o.route.get(j + 1).t == Ob.T.TIMED) j++;
+            List<CourseModel.Timed> g = new ArrayList<>();
+            List<Integer> air = new ArrayList<>(), stay = new ArrayList<>();
+            boolean ok = true;
+            for (int k = i; k <= j; k++) {
+                int[] c0 = o.route.get(k).cells.get(0);
+                CourseModel.Timed t = group.get(W.key(c0[0], c0[1], c0[2]));
+                Integer sIn = stepInto.get(k), sOut = stepInto.get(k + 1);
+                if (t == null || sIn == null || sOut == null) { ok = false; break; }
+                JumpSim.Res in = res.get(sIn), out = res.get(sOut);
+                g.add(t);
+                air.add(in.airMax == 0 ? 12 : (in.airMin + in.airMax + 1) / 2);
+                stay.add(Math.max(2, (out.firstJump >= 99 ? 4 : out.firstJump) + 1));
+            }
+            if (!ok) { r.err(o.id + ": timed run " + i + ".." + j + " could not be analysed"); continue; }
+            int P = 1;
+            for (CourseModel.Timed t : g) P = lcm(P, t.periodTicks());
+            P = Math.min(P, 7200);
+            int good = 0;
+            for (int tau = 0; tau < P; tau++) {
+                long t = tau;
+                boolean pass = true;
+                for (int k = 0; k < g.size() && pass; k++) {
+                    long arrive = t + air.get(k);
+                    long depart = arrive + stay.get(k);
+                    if (k + 1 < g.size()) {
+                        long d = -1;
+                        for (long dd = depart; dd < depart + g.get(k).periodTicks(); dd++) {
+                            if (!g.get(k).onAt(dd)) break;
+                            if (g.get(k + 1).onAt(dd + air.get(k + 1))) { d = dd; break; }
+                        }
+                        if (d < 0) { pass = false; break; }
+                        depart = d;
+                    }
+                    for (long q = arrive; q <= depart; q++) if (!g.get(k).onAt(q)) { pass = false; break; }
+                    t = depart;
+                }
+                if (pass) good++;
+            }
+            double frac = good / (double) P;
+            double win = frac * g.get(0).periodTicks();
+            int need = (tier == Tier.SILVER || tier == Tier.GOLD || tier == Tier.HARD) ? 6 : 10;
+            r.line(String.format(Locale.ROOT, "  %s timed run %d..%d: %d good start ticks per %d-tick cycle (window %.0f)", o.id, i, j, good, P, win));
+            if (win < need) r.err(o.id + ": timed run " + i + ".." + j + " has a phase window of " + f(win) + " ticks < " + need);
+            worstFrac = Math.min(worstFrac, Math.min(1, win / 20.0));
+        }
+        return worstFrac;
+    }
+
+    private static int lcm(int a, int b) { int x = a, y = b; while (y != 0) { int t = x % y; x = y; y = t; } return a / x * b; }
 
     private static List<CourseModel.Pos> spawnLike(W w) {
         List<CourseModel.Pos> l = new ArrayList<>(w.model.spawns);
@@ -223,9 +416,7 @@ final class Validate {
     }
 
     private static boolean isLegitElsewhere(W w, long k) {
-        for (Ob o : w.obs) {
-            if (o.safe.contains(k)) return true;
-        }
+        for (Ob o : w.obs) if (o.safe.contains(k)) return true;
         return false;
     }
 
@@ -240,6 +431,13 @@ final class Validate {
         return b;
     }
 
+    /** Bounding box of the route without the start area (route[0]); used for kill columns. */
+    static int[] bboxNoStart(Ob o) {
+        int[] b = {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE};
+        for (int i = 1; i < o.route.size(); i++) for (int[] c : o.route.get(i).cells) for (int k = 0; k < 3; k++) { b[k] = Math.min(b[k], c[k]); b[k + 3] = Math.max(b[k + 3], c[k]); }
+        return b;
+    }
+
     private static double segDist(double px, double pz, double[] s) {
         double ax = s[0], az = s[1], bx = s[2], bz = s[3];
         double dx = bx - ax, dz = bz - az, l2 = dx * dx + dz * dz;
@@ -248,134 +446,9 @@ final class Validate {
         return Math.sqrt(qx * qx + qz * qz);
     }
 
-    private static double feetCell(W w, Map<Long, String> timed, int[] c, Ob.Node n) {
+    static double feetCell(Phys.World wd, int[] c, Ob.Node n) {
         if (n.t == Ob.T.LADDER) return c[1];
-        double t = Bs.standTop(at(w, c[0], c[1], c[2], timed));
-        return c[1] + Math.max(0, t);
-    }
-
-    private static double feetOf(W w, Map<Long, String> timed, Ob.Node n) {
-        double m = -1e9;
-        for (int[] c : n.cells) m = Math.max(m, feetCell(w, timed, c, n));
-        return m;
-    }
-
-    /** Nearest pair of cells (by gap, then by |dy|). */
-    static int[][] nearest(Ob.Node a, Ob.Node b) {
-        int[][] best = null;
-        double bg = 1e9;
-        for (int[] p : a.cells) for (int[] q : b.cells) {
-            double g = gap(p, q) * 100 + Math.abs(p[1] - q[1]) * 0.01;
-            if (g < bg) { bg = g; best = new int[][]{p, q}; }
-        }
-        return best;
-    }
-
-    private static Jump jump(W w, Map<Long, String> timed, Ob.Node a, Ob.Node b, double lastDrop) {
-        // ladder catch
-        if (b.t == Ob.T.LADDER) {
-            double best = 1e9; int[] pa = null, pb = null;
-            double fa = 0;
-            for (int[] p : a.cells) for (int[] q : b.cells) {
-                double feet = feetCell(w, timed, p, a);
-                if (a.t == Ob.T.LADDER) feet = p[1];
-                if (q[1] < feet - 3 || q[1] > feet + 1) continue;
-                double g = gap(p, q);
-                if (g < best) { best = g; pa = p; pb = q; fa = feet; }
-            }
-            if (pa == null) return new Jump(0, 0, "ladder catch", false, false, "no rung within reach of the takeoff", 9);
-            String back = backing(w, b);
-            if (back != null) return new Jump(best, 0, "ladder catch", false, false, back, 9);
-            boolean ok = best <= 3.0001, easy = best <= 2.0001;
-            return new Jump(best, 0, "ladder catch", ok, easy, "ladder catch gap " + f(best), best + 1.0);
-        }
-        if (a.t == Ob.T.LADDER) {
-            int yt = Integer.MIN_VALUE;
-            for (int[] p : a.cells) yt = Math.max(yt, p[1]);
-            double best = 1e9; double rise = 0;
-            for (int[] p : a.cells) if (p[1] == yt) for (int[] q : b.cells) {
-                double feet = feetCell(w, timed, q, b);
-                if (feet > yt + 1.01) continue;
-                double g = gap(p, q);
-                if (g < best) { best = g; rise = feet - (yt + 1); }
-            }
-            if (best > 1e8) return new Jump(0, 0, "ladder exit", false, false, "landing above the top rung + 1", 9);
-            return new Jump(best, rise, "ladder exit", best <= 2.0001, best <= 1.0001, "ladder exit gap " + f(best), best + 0.5);
-        }
-        int[][] p = nearest(a, b);
-        double fa = feetCell(w, timed, p[0], a), fb = feetCell(w, timed, p[1], b);
-        double g = gap(p[0], p[1]);
-        double rise = fb - fa;
-        String kind = a.t == Ob.T.SLIME ? "slime bounce" : b.neo ? "neo" : "jump";
-        if (Bs.standTop(at(w, p[1][0], p[1][1], p[1][2], timed)) < 0) return new Jump(g, rise, kind, false, false, "no block to land on at " + c(p[1]), 9);
-        // headroom
-        for (int[] cc : p) for (int h = 1; h <= 2; h++) {
-            int yy = (int) Math.floor((cc == p[0] ? fa : fb)) + h - 1;
-            if (!free(w, cc[0], yy, cc[2], timed)) return new Jump(g, rise, kind, false, false, "no 2-block headroom at " + c(cc), 9);
-        }
-        boolean head = !free(w, p[0][0], (int) Math.floor(fa) + 2, p[0][2], timed);
-        double lim = 4.0, elim = 3.0;
-        String why = kind + " gap " + f(g) + " rise " + f(rise);
-        if (a.t == Ob.T.SLIME) {
-            double maxRise = Math.max(1.0, lastDrop - 1);
-            if (rise > maxRise + 1e-6) return new Jump(g, rise, kind, false, false, "slime bounce rise " + f(rise) + " > " + f(maxRise) + " (drop " + f(lastDrop) + ")", 9);
-            lim = 3; elim = 2;
-        } else {
-            if (rise > 1.0001) return new Jump(g, rise, kind, false, false, "rise " + f(rise) + " > 1 without ladder/slime", 9);
-            if (rise > 0.01) { lim = 3; elim = 2; }
-        }
-        if (head) {
-            if (rise > 0.01 && a.t != Ob.T.SLIME) return new Jump(g, rise, kind, false, false, "head-hitter above takeoff but the jump rises", 9);
-            lim = Math.min(lim, 3); elim = Math.min(elim, 2); kind = "head-hitter";
-        }
-        if (b.neo) { lim = Math.min(lim, 3); elim = Math.min(elim, 2); }
-        if (!b.neo) {
-            // arc clearance on the straight line
-            double ax = p[0][0] + .5, az = p[0][2] + .5, bx = p[1][0] + .5, bz = p[1][2] + .5;
-            int steps = (int) Math.ceil(Math.hypot(bx - ax, bz - az) * 4);
-            for (int i = 1; i < steps; i++) {
-                double t = i / (double) steps;
-                int cx = (int) Math.floor(ax + (bx - ax) * t), cz = (int) Math.floor(az + (bz - az) * t);
-                if ((cx == p[0][0] && cz == p[0][2]) || (cx == p[1][0] && cz == p[1][2])) continue;
-                double hh;
-                if (a.t == Ob.T.SLIME) hh = Math.max(fa, fb) + 0.2;
-                else {
-                    double sh = Math.max(0, Math.hypot(bx - ax, bz - az) * t - 0.5);
-                    hh = Math.max(Math.min(fa, fb), fa + traj(sh / 0.33));
-                    if (head) hh = Math.min(hh, Math.floor(fa) + 0.2);
-                }
-                int y0 = (int) Math.floor(hh), y1 = (int) Math.floor(hh + 1.79);
-                boolean blocked = false;
-                for (int yy = y0; yy <= y1; yy++) if (!free(w, cx, yy, cz, timed)) blocked = true;
-                if (blocked)
-                    return new Jump(g, rise, kind, false, false, "arc blocked at " + cx + "," + y0 + "," + cz + " (" + Bs.id(at(w, cx, y0, cz, timed)) + "/" + Bs.id(at(w, cx, y0 + 1, cz, timed)) + ")", 9);
-            }
-        }
-        boolean ok = g <= lim + 1e-4, easy = g <= elim + 1e-4;
-        double hard = g + (rise > 0.01 ? 1.0 : 0) + (head ? 1.0 : 0) + (b.neo ? 1.5 : 0) + (b.t == Ob.T.TIMED ? 1.0 : 0)
-                + (a.t == Ob.T.ICE || b.t == Ob.T.ICE ? 0.5 : 0) + (b.cells.size() == 1 ? 1.0 : b.cells.size() == 2 ? 0.5 : 0);
-        if (a.t == Ob.T.ICE) kind += " (ice takeoff)";
-        if (b.t == Ob.T.TIMED) kind += " (timed)";
-        return new Jump(g, rise, kind, ok, easy, ok ? why : why + " exceeds limit " + f(lim), hard);
-    }
-
-    private static String backing(W w, Ob.Node lad) {
-        for (int[] c : lad.cells) {
-            String s = w.get(c[0], c[1], c[2]);
-            if (s == null) return "ladder block missing at " + c(c);
-            if (Bs.id(s).equals("vine")) continue;
-            String f = Bs.prop(s, "facing");
-            int dx = 0, dz = 0;
-            switch (f == null ? "" : f) {
-                case "north": dz = 1; break;
-                case "south": dz = -1; break;
-                case "east": dx = -1; break;
-                case "west": dx = 1; break;
-                default: return "ladder without facing at " + c(c);
-            }
-            if (!Bs.fullSolid(w.get(c[0] + dx, c[1], c[2] + dz))) return "ladder at " + c(c) + " has no solid backing";
-        }
-        return null;
+        return c[1] + Math.max(0, Phys.top(wd.state(c[0], c[1], c[2])));
     }
 
     /** Count connected non-air, non-pad blocks (6-neighbour) from the cells, capped. */
@@ -399,14 +472,6 @@ final class Validate {
             }
         }
         return n;
-    }
-
-    /** Height above takeoff of a sprint jump after t ticks (vy0 0.42, gravity 0.08, drag 0.98). */
-    static double traj(double t) {
-        double y = 0, v = 0.42;
-        int n = (int) Math.floor(t);
-        for (int i = 0; i < n; i++) { y += v; v = (v - 0.08) * 0.98; }
-        return y + v * (t - n);
     }
 
     static String f(double d) { return String.format(Locale.ROOT, "%.1f", d); }

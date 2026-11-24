@@ -45,6 +45,7 @@ import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
+import org.bukkit.event.world.EntitiesLoadEvent;
 
 /** TGTTOS rules. Every handler only acts while a game runs and only in the game world. */
 final class GameListener implements Listener {
@@ -53,6 +54,12 @@ final class GameListener implements Listener {
     GameListener(TgttosGame game) { this.game = game; }
 
     private boolean in(Entity e) { return e != null && game.inWorld(e.getWorld()); }
+
+    /** Persistent TGTTOS chickens left over from an earlier round (chunk unloaded before cleanup) are removed on load. */
+    @EventHandler
+    public void onEntitiesLoad(EntitiesLoadEvent e) {
+        if (e.getWorld().getName().equals(TgttosPlugin.WORLD)) game.onEntitiesLoad(e.getEntities());
+    }
 
     // ------------------------------------------------------------------ damage, knockback, finish
 
@@ -229,8 +236,10 @@ final class GameListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onTeleport(PlayerTeleportEvent e) {
         // spectators must not leave the map through the spectate-player menu
-        if (in(e.getPlayer()) && game.isParticipant(e.getPlayer()) && e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE
-                && (e.getTo() == null || !game.inWorld(e.getTo().getWorld())))
+        // ... nor jump to another map slot in the same world (only inside the current map's play box)
+        Player p = e.getPlayer();
+        if (in(p) && (game.isParticipant(p) || game.isWatcher(p)) && e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE
+                && !game.spectatorMayGo(e.getTo()))
             e.setCancelled(true);
     }
 

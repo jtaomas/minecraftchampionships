@@ -319,7 +319,7 @@ final class Islands {
 
     // ------------------------------------------------------------------ inner decks
 
-    /** Enchanting deck: round oak deck on a rock, log posts with lanterns, side rails, enchanting table + 4 bookshelves, chest. */
+    /** Enchanting deck: round oak deck on a rock, log posts with lanterns, side rails, enchanting table + 4 bookshelves, anvil, chest. */
     static Tpl enchanting(long seed) {
         Tpl t = new Tpl("enchanting");
         Noise.Pal planks = new Noise.Pal("oak_planks", 1);
@@ -344,6 +344,9 @@ final class Islands {
         t.set(-2, 1, 2, "bookshelf");
         t.set(2, 1, 2, "bookshelf");
         t.set(-2, 1, -2, "cobweb");
+        // anvil (research §2/§7, H: the deck has one, "Repair & Name" seen): beside the chest, off the x -1..1 walkway,
+        // not between the table and a bookshelf, on the plank floor
+        t.set(2, 1, -1, "anvil[facing=north]");
         t.chest(1, 1, -2, "west", IslandType.ENCHANTING);
         return t;
     }

@@ -1,0 +1,48 @@
+# McmBingo settings. Everything here is a default, not a researched value; adjust after playtesting.
+# Changes apply at the next game start (world.* settings at the next server start).
+
+card:
+  # Items per tier on a card: [easy, medium, hard, very hard] (must add up to 25)
+  bingo-mix: [8, 10, 5, 2]
+  lockout-mix: [6, 10, 6, 3]
+  # At most this many squares that can be made from wood alone
+  max-wood-only-items: 2
+  teleport-cooldown-seconds: 45
+
+points:
+  # Bingo: points per square by tier [easy, medium, hard, very hard], times the placement percentage
+  bingo-tier: [3, 5, 8, 12]
+  # 1st side to get the square, 2nd, 3rd, 4th and later
+  bingo-placement-percent: [100, 80, 60, 40]
+  bingo-line-first-4: 12
+  bingo-line-later: 6
+  bingo-full-card: 30
+  # Lockout: points for claiming a square by tier
+  lockout-tier: [5, 8, 12, 16]
+  lockout-line: 15
+  lockout-placement: [20, 12, 6]
+  # Points for killing a player of another side (0 = nothing)
+  pvp-kill: 0
+
+top:
+  cooldown-seconds: 30
+  # Block /top for a few seconds after taking PvP damage
+  blocked-in-combat: true
+  combat-seconds: 8
+
+cave-finder:
+  cooldown-seconds: 20
+  # Chunks around the player that are scanned (2 = 5x5 chunks, about 80 blocks across)
+  radius-chunks: 2
+
+kit:
+  cooked-beef: 64
+
+world:
+  # Place a village, temples, a ruined portal, a shipwreck and buried treasure in each game area
+  place-structures: true
+  # Extra worm caves: chance per chunk that a tunnel system starts there, and the share that opens to the surface
+  extra-cave-chance-per-chunk: 0.06
+  extra-cave-entrance-share: 0.3
+
+debug-timing: false

@@ -115,9 +115,14 @@ final class ItemSpec {
         try { return Integer.parseInt(String.valueOf(o).trim()); } catch (NumberFormatException e) { return def; }
     }
 
-    @SuppressWarnings("deprecation")
     ItemStack build(Random r) {
-        int amount = minAmount + (maxAmount > minAmount ? r.nextInt(maxAmount - minAmount + 1) : 0);
+        return build(minAmount + (maxAmount > minAmount ? r.nextInt(maxAmount - minAmount + 1) : 0));
+    }
+
+    /** Build with a given amount (clamped to 1..max stack size). */
+    @SuppressWarnings("deprecation")
+    ItemStack build(int amount) {
+        amount = Math.max(1, Math.min(material.getMaxStackSize(), amount));
         ItemStack it = new ItemStack(material, amount);
         ItemMeta meta = it.getItemMeta();
         if (meta != null) {

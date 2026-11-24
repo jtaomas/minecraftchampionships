@@ -25,3 +25,7 @@ __pycache__/
 _candidates/
 # Screenshots of third-party maps used for research stay local
 game-plugins/research/img/
+game-plugins/research/acerace/
+game-plugins/research/dome/
+game-plugins/research/*.log
+game-plugins/ParkourWarrior/tools/out_old/

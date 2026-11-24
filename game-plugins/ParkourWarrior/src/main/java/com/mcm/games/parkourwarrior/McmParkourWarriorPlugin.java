@@ -51,6 +51,7 @@ public final class McmParkourWarriorPlugin extends JavaPlugin {
                     + ChatColor.YELLOW + "/pw complete <id> [player]" + ChatColor.GRAY + ", "
                     + ChatColor.YELLOW + "/pw time <seconds-left>" + ChatColor.GRAY + ", "
                     + ChatColor.YELLOW + "/pw info" + ChatColor.GRAY + ", "
+                    + ChatColor.YELLOW + "/pw ghost [on|off]" + ChatColor.GRAY + ", "
                     + ChatColor.YELLOW + "/pw rebuild [seed]");
             return true;
         }
@@ -119,6 +120,19 @@ public final class McmParkourWarriorPlugin extends JavaPlugin {
                     sender.sendMessage(ChatColor.GRAY + "You: local " + String.format(Locale.ROOT, "%.1f %.1f %.1f", game.course.lx(l), game.course.ly(l), game.course.lz(l)));
                 }
             }
+            case "ghost" -> {
+                boolean cur = getConfig().getBoolean("ghost-players", getConfig().getBoolean("players.translucent", true));
+                boolean on;
+                if (args.length < 2) on = !cur;
+                else if (args[1].equalsIgnoreCase("on")) on = true;
+                else if (args[1].equalsIgnoreCase("off")) on = false;
+                else { sender.sendMessage(ChatColor.RED + "/pw ghost [on|off]"); return true; }
+                getConfig().set("ghost-players", on);
+                saveConfig();
+                game.setGhost(on);
+                sender.sendMessage(ChatColor.GREEN + "Ghost players " + (on ? "ON (runners translucent to each other)" : "OFF (runners fully visible)")
+                        + ChatColor.GRAY + "; player collision stays off" + (game.running() ? ", applied to the running game." : "."));
+            }
             case "rebuild" -> {
                 if (game.running()) { sender.sendMessage(ChatColor.RED + "A game is running."); return true; }
                 reloadConfig();
@@ -155,13 +169,15 @@ public final class McmParkourWarriorPlugin extends JavaPlugin {
         List<String> out = new ArrayList<>();
         if (command.getName().equalsIgnoreCase("pwview")) return out;
         if (args.length == 1) {
-            for (String s : List.of("list", "tp", "complete", "time", "info", "rebuild")) if (s.startsWith(args[0].toLowerCase(Locale.ROOT))) out.add(s);
+            for (String s : List.of("list", "tp", "complete", "time", "info", "ghost", "rebuild")) if (s.startsWith(args[0].toLowerCase(Locale.ROOT))) out.add(s);
         } else if (args.length == 2 && (args[0].equalsIgnoreCase("tp") || args[0].equalsIgnoreCase("complete"))) {
             CourseModel m = game.course.model();
             List<String> opts = new ArrayList<>();
             if (args[0].equalsIgnoreCase("tp")) opts.addAll(List.of("start", "fork", "hub", "view"));
             if (m != null) for (Obstacle o : m.obstacles) opts.add(o.id());
             for (String s : opts) if (s.toLowerCase(Locale.ROOT).startsWith(args[1].toLowerCase(Locale.ROOT))) out.add(s);
+        } else if (args.length == 2 && args[0].equalsIgnoreCase("ghost")) {
+            for (String s : List.of("on", "off")) if (s.startsWith(args[1].toLowerCase(Locale.ROOT))) out.add(s);
         } else if (args.length == 3 && args[0].equalsIgnoreCase("complete")) {
             for (Player p : Bukkit.getOnlinePlayers()) if (p.getName().toLowerCase(Locale.ROOT).startsWith(args[2].toLowerCase(Locale.ROOT))) out.add(p.getName());
         }

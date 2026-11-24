@@ -5,6 +5,10 @@ import com.mcm.games.tgttos.maps.b.util.Noise;
 import com.mcm.games.tgttos.maps.b.util.Noise.Pal;
 import com.mcm.games.tgttos.maps.b.util.Stairs;
 import com.mcm.games.tgttos.model.Kit;
+import com.mcm.games.tgttos.model.MapFeatures;
+import com.mcm.games.tgttos.model.TgMapData.Pos;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import com.mcm.games.tgttos.model.MapType;
 import com.mcm.games.tgttos.model.TgMap;
 import com.mcm.games.tgttos.model.TgMapData;
@@ -89,6 +93,7 @@ public final class FrozenCanal implements TgMap {
         startLock(g);
         bridges(g);
         features(g);
+        featureBlocks(g);
         finish(g);
         long t2 = System.nanoTime();
         g.scenery = true;
@@ -108,6 +113,8 @@ public final class FrozenCanal implements TgMap {
                 c.main.length(), c.main.length() - ring + c.cut.length(), c.dockLevel));
         d.notes.put("safeLine", "middle of the hairpins, the walled Fish Market ring, packed-ice edges of the Blue Mile, wide barge gaps, side flights + east bridge on foot");
         d.notes.put("fastLine", "inside blue-ice kerbs, the raised causeway (open edges onto slush), blue stripe, 3-wide barge gaps, Dock Stairs + jetty");
+        d.notes.put("features", "Blue Mile pendulum, causeway lock gate (open 3 s / shut 1.5 s), Blue Mile slush strip (2 s every 7 s), "
+                + feats().gates.size() + " bonus regions, 5 checkpoints, 2 boat depots");
         g.finish();
         return g;
     }
@@ -696,5 +703,140 @@ public final class FrozenCanal implements TgMap {
                         && !JETTY.contains(x, T, z) && !EAST_BRIDGE.contains(x, T, z))
                     g.set(x, T + 1, z, "lantern[hanging=false]");
             }
+    }
+
+    // ------------------------------------------------------------------ interactive features (playtest 2, modest set)
+
+    private static MapFeatures FEATURES;
+    private static CanalCourse FCOURSE;
+
+    @Override public MapFeatures features() { return feats(); }
+
+    private static synchronized CanalCourse fcourse() { if (FCOURSE == null) FCOURSE = new CanalCourse().raster(); return FCOURSE; }
+
+    /** Lane cells of path p with |s - s0| <= half and lateral d in [d1, d2]: their bounding box at boat height (lv .. lv + up). */
+    static Region slice(CanalCourse c, int p, double s0, double half, double d1, double d2, int up) {
+        int x1 = Integer.MAX_VALUE, z1 = Integer.MAX_VALUE, x2 = Integer.MIN_VALUE, z2 = Integer.MIN_VALUE, lv = 99;
+        for (int x = c.x1; x <= c.x2; x++)
+            for (int z = c.z1; z <= c.z2; z++) {
+                int i = c.idx(x, z);
+                if (i < 0 || c.kind[i] != CanalCourse.LANE || c.path[i] != p) continue;
+                if (Math.abs(c.sArr[i] - s0) > half || c.dArr[i] < d1 || c.dArr[i] > d2) continue;
+                x1 = Math.min(x1, x); x2 = Math.max(x2, x); z1 = Math.min(z1, z); z2 = Math.max(z2, z); lv = Math.min(lv, c.level[i]);
+            }
+        if (x1 == Integer.MAX_VALUE) throw new IllegalStateException("empty slice at s " + s0);
+        return Region.of(x1, lv, z1, x2, lv + up, z2);
+    }
+
+    /** Lane cells (x, z, level) of path p in an s / d window. */
+    static List<int[]> cells(CanalCourse c, int p, double sa, double sb, double d1, double d2) {
+        List<int[]> out = new ArrayList<>();
+        for (int x = c.x1; x <= c.x2; x++)
+            for (int z = c.z1; z <= c.z2; z++) {
+                int i = c.idx(x, z);
+                if (i < 0 || c.kind[i] != CanalCourse.LANE || c.path[i] != p) continue;
+                if (c.sArr[i] < sa || c.sArr[i] > sb || c.dArr[i] < d1 || c.dArr[i] > d2) continue;
+                out.add(new int[]{x, z, c.level[i]});
+            }
+        return out;
+    }
+
+    static Spawn boatAt(CanalCourse c, double s) {
+        double[] p = c.main.at(s);
+        return new Spawn(Math.floor(p[0]) + 0.5, c.main.level(s) + 1, Math.floor(p[1]) + 0.5, (float) -p[2], 0f);
+    }
+
+    /** Causeway lock gate: the cut path's middle (s on the cut), 1 deep. */
+    static double gateS(CanalCourse c) { return Math.floor(c.cut.length() / 2); }
+    /** Blue Mile ice / slush strip: s range on main. */
+    static double[] slushS(CanalCourse c) { double b = c.main.mark0("blue"); return new double[]{b + 100, b + 120}; }
+
+    /** Generator side: gate lintel + strip warning lamps (the toggles' indicator blocks, frame-0 state). */
+    private void featureBlocks(G g) {
+        CanalCourse c = course;
+        Region gate = slice(c, CanalCourse.CUT, gateS(c), 0.5, -9, 9, 0);
+        for (int x = gate.minX(); x <= gate.maxX(); x++) for (int z = gate.minZ(); z <= gate.maxZ(); z++) g.set(x, gate.minY() + 4, z, "lime_concrete");
+        for (int[] l : slushLamps(c)) g.set(l[0], l[1], l[2], "sea_lantern");
+    }
+
+    static List<int[]> slushLamps(CanalCourse c) {
+        double[] r = slushS(c);
+        List<int[]> out = new ArrayList<>();
+        for (double s : new double[]{r[0] - 2, r[1] + 2})
+            for (int sd : new int[]{-1, 1}) {
+                double[] p = c.main.point(s, sd * (c.main.halfWidth(s) + 1.5));
+                out.add(new int[]{(int) Math.floor(p[0]), c.main.level(s) + 3, (int) Math.floor(p[1])});
+            }
+        return out;
+    }
+
+    public static synchronized MapFeatures feats() {
+        if (FEATURES != null) return FEATURES;
+        CanalCourse c = fcourse();
+        CanalCourse.Path m = c.main;
+        MapFeatures f = new MapFeatures();
+        // bonus: inside blue-ice kerb of every hairpin (orange), the causeway lock gate (red), the Blue Mile stripe (orange)
+        int k = 0;
+        for (double[] a : m.arcs)
+            if (Math.abs(a[2]) >= 150) {
+                double sm = (a[0] + a[1]) / 2, hw = m.halfWidth(sm);
+                double sg = Math.signum(a[2]);
+                Region box = sg > 0 ? slice(c, CanalCourse.MAIN, sm, 0.75, hw - 3, hw + 1, 2) : slice(c, CanalCourse.MAIN, sm, 0.75, -hw - 1, -(hw - 3), 2);
+                f.gates.add(new MapFeatures.BonusGate("hairpin kerbs", "hairpin " + (++k) + " inside kerb", 1, box));
+            }
+        double gs = gateS(c);
+        Region gate = slice(c, CanalCourse.CUT, gs, 0.5, -9, 9, 2);
+        f.gates.add(new MapFeatures.BonusGate("causeway", "causeway lock gate", 2, gate));
+        f.gates.add(new MapFeatures.BonusGate("blue mile", "blue stripe", 1, slice(c, CanalCourse.MAIN, m.mark0("blue") + 70, 0.75, -2.5, 2.5, 2)));
+        // checkpoints (crossing the lane there saves it; respawn in a fresh boat)
+        String[] cp = {"chicaneEnd", "cascade", "merge", "brake", "sweepEnd"};
+        String[] names = {"Weavers' Chicane exit", "Cellar Steps", "Fish Market merge", "Bell Switchbacks", "Tannery exit"};
+        for (int i = 0; i < cp.length; i++) {
+            double s = m.mark0(cp[i]) + (cp[i].equals("merge") ? 5 : 0);
+            Region trig = slice(c, CanalCourse.MAIN, s, 1.0, -20, 20, 3);
+            trig = Region.of(trig.minX(), trig.minY() - 1, trig.minZ(), trig.maxX(), trig.maxY(), trig.maxZ());
+            List<Spawn> sp = List.of(boatAt(c, s + 4));
+            f.checkpoints.add(new MapFeatures.Checkpoint(i, names[i], trig, sp, sp));
+        }
+        // boat depots: racers on foot (boat lost / left) get a fresh boat here
+        for (String[] dp : new String[][]{{"cascade", "Cellar Steps depot"}, {"brake", "Bell Switchbacks depot"}}) {
+            double s = m.mark0(dp[0]) + 8;
+            Region a = slice(c, CanalCourse.MAIN, s, 3, -20, 20, 2);
+            f.depots.add(new MapFeatures.Depot(dp[1], a, boatAt(c, s)));
+        }
+        // the Blue Mile pendulum between the first two arch bridges: swings across the lane (|d| <= 4.6), the 2-wide
+        // packed-ice edges stay clear at every phase; a hit = back to the last checkpoint in a fresh boat
+        double ps = m.mark0("blue") + 60;
+        double[] pp = m.at(ps);
+        int lv = m.level(ps);
+        f.movers.add(MapFeatures.Mover.pendulum("Blue Mile pendulum", Math.floor(pp[0]) + 0.5, lv + 8.5, Math.floor(pp[1]) + 0.5, 'x', 30, 70, 0,
+                List.of(new MapFeatures.Box(-0.15, -5.5, -0.15, 0.15, 0, 0.15, "chain", false),
+                        new MapFeatures.Box(-1.5, -7.6, -1.5, 1.5, -4.6, 1.5, "lantern", false),
+                        new MapFeatures.Box(-1.4, -7.4, -1.4, 1.4, -4.8, 1.4, "copper_block", true))).withSound("block.bell.use"));
+        // toggle 1: the causeway lock gate - iron bars across the causeway, open 3 s / shut 1.5 s, lintel turns red 1 s before
+        Map<Pos, String> open = new LinkedHashMap<>(), shut = new LinkedHashMap<>();
+        for (int x = gate.minX(); x <= gate.maxX(); x++)
+            for (int z = gate.minZ(); z <= gate.maxZ(); z++)
+                for (int y = gate.minY() + 1; y <= gate.minY() + 2; y++) {
+                    open.put(new Pos(x, y, z), null);
+                    shut.put(new Pos(x, y, z), gate.maxX() > gate.minX() ? "iron_bars[east=true,west=true]" : "iron_bars[north=true,south=true]");
+                }
+        List<Pos> lintel = new ArrayList<>();
+        for (int x = gate.minX(); x <= gate.maxX(); x++) for (int z = gate.minZ(); z <= gate.maxZ(); z++) lintel.add(new Pos(x, gate.minY() + 4, z));
+        f.toggles.add(MapFeatures.Toggle.ofStates("causeway lock gate", 0, List.of(open, shut), new int[]{60, 30}, new boolean[]{false, true},
+                new LinkedHashMap<>(), lintel, "red_concrete", 20, "block.iron_door.close", 2));
+        // toggle 2: a 20-long piece of the Blue Mile stripe turns to slush (snow) for 2 s every 7 s; lamps on the walls warn
+        double[] sr = slushS(c);
+        Map<Pos, String> ice = new LinkedHashMap<>(), slush = new LinkedHashMap<>();
+        for (int[] cl : cells(c, CanalCourse.MAIN, sr[0], sr[1], -2.5, 2.5)) {
+            ice.put(new Pos(cl[0], cl[2], cl[1]), "blue_ice");
+            slush.put(new Pos(cl[0], cl[2], cl[1]), "snow_block");
+        }
+        List<Pos> lamps = new ArrayList<>();
+        for (int[] l : slushLamps(c)) lamps.add(new Pos(l[0], l[1], l[2]));
+        f.toggles.add(MapFeatures.Toggle.ofStates("Blue Mile slush", 30, List.of(ice, slush), new int[]{100, 40}, new boolean[]{false, true},
+                new LinkedHashMap<>(), lamps, "redstone_block", 20, "block.snow.place", 1));
+        FEATURES = f;
+        return f;
     }
 }

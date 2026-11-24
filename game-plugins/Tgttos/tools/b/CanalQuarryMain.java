@@ -39,8 +39,8 @@ public final class CanalQuarryMain {
             G g;
             List<int[]> decoys = List.of();
             Kit kit;
-            if (id.equals("frozen_canal")) { FrozenCanal m = new FrozenCanal(); g = m.generate(seed); kit = m.kit(); decoys = m.decoyChickens(); }
-            else { QuarrySteps m = new QuarrySteps(); g = m.generate(seed); kit = m.kit(); decoys = m.decoyChickens(); }
+            if (id.equals("frozen_canal")) { FrozenCanal m = new FrozenCanal(); g = m.generate(seed); kit = m.kit(); decoys = com.mcm.games.tgttos.model.DecoySpots.effective(m, g.d); }
+            else { QuarrySteps m = new QuarrySteps(); g = m.generate(seed); kit = m.kit(); decoys = com.mcm.games.tgttos.model.DecoySpots.effective(m, g.d); }
             long ms = (System.nanoTime() - t0) / 1_000_000;
             Check.Report r = new Check.Report();
             double[] cam = common(id, g, kit, decoys, ms, r);

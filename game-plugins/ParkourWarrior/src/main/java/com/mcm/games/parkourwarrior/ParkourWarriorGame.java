@@ -271,7 +271,8 @@ public final class ParkourWarriorGame implements McmGame {
         p.setExp(0f);
         p.setLevel(0);
         for (PotionEffect pe : p.getActivePotionEffects()) p.removePotionEffect(pe.getType());
-        p.setCollidable(false);
+        // no setCollidable(false): on Paper it also makes the player untargetable by projectiles; the ghost team's
+        // COLLISION_RULE NEVER (ensureGhostTeams) turns player pushing off in both ghost modes
         if (s.translucent) p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, PotionEffect.INFINITE_DURATION, 0, false, false, false));
         BossBar b = bars.computeIfAbsent(p.getUniqueId(), k -> Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SEGMENTED_10));
         b.addPlayer(p);
@@ -788,6 +789,24 @@ public final class ParkourWarriorGame implements McmGame {
     // collision / visibility
     // =====================================================================================
 
+    boolean ghost() { return s != null && s.translucent; }
+
+    /**
+     * /pw ghost: ON = runners invisible + same team with "see friendly invisibles" (translucent to each other),
+     * OFF = fully visible. Collision stays off in both modes (team rule). Applies at once to a running game.
+     */
+    void setGhost(boolean on) {
+        if (s != null) s.translucent = on;
+        if (!running()) return;
+        for (Run r : runs.values()) {
+            if (!r.online || r.status != Run.Status.ACTIVE) continue;
+            Player p = Bukkit.getPlayer(r.id);
+            if (p == null || p.getGameMode() == GameMode.SPECTATOR) continue;
+            if (on) p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, PotionEffect.INFINITE_DURATION, 0, false, false, false));
+            else p.removePotionEffect(PotionEffectType.INVISIBILITY);
+        }
+    }
+
     private void ensureGhostTeams() {
         List<String> names = new ArrayList<>();
         for (Run r : runs.values()) if (r.online) names.add(r.name);
@@ -1009,7 +1028,7 @@ public final class ParkourWarriorGame implements McmGame {
         StringBuilder b = new StringBuilder();
         b.append("phase=").append(phase).append(" course=").append(course.state()).append(" generator=").append(course.generatorUsed());
         if (inPlay()) b.append(" left=").append(secondsLeft()).append("s scrollRemoved=").append(scrollRemoved).append(" switchLocked=").append(switchLocked);
-        b.append(" runs=").append(runs.size());
+        b.append(" runs=").append(runs.size()).append(" ghost=").append(ghost() ? "on" : "off");
         return b.toString();
     }
 }

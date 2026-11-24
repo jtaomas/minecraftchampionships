@@ -36,11 +36,20 @@ public interface TgMap {
     default int lethalFallHeight() { return 0; }
 
     /**
-     * Decoy chickens (default none). Each entry is a local block position {@code {x, y, z}} (feet block of the
-     * chicken, same local integer convention as {@link TgMapData#pen}); the chicken stands at the block centre
-     * (x + 0.5, y, z + 0.5). Decoys have no name tag (real goal chickens show a visible name), never move, can't
-     * be hurt or pushed, and punching one does nothing. Positions may be inside or outside the pen. Removed at
-     * round end like every other game entity.
+     * Decoy chickens (default: none listed = the runtime scatters {@link DecoySpots#DEFAULT_COUNT} over the later part
+     * of the map with {@link DecoySpots#pick}). Each entry is a local block position {@code {x, y, z}} (feet block,
+     * same convention as {@link TgMapData#pen}); the chicken starts at the block centre. Owner rules (playtest 2): decoys
+     * look exactly like goal chickens (same "Punch me!" name tag), wander (put back home when further than
+     * {@code goal.decoy-leash-radius}), can't be hurt or pushed, are never in the real pen, and punching one only
+     * answers {@code goal.decoy-message} ("haha lol") with a sound. Removed at round end like every other game entity.
      */
     default java.util.List<int[]> decoyChickens() { return java.util.List.of(); }
+
+    /**
+     * Interactive features (default none): moving hazards, timed block toggles, line-bonus gates, checkpoints,
+     * rocket refills, boat depots. Local coordinates of the slot like {@link TgMapData}. Must describe the map
+     * {@link #build(long)} produced (deterministic maps return a fixed set). See {@link MapFeatures} and the README
+     * section "Map contract additions".
+     */
+    default MapFeatures features() { return MapFeatures.NONE; }
 }

@@ -61,7 +61,8 @@ public final class QuarrySteps implements TgMap {
             new int[]{31, RIM_FAR + 1, 95}, new int[]{36, RIM_FAR + 1, 98},
             new int[]{-23, DECK + 1, 111});
 
-    @Override public List<int[]> decoyChickens() { return DECOYS; }
+    /** Owner (playtest 2): no fake pens; decoys wander the later part of the map (runtime scatter, TgMap#decoyChickens default). */
+    @Override public List<int[]> decoyChickens() { return List.of(); }
 
     /** Portacabins {x, z} (8 x 5, door in the -z wall). */
     static final int[][] CABINS = {{-24, 68}, {-14, 88}, {-3, 89}, {18, 86}, {-30, 120}, {22, 106}, {40, 113}, {-52, 70}, {-12, 124}, {44, 96}};
@@ -343,10 +344,12 @@ public final class QuarrySteps implements TgMap {
             for (int x = x1; x <= x2; x++)
                 for (int z = z1; z <= z2; z++) {
                     boolean ring = x == x1 || x == x2 || z == z1 || z == z2;
+                    if (k > 0) { g.set(x, y, z, ((x + z) & 1) == 0 ? "smooth_sandstone" : "sandstone"); continue; }   // former fake pen: plain yard tiles
                     g.set(x, y, z, ring ? "polished_andesite" : ((x + z) & 1) == 0 ? "smooth_sandstone" : "sandstone");
                     for (int yy = y + 1; yy <= y + 4; yy++) g.set(x, yy, z, null);
                     if (ring) g.set(x, y + 1, z, ((x + z) & 1) == 0 ? "yellow_terracotta" : "black_terracotta");
                 }
+            if (k > 0) { reserve(x1, z1, x2, z2, 2); continue; }
             // two gaps in every side
             int mx = (x1 + x2) / 2, mz = (z1 + z2) / 2;
             for (int i = -3; i <= -2; i++) { g.set(mx + i, y + 1, z1, null); g.set(mx - i, y + 1, z2, null); }

@@ -23,6 +23,10 @@ daylight:
   start-time: 0        # morning (sunrise)
   end-time: 12500      # sunset
 
+# /pw ghost [on|off] sets this: true = runners see each other translucent (ghosts), false = fully visible.
+# Player collision is off either way (scoreboard team collision rule NEVER).
+ghost-players: true
+
 players:
   translucent: true    # default: everyone invisible + same scoreboard team with "see friendly invisibles" = ghosts
   hide-within: 0       # default 0 = off; >0 fully hides runners closer than this (blocks) - note: hiding also removes tab entries

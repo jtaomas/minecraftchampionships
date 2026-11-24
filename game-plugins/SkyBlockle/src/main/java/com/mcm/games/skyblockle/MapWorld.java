@@ -265,7 +265,11 @@ final class MapWorld {
         if (world == null || m == null) return;
         if (!refill) { chestCounts.clear(); tableCounts.clear(); }
         int missing = 0;
-        for (MapModel.ChestSpot c : m.chests) {
+        LootDeal.Result deal = LootDeal.deal(loot.pool(), m, rnd, s.randomSlots);
+        if (!refill && !deal.unmatched.isEmpty())
+            plugin.getLogger().warning("Sky Blockle: loot areas " + deal.unmatched + " do not match the first wedge/slot; rolled on their own");
+        for (int ci = 0; ci < m.chests.size(); ci++) {
+            MapModel.ChestSpot c = m.chests.get(ci);
             Block b = world.getBlockAt(c.x(), baseY + c.y(), c.z());
             BlockState st = b.getState();
             Inventory inv;
@@ -280,8 +284,8 @@ final class MapWorld {
             }
             if (inv == null) continue;
             if (!refill) inv.clear();
-            String table = loot.tableFor(c.type(), c.variant() != null ? c.variant() : inferVariant(m, c));
-            loot.fill(inv, table, rnd, s.randomSlots);
+            String table = deal.tables.get(ci);
+            LootTables.put(inv, deal.rolls.get(ci), rnd);
             if (!refill) { chestCounts.merge(c.type(), 1, Integer::sum); tableCounts.merge(table, 1, Integer::sum); }
         }
         if (missing > 0) plugin.getLogger().warning("Sky Blockle: " + missing + " registered chest spot(s) had no chest block; placed plain chests there");
@@ -301,18 +305,7 @@ final class MapWorld {
      * Variant for a chest without one: MID chests on a red concrete/wool column = "pillar", on sand/sandstone/
      * terracotta/granite = "spike", on grass/dirt/moss = "grass". Other types: null (plain table).
      */
-    static String inferVariant(MapModel m, MapModel.ChestSpot c) {
-        if (c.type() != MapModel.IslandType.MID) return null;
-        for (int dy = 1; dy <= 2; dy++) {
-            String b = m.blocks.get(c.x(), c.y() - dy, c.z());
-            if (b == null) continue;
-            if (b.contains("red_concrete") || b.contains("red_wool") || b.contains("red_nether_brick") || b.contains("tnt")) return "pillar";
-            if (b.contains("sand") || b.contains("terracotta") || b.contains("granite")) return "spike";
-            if (b.contains("grass_block") || b.contains("dirt") || b.contains("moss")) return "grass";
-            return null;
-        }
-        return null;
-    }
+    static String inferVariant(MapModel m, MapModel.ChestSpot c) { return LootDeal.inferVariant(m, c); }
 
     Map<String, Integer> tableCounts() { return tableCounts; }
 

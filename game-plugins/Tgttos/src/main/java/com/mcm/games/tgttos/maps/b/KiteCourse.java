@@ -128,7 +128,12 @@ public final class KiteCourse {
 
     // ------------------------------------------------------------------ screens
 
-    public enum K { SAFE, FAST, NEEDLE, FINISH }
+    public enum K {
+        SAFE(0), FAST(1), NEEDLE(2), FINISH(0), BRUTAL(3);
+        /** Line-bonus tier of an opening of this kind (lime 0, orange 1, red 2, brutal 1x1 / 1-wide / fire 1x1 3). */
+        public final int tier;
+        K(int tier) { this.tier = tier; }
+    }
 
     /** Opening: cells x0..x0+w-1, y0..y0+h-1 (y0 = Integer.MIN_VALUE: full-height slot of a mast row). */
     public record Hole(int x0, int y0, int w, int h, K k) {
@@ -176,6 +181,13 @@ public final class KiteCourse {
         return new Hole(x0(leg, dx, w), (int) Math.round(y - (w - 0.6) / 2.0), w, w, k);
     }
 
+    /** Rectangular opening w x h centred dx from the leg centre on its line's nominal height (+dy). */
+    static Hole rect(int leg, int z, K k, double dx, int w, int h, double dy) {
+        double s = sOn(leg, z);
+        double y = (k == K.SAFE ? safeY(s) : fastY(s)) + dy;
+        return new Hole(x0(leg, dx, w), (int) Math.round(y - (h - 0.6) / 2.0), w, h, k);
+    }
+
     static Hole slot(int leg, K k, double dx, int w) { return new Hole(x0(leg, dx, w), Integer.MIN_VALUE, w, 0, k); }
 
     static void screen(String seg, String name, int leg, int z, int style, Hole... hs) { SCREENS.add(new Screen(seg, name, leg, z, style, List.of(hs))); }
@@ -183,13 +195,16 @@ public final class KiteCourse {
     static {
         final int A = 0, B = 1, C = 2, D = 3;
         K S = K.SAFE, F = K.FAST, N = K.NEEDLE;
-        // 2 drop gate run: three 11-wide lime frames straight down the canyon (everybody), the third offers a 7 for the fast line
-        screen("Drop Gate Run", "drop 1", A, 30, 0, hole(A, 30, S, 0, 11, 0));
-        screen("Drop Gate Run", "drop 2", A, 55, 0, hole(A, 55, S, 0, 11, 0));
-        screen("Drop Gate Run", "drop 3", A, 80, 0, hole(A, 80, S, -4, 11, 0), hole(A, 80, F, 9, 7, 0));
+        K X = K.BRUTAL;
+        // 2 drop gate run: rebuilt from The Glider's Challenge L02-L03 (MIT): wall-to-wall 7-tall letterbox slots at
+        // canyon width, then the third gate offers a 7 (fast) and a 3x3 (red) beside the lime 11
+        screen("Drop Gate Run", "drop 1", A, 30, 0, rect(A, 30, S, 0, 37, 7, 0));
+        screen("Drop Gate Run", "drop 2", A, 55, 0, rect(A, 55, S, 0, 37, 7, 0));
+        screen("Drop Gate Run", "drop 3", A, 80, 0, hole(A, 80, S, -4, 11, 0), hole(A, 80, F, 9, 7, 0), hole(A, 80, N, -14, 3, 0));
         // 3 canyon slalom: safe 9 swings wide, fast 7 cuts the inside
-        screen("Canyon Slalom", "slalom 1", A, 108, 0, hole(A, 108, S, 7, 9, 0), hole(A, 108, F, -1, 7, 0));
-        screen("Canyon Slalom", "slalom 2", A, 138, 0, hole(A, 138, S, -7, 9, 0), hole(A, 138, F, 6, 7, 0));
+        // (Glider's Challenge L05-L06 slalom: lime 9 / orange 7 / red 4 per fin)
+        screen("Canyon Slalom", "slalom 1", A, 108, 0, hole(A, 108, S, 7, 9, 0), hole(A, 108, F, -1, 7, 0), hole(A, 108, N, -10, 4, 0));
+        screen("Canyon Slalom", "slalom 2", A, 138, 0, hole(A, 138, S, -7, 9, 0), hole(A, 138, F, 6, 7, 0), hole(A, 138, N, 14, 4, 0));
         // 5 tunnel split (leg B runs -Z): safe 11 x 11 tube on the outside of the turn exit, fast 5 x 5 tube with two bends
         double sx = 8, fx = -10;
         Tube safeT = new Tube("safe tube", S, 11, B, new double[][]{
@@ -209,21 +224,24 @@ public final class KiteCourse {
         screen("Lift Hill", "lift 1", B, 36, 0, hole(B, 36, S, 8, 9, 0), hole(B, 36, F, -5, 6, 0));
         screen("Lift Hill", "lift 2", B, 10, 0, hole(B, 10, S, -8, 9, 0), hole(B, 10, F, -2, 6, 0));
         screen("Lift Hill", "lift 3", B, -16, 0, hole(B, -16, S, 8, 9, 0), hole(B, -16, F, 0, 6, 0));
-        // 7 ring stack: low 11 (safe), mid 7, high 5 (keeps height for the fast line)
-        Hole low = hole(B, -42, S, 0, 11, 0), high = hole(B, -42, N, 0, 5, 0);
+        // 7 ring stack: low 11 (safe), mid 7 (fast), high 3x3 fire ring (red) and a 1x1 fire ring (brutal) beside it:
+        // the fire rings are rebuilt from The Glider's Challenge L14 (MIT)
+        Hole low = hole(B, -42, S, 0, 11, 0), high = hole(B, -42, N, 0, 3, 0);
         int midY = (low.y0() + low.h() + high.y0() - 7) / 2;
-        screen("Ring Stack", "ring stack", B, -42, 0, low, new Hole(x0(B, 0, 7), midY, 7, 7, F), high);
+        screen("Ring Stack", "ring stack", B, -42, 0, low, new Hole(x0(B, 0, 7), midY, 7, 7, F), high, hole(B, -42, X, 7, 1, 0));
         // 8 tether forest: mast rows with full-height slots, safe 9 weaves, fast 5 runs almost straight
-        screen("Tether Forest", "masts 1", B, -68, 1, slot(B, S, -8, 9), slot(B, F, 3, 5));
-        screen("Tether Forest", "masts 2", B, -98, 1, slot(B, S, 10, 9), slot(B, F, 3, 5));
-        screen("Tether Forest", "masts 3", B, -128, 1, slot(B, S, -9, 9), slot(B, F, 8, 5));
+        // (Glider's Challenge L13 bar curtain: a 1-wide full-height slit between the masts = brutal line)
+        screen("Tether Forest", "masts 1", B, -68, 1, slot(B, S, -8, 9), slot(B, F, 3, 5), slot(B, X, 11, 1));
+        screen("Tether Forest", "masts 2", B, -98, 1, slot(B, S, 10, 9), slot(B, F, 3, 5), slot(B, X, -7, 1));
+        screen("Tether Forest", "masts 3", B, -128, 1, slot(B, S, -9, 9), slot(B, F, 8, 5), slot(B, X, 0, 1));
         // 10 dive and pull-up (leg C, +Z): fast dives through a low 7, then climbs two rising 6s; safe keeps to the side
         screen("Dive & Pull-up", "low arch", C, -136, 0, hole(C, -136, S, 8, 11, 0), hole(C, -136, F, -8, 7, 0));
         screen("Dive & Pull-up", "pull-up 1", C, -110, 0, hole(C, -110, S, 11, 9, 0), hole(C, -110, F, -3, 6, 0));
-        screen("Dive & Pull-up", "pull-up 2", C, -84, 0, hole(C, -84, S, 11, 9, 0), hole(C, -84, F, 0, 6, 0));
+        screen("Dive & Pull-up", "pull-up 2", C, -84, 0, hole(C, -84, S, 11, 9, 0), hole(C, -84, F, 0, 6, 0), hole(C, -84, N, -8, 3, 0));
         // 11 the needle: three 4 x 4 red gates in a dead straight line; safe detours left / right through 9s, lower
-        screen("Needle", "needle 1", C, -58, 0, hole(C, -58, N, 0, 4, 0), hole(C, -58, S, 9, 9, 0));
-        screen("Needle", "needle 2", C, -30, 0, hole(C, -30, N, 0, 4, 0), hole(C, -30, S, -9, 9, 0));
+        // owner (playtest 2): "a one-block gap in a massive wall": a 1x1 pinhole, then a 1x3 slit (Glider's Challenge L08 / L10)
+        screen("Needle", "needle 1", C, -58, 0, hole(C, -58, N, 0, 4, 0), hole(C, -58, S, 9, 9, 0), hole(C, -58, X, -6, 1, 0));
+        screen("Needle", "needle 2", C, -30, 0, hole(C, -30, N, 0, 4, 0), hole(C, -30, S, -9, 9, 0), rect(C, -30, X, 6, 1, 3, 0));
         screen("Needle", "needle 3", C, -2, 0, hole(C, -2, N, 0, 4, 0), hole(C, -2, S, 9, 9, 0));
         // 12 S-canyon: safe 9 swings wall to wall, fast 6 cuts the middle
         screen("S-Canyon", "swing 1", C, 24, 0, hole(C, 24, S, -9, 9, 0), hole(C, 24, F, -3, 6, 0));

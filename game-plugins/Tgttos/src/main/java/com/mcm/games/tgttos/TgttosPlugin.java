@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public final class TgttosPlugin extends JavaPlugin {
     public static final String WORLD = "mcc_tgttos";
@@ -35,7 +37,10 @@ public final class TgttosPlugin extends JavaPlugin {
     private MapRegistry registry;
     private MapPlacer placer;
     private TgttosGame game;
-    private McmBuild.BuildQueue adminQueue;
+    private Paster paster;
+    private Paster.Job adminJob;
+    /** One worker thread for everything heavy and Bukkit-free: map generation + paste preparation (serialised). */
+    private ExecutorService worker;
 
     @Override
     public void onEnable() {
@@ -45,6 +50,8 @@ public final class TgttosPlugin extends JavaPlugin {
         if (world == null) getLogger().severe("Could not create world " + WORLD + "; the game cannot run.");
         else applyRules(world);
         placer = new MapPlacer(getLogger());
+        worker = Executors.newSingleThreadExecutor(r -> { Thread th = new Thread(r, "TGTTOS-builder"); th.setDaemon(true); return th; });
+        paster = new Paster(this, placer, worker);
         registry = new MapRegistry(getLogger());
         loadMaps();
         game = new TgttosGame(this);
@@ -58,20 +65,52 @@ public final class TgttosPlugin extends JavaPlugin {
     public void onDisable() {
         try {
             if (game != null) game.stop();
-            if (adminQueue != null) adminQueue.cancel();
+            if (paster != null) { paster.cancelAll(); paster.releaseAll(); }
+            if (worker != null) worker.shutdownNow();
         } catch (Throwable t) {
             getLogger().warning("Error while stopping TGTTOS: " + t);
         }
         McmApi.unregisterAll(this);
     }
 
-    void loadMaps() {
+    /**
+     * Instantiates and builds every map on the worker thread (the maps are pure Java), then installs the result on
+     * the main thread. Never blocks a tick; a game started before this finishes waits for it ({@link MapRegistry#ready}).
+     */
+    void loadMaps() { loadMaps(null); }
+
+    void loadMaps(Runnable then) {
         reloadConfig();
-        registry.load(getConfig().getStringList("maps"), getConfig().getBoolean("auto-discover", true), getFile(),
-                getConfig().getString("stub-map", "auto"), Math.max(1, getConfig().getInt("rounds", 6)));
-        registry.validate();
-        getLogger().info("TGTTOS: " + registry.playable().size() + " playable map(s): " + registry.ids());
+        applyDebug();
+        List<String> classes = getConfig().getStringList("maps");
+        boolean auto = getConfig().getBoolean("auto-discover", true);
+        String stub = getConfig().getString("stub-map", "auto");
+        int rounds = Math.max(1, getConfig().getInt("rounds", 6));
+        File jar = getFile();
+        long t0 = System.nanoTime();
+        worker.execute(() -> {
+            List<MapRegistry.Entry> list;
+            try {
+                list = registry.scan(classes, auto, jar, stub, rounds);
+                registry.validate(list);
+            } catch (Throwable t) {
+                getLogger().severe("TGTTOS: loading maps failed: " + t);
+                list = new ArrayList<>();
+            }
+            List<MapRegistry.Entry> done = list;
+            long ms = (System.nanoTime() - t0) / 1_000_000;
+            Bukkit.getScheduler().runTask(this, () -> {
+                registry.install(done);
+                getLogger().info("TGTTOS: " + registry.playable().size() + " playable map(s), built off-thread in " + ms + " ms: " + registry.ids());
+                if (then != null) then.run();
+            });
+        });
     }
+
+    void applyDebug() { if (paster != null) paster.debugTiming = getConfig().getBoolean("debug-timing", true); }
+
+    Paster paster() { return paster; }
+    ExecutorService worker() { return worker; }
 
     /** The world is regenerated on every enable so no stale map/player blocks survive a restart. */
     private void resetWorldFolder() {
@@ -93,6 +132,7 @@ public final class TgttosPlugin extends JavaPlugin {
         w.setGameRule(GameRule.FIRE_DAMAGE, false);
         w.setGameRule(GameRule.DROWNING_DAMAGE, false);
         w.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
+        w.setGameRule(GameRule.DO_FIRE_TICK, false);        // fire rings / braziers stay put
         w.setGameRule(GameRule.DO_TILE_DROPS, false);
         w.setGameRule(GameRule.DO_ENTITY_DROPS, false);
         w.setGameRule(GameRule.DO_MOB_LOOT, false);
@@ -161,13 +201,14 @@ public final class TgttosPlugin extends JavaPlugin {
                 if (game.isRunning()) { sender.sendMessage(ChatColor.RED + "A game is running; use /tg map to queue a map."); return true; }
                 World w = world();
                 if (w == null) { sender.sendMessage(ChatColor.RED + "World missing."); return true; }
-                if (adminQueue != null) adminQueue.cancel();
+                if (adminJob != null) paster.cancel(adminJob);
                 Settings s = Settings.load(getConfig());
                 placer.baseY = s.baseY; placer.spacing = s.spacing;
-                adminQueue = new McmBuild.BuildQueue(this);
                 TgMapData d = e.cached;
-                placer.enqueue(adminQueue, w, e.slot, d, Variants.pick(d, new Random()));
-                adminQueue.then(() -> {
+                sender.sendMessage(ChatColor.GRAY + "Pasting " + e.map.displayName() + " (spread over ticks)...");
+                adminJob = paster.paste("admin " + e.map.id(), w, e.slot, d, Variants.pick(d, new Random()));
+                adminJob.then(() -> {
+                    adminJob = null;
                     sender.sendMessage(ChatColor.GREEN + "Built " + e.map.displayName() + " at slot " + e.slot + ".");
                     if (sub.equals("tp") && sender instanceof Player p && p.isOnline()) {
                         TgMapData.Spawn sp = !d.overviewPoints.isEmpty() ? d.overviewPoints.get(0) : d.startSpawns.get(0);
@@ -175,12 +216,11 @@ public final class TgttosPlugin extends JavaPlugin {
                         if (p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE) p.setGameMode(GameMode.CREATIVE);
                     }
                 });
-                adminQueue.start();
             }
             case "reload" -> {
                 if (game.isRunning()) { sender.sendMessage(ChatColor.RED + "A game is running."); return true; }
-                loadMaps();
-                sender.sendMessage(ChatColor.GREEN + "Reloaded config; " + registry.playable().size() + " playable maps.");
+                sender.sendMessage(ChatColor.GRAY + "Reloading config and rebuilding maps off-thread...");
+                loadMaps(() -> sender.sendMessage(ChatColor.GREEN + "Reloaded config; " + registry.playable().size() + " playable maps."));
             }
             default -> sender.sendMessage(ChatColor.GOLD + "TGTTOS admin: " + ChatColor.YELLOW
                     + "/tg list | map <id> | info [id] | chickens | tp <id> | build <id> | reload");

@@ -5,6 +5,7 @@ import com.mcm.api.McmFx;
 import com.mcm.api.McmGame;
 import com.mcm.api.McmGameContext;
 import com.mcm.games.tgttos.model.Kit;
+import com.mcm.games.tgttos.model.MapFeatures;
 import com.mcm.games.tgttos.model.TgMapData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,8 +37,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -74,6 +77,12 @@ final class TgttosGame implements McmGame {
         Vector vel = new Vector();
         double airPeakY = Double.NaN;
         boolean refillPending;
+        // map features (reset every round): highest checkpoint, best bonus tier per gate group, refills taken this attempt
+        int checkpoint = -1;
+        final Map<String, Integer> bonus = new LinkedHashMap<>();
+        final Set<Integer> rings = new HashSet<>();
+        long lastDepotTick = -1000;
+        int roundBonus;
         Racer(UUID id, String name, int rounds) { this.id = id; this.name = name; this.places = new int[rounds]; }
     }
 
@@ -103,13 +112,23 @@ final class TgttosGame implements McmGame {
     private final List<Chicken> chickens = new ArrayList<>();
     private final List<Chicken> decoys = new ArrayList<>();
     private final Map<UUID, Location> decoyHome = new HashMap<>();
+    /** Spawn point of chickens.get(i) / decoys.get(i) (index-parallel), for re-spawning one that went missing. */
+    private final List<Location> chickenAt = new ArrayList<>(), decoyAt = new ArrayList<>();
+    private int chickenRespawns;
     /** Chicken punches this round (for /tg info). */
     private int punchAccepted, punchRejected;
     private String lastPunch = "-";
 
     private BukkitTask tickTask, secondTask, countdownTask, revealTask;
     private final List<BukkitTask> delayed = new ArrayList<>();
-    private McmBuild.BuildQueue queue;
+    private FeatureRuntime fx;            // movers / toggles of the current round (null = map has none)
+    private long goTick;
+    private Paster.Job job;               // paste of the current round's map (null once done)
+    private Prebuilt prebuilt;            // next round's map, pasted during this round
+    private long loadStarted;
+    private BukkitTask waitTask;
+    /** Late joiners who are not participants: confined spectators. */
+    private final Set<UUID> watchers = new HashSet<>();
     private long tick;
     private int preLeft, timeLeft;
     private boolean timeSkipped;
@@ -133,6 +152,8 @@ final class TgttosGame implements McmGame {
     Settings settings() { return s; }
     TgMapData data() { return data; }
     MapRegistry.Entry current() { return cur; }
+    /** Chat feedback log (core 3.2.0+ optional hook; no @Override so older cores still load us). */
+    public String currentMap() { return cur == null ? null : cur.map.id(); }
 
     void forceNext(MapRegistry.Entry e) { forcedNext = e; }
 
@@ -152,8 +173,25 @@ final class TgttosGame implements McmGame {
         phase = Phase.LOADING;
         racers.clear(); sideMembers.clear(); placed.clear(); spawned.clear(); chickens.clear(); decoys.clear(); decoyHome.clear();
         round = 0;
+        watchers.clear();
+        prebuilt = null; job = null;
+        plugin.applyDebug();
         if (world == null) { abort("§cTGTTOS: game world could not be created."); return; }
+        if (!plugin.registry().ready()) {
+            // maps are still being generated off-thread (plugin just enabled / reloaded): wait, never block a tick
+            ctx.broadcast("§7TGTTOS: the maps are still being built, the game starts in a moment...");
+            long t0 = System.currentTimeMillis();
+            waitTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                if (!running) { waitTask.cancel(); waitTask = null; return; }
+                if (plugin.registry().ready()) { waitTask.cancel(); waitTask = null; beginGame(); }
+                else if (System.currentTimeMillis() - t0 > 120_000) { waitTask.cancel(); waitTask = null; abort("§cTGTTOS: maps did not finish building."); }
+            }, 10L, 10L);
+            return;
+        }
+        beginGame();
+    }
 
+    private void beginGame() {
         List<MapRegistry.Entry> pool = new ArrayList<>(plugin.registry().playable());
         List<MapRegistry.Entry> real = new ArrayList<>();
         for (MapRegistry.Entry e : pool) if (!e.stub) real.add(e);
@@ -195,6 +233,7 @@ final class TgttosGame implements McmGame {
         running = false;
         cancelTasks();
         cleanupRound();
+        plugin.paster().releaseAll();           // after the cleanup, so the chickens' chunks are still loaded for it
         resetPlayers();
         phase = Phase.IDLE;
     }
@@ -204,7 +243,9 @@ final class TgttosGame implements McmGame {
         tickTask = secondTask = countdownTask = revealTask = null;
         for (BukkitTask t : delayed) t.cancel();
         delayed.clear();
-        if (queue != null) { queue.cancel(); queue = null; }
+        if (waitTask != null) { waitTask.cancel(); waitTask = null; }
+        if (job != null) { plugin.paster().cancel(job); job = null; }
+        if (prebuilt != null) { plugin.paster().cancel(prebuilt.job); prebuilt = null; }
     }
 
     private void endGame() {
@@ -214,6 +255,7 @@ final class TgttosGame implements McmGame {
         running = false;
         cancelTasks();
         cleanupRound();
+        plugin.paster().releaseAll();
         resetPlayers();
         phase = Phase.IDLE;
         if (wasRunning || ctx != null) ctx.finish("TGTTOS finished");
@@ -230,30 +272,40 @@ final class TgttosGame implements McmGame {
 
     // ===================================================================== rounds
 
+    /** A map pasted ahead of its round (into its own slot, while the current round is played). */
+    private static final class Prebuilt {
+        final MapRegistry.Entry entry; final TgMapData data; final Map<String, String> choice; final Paster.Job job;
+        Prebuilt(MapRegistry.Entry entry, TgMapData data, Map<String, String> choice, Paster.Job job) {
+            this.entry = entry; this.data = data; this.choice = choice; this.job = job;
+        }
+    }
+
+    /**
+     * The map data for an entry: the validated fixed-seed build, or (random-seeds) a fresh build on the worker
+     * thread. {@code then} runs on the main thread; with null data if the map could not be built at all.
+     */
+    private void obtainData(MapRegistry.Entry e, java.util.function.Consumer<TgMapData> then) {
+        if (!s.randomSeeds && e.cached != null) { then.accept(e.cached); return; }
+        long seed = rnd.nextLong();
+        plugin.worker().execute(() -> {
+            TgMapData d;
+            try { d = e.map.build(seed); }
+            catch (Throwable t) { plugin.getLogger().severe("TGTTOS: map " + e.map.id() + " failed to build: " + t); d = e.cached; }
+            TgMapData out = d;
+            Bukkit.getScheduler().runTask(plugin, () -> then.accept(out));
+        });
+    }
+
     private void prepareRound(int n) {
         if (!running) return;
         round = n;
         if (forcedNext != null && !forcedNext.broken) { plan.set(n - 1, forcedNext); forcedNext = null; }
         cur = plan.get(n - 1);
         phase = Phase.LOADING;
-        try {
-            data = s.randomSeeds || cur.cached == null ? cur.map.build(rnd.nextLong()) : cur.cached;
-        } catch (Throwable t) {
-            plugin.getLogger().severe("TGTTOS: map " + cur.map.id() + " failed to build: " + t);
-            data = cur.cached;
-        }
-        if (data == null) { abort("§cTGTTOS: map " + cur.map.displayName() + " could not be built."); return; }
-        variantChoice = Variants.pick(data, rnd);
-        hazardMats.clear();
-        hazardMats.add(Material.LAVA);
-        for (String h : data.hazardBlocks) {
-            String b = h; int i = b.indexOf('['); if (i > 0) b = b.substring(0, i);
-            Material m = Material.matchMaterial(b);
-            if (m != null) hazardMats.add(m);
-        }
         for (Racer r : racers.values()) {
             r.finished = false; r.karma = 0; r.protection = 0; r.lockUntil = 0;
             r.airPeakY = Double.NaN; r.lastLoc = null; r.vel = new Vector(); r.refillPending = false;
+            r.checkpoint = -1; r.bonus.clear(); r.rings.clear(); r.roundBonus = 0;
         }
         punchAccepted = punchRejected = 0;
         lastPunch = "-";
@@ -261,20 +313,75 @@ final class TgttosGame implements McmGame {
         bonusSides.clear();
         roundPts.clear(); roundSidePts.clear(); sideShare.clear();
         timeSkipped = false;
+        loadStarted = System.currentTimeMillis();
         ctx.setSidebarLines(sidebar());
         ctx.setTimer(s.preRoundSeconds, s.preRoundSeconds);
-        queue = new McmBuild.BuildQueue(plugin);
-        plugin.placer().enqueue(queue, world, cur.slot, data, variantChoice);
-        queue.then(() -> { queue = null; if (running) beginPre(); });
-        queue.start();
-        if (!variantChoice.isEmpty())
-            plugin.getLogger().info("TGTTOS round " + n + " " + cur.map.id() + " variants: " + Variants.summary(data, variantChoice));
+        Prebuilt pb = prebuilt;
+        prebuilt = null;
+        if (pb != null && pb.entry == cur && !pb.job.cancelled) {
+            data = pb.data;
+            variantChoice = pb.choice;
+            job = pb.job;
+            onDataReady(n, true);
+            return;
+        }
+        if (pb != null) plugin.paster().cancel(pb.job);
+        obtainData(cur, d -> {
+            if (!running || round != n || phase != Phase.LOADING) return;
+            if (d == null) { abort("§cTGTTOS: map " + cur.map.displayName() + " could not be built."); return; }
+            data = d;
+            variantChoice = Variants.pick(data, rnd);
+            job = plugin.paster().paste("round " + n + " " + cur.map.id(), world, cur.slot, data, variantChoice);
+            onDataReady(n, false);
+        });
     }
 
+    /** Data chosen and its paste started (or finished, if it was pre-built): start the round once every block is set. */
+    private void onDataReady(int n, boolean prebuiltUsed) {
+        hazardMats.clear();
+        hazardMats.add(Material.LAVA);
+        for (String h : data.hazardBlocks) {
+            String b = h; int i = b.indexOf('['); if (i > 0) b = b.substring(0, i);
+            Material m = Material.matchMaterial(b);
+            if (m != null) hazardMats.add(m);
+        }
+        if (!variantChoice.isEmpty())
+            plugin.getLogger().info("TGTTOS round " + n + " " + cur.map.id() + " variants: " + Variants.summary(data, variantChoice));
+        Paster.Job j = job;
+        if (prebuiltUsed)
+            plugin.getLogger().info("TGTTOS round " + n + " " + cur.map.id() + ": using the map pre-built during the last round ("
+                    + (j.done ? "ready" : Math.round(j.progress() * 100) + "% done, waiting") + ")");
+        j.then(() -> {
+            if (!running || round != n || phase != Phase.LOADING || job != j) return;
+            job = null;
+            if (j.failed) { abort("§cTGTTOS: map " + cur.map.displayName() + " could not be pasted."); return; }
+            plugin.getLogger().info("TGTTOS round " + n + " " + cur.map.id() + ": map ready " + (System.currentTimeMillis() - loadStarted) + " ms after the round was called");
+            beginPre();
+        });
+    }
+
+    /** Paste the next round's map now, into its own slot, while this round is played (no visible wait later). */
+    private void prebuildNext() {
+        if (round >= plan.size() || prebuilt != null) return;
+        MapRegistry.Entry nx = plan.get(round);
+        if (nx == cur || nx.slot == cur.slot || nx.broken) return;    // same slot: can only be pasted after this round
+        int r = round;
+        obtainData(nx, d -> {
+            if (!running || round != r || d == null || prebuilt != null || plan.get(r) != nx) return;
+            Map<String, String> choice = Variants.pick(d, rnd);
+            prebuilt = new Prebuilt(nx, d, choice, plugin.paster().paste("pre-build round " + (r + 1) + " " + nx.map.id(), world, nx.slot, d, choice));
+        });
+    }
     private void beginPre() {
         phase = Phase.PRE;
+        plugin.paster().release(Set.of(cur.slot));     // older slots' chunks may unload now; this map's stay loaded
         preLeft = fastTest() ? 1 : s.preRoundSeconds;
         spawnChickens();
+        MapFeatures mf = cur.map.features();
+        if (mf != null && !mf.isEmpty()) {
+            fx = new FeatureRuntime(world, cur.slot, mf, plugin.placer(), data, spawned);
+            fx.begin();
+        }
         List<Player> online = racingPlayers();
         List<Integer> idx = new ArrayList<>();
         for (int i = 0; i < data.startSpawns.size(); i++) idx.add(i);
@@ -290,25 +397,66 @@ final class TgttosGame implements McmGame {
             McmFx.title(online, "§6§l" + cur.map.displayName(), "", 0, 20, 0);
             countdownTask = McmFx.countdown(plugin, online, 1, "§7Chaos begins in...", () -> { countdownTask = null; go(); });
         } else McmFx.titleCard(online, "§6§l" + cur.map.displayName(), "§7Round " + round + "/" + s.rounds + " §8- §e" + cur.map.type().label());
-        ctx.broadcast("§6Round " + round + "/" + s.rounds + ": §e§l" + cur.map.displayName() + " §7(" + cur.map.type().label() + ") §8- §7" + kitText(kit));
+        ctx.broadcast("§6Round " + round + "/" + s.rounds + ": §e§l" + cur.map.displayName() + " §7(" + cur.map.type().label() + ") §8- §7" + kitText(kit, online.isEmpty() ? null : online.get(0)));
         ctx.setTimer(preLeft, s.preRoundSeconds);
         ctx.setSidebarLines(sidebar());
     }
 
-    private String kitText(Kit kit) {
+    /**
+     * Round announcement of the kit, counted from what a racer actually holds after {@link #giveKit} (base kit +
+     * the map's extraItems), so it can't drift from the real inventory.
+     */
+    private String kitText(Kit kit, Player sample) {
+        Map<Material, Integer> have = new LinkedHashMap<>();
+        if (sample != null) {
+            for (ItemStack it : sample.getInventory().getContents())
+                if (it != null && !it.getType().isAir()) have.merge(it.getType(), it.getAmount(), Integer::sum);
+        } else {
+            // nobody online to look at: same computation as giveKit
+            if (kit.bridging()) { have.put(Material.WHITE_CONCRETE, s.concrete); have.put(s.pickaxe, 1); }
+            if (kit != Kit.ELYTRA_FIREWORKS && s.snowballs > 0) have.put(Material.SNOWBALL, s.snowballs);
+            if (kit == Kit.ELYTRA_FIREWORKS) { have.put(Material.ELYTRA, 1); if (s.fireworks > 0) have.put(Material.FIREWORK_ROCKET, s.fireworks); }
+            for (String x : data.extraItems) { ItemStack it = parseItem(x); if (it != null) have.merge(it.getType(), it.getAmount(), Integer::sum); }
+        }
+        List<String> parts = new ArrayList<>();
+        if (kit == Kit.BOAT) parts.add("You start in a boat");
+        if (kit == Kit.ELYTRA_FIREWORKS || have.containsKey(Material.ELYTRA)) parts.add("Elytra");
+        int concrete = 0;
+        for (Iterator<Map.Entry<Material, Integer>> it = have.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<Material, Integer> e = it.next();
+            if (e.getKey().name().endsWith("_CONCRETE")) { concrete += e.getValue(); it.remove(); }
+        }
+        if (concrete > 0) parts.add((s.infiniteBlocks ? "endless" : String.valueOf(concrete)) + " team concrete");
+        have.remove(Material.ELYTRA);
+        for (Map.Entry<Material, Integer> e : have.entrySet()) parts.add(itemText(e.getKey(), e.getValue()));
+        String list = parts.isEmpty() ? "No items" : String.join(", ", parts);
+        String tail = switch (kit) {
+            case CONCRETE_PICKAXE_SNOWBALLS -> " Break rival bridges!";
+            case SNOWBALLS_ONLY -> " No building on this one.";
+            case BOAT -> "";
+            case ELYTRA_FIREWORKS -> " The floor drops " + (s.elytraFloorDelaySeconds > 0 ? s.elytraFloorDelaySeconds + " s after GO - shove!" : "at GO!");
+        };
         String fall = cur.map.lethalFallHeight() > 0 ? " §cBig falls only end well in water!" : "";
-        return fallText(kit) + fall;
+        MapFeatures mf = cur.map.features();
+        StringBuilder ft = new StringBuilder();
+        if (mf != null && !mf.isEmpty()) {
+            if (!mf.refills.isEmpty()) ft.append(" §6Gold rings refill rockets.");
+            if (!mf.depots.isEmpty()) ft.append(" §bLost your boat? Depots give a fresh one.");
+            if (!mf.checkpoints.isEmpty()) ft.append(" §bCheckpoints save your progress.");
+            if (!mf.gates.isEmpty() && s.bonusEnabled) ft.append(" §6Orange/red lines pay a bonus (max " + s.bonusCap + ") if you finish!");
+            if (!mf.movers.isEmpty() || !mf.toggles.isEmpty()) ft.append(" §cMind the moving traps.");
+        }
+        return list + "." + tail + fall + ft;
     }
 
-    private String fallText(Kit kit) {
-        return switch (kit) {
-            case CONCRETE_PICKAXE_SNOWBALLS -> (s.infiniteBlocks ? "Endless" : String.valueOf(s.concrete)) + " team concrete, pickaxe, "
-                    + s.snowballs + " snowballs. Break rival bridges!";
-            case SNOWBALLS_ONLY -> s.snowballs + " snowballs. No building on this one.";
-            case BOAT -> "You start in a boat. " + s.snowballs + " snowballs.";
-            case ELYTRA_FIREWORKS -> "Elytra + " + s.fireworks + " firework" + (s.fireworks == 1 ? "" : "s") + ". The floor drops "
-                    + (s.elytraFloorDelaySeconds > 0 ? s.elytraFloorDelaySeconds + " s after GO - shove!" : "at GO!");
+    private static String itemText(Material m, int n) {
+        String name = switch (m) {
+            case FIREWORK_ROCKET -> "firework";
+            case SNOWBALL -> "snowball";
+            default -> m.name().toLowerCase(Locale.ROOT).replace('_', ' ');
         };
+        if (m.getMaxStackSize() == 1 && n == 1) return name;
+        return n + " " + name + (n == 1 || name.endsWith("s") ? "" : "s");
     }
 
     private void go() {
@@ -316,6 +464,7 @@ final class TgttosGame implements McmGame {
         phase = Phase.RUNNING;
         timeLeft = s.roundSeconds;
         goMillis = System.currentTimeMillis();
+        goTick = tick;
         int ox = plugin.placer().ox(cur.slot), oy = plugin.placer().oy(), oz = plugin.placer().oz(cur.slot);
         for (TgMapData.Pos p : data.startBarrier) world.getBlockAt(ox + p.x(), oy + p.y(), oz + p.z()).setType(Material.AIR, false);
         // elytra maps: the gantry floor stays a few seconds after GO so racers can punch each other off it
@@ -333,6 +482,7 @@ final class TgttosGame implements McmGame {
         }
         ctx.setTimer(timeLeft, s.roundSeconds);
         ctx.setSidebarLines(sidebar());
+        prebuildNext();
     }
 
     private void dropFloor() {
@@ -353,7 +503,11 @@ final class TgttosGame implements McmGame {
         for (int i = 0; i < Math.min(5, finishOrder.size()); i++) {
             Racer r = racers.get(finishOrder.get(i));
             sb.append("\n §e").append(ordinal(i + 1)).append(" §f").append(r.name);
+            if (r.roundBonus > 0) sb.append(" §6+").append(r.roundBonus).append(" line");
         }
+        List<String> bl = new ArrayList<>();
+        for (UUID id : finishOrder) { Racer r = racers.get(id); if (r != null && r.roundBonus > 0) bl.add(r.name + " +" + r.roundBonus); }
+        if (!bl.isEmpty()) sb.append("\n §6Line bonus: §e").append(String.join("§7, §e", bl));
         int dnf = 0;
         for (Player p : online) { Racer r = racers.get(p.getUniqueId()); if (r != null && !r.finished) dnf++; }
         if (finishOrder.isEmpty()) sb.append("\n §7Nobody made it to the other side.");
@@ -413,9 +567,15 @@ final class TgttosGame implements McmGame {
     }
 
     private void placeAtStart(Player p, Racer r, int spawnIdx, boolean first) {
+        TgMapData.Spawn sp = data.startSpawns.get(Math.floorMod(spawnIdx, data.startSpawns.size()));
+        List<TgMapData.Spawn> bs = data.boatSpawns.isEmpty() ? data.startSpawns : data.boatSpawns;
+        placeAt(p, r, sp, bs.get(Math.floorMod(spawnIdx, bs.size())), first);
+    }
+
+    /** Put a racer at {@code sp} (boat maps: seated in a fresh boat at {@code boatSp}) with a fresh kit. */
+    private void placeAt(Player p, Racer r, TgMapData.Spawn sp, TgMapData.Spawn boatSp, boolean first) {
         if (p.isInsideVehicle()) p.leaveVehicle();
         removeBoat(r);
-        TgMapData.Spawn sp = data.startSpawns.get(Math.floorMod(spawnIdx, data.startSpawns.size()));
         Location l = plugin.placer().loc(world, cur.slot, sp);
         p.setFallDistance(0f);
         p.setVelocity(new Vector());
@@ -443,21 +603,26 @@ final class TgttosGame implements McmGame {
         p.setCollidable(true);
         if (p.isGliding()) p.setGliding(false);
         if (kit == Kit.BOAT) {
-            List<TgMapData.Spawn> bs = data.boatSpawns.isEmpty() ? data.startSpawns : data.boatSpawns;
-            TgMapData.Spawn b = bs.get(Math.floorMod(spawnIdx, bs.size()));
-            Location bl = plugin.placer().loc(world, cur.slot, b);
-            p.teleport(bl);
-            Boat boat = world.spawn(bl, Boat.class, e -> {
-                e.addScoreboardTag(ENT_TAG);
-                e.setPersistent(false);
-            });
-            spawned.add(boat);
-            r.boat = boat;
-            boat.addPassenger(p);
+            seatInBoat(p, r, boatSp == null ? sp : boatSp);
         } else {
             p.teleport(l);
         }
         giveKit(p, kit);
+    }
+
+    /** Fresh boat at {@code b}, racer seated in it (their previous boat is removed). */
+    private void seatInBoat(Player p, Racer r, TgMapData.Spawn b) {
+        if (p.isInsideVehicle()) p.leaveVehicle();
+        removeBoat(r);
+        Location bl = plugin.placer().loc(world, cur.slot, b);
+        p.teleport(bl);
+        Boat boat = world.spawn(bl, Boat.class, e -> {
+            e.addScoreboardTag(ENT_TAG);
+            e.setPersistent(false);
+        });
+        spawned.add(boat);
+        r.boat = boat;
+        boat.addPassenger(p);
     }
 
     private static double maxHealth(Player p) {
@@ -480,10 +645,10 @@ final class TgttosGame implements McmGame {
                     left -= n; slot = slot == 0 ? 3 : slot + 1;
                 }
                 inv.setItem(1, unbreakable(new ItemStack(s.pickaxe)));
-                if (s.snowballs > 0) inv.setItem(2, new ItemStack(Material.SNOWBALL, Math.min(16, s.snowballs)));
+                giveSnowballs(inv, 2);
             }
             case SNOWBALLS_ONLY, BOAT -> {
-                if (s.snowballs > 0) inv.setItem(0, new ItemStack(Material.SNOWBALL, Math.min(16, s.snowballs)));
+                giveSnowballs(inv, 0);
             }
             case ELYTRA_FIREWORKS -> {
                 inv.setChestplate(unbreakable(new ItemStack(Material.ELYTRA)));
@@ -496,6 +661,15 @@ final class TgttosGame implements McmGame {
         }
         inv.setHeldItemSlot(0);
         p.updateInventory();
+    }
+
+    /** kit.snowballs snowballs: a stack of 16 in the kit slot, the rest in the next free slots (snowballs stack to 16). */
+    private void giveSnowballs(PlayerInventory inv, int slot) {
+        int left = s.snowballs;
+        if (left <= 0) return;
+        inv.setItem(slot, new ItemStack(Material.SNOWBALL, Math.min(16, left)));
+        left -= Math.min(16, left);
+        while (left > 0) { int n = Math.min(16, left); inv.addItem(new ItemStack(Material.SNOWBALL, n)); left -= n; }
     }
 
     private ItemStack parseItem(String spec) {
@@ -535,8 +709,16 @@ final class TgttosGame implements McmGame {
         if (r == null || data == null) return;
         if (tick - r.lastRespawnTick < 5) return;
         r.lastRespawnTick = tick;
-        int idx = rnd.nextInt(Math.max(1, data.startSpawns.size()));
-        placeAtStart(p, r, idx, false);
+        r.rings.clear();                        // a new attempt: refills can be taken again
+        MapFeatures.Checkpoint cp = phase == Phase.RUNNING ? checkpointOf(r) : null;
+        if (cp != null && !cp.spawns().isEmpty()) {
+            TgMapData.Spawn sp = cp.spawns().get(rnd.nextInt(cp.spawns().size()));
+            TgMapData.Spawn bs = cp.boats().isEmpty() ? sp : cp.boats().get(rnd.nextInt(cp.boats().size()));
+            placeAt(p, r, sp, bs, false);
+        } else {
+            int idx = rnd.nextInt(Math.max(1, data.startSpawns.size()));
+            placeAtStart(p, r, idx, false);
+        }
         if (phase == Phase.RUNNING) {
             String name = McmFx.sideColor(ctx, r.side) + p.getName() + "§7";
             if (fallLine != null) {
@@ -548,7 +730,7 @@ final class TgttosGame implements McmGame {
                 ctx.broadcast("§8☠ §7" + (line.contains("%s") ? String.format(line, name) : name + " " + line));
             }
             McmFx.sound(p, Sound.ENTITY_CHICKEN_HURT, 1f, 0.8f);
-            temp(r, "§cBack to the start! §7Kit refilled.");
+            temp(r, cp != null ? "§cBack to checkpoint §f" + cp.name() + "§c! §7Kit refilled." : "§cBack to the start! §7Kit refilled.");
         }
     }
 
@@ -578,6 +760,122 @@ final class TgttosGame implements McmGame {
         respawn(p, false, "§7fell §c" + (int) Math.round(drop) + " blocks §7and missed the water.");
     }
 
+    private MapFeatures.Checkpoint checkpointOf(Racer r) {
+        if (fx == null || r.checkpoint < 0) return null;
+        MapFeatures.Checkpoint best = null;
+        for (MapFeatures.Checkpoint c : fx.features().checkpoints) if (c.order() == r.checkpoint) best = c;
+        return best;
+    }
+
+    /** Line bonus a racer has earned this round (best tier per group, capped at bonus.cap). */
+    private int bonusTotal(Racer r) {
+        int t = 0;
+        for (int tier : r.bonus.values()) t += s.tierPoints(tier);
+        return Math.min(s.bonusCap, t);
+    }
+
+    private String bonusText(Racer r) {
+        List<String> l = new ArrayList<>();
+        for (Map.Entry<String, Integer> e : r.bonus.entrySet()) l.add(e.getKey() + " " + TIER_NAME[Math.min(3, e.getValue())]);
+        return String.join(", ", l) + (bonusTotal(r) >= s.bonusCap ? ", capped at " + s.bonusCap : "");
+    }
+
+    /** Does the segment a-b (local) pass through the box (block-inclusive region)? */
+    private static boolean through(TgMapData.Region b, double x0, double y0, double z0, double x1, double y1, double z1) {
+        if (Math.max(x0, x1) < b.minX() || Math.min(x0, x1) >= b.maxX() + 1 || Math.max(y0, y1) < b.minY() || Math.min(y0, y1) >= b.maxY() + 1
+                || Math.max(z0, z1) < b.minZ() || Math.min(z0, z1) >= b.maxZ() + 1) return false;
+        double len = Math.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0) + (z1 - z0) * (z1 - z0));
+        int n = Math.max(1, (int) Math.ceil(len / 0.25));
+        for (int k = 0; k <= n; k++) {
+            double u = k / (double) n;
+            if (b.contains(x0 + (x1 - x0) * u, y0 + (y1 - y0) * u, z0 + (z1 - z0) * u)) return true;
+        }
+        return false;
+    }
+
+    /** Gliding racers: does their (0.6 x 0.6 x 0.6) hitbox, shrunk by 0.05, touch a hazard block (fire ring, lava curtain)? */
+    private boolean boxTouches(Player p) {
+        org.bukkit.util.BoundingBox bb = p.getBoundingBox().expand(-0.05);
+        for (int x = (int) Math.floor(bb.getMinX()); x <= (int) Math.floor(bb.getMaxX()); x++)
+            for (int y = (int) Math.floor(bb.getMinY()); y <= (int) Math.floor(bb.getMaxY()); y++)
+                for (int z = (int) Math.floor(bb.getMinZ()); z <= (int) Math.floor(bb.getMaxZ()); z++)
+                    if (hazardMats.contains(world.getBlockAt(x, y, z).getType())) return true;
+        return false;
+    }
+
+    private static final String[] TIER_COL = {"§a", "§6", "§c", "§5"};
+    private static final String[] TIER_NAME = {"lime", "orange", "red", "brutal"};
+
+    /**
+     * Movers, checkpoints, refills, bonus gates and depots for one racer this tick (running, not finished).
+     * Returns true if the racer was sent back (hit by a mover).
+     */
+    private boolean featureStep(Player p, Racer r, Location prev, Location now) {
+        MapFeatures mf = fx.features();
+        double off = p.isGliding() ? 0.3 : p.isInsideVehicle() ? 0.5 : 0.9;
+        double x1 = lx(now.getX()), y1 = ly(now.getY()) + off, z1 = lz(now.getZ());
+        double x0 = x1, y0 = y1, z0 = z1;
+        if (prev != null && prev.getWorld() == now.getWorld() && prev.distanceSquared(now) < 100) {
+            x0 = lx(prev.getX()); y0 = ly(prev.getY()) + off; z0 = lz(prev.getZ());
+        }
+        if (!mf.movers.isEmpty()) {
+            double rad = p.isGliding() ? 0.35 : 0.4;
+            MapFeatures.Mover m = fx.hit(x0, y0, z0, x1, y1, z1, rad);
+            if (m == null && !p.isGliding()) m = fx.hit(x0, y0 + 0.8, z0, x1, y1 + 0.8, z1, rad);
+            if (m != null) {
+                McmFx.soundAt(now, Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, 1.5f, 0.6f);
+                McmFx.burst(now.clone().add(0, 0.5, 0), Color.RED, 16);
+                respawn(p, true, "§7was flattened by the §c" + m.name() + "§7.");
+                return true;
+            }
+        }
+        for (MapFeatures.Checkpoint c : mf.checkpoints)
+            if (c.order() > r.checkpoint && through(c.trigger(), x0, y0, z0, x1, y1, z1)) {
+                r.checkpoint = c.order();
+                temp(r, "§b✔ Checkpoint: §f" + c.name());
+                McmFx.sound(p, Sound.BLOCK_NOTE_BLOCK_CHIME, 1f, 1.4f);
+            }
+        for (int i = 0; i < mf.refills.size(); i++) {
+            MapFeatures.Refill rf = mf.refills.get(i);
+            if (r.rings.contains(i) || !through(rf.box(), x0, y0, z0, x1, y1, z1)) continue;
+            r.rings.add(i);
+            p.getInventory().addItem(new ItemStack(Material.FIREWORK_ROCKET, rf.rockets()));
+            temp(r, "§6+" + rf.rockets() + " rockets §7(" + rf.name() + ")");
+            McmFx.sound(p, Sound.ENTITY_ITEM_PICKUP, 1f, 0.8f);
+        }
+        for (MapFeatures.BonusGate g : mf.gates) {
+            int had = r.bonus.getOrDefault(g.group(), 0);
+            if (g.tier() <= had || !through(g.box(), x0, y0, z0, x1, y1, z1)) continue;
+            int before = bonusTotal(r);
+            r.bonus.put(g.group(), g.tier());
+            int after = bonusTotal(r);
+            int tier = Math.min(3, g.tier());
+            temp(r, TIER_COL[tier] + "§l+" + (after - before) + " " + TIER_NAME[tier] + " line §7(" + g.name() + ") §8| §7bonus §f" + after + "/" + s.bonusCap
+                    + " §8(paid at the finish)");
+            McmFx.sound(p, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 0.7f + 0.25f * tier);
+        }
+        if (cur.map.kit() == Kit.BOAT && !p.isInsideVehicle() && tick - r.lastDepotTick > 20)
+            for (MapFeatures.Depot d : mf.depots)
+                if (d.area().contains(x1, ly(now.getY()) + 0.1, z1)) {
+                    r.lastDepotTick = tick;
+                    seatInBoat(p, r, d.boat());
+                    temp(r, "§bFresh boat §7(" + d.name() + ")");
+                    McmFx.sound(p, Sound.ENTITY_BOAT_PADDLE_WATER, 1f, 1f);
+                    break;
+                }
+        return false;
+    }
+
+    /** Is any racer (or their boat) inside this world box? (toggles never set a solid block into an occupied cell) */
+    private boolean occupied(org.bukkit.util.BoundingBox box) {
+        for (Player p : participants()) {
+            if (!p.getWorld().equals(world)) continue;
+            if (p.getBoundingBox().overlaps(box)) return true;
+            if (p.getVehicle() != null && p.getVehicle().getBoundingBox().overlaps(box)) return true;
+        }
+        return false;
+    }
+
     private void temp(Racer r, String msg) { r.tempMsg = msg; r.tempUntil = tick + 40; }
 
     /**
@@ -588,7 +886,16 @@ final class TgttosGame implements McmGame {
         boolean decoy = isDecoy(c);
         Racer r = racers.get(p.getUniqueId());
         String why;
-        if (decoy) why = "decoy chicken (does nothing)";
+        if (decoy) {
+            why = "decoy chicken (does nothing)";
+            Long last = decoyMsgTick.get(p.getUniqueId());
+            if (last == null || tick - last > 10) {
+                decoyMsgTick.put(p.getUniqueId(), tick);
+                p.sendMessage(s.decoyMessage);
+                McmFx.soundAt(c.getLocation(), Sound.ENTITY_CHICKEN_AMBIENT, 1.4f, 1.8f);
+                McmFx.sound(p, Sound.ENTITY_VILLAGER_NO, 0.8f, 1.3f);
+            }
+        }
         else if (!running) why = "no game running";
         else if (phase != Phase.RUNNING) why = "round not running (phase " + phase + ")";
         else if (r == null) why = "not a participant";
@@ -629,8 +936,16 @@ final class TgttosGame implements McmGame {
         r.points += pts;
         ctx.addPoints(r.id, pts, "TGTTOS " + ordinal(place) + " place");
         roundPts.merge(r.id, pts, Integer::sum);
+        int bonus = fx == null ? 0 : bonusTotal(r);
+        r.roundBonus = bonus;
+        if (bonus > 0) {
+            r.points += bonus;
+            ctx.addPoints(r.id, bonus, "TGTTOS line bonus");
+            roundPts.merge(r.id, bonus, Integer::sum);
+            p.sendMessage("§6Line bonus: §e+" + bonus + " §7(" + bonusText(r) + ")");
+        }
         String col = place == 1 ? "§6" : place == 2 ? "§f" : place == 3 ? "§c" : "§e";
-        McmFx.title(p, col + "§l" + ordinal(place), "§c§lWhack! §7" + time(ms) + " §8| §a+" + pts, 2, 40, 10);
+        McmFx.title(p, col + "§l" + ordinal(place), "§c§lWhack! §7" + time(ms) + " §8| §a+" + pts + (bonus > 0 ? " §6+" + bonus + " line" : ""), 2, 40, 10);
         McmFx.sound(p, place <= 3 ? Sound.UI_TOAST_CHALLENGE_COMPLETE : Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
         Location cl = chicken.getLocation();
         McmFx.soundAt(cl, Sound.ENTITY_CHICKEN_HURT, 1.5f, 1.2f);
@@ -639,7 +954,7 @@ final class TgttosGame implements McmGame {
         McmFx.teamFirework(cl.clone().add(0, 1.5, 0), McmFx.sideColor(ctx, r.side), place <= 3);
         spawnWhackText(cl.clone().add(0, 1.3, 0));
         ctx.broadcast("§a✔ " + McmFx.sideColor(ctx, r.side) + p.getName() + " §7whacked a chicken! §e" + ordinal(place)
-                + " place §8(" + time(ms) + ", +" + pts + ")");
+                + " place §8(" + time(ms) + ", +" + pts + (bonus > 0 ? " §6+" + bonus + " line bonus§8" : "") + ")");
         // to spectator, confined to the map
         if (p.isInsideVehicle()) p.leaveVehicle();
         removeBoat(r);
@@ -714,64 +1029,138 @@ final class TgttosGame implements McmGame {
 
     // ===================================================================== chickens & cleanup
 
+    /**
+     * Goal chickens and decoys. The pen can be far outside every player's view distance (Kite Festival: ~350 blocks
+     * from the gantry, Frozen Canal: ~120), so the chunks of every chicken spot get their own plugin ticket for the
+     * whole round ({@link Paster#hold}, released with the slot) before anything is spawned, and the chickens are
+     * persistent (a non-persistent entity is discarded when its chunk unloads - the cause of the empty Kite pen).
+     * {@link #checkChickens} re-spawns any that still go missing.
+     */
     private void spawnChickens() {
+        chickenAt.clear(); decoyAt.clear(); chickenRespawns = 0;
         if (data.chickenSpawns.isEmpty()) return;
         int n = Math.max(data.chickenSpawns.size() >= 8 ? 8 : 1, Math.min(s.chickenCount, 40));
-        for (int i = 0; i < n; i++) {
-            TgMapData.Spawn sp = data.chickenSpawns.get(i % data.chickenSpawns.size());
-            Location l = plugin.placer().loc(world, cur.slot, sp);
-            Chicken c = world.spawn(l, Chicken.class, e -> {
-                e.addScoreboardTag(ENT_TAG);
-                e.addScoreboardTag(CHICKEN_TAG);
-                e.setInvulnerable(true);
-                e.setPersistent(false);
-                e.setRemoveWhenFarAway(false);
-                e.setCollidable(false);
-                e.setAdult();
-                e.setAgeLock(true);
-                e.setAI(s.chickenWander);
-                e.setSilent(false);
-                e.customName(McmFx.text(s.chickenName));
-                e.setCustomNameVisible(true);
-            });
-            chickens.add(c);
-            spawned.add(c);
-        }
+        for (int i = 0; i < n; i++) chickenAt.add(plugin.placer().loc(world, cur.slot, data.chickenSpawns.get(i % data.chickenSpawns.size())));
         int bad = 0;
-        for (int[] dp : cur.map.decoyChickens()) {
+        for (int[] dp : decoySpots()) {
             if (dp == null || dp.length < 3) { bad++; continue; }
             Location l = plugin.placer().loc(world, cur.slot, dp[0] + 0.5, dp[1], dp[2] + 0.5);
             l.setYaw(rnd.nextFloat() * 360f - 180f);
-            Chicken c = world.spawn(l, Chicken.class, e -> {
-                e.addScoreboardTag(ENT_TAG);
-                e.addScoreboardTag(DECOY_TAG);
-                e.setInvulnerable(true);
-                e.setPersistent(false);
-                e.setRemoveWhenFarAway(false);
-                e.setCollidable(false);
-                e.setAdult();
-                e.setAgeLock(true);
-                e.setAI(false);                     // stands still; put back each second if anything moves it
-                e.setGravity(false);
-                e.setSilent(false);
-                e.setCustomNameVisible(false);
-            });
-            decoys.add(c);
-            decoyHome.put(c.getUniqueId(), l);
-            spawned.add(c);
+            decoyAt.add(l);
         }
+        Set<Long> held = new HashSet<>();
+        int unloaded = 0;
+        List<Location> all = new ArrayList<>(chickenAt); all.addAll(decoyAt);
+        for (Location l : all)
+            for (int dx = -1; dx <= 1; dx++) for (int dz = -1; dz <= 1; dz++) {   // the spot's chunk and its neighbours (wandering)
+                int cx = (l.getBlockX() >> 4) + dx, cz = (l.getBlockZ() >> 4) + dz;
+                if (!held.add((((long) cx) << 32) | (cz & 0xFFFFFFFFL))) continue;
+                if (!world.isChunkLoaded(cx, cz)) unloaded++;
+                plugin.paster().hold(world, cur.slot, cx, cz);
+            }
+        if (unloaded > 0) plugin.getLogger().info("TGTTOS round " + round + " " + cur.map.id() + ": loaded " + unloaded + " chicken chunks that were not loaded");
+        for (int i = 0; i < chickenAt.size(); i++) chickens.add(spawnGoal(chickenAt.get(i)));
+        for (int i = 0; i < decoyAt.size(); i++) decoys.add(spawnDecoy(decoyAt.get(i)));
         if (bad > 0) plugin.getLogger().warning("TGTTOS map " + cur.map.id() + ": " + bad + " decoy chicken entries are not {x,y,z}");
+        int ok = 0;
+        for (Chicken c : chickens) if (c.isValid()) ok++;
+        if (ok < chickens.size()) plugin.getLogger().warning("TGTTOS round " + round + " " + cur.map.id() + ": only " + ok + "/" + chickens.size() + " goal chickens are valid right after spawning");
         if (s.logPunches)
             plugin.getLogger().info("TGTTOS round " + round + " " + cur.map.id() + ": spawned " + chickens.size() + " goal chickens"
-                    + (decoys.isEmpty() ? "" : " + " + decoys.size() + " decoys"));
+                    + (decoys.isEmpty() ? "" : " + " + decoys.size() + " decoys") + " (" + held.size() + " chunks held)");
+    }
+
+    /** Decoy feet blocks for this round (local). */
+    private List<int[]> decoySpots() {
+        List<int[]> l = cur.map.decoyChickens();
+        if (l != null && !l.isEmpty()) return l;
+        return decoyCache.computeIfAbsent(data, d -> com.mcm.games.tgttos.model.DecoySpots.pick(d, com.mcm.games.tgttos.model.DecoySpots.DEFAULT_COUNT, d.seed));
+    }
+    private final Map<TgMapData, List<int[]>> decoyCache = new java.util.WeakHashMap<>();
+    private final Map<UUID, Long> decoyMsgTick = new HashMap<>();
+
+    private Chicken spawnGoal(Location l) {
+        Chicken c = world.spawn(l, Chicken.class, e -> {
+            e.addScoreboardTag(ENT_TAG);
+            e.addScoreboardTag(CHICKEN_TAG);
+            e.setInvulnerable(true);
+            e.setPersistent(true);              // survives a chunk unload; removed by tag at round end / on load
+            e.setRemoveWhenFarAway(false);
+            e.setCollidable(false);
+            e.setAdult();
+            e.setAgeLock(true);
+            e.setAI(s.chickenWander);
+            e.setSilent(false);
+            e.customName(McmFx.text(s.chickenName));
+            e.setCustomNameVisible(true);
+        });
+        spawned.add(c);
+        return c;
+    }
+
+    private Chicken spawnDecoy(Location l) {
+        Chicken c = world.spawn(l, Chicken.class, e -> {
+            e.addScoreboardTag(ENT_TAG);
+            e.addScoreboardTag(DECOY_TAG);
+            e.setInvulnerable(true);
+            e.setPersistent(true);
+            e.setRemoveWhenFarAway(false);
+            e.setCollidable(false);
+            e.setAdult();
+            e.setAgeLock(true);
+            e.setAI(true);                      // wanders; put back home when further than goal.decoy-leash-radius
+            e.setSilent(false);
+            e.customName(McmFx.text(s.chickenName));   // same "Punch me!" tag as the real ones (owner, playtest 2)
+            e.setCustomNameVisible(true);
+        });
+        decoyHome.put(c.getUniqueId(), l);
+        spawned.add(c);
+        return c;
+    }
+
+    /** Once a second (pre-round and running): re-spawn any goal chicken or decoy that is gone, with a warning. */
+    private void checkChickens() {
+        if (world == null || cur == null) return;
+        for (int i = 0; i < chickens.size() && i < chickenAt.size(); i++) {
+            Chicken c = chickens.get(i);
+            if (c.isValid()) continue;
+            Location at = chickenAt.get(i);
+            boolean loaded = world.isChunkLoaded(at.getBlockX() >> 4, at.getBlockZ() >> 4);
+            plugin.getLogger().warning("TGTTOS round " + round + " " + cur.map.id() + ": goal chicken " + i + " is gone (dead=" + c.isDead()
+                    + ", chunk loaded=" + loaded + "); re-spawning it in the pen");
+            if (!loaded) plugin.paster().hold(world, cur.slot, at.getBlockX() >> 4, at.getBlockZ() >> 4);
+            spawned.remove(c);
+            chickens.set(i, spawnGoal(at));
+            chickenRespawns++;
+        }
+        for (int i = 0; i < decoys.size() && i < decoyAt.size(); i++) {
+            Chicken c = decoys.get(i);
+            if (c.isValid()) continue;
+            Location at = decoyAt.get(i);
+            boolean loaded = world.isChunkLoaded(at.getBlockX() >> 4, at.getBlockZ() >> 4);
+            plugin.getLogger().warning("TGTTOS round " + round + " " + cur.map.id() + ": decoy " + i + " is gone (chunk loaded=" + loaded + "); re-spawning it");
+            if (!loaded) plugin.paster().hold(world, cur.slot, at.getBlockX() >> 4, at.getBlockZ() >> 4);
+            spawned.remove(c);
+            decoyHome.remove(c.getUniqueId());
+            decoys.set(i, spawnDecoy(at));
+            chickenRespawns++;
+        }
+    }
+
+    /** A chunk of our world loaded its entities: drop TGTTOS entities left over from an earlier round (persistent chickens). */
+    void onEntitiesLoad(List<Entity> list) {
+        for (Entity e : list)
+            if (e.getScoreboardTags().contains(ENT_TAG) && !spawned.contains(e)) e.remove();
     }
 
     private void cleanupRound() {
+        if (fx != null) { fx.stop(); fx = null; }
         for (Entity e : new ArrayList<>(spawned)) if (e != null && e.isValid()) e.remove();
         spawned.clear();
         chickens.clear();
         decoys.clear();
         decoyHome.clear();
+        chickenAt.clear(); decoyAt.clear();
         flying.clear(); flyingLast.clear(); flyingSince.clear(); snowDone.clear();
         for (Racer r : racers.values()) r.boat = null;
         if (world != null) {
@@ -903,21 +1292,21 @@ final class TgttosGame implements McmGame {
     void punch(Player attacker, Player victim) {
         Racer a = racers.get(attacker.getUniqueId()), v = racers.get(victim.getUniqueId());
         if (a == null || v == null) return;
-        if (a.lockUntil > tick) {
+        if (s.kEnabled && a.lockUntil > tick) {
             temp(a, "§4Karma lock! §7You can't punch for " + Math.max(1, (a.lockUntil - tick + 19) / 20) + " s.");
             McmFx.sound(attacker, Sound.BLOCK_NOTE_BLOCK_BASS, 0.8f, 0.6f);
             return;
         }
         if (tick - v.lastKnockTick < s.hitCooldownTicks) return;
         // karma: punching a high-karma player gives none; repeat victims give more
-        if (v.karma < s.kGlowFrom) {
+        if (s.kEnabled && v.karma < s.kGlowFrom) {
             double gain = s.kPerPunch;
             if (victim.getUniqueId().equals(a.lastVictim) && tick - a.lastVictimTick <= s.kSameSeconds * 20L) gain += s.kSameBonus;
             a.karma += gain;
         }
         a.lastVictim = victim.getUniqueId();
         a.lastVictimTick = tick;
-        if (a.karma >= s.kLockFrom && a.lockUntil <= tick) {
+        if (s.kEnabled && a.karma >= s.kLockFrom && a.lockUntil <= tick) {
             a.lockUntil = tick + s.kLockSeconds * 20L;
             temp(a, "§4Karma lock! §7Too much punching - " + s.kLockSeconds + " s cooldown.");
             McmFx.sound(attacker, Sound.ENTITY_VILLAGER_NO, 1f, 0.8f);
@@ -927,7 +1316,7 @@ final class TgttosGame implements McmGame {
         double yaw = Math.toRadians(attacker.getLocation().getYaw());
         Vector dir = new Vector(-Math.sin(yaw), 0, Math.cos(yaw));
         knock(victim, v, dir, h, s.kbPunchV);
-        v.protection = Math.min(s.protMax, v.protection + s.protPerHit);
+        if (s.kEnabled) v.protection = Math.min(s.protMax, v.protection + s.protPerHit);
     }
 
     // ------------------------------------------------------------------ snowballs
@@ -1008,9 +1397,9 @@ final class TgttosGame implements McmGame {
         String mode = victim.isInsideVehicle() ? "boat" : victim.isGliding() ? "gliding" : "on foot";
         if (s.logSnowballs) plugin.getLogger().info("TGTTOS snowball " + who + " (via " + via + ", " + mode + ") ACCEPTED");
         knock(victim, v, dir, s.kbSnowH, s.kbSnowV);
-        v.protection = Math.min(s.protMax, v.protection + s.protPerHit);
+        if (s.kEnabled) v.protection = Math.min(s.protMax, v.protection + s.protPerHit);
         McmFx.soundAt(victim.getLocation(), Sound.BLOCK_SNOW_BREAK, 1f, 1.2f);
-        if (s.snowKarma && shooter != null) {
+        if (s.kEnabled && s.snowKarma && shooter != null) {
             Racer a = racers.get(shooter.getUniqueId());
             if (a != null && v.karma < s.kGlowFrom) {
                 a.karma += s.kPerPunch;
@@ -1053,6 +1442,7 @@ final class TgttosGame implements McmGame {
     }
 
     private double takenMult(Racer v) {
+        if (!s.kEnabled) return 1.0;          // owner (playtest 2): karma off = always full knockback
         double m = 1.0;
         if (v.karma > s.kMoreFrom) m = Math.min(s.kMaxMult, 1 + s.kPerKarma * (v.karma - s.kMoreFrom));
         return m * (1 - Math.max(0, Math.min(0.95, v.protection)));
@@ -1085,26 +1475,27 @@ final class TgttosGame implements McmGame {
         if (phase != Phase.PRE && phase != Phase.RUNNING && phase != Phase.INTERMISSION) return;
         int lethalFall = cur.map.lethalFallHeight();
         if (phase == Phase.RUNNING) sweepSnowballs();
+        if (phase == Phase.RUNNING && fx != null) {
+            List<Location> near = new ArrayList<>();
+            for (Player p : on) if (p.getWorld().equals(world) && p.getGameMode() != GameMode.SPECTATOR) near.add(p.getLocation());
+            fx.tick(tick - goTick, near, this::occupied);
+        }
+        for (UUID w : watchers) {
+            Player p = Bukkit.getPlayer(w);
+            if (p != null && p.isOnline() && p.getWorld().equals(world) && p.getGameMode() == GameMode.SPECTATOR) confine(p);
+        }
         for (Player p : on) {
             if (!p.getWorld().equals(world)) continue;
             Racer r = racers.get(p.getUniqueId());
             Location l = p.getLocation();
             double x = lx(l.getX()), y = ly(l.getY()), z = lz(l.getZ());
             // measured velocity (blocks/tick) for gliding knockback
+            Location prevLoc = r.lastLoc;
             if (r.lastLoc != null && r.lastLoc.getWorld() == l.getWorld() && r.lastLoc.distanceSquared(l) < 64)
                 r.vel = l.toVector().subtract(r.lastLoc.toVector());
             else r.vel = new Vector();
             r.lastLoc = l;
-            if (p.getGameMode() == GameMode.SPECTATOR) {
-                if (data.playBounds != null && !data.playBounds.contains(x, y, z)) {
-                    TgMapData.Region b = data.playBounds;
-                    double cx = Math.max(b.minX() + 0.5, Math.min(b.maxX() + 0.5, x));
-                    double cy = Math.max(b.minY() + 0.5, Math.min(b.maxY() + 0.5, y));
-                    double cz = Math.max(b.minZ() + 0.5, Math.min(b.maxZ() + 0.5, z));
-                    p.teleport(plugin.placer().loc(world, cur.slot, cx, cy, cz).setDirection(l.getDirection()));
-                }
-                continue;
-            }
+            if (p.getGameMode() == GameMode.SPECTATOR) { confine(p); continue; }
             if (phase == Phase.PRE) {
                 boolean out = data.startStrip != null && !data.startStrip.contains(x, y, z) && !p.isInsideVehicle();
                 if (out || y < data.voidY) placeAtStart(p, r, r.spawnIdx, false);
@@ -1118,10 +1509,63 @@ final class TgttosGame implements McmGame {
                 Block feet = l.getBlock();
                 hz = hazardMats.contains(feet.getType()) || hazardMats.contains(l.clone().add(0, -0.2, 0).getBlock().getType());
             }
+            if (!hz && p.isGliding() && !hazardMats.isEmpty()) hz = boxTouches(p);
             if (hz) { respawn(p, true); continue; }
+            if (fx != null && featureStep(p, r, prevLoc, l)) continue;
             if (lethalFall > 0) checkFall(p, r, y, lethalFall);
             if (p.getFireTicks() > 0) p.setFireTicks(0);
         }
+    }
+
+    /** Spectators stay inside the current map's play box (clamped back to its nearest point). */
+    private void confine(Player p) {
+        if (data == null || data.playBounds == null) return;
+        Location l = p.getLocation();
+        double x = lx(l.getX()), y = ly(l.getY()), z = lz(l.getZ());
+        if (data.playBounds.contains(x, y, z)) return;
+        TgMapData.Region b = data.playBounds;
+        double cx = Math.max(b.minX() + 0.5, Math.min(b.maxX() + 0.5, x));
+        double cy = Math.max(b.minY() + 0.5, Math.min(b.maxY() + 0.5, y));
+        double cz = Math.max(b.minZ() + 0.5, Math.min(b.maxZ() + 0.5, z));
+        p.teleport(plugin.placer().loc(world, cur.slot, cx, cy, cz).setDirection(l.getDirection()));
+    }
+
+    /** May a spectator teleport (spectate menu) to {@code to}? Only inside the current map's play box. */
+    boolean spectatorMayGo(Location to) {
+        if (to == null || !inWorld(to.getWorld())) return false;
+        if (data == null || data.playBounds == null || cur == null
+                || (phase != Phase.PRE && phase != Phase.RUNNING && phase != Phase.INTERMISSION)) return true;
+        return data.playBounds.contains(lx(to.getX()), ly(to.getY()), lz(to.getZ()));
+    }
+
+    boolean isWatcher(Player p) { return watchers.contains(p.getUniqueId()); }
+
+    /**
+     * Core hook: a player joined mid-game. A participant who had not finished this round races again from the map
+     * start (fresh kit) while the round is in its pre-round or running phase; everyone else becomes a spectator at
+     * the current map's overview point, confined to its play box. Between rounds (map still loading) the core default
+     * is used; participants are placed automatically when the next round starts.
+     */
+    @Override
+    public boolean onLateJoin(Player p, McmGameContext c) {
+        if (!running || data == null || cur == null || world == null) return false;
+        if (phase != Phase.PRE && phase != Phase.RUNNING && phase != Phase.INTERMISSION) return false;
+        Racer r = racers.get(p.getUniqueId());
+        if (r != null && !r.finished && (phase == Phase.PRE || phase == Phase.RUNNING)) {
+            placeAtStart(p, r, rnd.nextInt(Math.max(1, data.startSpawns.size())), true);
+            p.sendMessage("§aWelcome back! §7You rejoin the race from the start of §e" + cur.map.displayName() + "§7.");
+            plugin.getLogger().info("TGTTOS late join: " + p.getName() + " resumes racing on " + cur.map.id());
+            return true;
+        }
+        if (r == null) watchers.add(p.getUniqueId());
+        p.getInventory().clear();
+        p.getInventory().setArmorContents(null);
+        p.setGameMode(GameMode.SPECTATOR);
+        TgMapData.Spawn sp = !data.overviewPoints.isEmpty() ? data.overviewPoints.get(0) : data.startSpawns.get(0);
+        p.teleport(plugin.placer().loc(world, cur.slot, sp));
+        p.sendMessage("§7You are spectating §e" + cur.map.displayName() + "§7" + (r != null ? " (you already finished this round)." : "."));
+        plugin.getLogger().info("TGTTOS late join: " + p.getName() + " spectates " + cur.map.id() + (r == null ? " (not a participant)" : " (finished)"));
+        return true;
     }
 
     private void onSecond() {
@@ -1135,6 +1579,7 @@ final class TgttosGame implements McmGame {
                     countdownTask = McmFx.countdown(plugin, on, 3, "§7Chaos begins in...", () -> { countdownTask = null; go(); });
                 }
                 if (preLeft <= -2 && phase == Phase.PRE && countdownTask == null) go(); // safety
+                checkChickens();
             }
             case RUNNING -> {
                 timeLeft--;
@@ -1151,6 +1596,7 @@ final class TgttosGame implements McmGame {
                 ctx.setTimer(Math.max(0, timeLeft), s.roundSeconds);
                 if (timeLeft <= 5 && timeLeft > 0) McmFx.sound(on, Sound.BLOCK_NOTE_BLOCK_HAT, 1f, 1.5f);
                 karmaSecond(on);
+                checkChickens();
                 leashChickens();
                 if (timeLeft <= 0) { endRound("Time's up!"); return; }
             }
@@ -1161,6 +1607,7 @@ final class TgttosGame implements McmGame {
     }
 
     private void karmaSecond(List<Player> on) {
+        if (!s.kEnabled) return;
         for (Player p : on) {
             Racer r = racers.get(p.getUniqueId());
             if (r == null) continue;
@@ -1191,7 +1638,7 @@ final class TgttosGame implements McmGame {
         for (Chicken c : decoys) {
             if (!c.isValid()) continue;
             Location home = decoyHome.get(c.getUniqueId());
-            if (home != null && c.getLocation().distanceSquared(home) > 0.09) {
+            if (home != null && (c.getLocation().distanceSquared(home) > (double) s.decoyRadius * s.decoyRadius || c.getLocation().getY() < home.getY() - 3)) {
                 c.teleport(home);
                 c.setVelocity(new Vector());
             }
@@ -1204,9 +1651,14 @@ final class TgttosGame implements McmGame {
             if (r == null) continue;
             String msg;
             if (r.tempMsg != null && r.tempUntil > tick) msg = r.tempMsg;
+            else if (phase == Phase.LOADING) {
+                Paster.Job j = job;
+                msg = "§7Preparing the next map" + (cur == null ? "" : " §e" + cur.map.displayName()) + "§7... §f"
+                        + (j == null ? "0" : String.valueOf(Math.round(j.progress() * 100))) + "%";
+            }
             else if (phase == Phase.PRE) msg = "§eStarting round in §f" + clock(Math.max(0, preLeft)) + " §8| §7" + cur.map.displayName();
             else if (phase == Phase.RUNNING && r.finished) msg = "§aFinished " + ordinal(r.places[round - 1]) + " §8| §7Rounds: " + placesText(r);
-            else if (phase == Phase.RUNNING) msg = "§7Karma: " + karmaText(r) + " §8| §7Rounds: " + placesText(r);
+            else if (phase == Phase.RUNNING) msg = (s.kEnabled ? "§7Karma: " + karmaText(r) + " §8| " : "") + "§7Rounds: " + placesText(r);
             else msg = "§7Rounds: " + placesText(r) + " §8| §7Points: §a" + r.points;
             McmFx.actionBar(p, msg);
         }
@@ -1299,7 +1751,7 @@ final class TgttosGame implements McmGame {
         if (countdownTask != null) { countdownTask.cancel(); countdownTask = null; }
         for (BukkitTask t : delayed) t.cancel();
         delayed.clear();
-        if (queue != null) { queue.cancel(); queue = null; }
+        if (job != null) { plugin.paster().cancel(job); job = null; }   // a pre-built next map is kept
         if (phase != Phase.INTERMISSION) {
             for (Map.Entry<UUID, Integer> e : roundPts.entrySet()) {
                 Racer r = racers.get(e.getKey());
@@ -1376,16 +1828,28 @@ final class TgttosGame implements McmGame {
         for (Chicken c : decoys) if (c.isValid()) dAlive++;
         out.add("§7Goal chickens: §a" + alive + "§7/" + chickens.size() + " alive, " + inPen + " in pen §8| §7decoys: " + dAlive + "/" + decoys.size()
                 + " §8| §7lethal fall: " + (cur.map.lethalFallHeight() > 0 ? cur.map.lethalFallHeight() + " blocks" : "off"));
-        int shown = 0;
-        for (Chicken c : chickens) {
-            if (!c.isValid() || shown++ >= 6) continue;
-            Location l = c.getLocation();
-            out.add(String.format("§8 - goal §7local %.1f %.1f %.1f §8(world %d %d %d)%s", lx(l.getX()), ly(l.getY()), lz(l.getZ()),
-                    l.getBlockX(), l.getBlockY(), l.getBlockZ(), c.isInvulnerable() ? "" : " §cNOT invulnerable"));
-        }
+        if (fx != null) out.addAll(fx.status());
+        out.add("§7Chicken chunks held by ticket; re-spawned this round: §f" + chickenRespawns);
+        for (int i = 0; i < chickens.size(); i++) out.add(chickenLine("goal", i, chickens.get(i), i < chickenAt.size() ? chickenAt.get(i) : null));
+        for (int i = 0; i < decoys.size(); i++) out.add(chickenLine("decoy", i, decoys.get(i), i < decoyAt.size() ? decoyAt.get(i) : null));
         out.add("§7Chicken punches this round: §a" + punchAccepted + " accepted§7, §c" + punchRejected + " rejected§7; last: §f" + lastPunch);
         out.add("§7Finished: " + finishOrder.size() + "/" + participants().size());
         return out;
+    }
+
+    /** One /tg info line per chicken: valid, ticking, its chunk loaded / load level / ticket held, where it is. */
+    private String chickenLine(String kind, int i, Chicken c, Location home) {
+        Location l = c.isValid() ? c.getLocation() : home;
+        if (l == null) return "§8 - " + kind + " " + i + " §c(no location)";
+        int cx = l.getBlockX() >> 4, cz = l.getBlockZ() >> 4;
+        boolean loaded = world.isChunkLoaded(cx, cz);
+        String level = loaded ? world.getChunkAt(cx, cz).getLoadLevel().name() : "UNLOADED";
+        boolean inPen = data.pen != null && data.pen.contains(lx(l.getX()), ly(l.getY()), lz(l.getZ()));
+        return String.format("§8 - %s %d: %s%s §7chunk %d,%d %s%s §8| §7local %.1f %.1f %.1f%s%s", kind, i,
+                c.isValid() ? "§avalid" : "§cGONE", c.isValid() && !c.isTicking() ? " §e(not ticking)" : "",
+                cx, cz, loaded ? "§aloaded §7" + level : "§cNOT loaded", plugin.paster().holds(cur.slot, cx, cz) ? " §7ticket" : " §cno ticket",
+                lx(l.getX()), ly(l.getY()), lz(l.getZ()), kind.equals("goal") ? (inPen ? " §7in pen" : " §cOUTSIDE pen") : "",
+                c.isValid() && !c.isInvulnerable() ? " §cNOT invulnerable" : "");
     }
 
     boolean isOwnBoat(Player p, Entity vehicle) {

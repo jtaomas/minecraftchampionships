@@ -1,37 +1,37 @@
-=== 2 wedges (379 ms) ===
-Sky Blockle map, 2 wedges, seed 20261123: 55643 blocks, 35 islands (incl. castle, 8 stepping rocks), 24 chests
+=== 2 wedges (493 ms) ===
+Sky Blockle map, 2 wedges, seed 20261123: 55645 blocks, 35 islands (incl. castle, 8 stepping rocks), 26 chests
   PATH GAPS overall: min 14.0, max 16.0
 RESULT: all checks passed
-=== 3 wedges (113 ms) ===
-Sky Blockle map, 3 wedges, seed 20261123: 61758 blocks, 46 islands (incl. castle, 6 stepping rocks), 34 chests
+=== 3 wedges (158 ms) ===
+Sky Blockle map, 3 wedges, seed 20261123: 61761 blocks, 46 islands (incl. castle, 6 stepping rocks), 37 chests
   PATH GAPS overall: min 13.8, max 16.9
 RESULT: all checks passed
-=== 4 wedges (127 ms) ===
-Sky Blockle map, 4 wedges, seed 20261123: 67786 blocks, 61 islands (incl. castle, 8 stepping rocks), 44 chests
+=== 4 wedges (143 ms) ===
+Sky Blockle map, 4 wedges, seed 20261123: 67790 blocks, 61 islands (incl. castle, 8 stepping rocks), 48 chests
   PATH GAPS overall: min 14.0, max 16.0
 RESULT: all checks passed
-=== 5 wedges (151 ms) ===
-Sky Blockle map, 5 wedges, seed 20261123: 73687 blocks, 76 islands (incl. castle, 10 stepping rocks), 54 chests
+=== 5 wedges (160 ms) ===
+Sky Blockle map, 5 wedges, seed 20261123: 73692 blocks, 76 islands (incl. castle, 10 stepping rocks), 59 chests
   PATH GAPS overall: min 14.0, max 16.7
 RESULT: all checks passed
-=== 6 wedges (157 ms) ===
-Sky Blockle map, 6 wedges, seed 20261123: 79950 blocks, 91 islands (incl. castle, 12 stepping rocks), 64 chests
+=== 6 wedges (183 ms) ===
+Sky Blockle map, 6 wedges, seed 20261123: 79956 blocks, 91 islands (incl. castle, 12 stepping rocks), 70 chests
   PATH GAPS overall: min 13.8, max 16.9
 RESULT: all checks passed
-=== 7 wedges (215 ms) ===
-Sky Blockle map, 7 wedges, seed 20261123: 85460 blocks, 92 islands (incl. castle, 0 stepping rocks), 74 chests
+=== 7 wedges (231 ms) ===
+Sky Blockle map, 7 wedges, seed 20261123: 85467 blocks, 92 islands (incl. castle, 0 stepping rocks), 81 chests
   PATH GAPS overall: min 14.0, max 17.4
 RESULT: all checks passed
-=== 8 wedges (200 ms) ===
-Sky Blockle map, 8 wedges, seed 20261123: 91287 blocks, 105 islands (incl. castle, 0 stepping rocks), 84 chests
+=== 8 wedges (261 ms) ===
+Sky Blockle map, 8 wedges, seed 20261123: 91295 blocks, 105 islands (incl. castle, 0 stepping rocks), 92 chests
   PATH GAPS overall: min 13.9, max 18.1
 RESULT: all checks passed
-=== 9 wedges (190 ms) ===
-Sky Blockle map, 9 wedges, seed 20261123: 97476 blocks, 118 islands (incl. castle, 0 stepping rocks), 94 chests
+=== 9 wedges (197 ms) ===
+Sky Blockle map, 9 wedges, seed 20261123: 97485 blocks, 118 islands (incl. castle, 0 stepping rocks), 103 chests
   PATH GAPS overall: min 13.8, max 17.4
 RESULT: all checks passed
-=== 10 wedges (237 ms) ===
-Sky Blockle map, 10 wedges, seed 20261123: 103430 blocks, 131 islands (incl. castle, 0 stepping rocks), 104 chests
+=== 10 wedges (255 ms) ===
+Sky Blockle map, 10 wedges, seed 20261123: 103440 blocks, 131 islands (incl. castle, 0 stepping rocks), 114 chests
 post-pass: 712 fence/pane/wall states set, 2343 leaves (96 persistent), 0 carpets dropped
 bridging gaps along each team's path (blocks to bridge; required 13..30):
   wedge 0: gen|4| start->pillar 15.0 (dy -2)  pillar->fort 15.0 (dy +5)  fort->spike 16.0 (dy -2)  spike->enchanting 16.0 (dy +3)  enchanting->castle 14.0 (dy +2)  
@@ -54,38 +54,51 @@ shared spoke between wedge 0 and wedge 1 (nearest gap of each island to anything
   asteroid       r=190.4  nearest spike_shared     17.4
 island spacing: no overlaps, every pair at least 4 apart (generator/start pair excepted)
 wedge identity: all copies block-identical (enchanting x10, boulder x10, start x10, generator x10, show_planter x3, asteroid x10, show_pickaxe x3, brewing x10, spike_sand x10, pillar x10, show_hourglass x4, pillar_shared x10, grass x10, spike_red x10, fort x10, tower x4, positions equal within 0.95 blocks of rounding). Showpieces cycle 3 designs (scenery, no chests).
-chests: 104 registered (GENERATOR=10 CASTLE=4 MID=50 FORT=10 START=10 ENCHANTING=10 BREWING=10); every chest island reachable from every start through gaps <= 30; walk-checked from the island edges (20 pillar-top chests reached by towering up, standing room next to them verified)
+chests: 114 registered (GENERATOR=20 CASTLE=4 MID=50 FORT=10 START=10 ENCHANTING=10 BREWING=10); every chest island reachable from every start through gaps <= 30; walk-checked from the island edges (20 pillar-top chests reached by towering up, standing room next to them verified); 10 hidden chests enclosed in diggable rock and reachable by digging (at most 3 blocks to break from the walkable surface)
+generator ores: 10 islands, each coal 4, iron 4, redstone 2; all enclosed in rock, none under the basin fluids
 staircases: 12 lanes walked bottom to top, all OK
 ladders: 18 climbs checked, all attached and continuous
 castle walk: apron -> arena floor OK, tower chests reachable 4/4, floor -> rim OK, rim -> wall top by ladder OK
 RESULT: all checks passed
-  map_full.mcmdump.gz: 103430 blocks
-  wedge0.mcmdump.gz: 11001 blocks
+  map_full.mcmdump.gz: 103440 blocks
+  wedge0.mcmdump.gz: 11002 blocks
   start0.mcmdump.gz: 683 blocks
+  generator0_cut.mcmdump.gz: 281 blocks
+  generator0_xray.mcmdump.gz: 12 blocks
+  enchanting0.mcmdump.gz: 269 blocks
   castle.mcmdump.gz: 43566 blocks
   castle_cut.mcmdump.gz: 40365 blocks
   castle_slice.mcmdump.gz: 22446 blocks
 dumps written to tools\out
-loaded tools/out/map_full.mcmdump.gz: region 395x68x377, 103,430 visible blocks, 101 block types, content 395x68x377 (0.14s)
-wrote previews/map_top.png 2171x2081  render 1.73s, total 1.88s
-loaded tools/out/map_full.mcmdump.gz: region 395x68x377, 103,430 visible blocks, 101 block types, content 395x68x377 (0.13s)
-  faces: 46,464  canvas 4632x2724  (prep 0.28s, draw 0.35s)
-wrote previews/map_iso_a0.png 2000x1125  render 2.46s, total 2.60s
-loaded tools/out/map_full.mcmdump.gz: region 395x68x377, 103,430 visible blocks, 101 block types, content 395x68x377 (0.14s)
-  faces: 46,465  canvas 4632x2724  (prep 0.29s, draw 0.34s)
-wrote previews/map_iso_a2.png 2000x1125  render 2.46s, total 2.62s
-loaded tools/out/wedge0.mcmdump.gz: region 133x56x169, 11,001 visible blocks, 89 block types, content 133x56x169 (0.01s)
-  faces: 6,602  canvas 4228x2898  (prep 0.06s, draw 0.19s)
-wrote previews/wedge_iso.png 2000x1125  render 2.60s, total 2.62s
-loaded tools/out/castle_slice.mcmdump.gz: region 55x68x28, 22,446 visible blocks, 30 block types, content 55x68x28 (0.02s)
-  faces: 5,801  canvas 3320x4380  (prep 0.03s, draw 1.50s)
-wrote previews/castle_section.png 2000x2534  render 4.89s, total 4.92s
-loaded tools/out/castle_cut.mcmdump.gz: region 55x68x55, 40,365 visible blocks, 30 block types, content 55x68x55 (0.04s)
-  faces: 8,806  canvas 3740x4182  (prep 0.03s, draw 1.98s)
-wrote previews/castle_cutaway.png 2000x2307  render 4.98s, total 5.02s
-loaded tools/out/castle.mcmdump.gz: region 55x68x55, 43,566 visible blocks, 30 block types, content 55x68x55 (0.04s)
-  faces: 10,071  canvas 3740x4182  (prep 0.03s, draw 2.21s)
-wrote previews/castle_exterior.png 2000x2307  render 5.10s, total 5.14s
-loaded tools/out/start0.mcmdump.gz: region 9x16x20, 683 visible blocks, 25 block types, content 9x16x20 (0.00s)
-  faces: 508  canvas 3886x4087  (prep 0.03s, draw 1.38s)
-wrote previews/start_island.png 2000x1697  render 5.41s, total 5.41s
+loaded tools/out/map_full.mcmdump.gz: region 395x68x377, 103,440 visible blocks, 103 block types, content 395x68x377 (0.15s)
+wrote previews/map_top.png 2171x2081  render 1.90s, total 2.06s
+loaded tools/out/map_full.mcmdump.gz: region 395x68x377, 103,440 visible blocks, 103 block types, content 395x68x377 (0.14s)
+  faces: 46,479  canvas 4632x2724  (prep 0.26s, draw 0.35s)
+wrote previews/map_iso_a0.png 2000x1125  render 2.76s, total 2.91s
+loaded tools/out/map_full.mcmdump.gz: region 395x68x377, 103,440 visible blocks, 103 block types, content 395x68x377 (0.14s)
+  faces: 46,480  canvas 4632x2724  (prep 0.25s, draw 0.35s)
+wrote previews/map_iso_a2.png 2000x1125  render 2.74s, total 2.90s
+loaded tools/out/generator0_xray.mcmdump.gz: region 7x4x7, 12 visible blocks, 5 block types, content 7x4x7 (0.00s)
+  faces: 36  canvas 4004x3146  (prep 0.11s, draw 0.21s)
+wrote previews/generator_ores_xray.png 2000x2000  render 1.61s, total 1.61s
+loaded tools/out/wedge0.mcmdump.gz: region 133x56x169, 11,002 visible blocks, 91 block types, content 133x56x169 (0.02s)
+  faces: 6,604  canvas 4228x2898  (prep 0.07s, draw 0.29s)
+wrote previews/wedge_iso.png 2000x1125  render 3.33s, total 3.36s
+loaded tools/out/enchanting0.mcmdump.gz: region 9x10x9, 269 visible blocks, 15 block types, content 9x10x9 (0.02s)
+  faces: 207  canvas 3888x4104  (prep 0.07s, draw 2.03s)
+wrote previews/enchanting_deck.png 2000x2299  render 6.94s, total 6.96s
+loaded tools/out/castle_cut.mcmdump.gz: region 55x68x55, 40,365 visible blocks, 30 block types, content 55x68x55 (0.07s)
+  faces: 8,806  canvas 3740x4182  (prep 0.05s, draw 2.63s)
+wrote previews/castle_cutaway.png 2000x2307  render 6.99s, total 7.05s
+loaded tools/out/castle_slice.mcmdump.gz: region 55x68x28, 22,446 visible blocks, 30 block types, content 55x68x28 (0.03s)
+  faces: 5,801  canvas 3320x4380  (prep 0.04s, draw 2.07s)
+wrote previews/castle_section.png 2000x2534  render 7.23s, total 7.26s
+loaded tools/out/castle.mcmdump.gz: region 55x68x55, 43,566 visible blocks, 30 block types, content 55x68x55 (0.06s)
+  faces: 10,071  canvas 3740x4182  (prep 0.05s, draw 3.06s)
+wrote previews/castle_exterior.png 2000x2307  render 7.24s, total 7.30s
+loaded tools/out/start0.mcmdump.gz: region 9x16x20, 683 visible blocks, 28 block types, content 9x16x20 (0.00s)
+  faces: 508  canvas 3886x4087  (prep 0.04s, draw 1.86s)
+wrote previews/start_island.png 2000x1697  render 7.56s, total 7.57s
+loaded tools/out/generator0_cut.mcmdump.gz: region 9x11x7, 281 visible blocks, 20 block types, content 9x11x7 (0.00s)
+  faces: 190  canvas 3648x4332  (prep 0.07s, draw 1.67s)
+wrote previews/generator_hidden_chest.png 2000x2320  render 7.87s, total 7.88s

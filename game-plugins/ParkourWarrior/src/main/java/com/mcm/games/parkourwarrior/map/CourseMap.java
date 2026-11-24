@@ -36,7 +36,7 @@ public final class CourseMap {
                 {Market::b1, Market::b2, Market::b3},
                 {Shipwreck::b1, Shipwreck::b2, Shipwreck::b3},
                 {Clockwork::b1, Clockwork::b2, Clockwork::b3},
-                {Crystal::b1, Crystal::b2, Crystal::b3}};
+                {Crystal::b2, Crystal::b3, Crystal::b1}};  // Dripstone (bronze), Crystal Curtain (silver), Runaway Rails (gold floor)
     }
 
     static Mk[][] endings() {
@@ -122,7 +122,10 @@ public final class CourseMap {
         }
         for (Ob o : w.obs) {
             o.killY = o.minFeet() - o.killDepth;
-            int[] bb = Validate.bbox(o);
+            // kill column: the route WITHOUT its start area. The start area is the previous pad / hub deck, and
+            // including it let an obstacle that starts above another (the hard ending's roof start above the book
+            // spines) kill players on the lower one (the "Spine Scramble" instant-death bug).
+            int[] bb = Validate.bboxNoStart(o);
             CourseModel.Box area = new CourseModel.Box(bb[0] - 1, o.killY - 20, bb[2] - 1, bb[3] + 1, bb[4] + 6, bb[5] + 1);
             String prefix = o.kind == CourseModel.Kind.MAIN ? "&f" : o.kind == CourseModel.Kind.BONUS ? "&d" : "&e";
             String code = o.kind == CourseModel.Kind.ENDING ? (o.ending.name().charAt(0) + "-" + o.index) : o.id;

@@ -7,7 +7,7 @@ description: Sky Blockle (classic 18-minute skyblock battle royale) for the Mine
 commands:
   sbl:
     description: Sky Blockle admin helpers (map preview, info, loot test, cleanup).
-    usage: /sbl <build|tp|info|clear|loot|reload>
+    usage: /sbl <build|tp|info|respawn|clear|loot|reload>
     permission: skyblockle.admin
 permissions:
   skyblockle.admin:

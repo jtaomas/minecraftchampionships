@@ -103,6 +103,7 @@ final class CanalV {
         CanalCourse c = map.course;
         TgMapData.Blocks go = Check.afterGo(d, d.blocks);
         TgMapData v = Check.view(d, go);
+        features(d, c, r);
 
         // ---- boat spawns
         int okSp = 0;
@@ -456,4 +457,74 @@ final class CanalV {
                 name, l.length(), l.drops(), l.slush(), l.blue(), l.minW(), l.maxGap(), l.gapAt(), l.time(), l.length() / l.time()));
         return l.time();
     }
+
+    // ------------------------------------------------------------------ interactive features (playtest 2)
+
+    /**
+     * Pendulum: lane cells at boat height are tested at every phase with the runtime hit test (player in a boat:
+     * sphere r 0.4 at feet + 0.5); the packed-ice edges (|d| >= 4.9) must be clear at every phase, the middle hit at
+     * some phase, and no display box may cross a block. Toggles: every cell is a lane cell of the right path; the
+     * lock gate's open frame leaves the causeway route as the generator built it. Checkpoints / depots: spawn on ice
+     * with headroom. Bonus regions: on lane cells.
+     */
+    static void features(TgMapData d, CanalCourse c, Check.Report r) {
+        com.mcm.games.tgttos.model.MapFeatures f = FrozenCanal.feats();
+        StringBuilder sb = new StringBuilder();
+        int bad = 0;
+        for (var m : f.movers) {
+            int edgeHit = 0, midHit = 0, edges = 0, mids = 0, blocked = 0;
+            int R = (int) Math.ceil(m.reach()) + 2;
+            for (int x = (int) m.px() - R; x <= (int) m.px() + R; x++)
+                for (int z = (int) m.pz() - R; z <= (int) m.pz() + R; z++) {
+                    int i = c.idx(x, z);
+                    if (i < 0 || c.kind[i] != CanalCourse.LANE) continue;
+                    double dd = Math.abs(c.dArr[i]);
+                    boolean edge = dd >= 4.9, mid = dd <= 2.0;
+                    if (!edge && !mid) continue;
+                    boolean hit = false;
+                    for (int t = 0; t < m.periodTicks() && !hit; t++) hit = m.hits(t, x + 0.5, c.level[i] + 1.5, z + 0.5, 0.4);
+                    if (edge) { edges++; if (hit) edgeHit++; }
+                    if (mid) { mids++; if (hit) midHit++; }
+                }
+            for (int t = 0; t < m.periodTicks(); t += 2)
+                for (var p : m.cells(t)) if (d.blocks.get(p.x(), p.y(), p.z()) != null) blocked++;
+            boolean ok = edgeHit == 0 && edges > 0 && midHit > 0 && blocked == 0;
+            if (!ok) bad++;
+            sb.append(String.format("%n        %s: %d edge lane cells (|d| >= 4.9) hit at no phase (%d hit), %d/%d middle cells swept, %d display cells inside blocks over a period",
+                    m.name(), edges, edgeHit, midHit, mids, blocked));
+        }
+        for (var t : f.toggles) {
+            int lane = 0, all = 0;
+            for (var fr : t.frames())
+                for (var p : fr.blocks()) {
+                    all++;
+                    int i = c.idx(p.x(), p.z());
+                    if (i >= 0 && c.kind[i] == CanalCourse.LANE) lane++;
+                }
+            int f0 = 0;
+            for (var p : t.frames().get(0).blocks()) if (java.util.Objects.equals(norm(d.blocks.get(p.x(), p.y(), p.z())), norm(p.block()))) f0++;
+            boolean ok = lane == all && f0 == t.frames().get(0).blocks().size() && !t.indicators().isEmpty();
+            if (!ok) bad++;
+            sb.append(String.format("%n        %s: %d frames, period %.1f s, %d cells (%d on the lane), frame 0 = the built map (%d/%d), %d indicator blocks warn %.1f s before",
+                    t.name(), t.frames().size(), t.period() / 20.0, t.frames().get(0).blocks().size(), lane / Math.max(1, t.frames().size()), f0,
+                    t.frames().get(0).blocks().size(), t.indicators().size(), t.warnTicks() / 20.0));
+        }
+        int spOk = 0, spAll = 0;
+        List<Spawn> sps = new ArrayList<>();
+        for (var cp : f.checkpoints) sps.addAll(cp.boats());
+        for (var dp : f.depots) sps.add(dp.boat());
+        for (Spawn s : sps) {
+            spAll++;
+            int x = (int) Math.floor(s.x()), y = (int) Math.floor(s.y()), z = (int) Math.floor(s.z());
+            if (d.blocks.get(x, y, z) == null && d.blocks.get(x, y + 1, z) == null && d.blocks.get(x, y - 1, z) != null) spOk++;
+        }
+        if (spOk != spAll) bad++;
+        int gOk = 0;
+        for (var g : f.gates) { int i = c.idx(g.box().minX(), g.box().minZ()), j = c.idx(g.box().maxX(), g.box().maxZ()); if (i >= 0 && j >= 0 && (c.kind[i] == CanalCourse.LANE || c.kind[j] == CanalCourse.LANE)) gOk++; }
+        if (gOk != f.gates.size()) bad++;
+        r.check(bad == 0, String.format("features: %d mover, %d toggles, %d bonus regions on the lane (%d ok: hairpin kerbs orange, causeway gate red, blue stripe orange), %d checkpoints + %d depots (%d/%d boat spawns on ice with headroom)%s",
+                f.movers.size(), f.toggles.size(), f.gates.size(), gOk, f.checkpoints.size(), f.depots.size(), spOk, spAll, sb));
+    }
+
+    private static String norm(String b) { return b == null ? null : b.startsWith("minecraft:") ? b.substring(10) : b; }
 }
