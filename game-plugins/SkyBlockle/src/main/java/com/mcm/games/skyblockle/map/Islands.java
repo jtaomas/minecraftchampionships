@@ -155,7 +155,64 @@ final class Islands {
         t.set(3, 3, -2, "cobweb");
         t.set(-3, 3, 2, "cobweb");
         t.chest(2, 1, 2, "north", IslandType.GENERATOR);
+        // hidden chest buried in the rock (research: skyblockle_video.md #5, "found while mining"). Position is
+        // our choice: 3 blocks below the floor surface, off-centre behind the basin, so it is not under a fluid cell
+        // and is never exposed on the tapered underside (the rock there is 4-5+ deep). Every face is solid rock.
+        int hx = -1, hy = -3, hz = 2;
+        int[][] around = {{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}};
+        for (int[] d : around)
+            if (!t.has(hx + d[0], hy + d[1], hz + d[2])) t.set(hx + d[0], hy + d[1], hz + d[2], rock.at(hx + d[0], hy + d[1], hz + d[2], seed + 2));
+        t.chest(hx, hy, hz, "north", IslandType.GENERATOR, "hidden");
+        genOres(t, seed, hx, hy, hz);
         return t;
+    }
+
+    /** Ore counts per generator island (DEFAULTS, NOT RESEARCHED: the video only shows that these ores exist). */
+    static final int GEN_COAL_ORE = 4, GEN_IRON_ORE = 4, GEN_REDSTONE_ORE = 2;
+    /** Plain rock blocks an ore may replace (the generator's rock/body palettes). */
+    static final java.util.Set<String> GEN_ORE_HOST = java.util.Set.of("minecraft:stone", "minecraft:andesite",
+            "minecraft:cobblestone", "minecraft:tuff", "minecraft:mossy_cobblestone");
+
+    /**
+     * Ores embedded in the generator rock (research: skyblockle_video.md #5 / line 113: coal, iron and redstone ore
+     * in the generator island's rock, seen while mining). Each ore replaces a plain rock block that is fully
+     * enclosed (all 6 neighbours are blocks, so nothing changes outside), at y -5..-2 (below the basin), not in a
+     * column under the lava/water/drop cells, not the hidden chest or one of its 6 neighbours, and at least 2
+     * blocks (Chebyshev) from every other ore. Picked by a seeded hash order from the template, so every wedge
+     * gets the same ores.
+     */
+    static void genOres(Tpl t, long seed, int hx, int hy, int hz) {
+        java.util.List<int[]> cand = new java.util.ArrayList<>();
+        for (int x = -4; x <= 4; x++)
+            for (int z = -4; z <= 4; z++) {
+                if (z == 0 && x >= -2 && x <= 1) continue;               // under lava / cobble cell / drop / water
+                for (int y = -5; y <= -2; y++) {
+                    String b = t.get(x, y, z);
+                    if (b == null || !GEN_ORE_HOST.contains(b)) continue;
+                    if (Math.abs(x - hx) + Math.abs(y - hy) + Math.abs(z - hz) <= 1) continue;
+                    boolean enclosed = t.has(x + 1, y, z) && t.has(x - 1, y, z) && t.has(x, y + 1, z) && t.has(x, y - 1, z)
+                            && t.has(x, y, z + 1) && t.has(x, y, z - 1);
+                    if (enclosed) cand.add(new int[]{x, y, z});
+                }
+            }
+        cand.sort(java.util.Comparator.comparingDouble(c -> Noise.hash01(c[0], c[1], c[2], seed + 77)));
+        String[] want = new String[GEN_COAL_ORE + GEN_IRON_ORE + GEN_REDSTONE_ORE];
+        int k = 0;
+        for (int i = 0; i < GEN_IRON_ORE; i++) want[k++] = "iron_ore";
+        for (int i = 0; i < GEN_COAL_ORE; i++) want[k++] = "coal_ore";
+        for (int i = 0; i < GEN_REDSTONE_ORE; i++) want[k++] = "redstone_ore[lit=false]";
+        java.util.List<int[]> placed = new java.util.ArrayList<>();
+        for (int spacing = 2; spacing >= 1 && placed.size() < want.length; spacing--)
+            for (int[] c : cand) {
+                if (placed.size() >= want.length) break;
+                boolean ok = true;
+                for (int[] p : placed)
+                    if (Math.max(Math.abs(p[0] - c[0]), Math.max(Math.abs(p[1] - c[1]), Math.abs(p[2] - c[2]))) < spacing
+                            || p == c) { ok = false; break; }
+                if (ok) { placed.add(c); t.set(c[0], c[1], c[2], want[placed.size() - 1]); }
+            }
+        if (placed.size() < want.length)
+            throw new IllegalStateException("generator rock too small for " + want.length + " ores, placed " + placed.size());
     }
 
     // ------------------------------------------------------------------ pillar

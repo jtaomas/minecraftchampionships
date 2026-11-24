@@ -166,7 +166,8 @@ public final class SkyMap {
             if (i.role.equals("castle")) continue;
             for (int c = 0; c < i.tpl.chests.size(); c++) {
                 int[] p = i.tpl.chests.get(c);
-                m.chests.add(new MapModel.ChestSpot(i.wx(p[0], p[2]), i.y + p[1], i.wz(p[0], p[2]), i.tpl.chestTypes.get(c), i.wedge));
+                m.chests.add(new MapModel.ChestSpot(i.wx(p[0], p[2]), i.y + p[1], i.wz(p[0], p[2]), i.tpl.chestTypes.get(c), i.wedge,
+                        i.tpl.chestVariants.get(c)));
             }
             if (i.role.equals("start")) {
                 double a = wedgeAngle(i.wedge, n);
@@ -210,6 +211,7 @@ public final class SkyMap {
         r.blocks.putAll(t.blocks);
         r.chests.addAll(t.chests);
         r.chestTypes.addAll(t.chestTypes);
+        r.chestVariants.addAll(t.chestVariants);
         r.pillar = t.pillar;
         return r;
     }

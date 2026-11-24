@@ -34,7 +34,7 @@ Co-op room race for MinecraftMondayCore. Start it with `/mcm play gridrunners`.
 - At most 12 lanes. Extra solo players are merged into the smallest lane, which keeps its first side's label.
 - Difficulty scales slightly with team size (mob counts), so lanes are equal in layout but not perfectly equal in effort.
 - Timers, hints and skips only run while a side has at least one online player.
-- The arena is cleared about 1 second after the game ends, and again before the next game starts.
+- At game start the lane chunks are loaded asynchronously, then lanes are cleared and built in small jobs with a ~12 ms budget per tick (usually well under a second), and only then are players teleported in. After the game the built lanes are cleared over a few ticks (~8 ms each); lanes already known to be empty are skipped. Set `debug-timing: true` in the plugin's `config.yml` to log the time per build tick.
 
 ## Admin testing
 - `/mcm skipwait` ends the start countdown (the doors open now) or the results wait.

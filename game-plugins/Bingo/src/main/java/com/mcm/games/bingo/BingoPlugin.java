@@ -15,8 +15,9 @@ public final class BingoPlugin extends JavaPlugin {
     public void onEnable() {
         cardKey = new NamespacedKey(this, "bingo_card");
         world = new BingoWorld(this);
-        // A leftover folder from a crash/shutdown is not loaded at this point; clear it out.
-        if (Bukkit.getWorld(BingoWorld.NAME) == null) world.deleteFolderSafely();
+        // A leftover folder from a crash/shutdown is not loaded at this point; clear it out and generate a fresh
+        // world now (server start). Games never create worlds: each one uses a new area of this world.
+        if (world.prepare() == null) getLogger().severe("Could not generate " + BingoWorld.NAME + "; Bingo games will be skipped.");
 
         bingo = new BingoGame(this, world, false);
         lockout = new BingoGame(this, world, true);

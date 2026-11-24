@@ -57,7 +57,17 @@ public final class GridRunnersGame implements McmGame {
     private final Map<UUID, Lane> laneOf = new HashMap<>();
     private final Map<String, Room> roomById = new HashMap<>();
     private final Map<UUID, Room> lastRoom = new HashMap<>();
-    private BukkitTask buildTask, mainTask, endTask, clearTask;
+    private BukkitTask mainTask, endTask, clearDelayTask, preloadTimeout;
+    /** Start-of-game clear + build, spread over ticks (~12 ms of block work per tick). */
+    private final TickBuilder builder;
+    /** Post-game clear, spread over ticks. */
+    private final TickBuilder clearer;
+    /** Lanes known to be all air (cleared since enable and not built since): skipped by the next clear. */
+    private final boolean[] laneClean = new boolean[MAX_LANES];
+    /** Chunks known never to have been generated (so there is nothing in them to clear). */
+    private final java.util.Set<Long> knownEmptyChunks = new java.util.HashSet<>();
+    /** Bumped by every start/stop so stale async chunk callbacks and build callbacks do nothing. */
+    private int buildGen;
     private long steps;
     private int countdown;
     private int timeLeft;
@@ -69,6 +79,8 @@ public final class GridRunnersGame implements McmGame {
         this.roomKey = new NamespacedKey(plugin, "room");
         this.protKey = new NamespacedKey(plugin, "protected");
         this.itemKey = new NamespacedKey(plugin, "item");
+        this.builder = new TickBuilder(plugin, "Grid Runners build", 12);
+        this.clearer = new TickBuilder(plugin, "Grid Runners arena clear", 8);
     }
 
     // ------------------------------------------------------------------ McmGame
@@ -82,7 +94,7 @@ public final class GridRunnersGame implements McmGame {
     @Override
     public void start(McmGameContext context) {
         stop();
-        if (clearTask != null) { clearTask.cancel(); clearTask = null; }
+        cancelArenaClear();
         this.ctx = context;
         this.world = Arena.ensureWorld();
         if (world == null) {
@@ -118,31 +130,113 @@ public final class GridRunnersGame implements McmGame {
             }
             lane.rooms[0].state = Room.State.OPEN;
         }
-        addChunkTickets();
-
         phase = Phase.BUILDING;
         ctx.setTimer(GAME_SECONDS, GAME_SECONDS);
         ctx.setSidebarLines(List.of("§7Building the grid..."));
-        buildTask = new BukkitRunnable() {
-            int t = 0;
-            @Override public void run() {
-                if (phase != Phase.BUILDING) { cancel(); return; }
-                if (t < MAX_LANES) {
-                    Arena.clearLane(world, t);
-                    if (t < lanes.size()) Arena.buildLane(world, lanes.get(t));
-                    t++;
-                } else {
-                    cancel();
-                    buildTask = null;
-                    beginCountdown();
-                }
+        ctx.broadcast("§6Grid Runners §7- preparing the arena...");
+        final int gen = ++buildGen;
+        final boolean debug = debugTiming();
+        // 1. load (and ticket) every chunk the clear/build touches, asynchronously; 2. clear + build spread
+        //    over ticks; 3. only then teleport players and start the countdown.
+        preloadChunks(gen, debug, () -> queueBuild(gen, debug));
+    }
+
+    private boolean debugTiming() {
+        try {
+            plugin.reloadConfig();
+            return plugin.getConfig().getBoolean("debug-timing", false);
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    private static long chunkKey(int cx, int cz) { return ((long) cx << 32) ^ (cz & 0xFFFFFFFFL); }
+
+    private boolean isKnownEmpty(int cx, int cz) { return knownEmptyChunks.contains(chunkKey(cx, cz)); }
+
+    /**
+     * Asynchronously loads the footprint chunks of every lane that will be built (generating them if needed) and of
+     * every unused lane that is not known to be clean (without generating: a never-generated chunk has nothing to
+     * clear). Each loaded chunk gets a plugin ticket so it stays loaded for the build, the game and the post-game
+     * clear (removed when that clear finishes). Runs {@code then} once everything has answered (or after 30 s).
+     */
+    private void preloadChunks(int gen, boolean debug, Runnable then) {
+        final World w = world;
+        final long t0 = System.nanoTime();
+        final int[] pending = {0};
+        final boolean[] fired = {false};
+        final Runnable fire = () -> {
+            if (fired[0]) return;
+            fired[0] = true;
+            if (preloadTimeout != null) { preloadTimeout.cancel(); preloadTimeout = null; }
+            if (gen != buildGen || phase != Phase.BUILDING) return;
+            if (debug) plugin.getLogger().info(String.format("[debug-timing] Grid Runners chunk preload: %.0f ms (%d left unanswered)",
+                    (System.nanoTime() - t0) / 1e6, pending[0]));
+            then.run();
+        };
+        for (int t = 0; t < MAX_LANES; t++) {
+            final boolean used = t < lanes.size();
+            if (!used && laneClean[t]) continue;
+            for (int[] c : Arena.laneChunks(t)) {
+                final int cx = c[0], cz = c[1];
+                pending[0]++;
+                w.getChunkAtAsync(cx, cz, used).whenComplete((chunk, err) -> {
+                    // Paper completes chunk futures on the main thread.
+                    if (gen == buildGen && err == null) {
+                        if (chunk != null) {
+                            w.addPluginChunkTicket(cx, cz, plugin); // already loaded: no sync load here
+                            knownEmptyChunks.remove(chunkKey(cx, cz));
+                        } else if (!used) {
+                            knownEmptyChunks.add(chunkKey(cx, cz));
+                        }
+                    }
+                    if (--pending[0] == 0) fire.run();
+                });
             }
-        }.runTaskTimer(plugin, 1L, 1L);
+        }
+        if (pending[0] == 0) fire.run();
+        else if (!fired[0]) preloadTimeout = Bukkit.getScheduler().runTaskLater(plugin, fire, 600L);
+    }
+
+    /** Clear every lane that is not known clean, then build the used lanes; all spread over ticks. */
+    private void queueBuild(int gen, boolean debug) {
+        final World w = world;
+        builder.cancel();
+        for (int t = 0; t < MAX_LANES; t++) {
+            if (laneClean[t]) continue;
+            final int lt = t;
+            builder.addStep(Arena.clearLaneStep(w, t, this::isKnownEmpty, () -> laneClean[lt] = true, () -> {}));
+        }
+        for (Lane lane : lanes) {
+            builder.add(() -> {
+                laneClean[lane.index] = false;
+                Arena.buildShell(w, lane);
+            });
+            for (Room r : lane.rooms) builder.add(r::buildContent);
+        }
+        builder.start(() -> {
+            if (gen == buildGen && phase == Phase.BUILDING) beginCountdown();
+        }, debug);
+    }
+
+    private void cancelArenaClear() {
+        if (clearDelayTask != null) { clearDelayTask.cancel(); clearDelayTask = null; }
+        clearer.cancel();
+    }
+
+    /** Plugin disable: drop pending clears and our chunk tickets (the core also drops them on disable). */
+    void shutdown() {
+        cancelArenaClear();
+        builder.cancel();
+        if (preloadTimeout != null) { preloadTimeout.cancel(); preloadTimeout = null; }
+        if (world != null) world.removePluginChunkTickets(plugin);
     }
 
     @Override
     public void stop() {
-        if (buildTask != null) { buildTask.cancel(); buildTask = null; }
+        buildGen++;
+        builder.cancel();
+        if (preloadTimeout != null) { preloadTimeout.cancel(); preloadTimeout = null; }
         if (mainTask != null) { mainTask.cancel(); mainTask = null; }
         if (endTask != null) { endTask.cancel(); endTask = null; }
         boolean wasActive = phase != Phase.IDLE;
@@ -224,14 +318,6 @@ public final class GridRunnersGame implements McmGame {
             if (laneOf.containsKey(p.getUniqueId())) continue;
             lane.members.add(p.getUniqueId());
             laneOf.put(p.getUniqueId(), lane);
-        }
-    }
-
-    private void addChunkTickets() {
-        for (Lane lane : lanes) {
-            for (int cx = Math.floorDiv(lane.x0 - 11, 16); cx <= Math.floorDiv(lane.x0 + 47, 16); cx++)
-                for (int cz = Math.floorDiv(-2, 16); cz <= Math.floorDiv(47, 16); cz++)
-                    world.addPluginChunkTicket(cx, cz, plugin);
         }
     }
 
@@ -502,7 +588,7 @@ public final class GridRunnersGame implements McmGame {
         if (phase == Phase.ENDING || phase == Phase.IDLE || ctx == null) return;
         phase = Phase.ENDING;
         if (mainTask != null) { mainTask.cancel(); mainTask = null; }
-        if (buildTask != null) { buildTask.cancel(); buildTask = null; }
+        builder.cancel();
         for (Lane lane : lanes) for (Room r : lane.rooms) r.cleanup();
         List<Lane> sorted = new ArrayList<>(lanes);
         sorted.sort((a, b) -> {
@@ -587,10 +673,9 @@ public final class GridRunnersGame implements McmGame {
 
     private void cleanupWorld() {
         for (Lane lane : lanes) for (Room r : lane.rooms) if (r != null) r.cleanup();
-        if (world != null) {
-            removeWorldEntities();
-            world.removePluginChunkTickets(plugin);
-        }
+        // Chunk tickets stay until the post-game clear has finished (clearing unticketed chunks would load them
+        // synchronously); scheduleArenaClear removes them.
+        if (world != null) removeWorldEntities();
     }
 
     private void removeWorldEntities() {
@@ -599,16 +684,22 @@ public final class GridRunnersGame implements McmGame {
     }
 
     private void scheduleArenaClear() {
-        if (world == null || !plugin.isEnabled()) return;
-        if (clearTask != null) clearTask.cancel();
+        if (world == null) return;
         final World w = world;
-        clearTask = new BukkitRunnable() {
-            int t = 0;
-            @Override public void run() {
-                if (t >= MAX_LANES || phase != Phase.IDLE) { cancel(); clearTask = null; return; }
-                Arena.clearLane(w, t++);
+        if (!plugin.isEnabled()) { w.removePluginChunkTickets(plugin); return; }
+        cancelArenaClear();
+        // Only lanes that were built (or are not known clean) are cleared; ~8 ms of work per tick.
+        clearDelayTask = Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            clearDelayTask = null;
+            if (phase != Phase.IDLE) return;
+            for (int t = 0; t < MAX_LANES; t++) {
+                if (laneClean[t]) continue;
+                final int lt = t;
+                clearer.addStep(Arena.clearLaneStep(w, t, this::isKnownEmpty, () -> laneClean[lt] = true, () -> {}));
             }
-        }.runTaskTimer(plugin, 20L, 2L);
+            clearer.add(() -> w.removePluginChunkTickets(plugin));
+            clearer.start(null, debugTiming());
+        }, 20L);
     }
 
     // ------------------------------------------------------------------ queries used by rooms / listener

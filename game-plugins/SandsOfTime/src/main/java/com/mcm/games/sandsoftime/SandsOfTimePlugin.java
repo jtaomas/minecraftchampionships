@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.Comparator;
 import java.util.Deque;
+import java.util.List;
 import java.util.stream.Stream;
 
 public final class SandsOfTimePlugin extends JavaPlugin {
@@ -47,6 +48,7 @@ public final class SandsOfTimePlugin extends JavaPlugin {
         }
         if (queueTask != null) queueTask.cancel();
         queue.clear();
+        barrier = null;
         McmApi.unregisterAll(this);
     }
 
@@ -56,20 +58,94 @@ public final class SandsOfTimePlugin extends JavaPlugin {
         return world;
     }
 
-    /** Heavy block jobs run one per tick so large builds never freeze the server. */
+    /** Work budget per tick for queued build jobs; a single job is kept to a few ms so a tick stays near this. */
+    private static final long BUDGET_NANOS = 12_000_000L;
+    /** A chunk-load barrier gives up waiting after this long (then the build would load chunks synchronously). */
+    private static final long BARRIER_TIMEOUT_NANOS = 30_000_000_000L;
+
+    /** Pending-count of the chunk-load barrier currently being waited on, or null. */
+    private int[] barrier;
+    private long barrierSince;
+    private boolean debugTiming;
+    private long debugT0;
+
+    /**
+     * Heavy block jobs run in order, spread over ticks with a ~12 ms budget per tick, so large builds never
+     * freeze the server.
+     */
     void enqueue(Runnable job) {
         queue.addLast(job);
     }
 
-    private void drainQueue() {
-        Runnable job = queue.pollFirst();
-        if (job == null) return;
+    /**
+     * Enqueue a barrier: when the queue reaches it, the given chunks are loaded (and generated if needed)
+     * asynchronously and each gets a plugin ticket as it arrives; later jobs wait until all have arrived. The
+     * barrier runs in queue order, so tickets are only added after earlier queued removeTickets jobs.
+     */
+    void enqueueChunkLoad(World w, List<int[]> chunks) {
+        queue.addLast(() -> {
+            final int[] pending = {chunks.size()};
+            barrier = pending;
+            barrierSince = System.nanoTime();
+            for (int[] c : chunks) {
+                final int cx = c[0], cz = c[1];
+                w.getChunkAtAsync(cx, cz, true).whenComplete((chunk, err) -> {
+                    // Paper completes chunk futures on the main thread; the chunk is loaded, so this is cheap.
+                    if (chunk != null && isEnabled() && Bukkit.getWorld(w.getUID()) != null) w.addPluginChunkTicket(cx, cz, this);
+                    pending[0]--;
+                });
+            }
+            if (debugTiming) getLogger().info("[debug-timing] Sands of Time: async-loading " + chunks.size() + " chunks");
+        });
+    }
+
+    private boolean waitingForChunks() {
+        if (barrier == null) return false;
+        if (barrier[0] <= 0) { barrier = null; return false; }
+        if (System.nanoTime() - barrierSince < BARRIER_TIMEOUT_NANOS) return true;
+        getLogger().warning("Sands of Time: chunk preload timed out with " + barrier[0] + " chunk(s) missing; continuing");
+        barrier = null;
+        return false;
+    }
+
+    /** Re-read {@code debug-timing} from config.yml (default false). */
+    void refreshDebugTiming() {
         try {
-            job.run();
+            reloadConfig();
+            debugTiming = getConfig().getBoolean("debug-timing", false);
         } catch (Throwable t) {
-            getLogger().warning("Sands of Time build job failed: " + t);
-            t.printStackTrace();
+            debugTiming = false;
         }
+    }
+
+    private void drainQueue() {
+        if (waitingForChunks() || queue.isEmpty()) return;
+        long start = System.nanoTime();
+        long deadline = start + BUDGET_NANOS;
+        int ran = 0;
+        while (!queue.isEmpty() && !waitingForChunks() && System.nanoTime() < deadline) {
+            Runnable job = queue.pollFirst();
+            ran++;
+            try {
+                job.run();
+            } catch (Throwable t) {
+                getLogger().warning("Sands of Time build job failed: " + t);
+                t.printStackTrace();
+            }
+        }
+        if (debugTiming) {
+            long spent = System.nanoTime() - start;
+            if (ran > 0) getLogger().info(String.format("[debug-timing] Sands of Time build tick: %.2f ms, %d job(s), %d queued%s",
+                    spent / 1e6, ran, queue.size(), barrier != null ? ", waiting for " + barrier[0] + " chunk(s)" : ""));
+        }
+    }
+
+    /** Debug helper: marks the start of a measured phase. */
+    void debugMark() { debugT0 = System.nanoTime(); }
+
+    /** Debug helper: logs the time since {@link #debugMark()}. */
+    void debugLog(String what) {
+        if (debugTiming) getLogger().info(String.format("[debug-timing] Sands of Time %s after %.0f ms", what, (System.nanoTime() - debugT0) / 1e6));
     }
 
     private World createWorld() {

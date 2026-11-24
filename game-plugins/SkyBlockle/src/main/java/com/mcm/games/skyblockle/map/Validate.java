@@ -40,6 +40,7 @@ public final class Validate {
         overlaps(b, r);
         identity(b, r);
         chests(b, r);
+        genOres(b, r);
         List<String> st = Stairs.validate(m.blocks, b.lanes);
         r.line("staircases: " + b.lanes.size() + " lanes walked bottom to top" + (st.isEmpty() ? ", all OK" : ""));
         for (String e : st) r.err("stairs " + e);
@@ -239,7 +240,7 @@ public final class Validate {
     private static void chests(SkyMap.Build b, Report r) {
         MapModel m = b.model;
         MapModel.Blocks blk = m.blocks;
-        int bad = 0, viaTower = 0;
+        int bad = 0, viaTower = 0, hidden = 0, hiddenDig = 0;
         Map<String, Integer> byType = new HashMap<>();
         // island graph: every chest island reachable from every start through gaps <= 30
         Map<Integer, Set<SkyMap.Inst>> reachByWedge = new HashMap<>();
@@ -259,6 +260,17 @@ public final class Validate {
                 byType.merge(i.tpl.chestTypes.get(c).name(), 1, Integer::sum);
                 String s = blk.get(x, y, z);
                 if (s == null || !Bs.id(s).equals("chest")) { r.err("no chest block at " + x + "," + y + "," + z); continue; }
+                if (i.tpl.hidden(c)) {           // buried chest: must be enclosed, and reachable by digging
+                    if (reach == null) { r.err("hidden chest on a tower"); continue; }
+                    int dug = digTo(blk, x, y, z, reach, worldBox(i));
+                    if (dug < 0) r.err(i.role + " hidden chest at " + x + "," + y + "," + z + " cannot be dug to");
+                    else { hidden++; hiddenDig = Math.max(hiddenDig, dug); }
+                    for (int[] d : D6) {
+                        String nb = blk.get(x + d[0], y + d[1], z + d[2]);
+                        if (!Bs.fullSolid(nb) || !diggable(nb)) r.err(i.role + " hidden chest at " + x + "," + y + "," + z + " is not enclosed by diggable rock: " + nb);
+                    }
+                    continue;
+                }
                 if (Bs.fullSolid(blk.get(x, y + 1, z))) r.err("chest lid blocked at " + x + "," + y + "," + z);
                 if (reach == null) continue;    // castle chests: checked by castleWalk
                 if (chestOpen(blk, x, y, z, reach)) continue;
@@ -274,7 +286,83 @@ public final class Validate {
         for (Map.Entry<String, Integer> e : byType.entrySet()) sb.append(e.getKey()).append('=').append(e.getValue()).append(' ');
         r.line("chests: " + m.chests.size() + " registered (" + sb.toString().trim() + "); every chest island reachable from every start "
                 + "through gaps <= " + SkyMap.GAP_MAX + (bad == 0 ? "" : " EXCEPT " + bad) + "; walk-checked from the island edges ("
-                + viaTower + " pillar-top chests reached by towering up, standing room next to them verified)");
+                + viaTower + " pillar-top chests reached by towering up, standing room next to them verified); "
+                + hidden + " hidden chests enclosed in diggable rock and reachable by digging (at most " + hiddenDig
+                + " blocks to break from the walkable surface)");
+    }
+
+    /** Generator rock ores: expected counts per copy, each fully enclosed and never under a fluid cell. */
+    private static void genOres(SkyMap.Build b, Report r) {
+        MapModel.Blocks blk = b.model.blocks;
+        int copies = 0, bad = 0;
+        String counts = "";
+        for (SkyMap.Inst i : b.insts) {
+            if (!i.role.equals("generator")) continue;
+            copies++;
+            int coal = 0, iron = 0, red = 0;
+            for (long k : i.tpl.blocks.keySet()) {
+                int lx = Tpl.kx(k), ly = Tpl.ky(k), lz = Tpl.kz(k);
+                int x = i.wx(lx, lz), y = i.y + ly, z = i.wz(lx, lz);
+                String s = blk.get(x, y, z);
+                if (s == null || !Bs.id(s).endsWith("_ore")) continue;
+                String id = Bs.id(s);
+                if (id.equals("coal_ore")) coal++; else if (id.equals("iron_ore")) iron++; else if (id.equals("redstone_ore")) red++;
+                for (int[] d : D6) if (!Bs.fullSolid(blk.get(x + d[0], y + d[1], z + d[2]))) { bad++; r.err("generator ore at " + x + "," + y + "," + z + " is exposed"); break; }
+                if (lz == 0 && lx >= -2 && lx <= 1) { bad++; r.err("generator ore at " + x + "," + y + "," + z + " is under the basin fluids"); }
+            }
+            if (coal != Islands.GEN_COAL_ORE || iron != Islands.GEN_IRON_ORE || red != Islands.GEN_REDSTONE_ORE) {
+                bad++; r.err("generator at (" + i.x + "," + i.z + ") has coal " + coal + " iron " + iron + " redstone " + red);
+            }
+            counts = "coal " + coal + ", iron " + iron + ", redstone " + red;
+        }
+        r.line("generator ores: " + copies + " islands, each " + counts + (bad == 0 ? "; all enclosed in rock, none under the basin fluids" : "; " + bad + " problem(s)"));
+    }
+
+    static final int[][] D6 = {{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}};
+
+    /** A block a survival player can break by hand or with island tools (no bedrock/barrier-type blocks, no fluids). */
+    static boolean diggable(String b) {
+        if (Bs.isAir(b)) return false;
+        String id = Bs.id(b);
+        return !(id.equals("bedrock") || id.equals("barrier") || id.contains("command_block") || id.equals("end_portal_frame")
+                || id.equals("reinforced_deepslate") || id.equals("structure_block") || id.equals("light")
+                || id.equals("water") || id.equals("lava") || id.equals("chest") || id.equals("obsidian"));
+    }
+
+    /**
+     * Fewest blocks to break to stand on top of the buried chest (x, y + 1, z), starting from the walkable surface
+     * {@code reach}: walkable surface cells are free, diggable blocks cost 1, everything else (open void air,
+     * fluids, undiggable blocks) blocks. -1 if impossible. A 0-1 BFS over single cells (a lower bound on the
+     * blocks a player breaks; a real 1x2 shaft breaks about twice as many).
+     */
+    static int digTo(MapModel.Blocks b, int x, int y, int z, Set<Long> reach, int[] box) {
+        long target = Tpl.key(x, y + 1, z);
+        Map<Long, Integer> dist = new HashMap<>();
+        ArrayDeque<long[]> q = new ArrayDeque<>();
+        for (long k : reach) { dist.put(k, 0); q.add(new long[]{k, 0}); }
+        while (!q.isEmpty()) {
+            long[] c = q.pollFirst();
+            long k = c[0];
+            int d = (int) c[1];
+            if (dist.getOrDefault(k, Integer.MAX_VALUE) < d) continue;
+            if (k == target) return d;
+            int cx = Tpl.kx(k), cy = Tpl.ky(k), cz = Tpl.kz(k);
+            for (int[] o : D6) {
+                int nx = cx + o[0], ny = cy + o[1], nz = cz + o[2];
+                if (nx < box[0] || nx > box[3] || nz < box[2] || nz > box[5] || ny < box[1] || ny > box[4]) continue;
+                String s = b.get(nx, ny, nz);
+                int w;
+                long nk = Tpl.key(nx, ny, nz);
+                if (reach.contains(nk)) w = 0;            // walkable surface (no flying through the void below)
+                else if (diggable(s)) w = 1;
+                else continue;
+                if (d + w < dist.getOrDefault(nk, Integer.MAX_VALUE)) {
+                    dist.put(nk, d + w);
+                    if (w == 0) q.addFirst(new long[]{nk, d}); else q.addLast(new long[]{nk, d + 1});
+                }
+            }
+        }
+        return -1;
     }
 
     private static void climbs(SkyMap.Build b, Report r) {

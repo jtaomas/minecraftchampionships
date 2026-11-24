@@ -16,7 +16,7 @@ Plugin `McmHoleInTheWall` for MinecraftMondayCore. Start it with `/mcm play hitw
   - Each type has its own colour, and incoming walls are announced on the action bar.
 - The platform shrinks by one ring at 2:00 and again at 3:30. The ring turns red 5 s before it goes.
 - At 5:00 **OVERDRIVE** starts: 3–4 walls at a time, from every side, at 40 blocks/s. The game ends 60 s later at the latest.
-- Every player has a Boop Stick for light, knockback-only PvP. It does no damage and starts 5 s after GO.
+- Players cannot hit or push each other (owner decision after playtest: the walls are hard enough). No Boop Stick.
 - The game ends when one player is left (or nobody, in a solo test), or when time runs out.
 
 ## Scoring
@@ -38,4 +38,4 @@ Plugin `McmHoleInTheWall` for MinecraftMondayCore. Start it with `/mcm play hitw
 ## Admin testing
 - `/mcm skipwait` ends the start countdown (walls start now) or the results screen.
 - `/mcm skip` does nothing: Hole in the Wall is a single round.
-- `/mcm fast on`: the start countdown and the results screen are at most 1 s. The 5 s PvP grace and the game length are not shortened.
+- `/mcm fast on`: the start countdown and the results screen are at most 1 s. The game length is not shortened.

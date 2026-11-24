@@ -53,6 +53,20 @@ public final class PreviewMain {
         MapModel.Spawn s0 = m.spawnsFor(0).get(0);
         int sx = (int) Math.floor(s0.x()), sz = (int) Math.floor(s0.z());
         dump(m, new File(out, "start0.mcmdump.gz"), (x, y, z) -> Math.abs(x - sx) <= 9 && z - sz >= -7 && z - sz <= 17);
+        // generator shrine of wedge 0, cut open through the hidden chest (shows the buried chest in the rock)
+        MapModel.ChestSpot hid = null;
+        for (MapModel.ChestSpot c : m.chests) if (c.wedge() == 0 && "hidden".equals(c.variant())) hid = c;
+        if (hid != null) {
+            final int hx = hid.x(), hz = hid.z();
+            final MapModel.ChestSpot hidF = hid;
+            dump(m, new File(out, "generator0_cut.mcmdump.gz"), (x, y, z) -> Math.abs(x - hx) <= 7 && Math.abs(z - hz) <= 7
+                    && Math.hypot(x, z) > 145 && z <= hz && y <= hidF.y() + 6, true);
+            // x-ray: the generator rock below the basin floor (local y <= -2) with the plain rock removed: ores + hidden chest
+            java.util.Set<String> host = java.util.Set.of("minecraft:stone", "minecraft:andesite", "minecraft:cobblestone",
+                    "minecraft:tuff", "minecraft:mossy_cobblestone");
+            dump(m, new File(out, "generator0_xray.mcmdump.gz"), (x, y, z) -> Math.abs(x - hx) <= 7 && Math.abs(z - hz) <= 7
+                    && Math.hypot(x, z) > 145 && y <= hidF.y() + 1 && !host.contains(m.blocks.get(x, y, z)), true);
+        }
         dump(m, new File(out, "castle.mcmdump.gz"), (x, y, z) -> Math.abs(x) <= 30 && Math.abs(z) <= 30);
         dump(m, new File(out, "castle_cut.mcmdump.gz"), (x, y, z) -> Math.abs(x) <= 30 && Math.abs(z) <= 30 && !(x >= 0 && z >= 0 && y >= 1));
         dump(m, new File(out, "castle_slice.mcmdump.gz"), (x, y, z) -> Math.abs(x) <= 30 && z >= 0 && z <= 30);
@@ -66,14 +80,25 @@ public final class PreviewMain {
         return sb.toString();
     }
 
-    static void dump(MapModel m, File f, Keep k) throws IOException {
+    static void dump(MapModel m, File f, Keep k) throws IOException { dump(m, f, k, false); }
+
+    /** The shared renderer draws every *_ore as plain stone; for the generator previews ores are drawn as their
+     *  storage blocks (coal block / raw iron block / redstone block) so they stand out. Preview only. */
+    static String oreStandIn(String s) {
+        if (s.startsWith("minecraft:coal_ore")) return "minecraft:coal_block";
+        if (s.startsWith("minecraft:iron_ore")) return "minecraft:raw_iron_block";
+        if (s.startsWith("minecraft:redstone_ore")) return "minecraft:redstone_block";
+        return s;
+    }
+
+    static void dump(MapModel m, File f, Keep k, boolean ores) throws IOException {
         List<int[]> pos = new ArrayList<>();
         List<String> st = new ArrayList<>();
         int[] mn = {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE}, mx = {Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE};
         m.blocks.forEach((x, y, z, s) -> {
             if (!k.keep(x, y, z)) return;
             pos.add(new int[]{x, y, z});
-            st.add(s);
+            st.add(ores ? oreStandIn(s) : s);
             mn[0] = Math.min(mn[0], x); mn[1] = Math.min(mn[1], y); mn[2] = Math.min(mn[2], z);
             mx[0] = Math.max(mx[0], x); mx[1] = Math.max(mx[1], y); mx[2] = Math.max(mx[2], z);
         });

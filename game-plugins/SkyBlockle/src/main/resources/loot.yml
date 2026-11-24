@@ -47,7 +47,7 @@ generator:
     r3c8: {item: experience_bottle, amount: 4}
 
 # Hidden chest inside the generator island's rock - observed (video #5, M). Used for GENERATOR chests with
-# variant "hidden" (the map must register one). "book (enchanted?)": enchantment unknown, plain book here.
+# variant "hidden" (SkyMap buries one in every generator island's rock). "book (enchanted?)": enchantment unknown, plain book here.
 generator_hidden:
   slots:
     r2c5: {item: potato, amount: 1}

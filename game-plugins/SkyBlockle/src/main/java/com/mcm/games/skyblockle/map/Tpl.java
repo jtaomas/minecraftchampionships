@@ -17,6 +17,8 @@ final class Tpl {
     final Map<Long, String> blocks = new HashMap<>();
     final List<int[]> chests = new ArrayList<>();          // local x, y, z
     final List<MapModel.IslandType> chestTypes = new ArrayList<>();
+    /** Loot variant per chest (null = plain table); "hidden" = buried chest, reached by digging. */
+    final List<String> chestVariants = new ArrayList<>();
     final List<int[]> spawns = new ArrayList<>();          // local feet x, y, z
     final List<int[]> lanes = new ArrayList<>();           // local staircase lanes: x, z, floorY, dx, dz, n
     /** Ladder columns that must be climbable: local x, yFrom, z, yTo (feet heights). */
@@ -42,11 +44,16 @@ final class Tpl {
 
     boolean has(int x, int y, int z) { return blocks.containsKey(key(x, y, z)); }
 
-    void chest(int x, int y, int z, String facing, MapModel.IslandType type) {
+    void chest(int x, int y, int z, String facing, MapModel.IslandType type) { chest(x, y, z, facing, type, null); }
+
+    void chest(int x, int y, int z, String facing, MapModel.IslandType type, String variant) {
         set(x, y, z, "chest[facing=" + facing + ",type=single,waterlogged=false]");
         chests.add(new int[]{x, y, z});
         chestTypes.add(type);
+        chestVariants.add(variant);
     }
+
+    boolean hidden(int c) { return "hidden".equals(chestVariants.get(c)); }
 
     /** Highest non-air y in the column, or Integer.MIN_VALUE. */
     int top(int x, int z) {

@@ -175,8 +175,28 @@ public final class SandsOfTimeGame implements McmGame, Listener {
         ctx.setSidebarLines(List.of("§7Generating dungeons..."));
 
         final int g = gen;
-        for (Dungeon d : dungeons) plugin.enqueue(() -> { if (g == gen && running) d.build(plugin); });
-        plugin.enqueue(() -> { if (g == gen && running) begin(); });
+        plugin.refreshDebugTiming();
+        plugin.debugMark();
+        // Load + ticket every dungeon chunk asynchronously first (queued after any pending clear/removeTickets
+        // jobs of the previous game); the build jobs wait for it, then run spread over ticks.
+        List<int[]> chunks = new ArrayList<>();
+        for (Dungeon d : dungeons) chunks.addAll(d.chunks());
+        plugin.enqueueChunkLoad(w, chunks);
+        plugin.enqueue(() -> plugin.debugLog("chunks ready"));
+        for (Dungeon d : dungeons)
+            for (int part = 0; part < Dungeon.BUILD_PARTS; part++) {
+                final int pt = part;
+                plugin.enqueue(() -> { if (g == gen && running) d.build(pt); });
+            }
+        // Entities and barriers per dungeon as separate jobs too (dozens of item/text entities each).
+        for (Dungeon d : dungeons)
+            plugin.enqueue(() -> {
+                if (g != gen || !running) return;
+                d.spawnEntities(this);
+                d.setHubBarriers(true);
+                d.updateHourglass(MAX_TIME);
+            });
+        plugin.enqueue(() -> { if (g == gen && running) { plugin.debugLog("dungeons built"); begin(); } });
     }
 
     @Override
@@ -188,11 +208,7 @@ public final class SandsOfTimeGame implements McmGame, Listener {
     private void begin() {
         phase = Phase.COUNTDOWN;
         countdown = FastTest.secs(COUNTDOWN);
-        for (Dungeon d : dungeons) {
-            d.spawnEntities(this);
-            d.setHubBarriers(true);
-            d.updateHourglass(MAX_TIME);
-        }
+        // (entities, hub barriers and hourglasses were set up per dungeon by the queued jobs in start())
         for (Map.Entry<String, List<UUID>> e : members.entrySet()) {
             Dungeon d = bySide.get(e.getKey());
             for (UUID id : e.getValue()) {
@@ -233,10 +249,15 @@ public final class SandsOfTimeGame implements McmGame, Listener {
         if (plugin.isEnabled() && world != null) {
             List<Dungeon> old = new ArrayList<>(dungeons);
             for (Dungeon d : old) {
-                plugin.enqueue(() -> { d.purgeEntities(); d.clearPart(0); });
-                plugin.enqueue(() -> { d.clearPart(1); d.removeTickets(plugin); });
+                plugin.enqueue(d::purgeEntities);
+                for (int part = 0; part < Dungeon.CLEAR_PARTS; part++) {
+                    final int pt = part;
+                    plugin.enqueue(() -> d.clearPart(pt));
+                }
+                plugin.enqueue(() -> d.removeTickets(plugin));
             }
-            plugin.enqueue(() -> buildHolding(false));
+            // Guarded: a new game may have started (and rebuilt the pad under its players) before this runs.
+            plugin.enqueue(() -> { if (!running) buildHolding(false); });
         }
         dungeons.clear();
         bySide.clear();

@@ -37,7 +37,7 @@ Play with `/mcm play sandsoftime`. Requires MinecraftMondayCore 3.1.0, Paper 1.2
 - Boss bar: the 8-minute hard cap.
 
 ## Known limitations
-- Dungeons are spaced 100 blocks apart (8 per row). 40 solo sides means 40 dungeons, built one per tick (about 2 s).
+- Dungeons are spaced 100 blocks apart (8 per row). 40 solo sides means 40 dungeons. At game start the dungeon chunks are loaded asynchronously, then the dungeons are built in small jobs with a ~12 ms budget per tick while everyone waits on the holding pad (a few seconds at most). Set `debug-timing: true` in `plugins/McmSandsOfTime/config.yml` to log the time per build tick.
 - The world folder is deleted and recreated on each server start. Between games, dungeons are cleared over a few ticks.
 - MCC's 2-player blue puzzle key and the "sand sacrifice" mechanic are not implemented.
 - The hourglass sand is a 3x3x2 bulb, so the visual is coarse. The exact time is on the sidebar and action bar.

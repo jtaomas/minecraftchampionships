@@ -121,10 +121,13 @@ final class Dungeon {
     private int ax(int i, int lx) { return ox + i * CELL + lx; }
     private int az(int j, int lz) { return oz + j * CELL + lz; }
 
-    void addTickets(Plugin plugin) {
+    /** Chunk coordinates {cx, cz} this dungeon touches (same area as the tickets). */
+    List<int[]> chunks() {
+        List<int[]> out = new ArrayList<>();
         for (int cx = (ox - 8) >> 4; cx <= (ox + SIZE + 8) >> 4; cx++)
             for (int cz = (oz - 8) >> 4; cz <= (oz + SIZE + 8) >> 4; cz++)
-                w.addPluginChunkTicket(cx, cz, plugin);
+                out.add(new int[]{cx, cz});
+        return out;
     }
 
     void removeTickets(Plugin plugin) {
@@ -137,46 +140,81 @@ final class Dungeon {
     void purgeEntities() {
         for (int cx = (ox - 8) >> 4; cx <= (ox + SIZE + 8) >> 4; cx++)
             for (int cz = (oz - 8) >> 4; cz <= (oz + SIZE + 8) >> 4; cz++) {
+                if (!w.isChunkLoaded(cx, cz)) continue; // never load a chunk here (a loaded one is ticketed)
                 Chunk c = w.getChunkAt(cx, cz);
                 for (Entity e : c.getEntities()) if (!(e instanceof Player)) e.remove();
             }
     }
 
-    /** Clear half of the dungeon volume (part 0 = lower, 1 = upper). */
+    /** Number of {@link #clearPart} parts. */
+    static final int CLEAR_PARTS = 4;
+
+    /**
+     * Clear a quarter of the dungeon volume (y bands oy-4..oy-1, oy..oy+1, oy+2..oy+4, oy+5..oy+8; ~9-12k
+     * block reads each). Unloaded chunks are skipped instead of being loaded synchronously.
+     */
     void clearPart(int part) {
-        int y0 = part == 0 ? oy - 4 : oy + 3;
-        int y1 = part == 0 ? oy + 2 : oy + 8;
+        int y0, y1;
+        switch (part) {
+            case 0 -> { y0 = oy - 4; y1 = oy - 1; }
+            case 1 -> { y0 = oy; y1 = oy + 1; }
+            case 2 -> { y0 = oy + 2; y1 = oy + 4; }
+            default -> { y0 = oy + 5; y1 = oy + 8; }
+        }
         for (int x = ox - 1; x <= ox + SIZE + 1; x++)
-            for (int z = oz - 6; z <= oz + SIZE + 1; z++)
+            for (int z = oz - 6; z <= oz + SIZE + 1; z++) {
+                if (!w.isChunkLoaded(x >> 4, z >> 4)) continue;
                 for (int y = y0; y <= y1; y++) {
                     var b = w.getBlockAt(x, y, z);
                     if (b.getType() != Material.AIR) b.setType(Material.AIR, false);
                 }
+            }
     }
 
-    void build(Plugin plugin) {
-        addTickets(plugin);
+    /** Number of {@link #build(int)} parts; run them in order 0..BUILD_PARTS-1. */
+    static final int BUILD_PARTS = 5;
+
+    /**
+     * One slice of the build (each a few thousand blocks so it can be spread over ticks):
+     * 0 = floor + ceiling slab (~7.4k), 1 = walls along x (~2.2k), 2 = walls along z (~2.2k),
+     * 3 = room contents (~5k), 4 = doors, hub, exit/cage. Chunks must already be loaded (see SandsOfTimePlugin#enqueueChunkLoad).
+     */
+    void build(int part) {
+        switch (part) {
+            case 0 -> buildSlab();
+            case 1 -> { for (int k = 0; k <= W; k++) buildWallX(k); }
+            case 2 -> { for (int k = 0; k <= H; k++) buildWallZ(k); }
+            case 3 -> { for (int i = 0; i < W; i++) for (int j = 0; j < H; j++) buildRoom(i, j); }
+            default -> {
+                for (int i = 0; i < W; i++) for (int j = 0; j < H; j++) {
+                    if (L.doorE[i][j]) buildDoor(i, j, 0);
+                    if (L.doorN[i][j]) buildDoor(i, j, 1);
+                }
+                buildHub();
+                buildOutside();
+            }
+        }
+    }
+
+    private void buildSlab() {
         int x1 = ox + SIZE, z1 = oz + SIZE;
         for (int x = ox; x <= x1; x++)
             for (int z = oz; z <= z1; z++) {
                 set(x, oy, z, Material.SANDSTONE);
                 set(x, oy + 7, z, Material.SMOOTH_SANDSTONE);
             }
-        for (int k = 0; k <= W; k++) {
-            int x = ox + k * CELL;
-            for (int z = oz; z <= z1; z++) for (int y = 1; y <= 6; y++) set(x, oy + y, z, wallMat(y));
-        }
-        for (int k = 0; k <= H; k++) {
-            int z = oz + k * CELL;
-            for (int x = ox; x <= x1; x++) for (int y = 1; y <= 6; y++) set(x, oy + y, z, wallMat(y));
-        }
-        for (int i = 0; i < W; i++) for (int j = 0; j < H; j++) buildRoom(i, j);
-        for (int i = 0; i < W; i++) for (int j = 0; j < H; j++) {
-            if (L.doorE[i][j]) buildDoor(i, j, 0);
-            if (L.doorN[i][j]) buildDoor(i, j, 1);
-        }
-        buildHub();
-        buildOutside();
+    }
+
+    private void buildWallX(int k) {
+        int z1 = oz + SIZE;
+        int x = ox + k * CELL;
+        for (int z = oz; z <= z1; z++) for (int y = 1; y <= 6; y++) set(x, oy + y, z, wallMat(y));
+    }
+
+    private void buildWallZ(int k) {
+        int x1 = ox + SIZE;
+        int z = oz + k * CELL;
+        for (int x = ox; x <= x1; x++) for (int y = 1; y <= 6; y++) set(x, oy + y, z, wallMat(y));
     }
 
     private static Material wallMat(int y) {

@@ -8,7 +8,7 @@ Two MinecraftMondayCore games in one plugin (`McmBingo.jar`):
 | `lockout` | `/mcm play lockout` | Lockout Bingo | 12 min, or earlier once all 25 squares are claimed |
 
 ## How it plays
-- Each game generates a new survival world `mcc_bingo` with a random seed. The old `mcc_bingo` folder is unloaded and deleted first, and only that exact folder is ever deleted. There is a 1200-block world border around spawn.
+- A new survival world `mcc_bingo` with a random seed is generated when the server starts (the old `mcc_bingo` folder is deleted first, and only that exact folder is ever deleted). Each game is played in a fresh, never-visited area of it: game 1 around the world spawn, each later game 4096 blocks further east, nudged onto land. There is a 1200-block world border around the area centre.
 - Each side (team or solo player) starts at its own point near spawn. Everyone gets an iron pickaxe, axe and shovel (Efficiency II), 12 steak, permanent Speed I and a **Bingo Card** (knowledge book).
 - After a 5 s countdown, everyone plays normal survival. Every side has the same 5x5 card of items, drawn from a pool of about 110 early-game items in three difficulty tiers. A bingo card has 10 easy, 11 medium and 4 hard items; a lockout card has 8, 12 and 5. Near-duplicate items (bucket, water bucket and milk bucket, for example) never appear on the same card. "Any X" squares accept every variant, such as any boat, bed, wool, flower or sign.
 - An item counts as soon as it is in a side member's inventory (checked every 0.5 s).
@@ -28,7 +28,7 @@ Two MinecraftMondayCore games in one plugin (`McmBingo.jar`):
 
 ## Known limitations
 - Items are detected in inventories only, not in chests. Handing an item to another side also counts for that side.
-- The world is generated synchronously at game start, which can freeze the server for a few seconds. There is no pre-generation.
+- At game start the chunks around the start points are generated asynchronously while players wait in the lobby ("preparing a fresh area", usually a few seconds); then everyone is teleported and the countdown starts. Set `debug-timing: true` in `plugins/McmBingo/config.yml` to log the timings.
 - If Windows still has region files locked right after unload, deleting the old world fails. It is retried at the next game start.
 - Late joiners spectate inside the bingo world.
 

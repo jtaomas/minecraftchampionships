@@ -161,7 +161,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         context.broadcast("§7Slip through the holes (some need a jump!) or get pushed into the void.");
         context.broadcast("§7Survive eliminations: §e+" + perElimPoints + "§7 each. Waves survived: §e+1§7. Top 3: §e"
                 + PLACEMENT_BONUS[0] + "/" + PLACEMENT_BONUS[1] + "/" + PLACEMENT_BONUS[2] + "§7.");
-        context.broadcast("§7Your §eBoop Stick§7 knocks others back. Walls speed up; after 5 min: §cOVERDRIVE§7.");
+        context.broadcast("§7Walls speed up; after 5 min: §cOVERDRIVE§7.");
 
         state = State.COUNTDOWN;
         countdownTicks = FastTest.secs(COUNTDOWN_SECONDS) * 20;
@@ -661,15 +661,6 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         p.setVelocity(new Vector());
         p.setAllowFlight(false);
         p.setFlying(false);
-        ItemStack stick = new ItemStack(Material.STICK);
-        ItemMeta meta = stick.getItemMeta();
-        if (meta != null) {
-            meta.displayName(LEGACY.deserialize("§eBoop Stick"));
-            meta.lore(List.of(LEGACY.deserialize("§7Knocks players back. No damage.")));
-            stick.setItemMeta(meta);
-        }
-        stick.addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
-        p.getInventory().setItem(0, stick);
         p.getInventory().setHeldItemSlot(0);
     }
 
@@ -775,22 +766,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
     public void onDamage(EntityDamageEvent e) {
         if (!active() || !inWorld(e.getEntity())) return;
         e.setCancelled(true);
-        if (state != State.PLAYING || elapsedTicks < PVP_GRACE_TICKS) return;
-        if (!(e instanceof EntityDamageByEntityEvent ed)) return;
-        if (!(ed.getDamager() instanceof Player att) || !(e.getEntity() instanceof Player vic)) return;
-        if (!alive.contains(att.getUniqueId()) || !alive.contains(vic.getUniqueId())) return;
-        Integer last = lastHit.get(att.getUniqueId());
-        if (last != null && elapsedTicks - last < 10) return;
-        lastHit.put(att.getUniqueId(), elapsedTicks);
-        boolean stick = att.getInventory().getItemInMainHand().getType() == Material.STICK;
-        double strength = stick ? 0.75 : 0.35;
-        Vector d = vic.getLocation().toVector().subtract(att.getLocation().toVector()).setY(0);
-        if (d.lengthSquared() < 1.0e-4) d = att.getLocation().getDirection().setY(0);
-        if (d.lengthSquared() < 1.0e-4) d = new Vector(1, 0, 0);
-        d.normalize().multiply(strength).setY(0.3);
-        vic.setVelocity(d);
-        vic.playHurtAnimation(0f);
-        vic.getWorld().playSound(vic.getLocation(), Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, 1f, 1.1f);
+        // Owner feedback: no player-vs-player hitting in this game; all damage and knockback is cancelled.
     }
 
     @EventHandler(ignoreCancelled = true)

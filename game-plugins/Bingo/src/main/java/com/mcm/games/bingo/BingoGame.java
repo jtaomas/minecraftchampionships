@@ -63,7 +63,7 @@ public final class BingoGame implements McmGame, Listener {
 
     private static final long TP_COOLDOWN_MS = 45_000;
 
-    private enum Phase { IDLE, COUNTDOWN, PLAYING }
+    private enum Phase { IDLE, PREPARING, COUNTDOWN, PLAYING }
 
     private final BingoPlugin plugin;
     private final BingoWorld worldMgr;
@@ -89,6 +89,11 @@ public final class BingoGame implements McmGame, Listener {
     private final List<String> sideOrder = new ArrayList<>();
     private final Map<String, Location> sideSpawn = new HashMap<>();
     private final Map<UUID, Long> tpCooldown = new HashMap<>();
+    /** Centre of this game's area (Y not meaningful until the chunks are loaded) and its surface spawn. */
+    private Location areaCenter, areaSpawn;
+    /** Bumped by every start and cleanup so stale async chunk callbacks do nothing. */
+    private int prepGen;
+    private BukkitTask prepTimeout, ticketRelease;
 
     public BingoGame(BingoPlugin plugin, BingoWorld worldMgr, boolean lockout) {
         this.plugin = plugin;
@@ -119,7 +124,8 @@ public final class BingoGame implements McmGame, Listener {
         this.ctx = ctx;
         resetState();
 
-        world = worldMgr.createFresh();
+        Location center = worldMgr.nextAreaCenter();
+        world = center == null ? null : center.getWorld();
         if (world == null) {
             McmGameContext c = this.ctx;
             this.ctx = null;
@@ -153,11 +159,85 @@ public final class BingoGame implements McmGame, Listener {
             fullCard.put(s, false);
         }
 
+        areaCenter = center;
+        phase = Phase.PREPARING;
+        ctx.setTimer(totalSeconds, totalSeconds);
+        ctx.setSidebarLines(List.of("§7Preparing the world..."));
+        ctx.broadcast("§6" + displayName() + " §7- preparing a fresh area of the world, one moment...");
+        preloadArea(++prepGen);
+    }
+
+    /**
+     * Loads (generating as needed) every chunk the side start points can land in, asynchronously, with a plugin
+     * ticket each so they stay loaded until everyone is in. Nothing here blocks the main thread; when the last
+     * chunk arrives (or after 60 s), {@link #beginAfterPreload} teleports everyone and starts the countdown.
+     */
+    private void preloadArea(int gen) {
+        final World w = world;
+        final long t0 = System.nanoTime();
+        List<int[]> bases = basePoints();
+        Set<Long> keys = new LinkedHashSet<>();
+        int r = 3; // safeSpot() searches up to 41 blocks from a base point: 3 chunks around its chunk covers that
+        for (int[] b : bases)
+            for (int dx = -r; dx <= r; dx++) for (int dz = -r; dz <= r; dz++)
+                keys.add(chunkKey((b[0] >> 4) + dx, (b[1] >> 4) + dz));
+        final int[] pending = {keys.size()};
+        final boolean[] fired = {false};
+        final Runnable fire = () -> {
+            if (fired[0]) return;
+            fired[0] = true;
+            if (prepTimeout != null) { prepTimeout.cancel(); prepTimeout = null; }
+            if (debugTiming()) plugin.getLogger().info(String.format("[debug-timing] %s area preload: %d chunks in %.0f ms (%d unanswered)",
+                    displayName(), keys.size(), (System.nanoTime() - t0) / 1e6, pending[0]));
+            beginAfterPreload(gen);
+        };
+        for (long k : keys) {
+            final int cx = (int) (k >> 32), cz = (int) k;
+            w.getChunkAtAsync(cx, cz, true).whenComplete((chunk, err) -> {
+                // Paper completes chunk futures on the main thread.
+                if (chunk != null && gen == prepGen && phase == Phase.PREPARING) w.addPluginChunkTicket(cx, cz, plugin);
+                if (--pending[0] <= 0) fire.run();
+            });
+        }
+        if (keys.isEmpty()) fire.run();
+        else if (!fired[0]) prepTimeout = Bukkit.getScheduler().runTaskLater(plugin, fire, 1200L);
+    }
+
+    private static long chunkKey(int cx, int cz) { return ((long) cx << 32) | (cz & 0xFFFFFFFFL); }
+
+    private boolean debugTiming() {
+        try {
+            plugin.reloadConfig();
+            return plugin.getConfig().getBoolean("debug-timing", false);
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    private void releaseTickets() {
+        if (ticketRelease != null) { ticketRelease.cancel(); ticketRelease = null; }
+        World w = Bukkit.getWorld(BingoWorld.NAME);
+        if (w != null) w.removePluginChunkTickets(plugin);
+    }
+
+    /** Spawn of the current area (surface), for respawns and late joiners. */
+    private Location areaSpawn() {
+        return areaSpawn != null ? areaSpawn.clone() : (areaCenter != null ? areaCenter.clone() : world.getSpawnLocation());
+    }
+
+    private void beginAfterPreload(int gen) {
+        if (gen != prepGen || phase != Phase.PREPARING || ctx == null || world == null) return;
+        McmGameContext ctx = this.ctx;
+        long t0 = System.nanoTime();
+        int cx = areaCenter.getBlockX(), cz = areaCenter.getBlockZ();
+        areaSpawn = world.isChunkLoaded(cx >> 4, cz >> 4)
+                ? new Location(world, cx + 0.5, world.getHighestBlockYAt(cx, cz) + 1, cz + 0.5)
+                : areaCenter.clone();
         computeSpawns();
 
         for (Player p : new ArrayList<>(ctx.participants())) {
             String side = sideOf.get(p.getUniqueId());
-            Location loc = sideSpawn.getOrDefault(side, world.getSpawnLocation());
+            Location loc = sideSpawn.getOrDefault(side, areaSpawn());
             preparePlayer(p);
             p.teleport(loc);
             p.showTitle(Title.title(txt("§6§l" + displayName()),
@@ -175,6 +255,10 @@ public final class BingoGame implements McmGame, Listener {
         ctx.setTimer(totalSeconds, totalSeconds);
         updateSidebar();
         task = Bukkit.getScheduler().runTaskTimer(plugin, this::tick, 10L, 10L);
+        // Players hold their own chunks now; drop ours once everyone has arrived.
+        ticketRelease = Bukkit.getScheduler().runTaskLater(plugin, () -> { ticketRelease = null; releaseTickets(); }, 200L);
+        if (debugTiming()) plugin.getLogger().info(String.format("[debug-timing] %s spawn + teleport tick: %.2f ms",
+                displayName(), (System.nanoTime() - t0) / 1e6));
     }
 
     @Override
@@ -191,9 +275,9 @@ public final class BingoGame implements McmGame, Listener {
 
     @Override
     public boolean onLateJoin(Player player, McmGameContext ctx) {
-        if (phase == Phase.IDLE || world == null) return false;
+        if (phase == Phase.IDLE || phase == Phase.PREPARING || world == null) return false;
         player.setGameMode(GameMode.SPECTATOR);
-        player.teleport(world.getSpawnLocation().clone().add(0, 15, 0));
+        player.teleport(areaSpawn().add(0, 15, 0));
         player.sendMessage(txt("§7You joined mid-game and are spectating " + displayName() + "."));
         return true;
     }
@@ -211,9 +295,14 @@ public final class BingoGame implements McmGame, Listener {
         sideSpawn.clear();
         tpCooldown.clear();
         card = List.of();
+        areaCenter = null;
+        areaSpawn = null;
     }
 
     private void cleanup(boolean scheduleWorldCleanup) {
+        prepGen++;
+        if (prepTimeout != null) { prepTimeout.cancel(); prepTimeout = null; }
+        releaseTickets();
         if (task != null) { task.cancel(); task = null; }
         phase = Phase.IDLE;
         McmGameContext c = ctx;
@@ -255,6 +344,7 @@ public final class BingoGame implements McmGame, Listener {
         }
 
         for (Player p : new ArrayList<>(c.participants())) resetPlayer(p);
+        releaseTickets();
         ctx = null;
         world = null;
         resetState();
@@ -313,14 +403,27 @@ public final class BingoGame implements McmGame, Listener {
         p.getInventory().setItem(8, cardItem());
     }
 
-    private void computeSpawns() {
-        Location base = world.getSpawnLocation();
+    /** Each side's start column {x, z} around the area centre (same circle as before). */
+    private List<int[]> basePoints() {
+        Location base = areaCenter;
+        List<int[]> out = new ArrayList<>();
         int n = sideOrder.size();
         double radius = n <= 1 ? 0 : Math.min(6 + n * 2.0, 30);
         for (int i = 0; i < n; i++) {
             double a = 2 * Math.PI * i / Math.max(1, n);
-            int x = (int) Math.round(base.getX() + Math.cos(a) * radius);
-            int z = (int) Math.round(base.getZ() + Math.sin(a) * radius);
+            out.add(new int[]{(int) Math.round(base.getX() + Math.cos(a) * radius), (int) Math.round(base.getZ() + Math.sin(a) * radius)});
+        }
+        if (out.isEmpty()) out.add(new int[]{base.getBlockX(), base.getBlockZ()});
+        return out;
+    }
+
+    private void computeSpawns() {
+        Location base = areaCenter;
+        int n = sideOrder.size();
+        List<int[]> pts = basePoints();
+        for (int i = 0; i < n; i++) {
+            int x = pts.get(i)[0];
+            int z = pts.get(i)[1];
             Location loc = safeSpot(x, z);
             loc.setYaw((float) Math.toDegrees(Math.atan2(-(base.getX() - loc.getX()), base.getZ() - loc.getZ())));
             sideSpawn.put(sideOrder.get(i), loc);
@@ -339,7 +442,7 @@ public final class BingoGame implements McmGame, Listener {
                 return new Location(world, x + 0.5, b.getY() + 1, z + 0.5);
             }
         }
-        Location s = world.getSpawnLocation();
+        Location s = areaSpawn();
         Block top = world.getHighestBlockAt(s);
         return new Location(world, s.getBlockX() + 0.5, top.getY() + 1, s.getBlockZ() + 0.5);
     }
@@ -761,7 +864,7 @@ public final class BingoGame implements McmGame, Listener {
         if (side == null) return;
         Location dest = null;
         if (slot == 45) {
-            dest = sideSpawn.getOrDefault(side, world.getSpawnLocation());
+            dest = sideSpawn.getOrDefault(side, areaSpawn());
         } else if (m.tpTargets.containsKey(slot)) {
             Player mate = Bukkit.getPlayer(m.tpTargets.get(slot));
             if (mate == null || !mate.isOnline() || mate.isDead() || !mate.getWorld().equals(world)
@@ -855,7 +958,7 @@ public final class BingoGame implements McmGame, Listener {
         Player p = e.getPlayer();
         if (!isPlayer(p)) return;
         String side = sideOf.get(p.getUniqueId());
-        e.setRespawnLocation(sideSpawn.getOrDefault(side, world.getSpawnLocation()));
+        e.setRespawnLocation(sideSpawn.getOrDefault(side, areaSpawn()));
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             if (isPlayer(p) && p.isOnline()) applySpeed(p);
         }, 2L);

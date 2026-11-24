@@ -69,19 +69,54 @@ public final class Arena {
 
     public static Material glass(DyeColor c) { return Material.valueOf(c.name() + "_STAINED_GLASS"); }
 
-    /** Air out the whole footprint a lane can occupy. ~41k blocks. */
-    public static void clearLane(World w, int laneIndex) {
+    /** Footprint of a lane (blocks), shared by clearing and chunk preloading. */
+    public static final int FOOT_MIN_DX = -11, FOOT_MAX_DX = 47, FOOT_MIN_Z = -2, FOOT_MAX_Z = 47;
+
+    /** Chunk coordinates {cx, cz} covering a lane's footprint. */
+    public static java.util.List<int[]> laneChunks(int laneIndex) {
         int x0 = laneIndex * GridRunnersGame.LANE_SPACING;
-        int y0 = GridRunnersGame.Y0;
-        for (int x = x0 - 11; x <= x0 + 47; x++)
-            for (int z = -2; z <= 47; z++)
-                for (int y = y0 - 1; y <= y0 + 12; y++) {
-                    var b = w.getBlockAt(x, y, z);
-                    if (b.getType() != Material.AIR) b.setType(Material.AIR, false);
-                }
+        java.util.List<int[]> out = new java.util.ArrayList<>();
+        for (int cx = Math.floorDiv(x0 + FOOT_MIN_DX, 16); cx <= Math.floorDiv(x0 + FOOT_MAX_DX, 16); cx++)
+            for (int cz = Math.floorDiv(FOOT_MIN_Z, 16); cz <= Math.floorDiv(FOOT_MAX_Z, 16); cz++)
+                out.add(new int[]{cx, cz});
+        return out;
     }
 
-    public static void buildLane(World w, Lane lane) {
+    /**
+     * Resumable clear of the whole footprint a lane can occupy (~41k blocks), one x-slice (700 blocks) at a time
+     * until the tick deadline. Never loads chunks: columns in unloaded chunks are skipped; if such a chunk is not
+     * known to be empty, {@code onIncomplete} is told so the lane is not marked clean.
+     */
+    public static java.util.function.LongPredicate clearLaneStep(World w, int laneIndex,
+                                                                 java.util.function.BiPredicate<Integer, Integer> knownEmpty,
+                                                                 Runnable onComplete, Runnable onIncomplete) {
+        final int x0 = laneIndex * GridRunnersGame.LANE_SPACING;
+        final int y0 = GridRunnersGame.Y0;
+        final int[] next = {x0 + FOOT_MIN_DX};
+        final boolean[] incomplete = {false};
+        return deadline -> {
+            while (next[0] <= x0 + FOOT_MAX_DX) {
+                int x = next[0]++;
+                for (int z = FOOT_MIN_Z; z <= FOOT_MAX_Z; z++) {
+                    int cx = x >> 4, cz = z >> 4;
+                    if (!w.isChunkLoaded(cx, cz)) {
+                        if (!knownEmpty.test(cx, cz)) incomplete[0] = true;
+                        continue;
+                    }
+                    for (int y = y0 - 1; y <= y0 + 12; y++) {
+                        var b = w.getBlockAt(x, y, z);
+                        if (b.getType() != Material.AIR) b.setType(Material.AIR, false);
+                    }
+                }
+                if (System.nanoTime() >= deadline) return false;
+            }
+            if (incomplete[0]) onIncomplete.run(); else onComplete.run();
+            return true;
+        };
+    }
+
+    /** Floors, walls, ceilings, doors, start door and entry hall (~7.5k blocks). Room contents are separate. */
+    public static void buildShell(World w, Lane lane) {
         int x0 = lane.x0, z0 = lane.z0, y0 = GridRunnersGame.Y0;
         Material team = concrete(lane.color);
         // Floors, walls, ceiling
@@ -135,7 +170,6 @@ public final class Arena {
                 }
             }
         }
-        for (Room r : lane.rooms) r.buildContent();
     }
 
     private static Material doorMaterial(Room a, Room b) {

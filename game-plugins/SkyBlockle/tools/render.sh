@@ -22,4 +22,6 @@ python "$R" "$OUT/start0.mcmdump.gz" "$P/start_island.png" --angle 1 &
 python "$R" "$OUT/castle.mcmdump.gz" "$P/castle_exterior.png" --angle 0 &
 python "$R" "$OUT/castle_cut.mcmdump.gz" "$P/castle_cutaway.png" --angle 0 &
 python "$R" "$OUT/castle_slice.mcmdump.gz" "$P/castle_section.png" --angle 3 &
+python "$R" "$OUT/generator0_cut.mcmdump.gz" "$P/generator_hidden_chest.png" --angle 0 &
+python "$R" "$OUT/generator0_xray.mcmdump.gz" "$P/generator_ores_xray.png" --angle 0 &
 wait

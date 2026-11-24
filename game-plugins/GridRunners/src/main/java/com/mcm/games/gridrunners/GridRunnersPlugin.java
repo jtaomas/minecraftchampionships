@@ -8,6 +8,8 @@ public final class GridRunnersPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // Create the world now (server start), never lazily at game start: world creation stalls the main thread.
+        if (Arena.ensureWorld() == null) getLogger().severe("Could not create world " + GridRunnersGame.WORLD);
         game = new GridRunnersGame(this);
         getServer().getPluginManager().registerEvents(new GameListener(game), this);
         McmApi.registerGame(this, game);
@@ -21,6 +23,7 @@ public final class GridRunnersPlugin extends JavaPlugin {
             } catch (Throwable t) {
                 getLogger().warning("Error stopping Grid Runners: " + t);
             }
+            game.shutdown();
         }
     }
 }
