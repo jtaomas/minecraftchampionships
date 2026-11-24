@@ -46,7 +46,7 @@ map/
   maps/TestGridMap       Phase-1 course
 ```
 
-The owner-approved design documents are `../research/acerace/SPEC.md` and `../research/acerace/SCHEMATICS.md`.
+The owner-approved design documents are `SPEC.md` and `SCHEMATICS.md` in this folder.
 
 ## Build
 
