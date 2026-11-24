@@ -156,18 +156,21 @@ public final class BingoWorld {
     }
 
     private void configure(World w) {
-        w.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        Settings s = settings;
+        w.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, s.daylightCycle);
         w.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
         w.setGameRule(GameRule.KEEP_INVENTORY, true);
         w.setGameRule(GameRule.DO_INSOMNIA, false);
-        w.setGameRule(GameRule.DO_MOB_SPAWNING, true);
+        w.setGameRule(GameRule.DO_MOB_SPAWNING, s.mobSpawning);
+        // server.properties has spawn-animals/spawn-monsters=false; Bukkit applies that to every world as spawn flags.
+        w.setSpawnFlags(s.mobSpawning, s.mobSpawning);
         w.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
         w.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
         w.setGameRule(GameRule.SPAWN_RADIUS, 0);
         w.setGameRule(GameRule.DO_TRADER_SPAWNING, false);
         w.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
         w.setGameRule(GameRule.NATURAL_REGENERATION, true);
-        w.setTime(1000);
+        w.setTime(s.startTime);
         w.setStorm(false);
         w.setThundering(false);
         w.setClearWeatherDuration(20 * 60 * 60);

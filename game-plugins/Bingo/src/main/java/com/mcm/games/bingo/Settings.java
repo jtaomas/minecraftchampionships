@@ -25,6 +25,10 @@ final class Settings {
     int teleportCooldown = 45;
     int beef = 64;
 
+    boolean mobSpawning = true;
+    boolean daylightCycle = true;
+    long startTime = 0;
+
     boolean placeStructures = true;
     double caveChance = 0.06;
     double caveEntranceShare = 0.3;
@@ -52,6 +56,9 @@ final class Settings {
         s.finderRadiusChunks = Math.max(1, Math.min(4, c.getInt("cave-finder.radius-chunks", s.finderRadiusChunks)));
         s.teleportCooldown = Math.max(0, c.getInt("card.teleport-cooldown-seconds", s.teleportCooldown));
         s.beef = Math.max(0, Math.min(64, c.getInt("kit.cooked-beef", s.beef)));
+        s.mobSpawning = c.getBoolean("world.mob-spawning", s.mobSpawning);
+        s.daylightCycle = c.getBoolean("world.daylight-cycle", s.daylightCycle);
+        s.startTime = Math.floorMod(c.getLong("world.start-time", s.startTime), 24000L);
         s.placeStructures = c.getBoolean("world.place-structures", s.placeStructures);
         s.caveChance = c.getDouble("world.extra-cave-chance-per-chunk", s.caveChance);
         s.caveEntranceShare = c.getDouble("world.extra-cave-entrance-share", s.caveEntranceShare);

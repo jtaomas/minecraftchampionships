@@ -39,6 +39,7 @@ Design research (item pools, card weighting, world generation): `../research/bin
   - At most one item per group appears on a card (Fetchr-style categories, for example one village item and one jungle item).
   - At most 2 squares can be made from wood alone.
   - Biome-, structure- and mob-specific items are twice as likely to be picked as generic ones.
+- **Mob items:** Slimeball, Sticky Piston (hard) and Lead (very hard) are back on the card. Slimes spawn in slime chunks below y 40 at any time of day. Swamp slimes and other surface night mobs are not counted on, because a game mostly ends before night.
 - **Obtainability:** every pool item declares what it needs, such as biomes, a structure or the mobs of a biome. A card only uses items whose needs are met by this area's actual biomes and placed structures. Nether and End items are never used, because portals are disabled. Each card square shows its difficulty, its point value and where to find the item.
 - An item counts as soon as it is in a side member's inventory (checked every 0.5 s).
 - **Card menu:** right-click the card in your hand, or click it anywhere in your inventory. The card cannot be moved, dropped or swapped. The menu shows the scoring, the structures, the biomes in the area, teleports to the start and to teammates (45 s cooldown), and every square's status and value.
@@ -48,7 +49,12 @@ Design research (item pools, card weighting, world generation): `../research/bin
   - PvP is on between sides; friendly fire is off; no damage during the countdown.
   - Keep inventory and keep XP; nothing drops on death, so a kill gives no items. Kills give no points (configurable).
   - Immediate respawn at the shared start, or at your own bed or anchor if it is inside the current border.
-  - Hunger on, mobs on, no phantoms, time locked to day, clear weather, portals disabled.
+  - Hunger on. Natural mob spawning is on: animals and hostile mobs, on the surface and in caves. No phantoms.
+  - Time runs (day-night cycle) from sunrise (time 0) at the start of each game. A 10-minute Bingo game ends around dusk; Lockout (12 min) gets a short stretch of night.
+  - Clear weather; portals disabled.
+  - Sleeping is vanilla: the night is only skipped if every player in the world sleeps (`playersSleepingPercentage` 100).
+  - Deaths to mobs are handled like PvP deaths: keep inventory and XP, nothing drops, and respawn at the start or at your own bed or anchor inside the border.
+  - Why mobs were missing before: the server's `server.properties` has `spawn-animals=false` and `spawn-monsters=false`. Bukkit applies these to every world as spawn flags, so the plugin now sets this world's spawn flags (and the `doMobSpawning` gamerule) itself.
 
 ## Scoring (given to every online member of the side)
 Values per tier: easy, medium, hard, very hard.
@@ -72,17 +78,18 @@ These are sensible defaults chosen by us, not values taken from research. Adjust
 - `/top` cooldown (30 s), the combat block on or off, and the combat time (8 s)
 - Cave Finder cooldown (20 s) and scan radius (2 chunks)
 - steak count (64)
+- mob spawning on/off, day-night cycle on/off, and the start time of day (default 0 = sunrise)
 - whether to place structures, the extra-cave chance (0.06 per chunk) and the entrance share (0.3); these two take effect at the next server start
 - `debug-timing`: logs the preload, card, teleport and cave-scan timings
 - Also chosen by us: the biome families, the 13-cell layout, the cave-biome placement, structure distances, 4x4x4 cave cells with ≥36 air and ≥6 cells for the Cave Finder, and all item tier assignments (checked against Extremelyd1's tier list).
 
 ## Offline check
-`com.mcm.games.bingo.CardCheck` (in the jar) plans 500 random areas on synthetic terrain and generates 4 cards for each. It verifies that every card has 25 distinct squares, that every requirement is met by that area's biomes and structures, that no group repeats, that the wood cap holds, that the tier mix is right and that every site is inside the border. Last run: 500 areas, 2000 cards, 0 failures; all 248 pool items appeared; 9 to 13 surface biomes present per area (13 in 68 % of areas).
+`com.mcm.games.bingo.CardCheck` (in the jar) plans 500 random areas on synthetic terrain and generates 4 cards for each. It verifies that every card has 25 distinct squares, that every requirement is met by that area's biomes and structures, that no group repeats, that the wood cap holds, that the tier mix is right and that every site is inside the border. Last run: 500 areas, 2000 cards, 0 failures; all 251 pool items appeared; 9 to 13 surface biomes present per area (13 in 68 % of areas).
 Run it with `target/classes`, the paper-api jar, guava 32, adventure and jetbrains-annotations on the classpath.
 
 ## Known limitations / not verified without a live server
 - The world generation with the custom biome layout, `/place structure` from the plugin (including its success detection from the command feedback) and the extra-cave populator were compiled against the API but have not run on a server yet. Check the log line `Bingo area N at x,z: ...` and the `placed ...` lines at the first game.
-- Placing a village takes one tick of roughly tens to a few hundred ms while players are still in the lobby. The time is logged.
+- Placing a village stalls the main thread for one tick, measured at 1-2 s in the bot test, while players are still in the lobby. It is a single vanilla `/place` call and cannot be split cheaply, so it was left as is.
 - The preparing phase loads about 250 chunks (start plus structure sites), which takes longer than before. There is a 60 s timeout; structures whose chunks are not loaded in time are skipped, and their items are left off the card.
 - Items are detected in inventories only, not in chests. Handing an item to another side also counts for that side.
 - If Windows still has region files locked after an unload, deleting the old world fails. It is retried at the next server start.

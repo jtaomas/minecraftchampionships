@@ -39,6 +39,13 @@ kit:
   cooked-beef: 64
 
 world:
+  # Natural mob spawning (animals and hostile mobs). The server's spawn-animals/spawn-monsters=false would
+  # otherwise switch them off in this world too, so the plugin sets this world's spawn flags itself.
+  mob-spawning: true
+  # Let time run during a game (day-night cycle). Off = time stays at start-time.
+  daylight-cycle: true
+  # Time of day at the start of each game (0 = sunrise, 1000 = morning, 13000 = night)
+  start-time: 0
   # Place a village, temples, a ruined portal, a shipwreck and buried treasure in each game area
   place-structures: true
   # Extra worm caves: chance per chunk that a tunnel system starts there, and the share that opens to the surface

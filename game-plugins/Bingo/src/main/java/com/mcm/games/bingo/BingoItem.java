@@ -17,9 +17,10 @@ import static org.bukkit.block.Biome.*;
  * <p>Pool: base list and groups from Fetchr (NeunEinser/bingo, MIT licence), tiers checked against
  * Extremelyd1/minecraft-bingo (GPL-3.0, reference only). See research/bingo_design.md.
  * Requirements are declared conservatively: only sources that certainly exist in the listed biomes or structures.
- * Nether and End items are excluded (portals are disabled). Time is locked to day, so items that need surface
- * night mobs (slimes in swamps, phantoms) are excluded; cave mobs (zombies, skeletons, spiders, creepers) are
- * assumed everywhere.
+ * Nether and End items are excluded (portals are disabled). Mob spawning is on and time runs from sunrise, but a
+ * 10-12 minute game ends around dusk, so surface-night-only sources (swamp slimes, phantoms) are not relied on;
+ * cave mobs (zombies, skeletons, spiders, creepers, endermen) spawn in dark caves at any time of day, and slimes
+ * spawn in slime chunks below y 40 at any time of day.
  */
 public final class BingoItem {
     public static final String[] TIER_NAMES = {"", "Easy", "Medium", "Hard", "Very hard"};
@@ -406,6 +407,10 @@ public final class BingoItem {
         add(3, FIREWORK_STAR).g("gunpowder");
         add(3, FERMENTED_SPIDER_EYE).g("spider", "paper").need(WATER);
         add(3, TARGET).g("wheat", "redstone");
+        // re-admitted with mob spawning on: slimes in slime chunks underground (any light, any time of day)
+        add(3, SLIME_BALL).g("slime").n("Slimeball (cave slimes)");
+        add(3, STICKY_PISTON).g("slime", "piston");
+        add(4, LEAD).g("slime", "spider");
         add(3, CRAFTER).g("basic_iron", "redstone");
         add(3, ANVIL).g("basic_iron");
         add(3, HOPPER_MINECART).g("chest_iron");

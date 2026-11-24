@@ -315,6 +315,10 @@ public final class BingoGame implements McmGame, Listener {
         card = BingoItem.generateCard(rnd, env, lockout ? cfg.lockoutMix : cfg.bingoMix, cfg.woodCap);
         plugin.getLogger().info("Bingo card env " + env);
 
+        world.setTime(cfg.startTime);
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, cfg.daylightCycle);
+        world.setGameRule(GameRule.DO_MOB_SPAWNING, cfg.mobSpawning);
+        world.setSpawnFlags(cfg.mobSpawning, cfg.mobSpawning);
         for (Player p : new ArrayList<>(ctx.participants())) {
             preparePlayer(p);
             p.teleport(nextStartSpot());
@@ -610,7 +614,7 @@ public final class BingoGame implements McmGame, Listener {
         // PLAYING, once per second
         secondsLeft--;
         ctx.setTimer(Math.max(0, secondsLeft), totalSeconds);
-        if (world != null) world.setTime(1000);
+        if (world != null && !cfg.daylightCycle) world.setTime(cfg.startTime);
         for (Player p : new ArrayList<>(ctx.participants())) {
             if (!p.isDead() && p.getGameMode() == GameMode.SURVIVAL) applySpeed(p);
             String side = sideOf.get(p.getUniqueId());
