@@ -999,9 +999,34 @@ public final class BingoGame implements McmGame, Listener {
         }
     }
 
-    private static String dirFrom(Location from, int x, int z) {
-        Vector d = new Vector(x - from.getX(), 0, z - from.getZ());
-        return Math.round(d.length()) + " blocks " + CaveFinder.compass(d);
+    /** Arrow for a target at (dx, dz) relative to a player facing {@code yaw} (Minecraft yaw: 0 = +Z, 90 = -X). */
+    static String arrow(float yaw, double dx, double dz) {
+        double target = Math.toDegrees(Math.atan2(-dx, dz)); // same convention as yaw
+        double rel = ((target - yaw) % 360 + 540) % 360 - 180; // -180..180, 0 = straight ahead, + = to the right
+        String[] a = {"↑", "↗", "→", "↘", "↓", "↙", "←", "↖"};
+        return a[(int) Math.round((rel + 360) % 360 / 45) % 8];
+    }
+
+    private static String structureName(String kind) {
+        return switch (kind) {
+            case "village" -> "Village";
+            case "desert_pyramid" -> "Desert Pyramid";
+            case "jungle_pyramid" -> "Jungle Temple";
+            case "ruined_portal" -> "Ruined Portal";
+            case "shipwreck" -> "Shipwreck";
+            default -> BingoItem.pretty(kind);
+        };
+    }
+
+    private static Material structureIcon(String kind) {
+        return switch (kind) {
+            case "village" -> Material.BELL;
+            case "desert_pyramid" -> Material.CHISELED_SANDSTONE;
+            case "jungle_pyramid" -> Material.MOSSY_COBBLESTONE;
+            case "ruined_portal" -> Material.CRYING_OBSIDIAN;
+            case "shipwreck" -> Material.OAK_BOAT;
+            default -> Material.COMPASS;
+        };
     }
 
     private void render(CardMenu m, Player viewer) {
@@ -1036,17 +1061,29 @@ public final class BingoGame implements McmGame, Listener {
         }
         scoring.add("§7Items count while in your inventory.");
         inv.setItem(9, simple(Material.OAK_HANGING_SIGN, "§eScoring", scoring));
-        List<String> places = new ArrayList<>();
-        Location s0 = start();
-        for (AreaLayout.Site s : placed) {
-            // Buried treasure's chest sits at block 9,9 of its chunk; other sites are approximate.
-            int sx = s.kind().equals("buried_treasure") ? (s.x() & ~15) + 9 : s.x();
-            int sz = s.kind().equals("buried_treasure") ? (s.z() & ~15) + 9 : s.z();
-            places.add("§f" + BingoItem.pretty(s.kind()) + "§7: " + dirFrom(s0, sx, sz) + " §8(" + sx + ", " + sz + ")");
+        // Structures: one entry each in the second column (slots 1, 10, 19, 28, 37), nearest to the viewer first.
+        // Buried treasure is never listed (finding it is the point).
+        Location here = viewer.getLocation();
+        List<AreaLayout.Site> shown = new ArrayList<>();
+        for (AreaLayout.Site s : placed) if (!s.kind().equals("buried_treasure")) shown.add(s);
+        shown.sort(Comparator.comparingDouble(s -> Math.hypot(s.x() + 0.5 - here.getX(), s.z() + 0.5 - here.getZ())));
+        int[] structSlots = {1, 10, 19, 28, 37};
+        for (int i = 0; i < shown.size() && i < structSlots.length; i++) {
+            AreaLayout.Site s = shown.get(i);
+            double dx = s.x() + 0.5 - here.getX(), dz = s.z() + 0.5 - here.getZ();
+            long dist = Math.round(Math.hypot(dx, dz));
+            Vector d = new Vector(dx, 0, dz);
+            String dir = dist < 8 ? "§aYou are here" : "§f" + arrow(here.getYaw(), dx, dz) + " " + CaveFinder.compass(d) + "§7  ·  §f" + dist + " blocks";
+            inv.setItem(structSlots[i], simple(structureIcon(s.kind()), "§e§l" + structureName(s.kind()), List.of(
+                    dir,
+                    "§8x " + s.x() + ",  z " + s.z())));
         }
-        places.add("§7Mineshafts are underground all over.");
-        places.add("§8Directions are from the start point.");
-        inv.setItem(18, simple(Material.FILLED_MAP, "§eStructures in this area", places));
+        List<String> sHead = new ArrayList<>();
+        sHead.add(shown.isEmpty() ? "§7None placed in this area." : "§7Listed to the right, nearest first.");
+        sHead.add("§7Arrows: from the way you faced");
+        sHead.add("§7when you opened this menu.");
+        sHead.add("§7Mineshafts: underground everywhere.");
+        inv.setItem(18, simple(Material.FILLED_MAP, "§e§lStructures", sHead));
         List<String> bl = new ArrayList<>();
         if (layout != null) {
             List<String> names = new ArrayList<>();

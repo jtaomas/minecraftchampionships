@@ -21,7 +21,7 @@ Design research (item pools, card weighting, world generation): `../research/bin
   - a jungle pyramid, if the area has a jungle
   - a ruined portal 80 to 220 blocks from the start
   - a beached shipwreck and a buried treasure, if a beach exists; otherwise a shipwreck in the ocean
-  Vanilla adds mineshafts, and sometimes more structures. The card menu lists each placed structure with its direction, distance and coordinates.
+  Vanilla adds mineshafts, and sometimes more structures. The card menu shows each placed structure as its own item in the second column, nearest first: an icon, a bold name, an arrow relative to where you face plus a compass word and the distance, and the coordinates on a separate line. The buried treasure is never listed; it is found the vanilla way, with a shipwreck's treasure map. That map probably leads to a vanilla-generated treasure rather than the one we place, because `/place` does not register a structure start (not verified).
 - **More caves.** Extra worm tunnels are dug as chunks generate. About 6 % of chunks start one, and 30 % of those open to the surface as cave entrances. They only replace natural ground blocks, and are never dug next to water or lava.
 - Preparing: the chunks around the start and the structure sites load asynchronously while players wait in the lobby. The structures are then placed and the card is drawn. After that everyone is teleported and the countdown starts. The area plan (biome census and sites) is computed in the background before the game, from noise only.
 
