@@ -49,3 +49,50 @@ Principles that hold for every map seen:
   the other. Spawn: small cabin + wide porch left by its two corners, plus a side door.
 - Rejected for now: raised pad on a tower and sunken pad (would need a different dais than the shared one) — good
   candidates for a 4th theme.
+
+## Fan-made arenas (round 3)
+
+**Method (2026-11-24).** Read-only web research. Sites searched: Planet Minecraft (PMC; site search "battle box" by popularity, then each project page, read in the built-in browser because PMC refuses plain fetches), MCPEDL, 9Minecraft (page body did not load), CurseForge and Modrinth (web search only: no Battle Box map listing found), minecraftmaps.com (no relevant entry), Reddit (web search only: no fan-arena thread found), YouTube (search results, descriptions, a few paused frames of build videos). **Nothing was downloaded.** Labels: **S** = stated on the page, **I** = inferred from screenshots/video frames, **?** = uncertain. Every PMC page carries the site footer "All creations copyright of the creators"; that is site boilerplate, not an author licence, so such pages are listed as "none stated".
+
+Caveat: most fan "Battle Box" uploads recreate the *mechanics* (kits, fill the centre, round loop) and say almost nothing about layout. Only #1, #8 and #9 gave usable layout evidence, all of it inferred from images. Treat the principles below as design hypotheses, not documented findings.
+
+| # | Name / author / URL | Terms | Layout notes |
+|---|---|---|---|
+| 1 | Battle Box Recreation [Remade From Scratch!], orp888, planetminecraft.com/project/battle-box-recreation/ | none stated | **S:** 4x4 centre instead of 3x3; the arena recolours to the winning team; first to 3; 2-8 players. **I** (top-down cover): mirrored halves; each spawn opens onto a wide stepped terrace with several drop-down points; a framed lane runs from each terrace to a ringed centre (one central lane + two outer edges); raised blocks in the side quadrants as cover. **?** ladders/water/roofs. |
+| 2 | BattleBox Recreation, The Blue Axolotl, planetminecraft.com/project/battlebox-recreation-by-the-blue-axolotl/ | "Please credit us if you play this map for a video" | **S:** 6 maps, 2-8 players, swap all 9 wool. Gallery shows only the lobby; layout unknown. |
+| 3 | BATTLE BOX PvP Minigame (No Plugins, 1.21), LaggyMcStab (credits Willerup / Willis), planetminecraft.com/project/battle-blox-pvp-minigame/ | none stated; **S:** invites users to make their own arenas and kits | **S:** 10 themed arenas (e.g. Steampunk, Jungle Treehouse, Bowser's Castle), up to 4 teams, build / zero-build modes. **I:** the 3x3 sits under glass, edged in a contrasting colour, framed by low dark walls and pillars. Routes/heights not documented. |
+| 4 | MCC Battle Box Remake, Coaft, planetminecraft.com/project/mcc-battle-box-remake/ | none stated | no layout info (no download either). |
+| 5 | MCC Battle Box Map, MCCMAPMAKER, planetminecraft.com/project/mcc-battle-box-map/ | none stated | no layout info; comments say it is a re-upload of another author's map. |
+| 6 | Battle Box (Fan Made), MINIPRO27YT (mcpedl.com/battle-box-fan-made/) / BlyNkz (PMC, same text, possibly a cross-post ?) | none stated | Bedrock recreation; no layout info. |
+| 7 | Battle Box, Superkitty87, mcpedl.com/battle-box-map/ | none stated | Bedrock, 4v4, fill 9 wool; no layout info. |
+| 8 | "Building an MCC Battle Box Map", masmarvelous, youtube.com/watch?v=oh4e_dpVXWk | none stated (video only) | Original arena. **I** (frames): desert-temple theme; the pad sits in a **sunken, framed courtyard**; stairs on both sides climb to **raised pillared terraces** overlooking the centre; ladders and cobwebs as slow zones; rubbly irregular flank cover, moderate-dense. **?** whether left/right differ. |
+| 9 | "I built my own MCCI Battle Box map!", ItzEkans, youtube.com/watch?v=vxL-h0qeGTc | none stated | Original arena. **I:** volcanic theme; lava pools and lavafalls cut the floor into lanes; plank platforms over/beside the lava; boulders as cover. **?** centre. |
+| 10 | "Recreating MCC's BATTLEBOX !", Zakkaroom, youtube.com/watch?v=HCOyioaxOmg | none stated | **S:** a recreation; layout not inspected. |
+
+### Principles (how the better fan arenas give players options)
+1. **Terraced spawn fronts, not a single door** (#1, #8): a wide raised front with several drop/stair points spreads the first push and makes it less predictable.
+2. **Three-lane read:** a short exposed centre lane plus two longer covered edge routes (#1).
+3. **Mid-level overlook positions** between spawn and centre (#8): ranged players contest the pad without standing on it; reach them by a stair on one side and a slower, exposed ladder on the other, so high ground costs something.
+4. **Centre embedded in a frame with partial cover** (#1 ring, #8 sunken courtyard, #3 low walled pit): readable from everywhere, but not open to every angle.
+5. **Hazards shape lanes** (#9 lava, #8 cobwebs): a shortcut past a hazard is the risk/reward flank.
+6. **Mirror for fairness, theme for identity** (#1); multi-map packs (#2, #3) vary the theme and hazards per map.
+7. **Objective state visible at map scale** (#1 recolouring, #3 contrast edge).
+8. **Small and dense:** options come from cover density (several low blocks and pillars per quadrant), not size.
+
+### Candidates to import (owner request; nothing downloaded, per-file approval needed)
+Pages read 2026-11-24. No page shows a file size. Originality of the Java maps is **inferred**, not confirmed. Owner rule applied: "none stated" is acceptable for private use; pages that forbid reuse are excluded.
+
+| Name / author / URL | Format | Version | Terms (exact) | Original or recreation |
+|---|---|---|---|---|
+| BATTLE BOX PvP Minigame (No Plugins, 1.21), LaggyMcStab (credits Elias "Laggy McStab" Willerup, Sam "Acudeth" Willis), https://www.planetminecraft.com/project/battle-blox-pvp-minigame/ | Java world save, zips on Google Drive ("battleblox-v4-singleplayer.zip" / "battleblox-v4-for-servers.zip") | Java 1.21.x; page: "partially broke on 1.21.11 … Play an earlier version (like 1.21.2)" | none stated (page: "If you have a basic understanding of command blocks you can make your own kits, modifiers, and arenas.") | Probably original (inferred): 10 themed arenas whose names match no official map. Best candidate. |
+| Battle Box Recreation [Remade From Scratch!], orp888, https://www.planetminecraft.com/project/battle-box-recreation/ | Java world save (PMC download) | Java; page: "created and tested for 26.1.1" (newer than our 1.21.1, would need downgrading) | none stated | Mechanics remade; arena looks original (inferred: 4x4 centre, cover image matches no official map). |
+| BattleBox Recreation, The Blue Axolotl, https://www.planetminecraft.com/project/battlebox-recreation-by-the-blue-axolotl/ | Java world save (PMC + mirror) | not stated (a commenter played on 1.17.1) | "Please credit us if you play this map for a video!" | Uncertain: 6 maps, gallery shows only the lobby. Needs a visual check. |
+| Battle Box (Fan Made), MINIPRO27YT / BlyNkz, https://mcpedl.com/battle-box-fan-made/ | .mcworld | Bedrock | none stated | Stated recreation ("a recreation of one of their PvP based minigames"); Bedrock needs conversion. Fails the original-layout rule. |
+| Battle Box, Superkitty87, https://mcpedl.com/battle-box-map/ | .mcworld / .mcpack | Bedrock | none stated | Stated remake ("remake of Battle Box from MCC"); Bedrock. Fails the original-layout rule. |
+
+Excluded: **MCC Battle Box Map** (MCCMAPMAKER), a re-upload; the original author asked in the comments: "I would appreciate if you took this map down." **MCC Battle Box Remake** (Coaft), no download (comment: Noxcrew "don't want to release the mcc games publicly"). **Battlebox Forest / Hobbit / TowerCity** (DinSai_), look original but are showcase pages with no download. **YouTube builds** (#8, #9, #10), no download offered.
+
+### What round 3 took from this (our own layouts)
+- Centre embedded in its fixture (cells flush with the hazard ring, lanterns as a frame): principle 4.
+- Greenhouse rebuilt around terraced spawn fronts, a three-lane read, mid-level overlooks reached by a stair on one side and a ladder on the other, and a hazard-cut shortcut (principles 1-3, 5).
+- Toy Workshop: more than one way on and off the viaduct, mid-level positions under/beside it, a flank with its own risk/reward (principles 2, 3, 5).

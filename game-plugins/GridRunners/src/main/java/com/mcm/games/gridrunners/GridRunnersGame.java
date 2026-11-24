@@ -58,6 +58,7 @@ public final class GridRunnersGame implements McmGame {
     private final Map<String, Room> roomById = new HashMap<>();
     private final Map<UUID, Room> lastRoom = new HashMap<>();
     private BukkitTask mainTask, endTask, clearDelayTask, preloadTimeout;
+    private SpectatorGuard guard;
     /** Start-of-game clear + build, spread over ticks (~12 ms of block work per tick). */
     private final TickBuilder builder;
     /** Post-game clear, spread over ticks. */
@@ -95,6 +96,7 @@ public final class GridRunnersGame implements McmGame {
     public void start(McmGameContext context) {
         stop();
         cancelArenaClear();
+        if (guard == null) guard = new SpectatorGuard(plugin, this::spectatorZone);
         this.ctx = context;
         this.world = Arena.ensureWorld();
         if (world == null) {
@@ -250,10 +252,24 @@ public final class GridRunnersGame implements McmGame {
     @Override
     public boolean onLateJoin(Player player, McmGameContext context) {
         if (world == null || lanes.isEmpty() || phase == Phase.IDLE) return false;
-        player.setGameMode(GameMode.SPECTATOR);
-        player.teleport(lanes.get(0).overview(world));
+        Lane own = laneOf.get(player.getUniqueId());
+        SpectatorGuard.makeSpectator(player, (own != null ? own : lanes.get(0)).overview(world));
         Msg.send(player, "§7Grid Runners is in progress - you are spectating.");
         return true;
+    }
+
+    /** Box around one lane's 3x3 grid (with the start hall in front and room above). */
+    private static org.bukkit.util.BoundingBox laneBox(Lane l) {
+        return new org.bukkit.util.BoundingBox(l.x0 - 14, Y0 - 8, l.z0 - 12, l.x0 + 60, Y0 + 40, l.z0 + 58);
+    }
+
+    /** Finished teams watch their own lane; late joiners without a lane may look at every lane. */
+    private SpectatorGuard.Zone spectatorZone(Player p) {
+        if (phase == Phase.IDLE || world == null || lanes.isEmpty() || p.getWorld() != world) return null;
+        Lane own = laneOf.get(p.getUniqueId());
+        if (own != null) return new SpectatorGuard.Zone(world, laneBox(own), own.overview(world));
+        org.bukkit.util.BoundingBox all = laneBox(lanes.get(0)).union(laneBox(lanes.get(lanes.size() - 1)));
+        return new SpectatorGuard.Zone(world, all, lanes.get(0).overview(world));
     }
 
     // ------------------------------------------------------------------ setup
@@ -576,8 +592,7 @@ public final class GridRunnersGame implements McmGame {
             ctx.addPoints(p.getUniqueId(), pts, "Grid Runners: finished " + Msg.ordinal(lane.place));
             Msg.title(p, "§6§lCourse Complete!", "§e" + Msg.ordinal(lane.place) + " place §7- §e+" + pts, 5, 60, 15);
             p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
-            p.getInventory().clear();
-            p.setGameMode(GameMode.SPECTATOR);
+            SpectatorGuard.makeSpectator(p, lane.overview(world));
         }
         ctx.broadcast(lane.label + " §afinished Grid Runners in §e" + Msg.time(lane.finishSeconds)
                 + " §7(" + Msg.ordinal(lane.place) + ", " + lane.cleared + "/8 rooms cleared)");

@@ -8,6 +8,7 @@ public final class HoleInTheWallPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
         game = new HoleInTheWallGame(this);
         getServer().getPluginManager().registerEvents(game, this);
         McmApi.registerGame(this, game);

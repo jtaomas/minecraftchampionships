@@ -71,6 +71,7 @@ public final class DodgeboltGame implements McmGame, Listener {
     private int round, roundsPlayed, phaseSeconds, elapsed, roundKills, ringsDropped;
     private boolean overtimeAnnounced;
     private long generation;
+    private SpectatorGuard guard;
 
     // config
     private int roundsToWin, maxRounds, roundSeconds, overtimeAt, ringInterval, countdownSeconds, intermissionSeconds;
@@ -97,6 +98,7 @@ public final class DodgeboltGame implements McmGame, Listener {
         this.finished = false;
         generation++;
         loadConfig();
+        if (guard == null) guard = new SpectatorGuard(plugin, this::spectatorZone);
 
         world = ensureWorld();
         arena = new Arena(plugin, world);
@@ -717,7 +719,7 @@ public final class DodgeboltGame implements McmGame, Listener {
             matchElims[1 - g]++;
             ctx.broadcast(ChatColor.DARK_GRAY + "☠ " + vName + ChatColor.GRAY + (fell ? " fell into the void" : " is out"));
         }
-        victim.sendTitle(ChatColor.RED + "" + ChatColor.BOLD + "ELIMINATED", ChatColor.GRAY + "Watch from the stands", 0, 40, 10);
+        victim.sendTitle(ChatColor.RED + "" + ChatColor.BOLD + "ELIMINATED", ChatColor.GRAY + "Spectating until the next round", 0, 40, 10);
         toStands(victim, random.nextInt(10));
 
         // MCC-style: after the third elimination each further one shrinks the arena (up to 3 rings before overtime).
@@ -726,12 +728,26 @@ public final class DodgeboltGame implements McmGame, Listener {
         updateSidebar();
     }
 
+    /** Out players, non-finalists and late joiners watch in spectator mode from above the court (owner rule). */
     private void toStands(Player p, int i) {
-        p.getInventory().clear();
-        p.setGameMode(GameMode.ADVENTURE);
-        p.setFallDistance(0);
-        p.setFireTicks(0);
-        p.teleport(arena.spectatorSpot(i));
+        SpectatorGuard.makeSpectator(p, overview(i));
+    }
+
+    /** Spectator area: the court, its walls and the stands around it, with room above. */
+    private static final org.bukkit.util.BoundingBox WATCH_BOX = new org.bukkit.util.BoundingBox(
+            -Arena.WALL_X - 20, Arena.FLOOR_Y - 10, -Arena.WALL_Z - 18,
+            Arena.WALL_X + 21, Arena.FLOOR_Y + 35, Arena.WALL_Z + 19);
+
+    /** High above the east or west stands, looking down at the river in the middle. */
+    private Location overview(int i) {
+        boolean east = (i & 1) == 0;
+        return new Location(world, east ? Arena.WALL_X + 9.5 : -Arena.WALL_X - 8.5, Arena.FLOOR_Y + 13, 0.5,
+                east ? 90f : -90f, 38f);
+    }
+
+    private SpectatorGuard.Zone spectatorZone(Player p) {
+        if (state == State.IDLE || world == null || !p.getWorld().equals(world)) return null;
+        return new SpectatorGuard.Zone(world, WATCH_BOX, overview(p.getUniqueId().hashCode()));
     }
 
     // =================================================================== arrows
@@ -1051,7 +1067,7 @@ public final class DodgeboltGame implements McmGame, Listener {
     public boolean onLateJoin(Player player, McmGameContext context) {
         if (state == State.IDLE || arena == null) return false;
         toStands(player, random.nextInt(10));
-        player.sendMessage(ChatColor.GOLD + "The Dodgebolt finale is in progress - enjoy the show from the stands!");
+        player.sendMessage(ChatColor.GOLD + "The Dodgebolt finale is in progress - you are spectating.");
         return true;
     }
 }

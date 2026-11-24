@@ -17,6 +17,9 @@ import java.util.Map;
 
 /** Chest GUIs: the kit selection menu and the read-only kit preview. */
 final class KitMenu implements InventoryHolder {
+    /** Set by the game from config fight-seconds (false = no round time limit). */
+    static boolean timeLimit = false;
+
     static final int[] SLOTS = {11, 12, 13, 14, 15};
 
     final boolean inspect;
@@ -74,7 +77,7 @@ final class KitMenu implements InventoryHolder {
         }
         h.inv.setItem(22, named(Material.WHITE_CONCRETE, ChatColor.WHITE + "Centre: fill the 3x3!",
                 List.of(ChatColor.GRAY + "Full 3x3 in your colour = instant win.",
-                        ChatColor.GRAY + "At time-out, more centre blocks wins.")));
+                        ChatColor.GRAY + (timeLimit ? "At time-out, more centre blocks wins." : "No time limit: fill it to win."))));
         p.openInventory(h.inv);
     }
 

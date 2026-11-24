@@ -3,14 +3,14 @@
 The MCC-style finale for MinecraftMondayCore. Start it with **`/mcm play dodgebolt`**.
 
 ## Who plays
-- The two sides with the most tournament points so far, from `ctx.topSides(2)`. Everyone else watches from the stands.
+- The two sides with the most tournament points so far, from `ctx.topSides(2)`. Everyone else spectates (spectator mode, high above the court).
 - If only one side is online, its players are split at random into "West" and "East" halves.
 - If there's only one player, the game runs in **test mode**: the other half is empty and rounds end on the timer or when you fall.
 - If the two sides have the same colour (for example two solo players, both white), the second one is recoloured light blue or orange.
 
 ## Rules
 - The arena is generated in the void world `mcc_dodgebolt`. It has two team-coloured halves, separated by a glowing 3-block river that players can't cross. There are glass walls and an invisible ceiling, and spectator stands sit outside the walls.
-- Every finalist gets one unbreakable bow. One arrow hit from the other side eliminates you, and you go to the stands.
+- Every finalist gets one unbreakable bow. One arrow hit from the other side eliminates you: you become a spectator above the court (kept inside the arena area) until the next round, when you play again.
 - Arrows are scarce:
   - Each round starts with 1 arrow per side. If a side is behind on score, it gets all the starting arrows.
   - Every 30 s, one more arrow spawns on each side, up to 4 in play.
@@ -40,7 +40,7 @@ If one side was split into two groups, points go to each player with `addPoints`
 - Boss-bar timer: the countdown, the round clock and the intermission.
 
 ## Known limitations
-- Players who disconnect count as eliminated. If they rejoin, they watch from the stands until the next game.
+- Players who disconnect count as eliminated. If they rejoin, they spectate until the next game.
 - A side with no online players at the start of a round forfeits the match.
 - There's no "foul line" that blocks shooting near the river. The only limit is that players can't cross it.
 - The arena is rebuilt on every start and wiped about 2 s after the game ends.

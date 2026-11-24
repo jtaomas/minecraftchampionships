@@ -1,0 +1,6 @@
+# Hole in the Wall settings (defaults, not researched).
+
+# The wall difficulty ramp (wall level / speed, spacing between waves, hole count, wall-type unlocks)
+# starts as if this many seconds had already been played. 0 = the original ramp.
+# The game clock, platform shrinks, OVERDRIVE (at 5:00), game length, scoring and countdown use real time.
+difficulty-head-start-seconds: 60

@@ -10,6 +10,9 @@ rotate-maps-each-round: true
 force-theme: ""
 first-kit-seconds: 20
 kit-seconds: 15
-fight-seconds: 60
+# Fight time limit per round in seconds. 0 = no limit (default, owner request round 3): the round ends only when a
+# side fills the centre, both sides are out (or the practice side is out), or an admin uses /mcm skip.
+# Any value > 0 (minimum 15) brings back the old timed round with the time-out tiebreak (old default 60).
+fight-seconds: 0
 end-seconds: 5
 max-rounds: 9

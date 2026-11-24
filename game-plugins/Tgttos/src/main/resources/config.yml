@@ -32,7 +32,7 @@ world:
 
 kit:
   concrete: 64
-  snowballs: 5
+  snowballs: 10              # owner (playtest 1): 10 per attempt, refilled on every respawn
   fireworks: 2               # elytra maps (default)
   pickaxe: IRON_PICKAXE      # (default) no enchantments
 
@@ -40,9 +40,19 @@ knockback:                   # (default) vanilla-like values; no damage is ever 
   punch-horizontal: 0.42
   punch-vertical: 0.36
   sprint-bonus: 0.35
-  snowball-horizontal: 0.38
-  snowball-vertical: 0.28
+  snowball: 0.55             # (default) horizontal push of a snowball hit, in the snowball's travel direction
+  snowball-vertical: 0.30    # (default) upward part of a snowball hit
+  log-snowball-hits: true    # log every snowball hit on a player and why it was accepted / rejected
   hit-cooldown-ticks: 10     # min ticks between two knockbacks on the same victim (vanilla i-frames)
+  glide-multiplier: 1.6      # (default) knockback on a gliding victim is added to its flight velocity, times this
+
+bridging:                    # owner decision (playtest 1): the concrete stack never runs out
+  infinite-blocks: true      # top the team concrete back up to kit.concrete after every placement
+  refill-delay-ticks: 1      # (default) 1 = next tick, i.e. instant; raise for a visible refill delay
+
+elytra:
+  floor-drop-delay-seconds: 3  # (default) elytra maps: at GO the barrier opens but the gantry floor stays this long,
+                               # so racers can shove each other off before it drops. 0 = drop at GO.
 
 karma:                       # (default) thresholds; karma decays every second
   per-punch: 1.0
@@ -56,6 +66,7 @@ karma:                       # (default) thresholds; karma decays every second
   slowness: true
   lock-from: 9.0             # punching disabled for lock-seconds
   lock-seconds: 4
+  snowball-hits-count: false # (default) true = a snowball hit adds karma like a punch
   # victims: each recent hit taken reduces knockback received, decays per second
   hit-protection-per-hit: 0.07
   hit-protection-max: 0.45
@@ -71,6 +82,11 @@ points:                      # scaled /5 from the researched MCC table
 chickens:
   count: 10
   wander: true               # AI on, but put back into the pen if they leave it
+
+goal:
+  chicken-name: "&e&lPunch me!"  # always-visible name tag of real goal chickens (& colour codes); decoys have none
+  decoy-penalty-seconds: 0       # reserved for later: punching a decoy currently does nothing
+  log-punches: true              # log every chicken punch and why it was accepted / rejected
 
 # Pun death lines (%s = player name). Leave empty to use the built-in list.
 puns-void: []

@@ -143,6 +143,14 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
 
     private final Set<UUID> alivePlayers = new HashSet<>();
     private final List<UUID> finishOrder = new ArrayList<>();
+    /**
+     * Players the core itself put in SPECTATOR mode while a game runs: finished/eliminated players of a built-in
+     * game and default late joiners (built-in or external without its own late-join handling). They are kept
+     * inside the running game's arena; cleared whenever a round/game starts or everyone returns to the lobby.
+     */
+    private final Set<UUID> coreSpectators = new HashSet<>();
+    /** Overview point and watch box of the running built-in sub-round (null outside built-in games). */
+    private McmSpectator.Zone builtInZone;
     private final Map<UUID, Integer> roundKills = new HashMap<>();
     private final Map<UUID, Integer> killstreaks = new HashMap<>();
 
@@ -226,6 +234,9 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
 
         new BukkitRunnable() {
             @Override public void run() { updateAllScoreboards(); }
+        }.runTaskTimer(this, 20L, 20L);
+        new BukkitRunnable() {
+            @Override public void run() { confineExternalCoreSpectators(); }
         }.runTaskTimer(this, 20L, 20L);
 
         McmApi.setBridge(new McmApi.Bridge() {
@@ -1051,6 +1062,8 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         cancelTasks();
         restoreArenas();
         currentGame = game;
+        coreSpectators.clear();
+        builtInZone = null;
         alivePlayers.clear();
         finishOrder.clear();
         roundKills.clear();
@@ -1106,6 +1119,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             case SURVIVAL -> setupSurvival();
             default -> returnToLobby("");
         }
+        if (currentGame == game) builtInZone = computeBuiltInZone(game);
 
         totalDuration = Math.max(1, timeLeft);
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -1465,6 +1479,8 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         cancelTasks();
         restoreArenas();
         currentGame = GameType.LOBBY;
+        coreSpectators.clear();
+        builtInZone = null;
         if (sgWorld != null) sgWorld.getWorldBorder().reset();
         if (sg4World != null) sg4World.getWorldBorder().reset();
         if (oneshotWorld != null) oneshotWorld.getWorldBorder().reset();
@@ -2089,8 +2105,15 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                 try { handled = activeExternal.onLateJoin(p, activeCtx); } catch (Throwable t) { getLogger().log(Level.WARNING, "onLateJoin failed", t); }
             }
             if (!handled) {
-                p.setGameMode(GameMode.SPECTATOR);
                 sanitizeAttributes(p);
+                // Spectate the running game from its arena instead of wherever the player logged in, kept inside it
+                if (currentGame == GameType.EXTERNAL) {
+                    McmSpectator.Zone z = externalSpectatorZone();
+                    McmSpectator.makeSpectator(p, z != null ? z.home().clone() : null);
+                    coreSpectators.add(p.getUniqueId());
+                } else {
+                    spectateInBuiltIn(p);
+                }
                 p.sendMessage(ChatColor.YELLOW + "Event in progress (" + currentDisplay() + "). Spectating until next round!");
             }
         }
@@ -2104,6 +2127,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         externalParticipants.remove(e.getPlayer().getUniqueId());
+        coreSpectators.remove(e.getPlayer().getUniqueId());
         if (currentGame != GameType.LOBBY && alivePlayers.remove(e.getPlayer().getUniqueId())) {
             if (currentGame == GameType.PARKOUR || currentGame == GameType.DROPPER) {
                 if (finishOrder.size() >= alivePlayers.size() && !alivePlayers.isEmpty()) {
@@ -2357,7 +2381,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                 int place = finishOrder.size();
                 int pts = place == 1 ? 35 : place == 2 ? 25 : place == 3 ? 15 : 10;
                 scoring.addIndividualPoints(p.getUniqueId(), pts, "Summit Finish #" + place + "!");
-                p.setGameMode(GameMode.SPECTATOR);
+                spectateInBuiltIn(p);
                 broadcast(ChatColor.GREEN + p.getName() + " reached the Parkour Summit #" + place + "! (+" + pts + " pts)");
                 if (finishOrder.size() >= alivePlayers.size()) endSubRound("All players finished!");
             }
@@ -2392,7 +2416,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                         int overall = finishOrder.size();
                         int finishPts = overall == 1 ? 25 : overall == 2 ? 15 : overall == 3 ? 10 : 5;
                         scoring.addIndividualPoints(p.getUniqueId(), finishPts, "All 5 Stages Clear #" + overall + "!");
-                        p.setGameMode(GameMode.SPECTATOR);
+                        spectateInBuiltIn(p);
                         broadcast(ChatColor.GREEN + p.getName() + " finished all 5 Dropper stages (#" + overall + ")!");
                         if (finishOrder.size() >= alivePlayers.size()) endSubRound("All players finished!");
                     }
@@ -2612,7 +2636,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
 
     private void eliminate(Player victim, Player killer) {
         if (!alivePlayers.remove(victim.getUniqueId())) return;
-        victim.setGameMode(GameMode.SPECTATOR);
+        spectateInBuiltIn(victim);
 
         if (killer != null && !killer.equals(victim)) {
             int killPts = (currentGame == GameType.SURVIVAL) ? 15 : 10;
@@ -2635,6 +2659,147 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         if (scoring.isOneSideRemaining(alivePlayers)) {
             endSubRound("Last standing!");
         }
+    }
+
+    // ==================== SPECTATORS (finished / eliminated / late joiners) ====================
+
+    /** Overview point (above the arena, looking down) and generous watch box of a built-in game's current sub-round. */
+    private McmSpectator.Zone computeBuiltInZone(GameType g) {
+        try {
+            switch (g) {
+                case SURVIVAL_GAMES -> {
+                    World w = getActiveSgWorld();
+                    Location c = w.getSpawnLocation();
+                    int y = findSafeGround(w, c.getBlockX(), c.getBlockZ(), (w == sgWorld ? 140 : 85), 20, c.getBlockY());
+                    return overviewZone(w, c.getBlockX() + 0.5, y + 30, c.getBlockZ() + 0.5, 0f, 70f, c.getBlockX() + 0.5, c.getBlockZ() + 0.5, 170);
+                }
+                case PARKOUR -> {
+                    World w = parkourWorld != null ? parkourWorld : world;
+                    // spiral tower around (0,0), start at z=-50.7 facing +z, summit Y=230
+                    return overviewZone(w, -1.0, 140, -80.0, 0f, 25f, 0, 0, 140);
+                }
+                case DROPPER -> {
+                    World w = dropperWorld != null ? dropperWorld : world;
+                    DropperStage st = activeDropperStages.isEmpty() ? ALL_DROPPER_STAGES.get(0) : activeDropperStages.get(0);
+                    // above the first shaft, looking straight down it; box covers every stage (z 5038..5309)
+                    return overviewZone(w, st.x(), st.y() + 8, st.z(), st.yaw(), 90f, 19.5, 5174.0, 220);
+                }
+                case TNT_RUN -> {
+                    World w = tntrunWorld != null ? tntrunWorld : world;
+                    double z = roundNumber == 2 ? 235.5 : roundNumber == 3 ? 375.5 : 100.5;
+                    double y = roundNumber == 2 ? 8.0 : roundNumber == 3 ? 12.0 : 15.0;
+                    return overviewZone(w, 100.5, y + 28, z, 0f, 75f, 100.5, z, 100);
+                }
+                case SPLEEF -> {
+                    World w = spleefWorld != null ? spleefWorld : world;
+                    return overviewZone(w, -13.5, 122, 22.5, 0f, 80f, -13.5, 22.5, 100);
+                }
+                case KIT_PVP -> {
+                    World w = pvpWorld != null ? pvpWorld : world;
+                    // spawns at z=+48.5 / -47.5, y=33; look down over the middle from the side
+                    return overviewZone(w, 0.5, 62, 0.5, 90f, 60f, 0.5, 0.5, 120);
+                }
+                case ONE_SHOT -> {
+                    World w = oneshotWorld != null ? oneshotWorld : world;
+                    return overviewZone(w, 51.5, 72, 100.5, 0f, 80f, 51.5, 100.5, 80);
+                }
+                case SURVIVAL -> {
+                    World w = survivalWorld != null ? survivalWorld : world;
+                    int y = w.getHighestBlockYAt(survivalCenterX, survivalCenterZ);
+                    return overviewZone(w, survivalCenterX + 0.5, y + 35, survivalCenterZ + 0.5, 0f, 60f, survivalCenterX + 0.5, survivalCenterZ + 0.5, 210);
+                }
+                default -> { return null; }
+            }
+        } catch (RuntimeException ex) {
+            getLogger().log(Level.WARNING, "Could not compute the spectator overview for " + g, ex);
+            return null;
+        }
+    }
+
+    private static McmSpectator.Zone overviewZone(World w, double x, double y, double z, float yaw, float pitch,
+                                                  double centerX, double centerZ, double half) {
+        if (w == null) return null;
+        return McmSpectator.Zone.around(new Location(w, x, y, z, yaw, pitch), centerX, centerZ, half);
+    }
+
+    /** Finished/eliminated/late-joined in a built-in game: spectator at the arena overview, kept inside the arena. */
+    private void spectateInBuiltIn(Player p) {
+        if (builtInZone == null && currentGame != GameType.LOBBY && currentGame != GameType.EXTERNAL) {
+            builtInZone = computeBuiltInZone(currentGame);
+        }
+        McmSpectator.makeSpectator(p, builtInZone != null ? builtInZone.home().clone() : null);
+        coreSpectators.add(p.getUniqueId());
+    }
+
+    /**
+     * Watch zone for a default late joiner of an external game (the core does not know that game's arena): the world
+     * where most active participants are, a box 96 blocks around them, home just above one of them.
+     */
+    private McmSpectator.Zone externalSpectatorZone() {
+        if (currentGame != GameType.EXTERNAL || activeCtx == null) return null;
+        List<Player> active = new ArrayList<>(), all = new ArrayList<>();
+        for (UUID id : externalParticipants) {
+            Player p = Bukkit.getPlayer(id);
+            if (p == null || !p.isOnline() || coreSpectators.contains(id)) continue;
+            all.add(p);
+            if (p.getGameMode() != GameMode.SPECTATOR) active.add(p);
+        }
+        List<Player> pool = active.isEmpty() ? all : active;
+        if (pool.isEmpty()) return null;
+        Map<World, List<Player>> byWorld = new LinkedHashMap<>();
+        for (Player p : pool) byWorld.computeIfAbsent(p.getWorld(), k -> new ArrayList<>()).add(p);
+        List<Player> group = byWorld.values().stream().max(Comparator.comparingInt(List::size)).orElse(pool);
+        World w = group.get(0).getWorld();
+        double minX = Double.MAX_VALUE, minZ = Double.MAX_VALUE, maxX = -Double.MAX_VALUE, maxZ = -Double.MAX_VALUE;
+        for (Player p : group) {
+            Location l = p.getLocation();
+            minX = Math.min(minX, l.getX()); maxX = Math.max(maxX, l.getX());
+            minZ = Math.min(minZ, l.getZ()); maxZ = Math.max(maxZ, l.getZ());
+        }
+        double pad = 96;
+        Location home = group.get(0).getLocation().clone().add(0, 6, 0);
+        home.setPitch(45f);
+        BoundingBox box = new BoundingBox(minX - pad, w.getMinHeight() - 16, minZ - pad, maxX + pad, w.getMaxHeight() + 64, maxZ + pad);
+        return new McmSpectator.Zone(w, box, home);
+    }
+
+    /** Once a second: core-managed spectators of an external game who left its world/area go back to it. */
+    private void confineExternalCoreSpectators() {
+        if (currentGame != GameType.EXTERNAL || coreSpectators.isEmpty()) return;
+        McmSpectator.Zone z = externalSpectatorZone();
+        if (z == null) return;
+        for (UUID id : new ArrayList<>(coreSpectators)) {
+            Player p = Bukkit.getPlayer(id);
+            if (p == null || p.getGameMode() != GameMode.SPECTATOR || z.contains(p.getLocation())) continue;
+            p.teleport(z.home().clone());
+            p.sendActionBar(net.kyori.adventure.text.Component.text("You can only watch inside the game's arena.",
+                    net.kyori.adventure.text.format.NamedTextColor.GRAY));
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onCoreSpectatorMove(PlayerMoveEvent e) {
+        if (currentGame == GameType.LOBBY || currentGame == GameType.EXTERNAL) return;
+        Player p = e.getPlayer();
+        if (p.getGameMode() != GameMode.SPECTATOR || !coreSpectators.contains(p.getUniqueId())) return;
+        Location to = e.getTo();
+        McmSpectator.Zone z = builtInZone;
+        if (to == null || z == null || z.home() == null || !z.world().equals(to.getWorld()) || z.contains(to)) return;
+        e.setTo(z.home().clone());
+        p.sendActionBar(net.kyori.adventure.text.Component.text("You can only watch inside the arena.",
+                net.kyori.adventure.text.format.NamedTextColor.GRAY));
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onCoreSpectatorTeleport(PlayerTeleportEvent e) {
+        if (e.getCause() != PlayerTeleportEvent.TeleportCause.SPECTATE || currentGame == GameType.LOBBY) return;
+        Player p = e.getPlayer();
+        if (!coreSpectators.contains(p.getUniqueId())) return;
+        McmSpectator.Zone z = currentGame == GameType.EXTERNAL ? externalSpectatorZone() : builtInZone;
+        if (z == null || z.contains(e.getTo())) return;
+        e.setCancelled(true);
+        p.sendActionBar(net.kyori.adventure.text.Component.text("You can only watch players inside this game's arena.",
+                net.kyori.adventure.text.format.NamedTextColor.GRAY));
     }
 
     @EventHandler
@@ -3099,6 +3264,8 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         finishOrder.clear();
         externalSidebar.clear();
         externalParticipants.clear();
+        coreSpectators.clear();
+        builtInZone = null;
         currentGame = GameType.EXTERNAL;
         activeExternal = g;
         for (Player p : Bukkit.getOnlinePlayers()) {

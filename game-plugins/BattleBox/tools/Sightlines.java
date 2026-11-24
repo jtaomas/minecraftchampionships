@@ -161,7 +161,7 @@ public final class Sightlines {
 
         // 5. centre visibility from mid-range ground spots and from high spots (own half)
         List<double[]> ctr = new ArrayList<>();
-        for (int x = -1; x <= 1; x++) for (int z = -1; z <= 1; z++) ctr.add(new double[]{x + 0.5, geo.CENTRE_Y + 0.5, z + 0.5});
+        for (int x = -1; x <= 1; x++) for (int z = -1; z <= 1; z++) ctr.add(new double[]{x + 0.5, geo.CENTRE_Y + 0.95, z + 0.5});   // top face of the cell
         long mid = 0, midSee = 0, high = 0, highSee = 0;
         for (double[] p : aSide) {
             boolean isMid = p[1] < 1.6 && p[2] <= -5.5 && p[2] >= -11;

@@ -121,6 +121,7 @@ public final class RocketSpleefGame implements McmGame, Listener {
     private BukkitTask task;
     private boolean running;
     private boolean finished;
+    private SpectatorGuard guard;
 
     private Phase phase = Phase.IDLE;
     private int round;
@@ -162,6 +163,7 @@ public final class RocketSpleefGame implements McmGame, Listener {
     @Override
     public void start(McmGameContext ctx) {
         if (running) stop();
+        if (guard == null) guard = new SpectatorGuard(plugin, this::spectatorZone);
         this.ctx = ctx;
         this.finished = false;
         resetState();
@@ -308,6 +310,14 @@ public final class RocketSpleefGame implements McmGame, Listener {
         int y = b.getY();
         for (int fy : FLOOR_Y) if (fy == y) return true;
         return false;
+    }
+
+    /** Eliminated players and late joiners stay around the floors (cleared build radius plus room above/below). */
+    private SpectatorGuard.Zone spectatorZone(Player p) {
+        if (!running || world == null || !p.getWorld().equals(world)) return null;
+        double r = Math.max(CLEAR_RADIUS, floorRadius[floorRadius.length - 1] + 20);
+        return new SpectatorGuard.Zone(world, new org.bukkit.util.BoundingBox(-r, ELIM_Y - 20, -r, r + 1,
+                FLOOR_Y[0] + 40, r + 1), spectatorPoint());
     }
 
     private Location spectatorPoint() {

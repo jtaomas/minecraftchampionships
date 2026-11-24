@@ -18,3 +18,9 @@ Keep the design: river, ice, lots going on, the tower at the top ("so cool, I lo
 
 ## Research instruction
 Look at **publicly available fan-made Battle Box maps** (community recreations and originals — not Noxcrew's own builds) for how good arenas create options: routes, height, cover, flanks, centre design. Use the ideas; original layouts and names.
+
+## Owner addition: no round time limit
+"Make the gameplay last longer, it's a little too short right now - don't give it a time limit."
+Done in round 3: `fight-seconds` is a config value where 0 = no limit, default 0. With no limit a round ends only when a
+side fills the centre, both sides are out (dead or offline), the practice side is out, or an admin uses `/mcm skip`;
+the boss bar counts up instead of down. Rounds per game and scoring are unchanged.

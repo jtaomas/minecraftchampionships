@@ -94,6 +94,7 @@ public final class BingoGame implements McmGame, Listener {
     /** Bumped by every start and cleanup so stale async chunk callbacks do nothing. */
     private int prepGen;
     private BukkitTask prepTimeout, ticketRelease;
+    private SpectatorGuard guard;
 
     public BingoGame(BingoPlugin plugin, BingoWorld worldMgr, boolean lockout) {
         this.plugin = plugin;
@@ -123,6 +124,7 @@ public final class BingoGame implements McmGame, Listener {
         if (phase != Phase.IDLE) cleanup(false);
         this.ctx = ctx;
         resetState();
+        if (guard == null) guard = new SpectatorGuard(plugin, this::spectatorZone);
 
         Location center = worldMgr.nextAreaCenter();
         world = center == null ? null : center.getWorld();
@@ -276,10 +278,34 @@ public final class BingoGame implements McmGame, Listener {
     @Override
     public boolean onLateJoin(Player player, McmGameContext ctx) {
         if (phase == Phase.IDLE || phase == Phase.PREPARING || world == null) return false;
-        player.setGameMode(GameMode.SPECTATOR);
-        player.teleport(areaSpawn().add(0, 15, 0));
+        SpectatorGuard.makeSpectator(player, overview());
         player.sendMessage(txt("§7You joined mid-game and are spectating " + displayName() + "."));
         return true;
+    }
+
+    /** How far (blocks, horizontally) from the area centre spectators may fly. */
+    private static final double WATCH_RADIUS = 320;
+
+    /** Above the area centre, looking out over the start circle. */
+    private Location overview() {
+        Location l = areaSpawn().add(0, 15, 0);
+        l.setPitch(35f);
+        return l;
+    }
+
+    private SpectatorGuard.Zone spectatorZone(Player p) {
+        if (!running() || areaCenter == null || !p.getWorld().equals(world)) return null;
+        double cx = areaCenter.getX(), cz = areaCenter.getZ();
+        return new SpectatorGuard.Zone(world, new org.bukkit.util.BoundingBox(cx - WATCH_RADIUS, world.getMinHeight() - 16,
+                cz - WATCH_RADIUS, cx + WATCH_RADIUS, world.getMaxHeight() + 64, cz + WATCH_RADIUS), overview());
+    }
+
+    /** A side that completed the whole card has nothing left to collect: its members watch the rest (owner rule). */
+    private void finishedSideSpectates(String side) {
+        for (Player m : members(side)) {
+            SpectatorGuard.makeSpectator(m, overview());
+            m.sendMessage(txt("§7Your side completed the card - you are spectating until " + displayName() + " ends."));
+        }
     }
 
     // ================================================================ lifecycle helpers
@@ -574,6 +600,7 @@ public final class BingoGame implements McmGame, Listener {
                         Title.Times.times(Duration.ofMillis(100), Duration.ofMillis(2500), Duration.ofMillis(500))));
                 m.playSound(m.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
             }
+            finishedSideSpectates(side);
         }
     }
 

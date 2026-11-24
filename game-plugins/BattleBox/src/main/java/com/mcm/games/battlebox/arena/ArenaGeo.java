@@ -7,7 +7,8 @@ package com.mcm.games.battlebox.arena;
  * <pre>
  *  floor        |x|,|z| &lt;= R                       (R = 17 gives the 35x35 inner floor)
  *  walls        |x| or |z| == R+1, y -1..H          (H = 13), ceiling layer y = H+1; skin at R+2
- *  centre       3x3 cells at y = 3 on a 9x9 two-step dais (steps y 1-2, hazard-stripe ring at y 2)
+ *  centre       3x3 cells at y = 2 set INTO a 9x9 two-step dais, flush with the hazard-stripe ring (y 2);
+ *               sea lanterns sit under the cells (y 1) and in the four ring corners (the lantern frame)
  *  gates        z = -(R+1) / +(R+1), |x| &lt;= 2, y 1..3
  *  spawn rooms  |x| &lt;= 5, |z| in R+2..R+7, floor y 0, ceiling y 5
  * </pre>
@@ -19,7 +20,10 @@ public final class ArenaGeo {
     public final int H = 13;
     public final int W;          // wall coordinate (R + 1)
     public final int CEIL;       // ceiling layer y
-    public final int CENTRE_Y = 3;
+    /** y of the 9 objective cells: inside the dais top, flush with the hazard ring (was 3 = on top of it). */
+    public final int CENTRE_Y = 2;
+    /** y of the hazard-stripe ring around the cells (players stand on it at RING_Y + 1). */
+    public final int RING_Y = 2;
     public final int DAIS = 4;   // dais half-size (steps at 4 and 3, ring at 2, cells at <= 1)
     public final int GATE_HALF = 2, GATE_TOP = 3;
     public final int ROOM_HALF = 5, ROOM_IN, ROOM_OUT, ROOM_CEIL = 5;

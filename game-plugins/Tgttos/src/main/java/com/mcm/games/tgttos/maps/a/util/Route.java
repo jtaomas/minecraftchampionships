@@ -36,6 +36,10 @@ public final class Route {
         public boolean noJumps = false;
         public double maxGap = 4.0;
         public int fallRadius = 17;
+        /** Map rule lethalFallHeight (0 = off): a jump/fall whose drop (+1.25 jump peak) reaches it must land in water. */
+        public int lethal = 0;
+        /** With {@link #lethal}: no lethal-height drop at all, not even into water (dry-descent check). */
+        public boolean dryOnly = false;
 
         public static Params expert(boolean bridge) {
             Params p = new Params();
@@ -258,6 +262,7 @@ public final class Route {
                         boolean ok = rise > 0 ? g <= 4.0 - rise + 1e-6 : g <= gapForDrop(-rise) + 1e-6;
                         if (!ok) break;
                         if (!clear(x, fy, z, x + dx, fy2, z + dz)) break;
+                        if (lethalLanding(-rise, vt)) break;
                         double hd = Math.sqrt(dx * dx + dz * dz);
                         double air = (rise >= 0 ? 11 + rise * 3 : airTicks(-rise)) / 20.0;
                         double c = Math.max(hd / 5.0, air) + p.jumpExtra + (g >= 3 ? p.jumpExtra : 0);
@@ -282,6 +287,7 @@ public final class Route {
                         double vh = hOf(vi), drop = uh - vh;
                         if (g > gapForDrop(drop) - 0.25) break;
                         if (!fallClear(x, fy, z, x + dx, fy2, z + dz)) break;
+                        if (lethalLanding(drop, type(vi))) break;
                         double c = airTicks(drop) / 20.0 + p.jumpExtra;
                         out.add(new Edge(x + dx, fy2, z + dz, How.FALL, c, 0, g, -drop));
                         break;
@@ -289,6 +295,12 @@ public final class Route {
                 }
         }
         return out;
+    }
+
+    /** Lethal-fall rule (off unless {@link Params#lethal} > 0): drop + jump peak >= limit is only survivable in water. */
+    private boolean lethalLanding(double drop, byte landType) {
+        if (p.lethal <= 0 || drop + 1.25 < p.lethal) return false;
+        return p.dryOnly || landType != WATER;
     }
 
     /** Node feet heights in a column, descending (only SOLID/WATER nodes). */

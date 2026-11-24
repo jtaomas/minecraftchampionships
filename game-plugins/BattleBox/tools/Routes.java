@@ -14,7 +14,7 @@ import java.util.Map;
  * stair or slab, or a jump of 1 with headroom over the take-off spot), may drop any height, and need free space in the
  * target column from its feet up to the higher of the two head heights. Ladders can be climbed up and down.
  * The gate glass counts as open, the 9 centre cells and lava as solid. The goal is standing on the hazard ring
- * around the centre cells (feet y 3).
+ * around the centre cells (feet y RING_Y + 1 = 3).
  *
  * Per side: (1) the centre and every lane waypoint must be reachable from the spawn room; (2) for every intended
  * exit, with all the side's other exits closed the centre must still be reachable (the exit works and leads
@@ -25,7 +25,12 @@ public final class Routes {
     private final ArenaGeo geo;
     private List<Grid.Route> closed = new ArrayList<>();
 
-    Routes(Grid g, ArenaGeo geo) { this.g = g; this.geo = geo; }
+    /** Strict player-box model (default). false = the round-2 model, kept only to report what it missed. */
+    final boolean strict;
+
+    Routes(Grid g, ArenaGeo geo) { this(g, geo, true); }
+
+    Routes(Grid g, ArenaGeo geo, boolean strict) { this.g = g; this.geo = geo; this.strict = strict; }
 
     private boolean isClosed(int x, int y, int z) {
         for (Grid.Route r : closed) if (r.contains(x, y, z)) return true;
@@ -123,10 +128,13 @@ public final class Routes {
                 for (Node m : nb) {
                     double rise = m.f - n.f;
                     if (rise > 1.0 + 1e-6) continue;
-                    double headTop = Math.max(n.f, m.f) + 1.8 - 1e-9;
-                    if (!clear(m.x, m.z, m.lo, (int) Math.floor(headTop))) continue;
-                    // stairs/slabs are walked up (auto step); anything else higher than 0.6 needs a jump with headroom
-                    if (rise > 0.6 && !m.step && !clear(n.x, n.z, n.lo, (int) Math.floor(m.f + 1.8 - 1e-9))) continue;
+                    int headCell = (int) Math.floor(Math.max(n.f, m.f) + 1.8 - 1e-9);
+                    if (!clear(m.x, m.z, m.lo, headCell)) continue;
+                    // Player box (0.6 x 1.8): the step-up (stair half, slab, or jump) happens while the box is still
+                    // in the column it leaves, so that column needs headroom up to the HIGHER head height too.
+                    // (The old check only required this for jumps, so a block over a stair step passed.)
+                    if (strict && !clear(n.x, n.z, n.lo, headCell)) continue;
+                    if (!strict && rise > 0.6 && !m.step && !clear(n.x, n.z, n.lo, (int) Math.floor(m.f + 1.8 - 1e-9))) continue;
                     next.add(m);
                 }
             }
@@ -143,7 +151,7 @@ public final class Routes {
 
     private boolean reachesCentre(Map<Long, Node> seen) {
         for (Node n : seen.values())
-            if (Math.max(Math.abs(n.x), Math.abs(n.z)) == 2 && Math.abs(n.f - geo.CENTRE_Y) < 1e-6) return true;
+            if (Math.max(Math.abs(n.x), Math.abs(n.z)) == 2 && Math.abs(n.f - (geo.RING_Y + 1)) < 1e-6) return true;
         return false;
     }
 

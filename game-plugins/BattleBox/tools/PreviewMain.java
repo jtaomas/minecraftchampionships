@@ -20,7 +20,7 @@ public final class PreviewMain {
         File out = new File(args.length > 0 ? args[0] : "previews");
         out.mkdirs();
         ArenaGeo geo = new ArenaGeo();
-        boolean broken = false;
+        boolean broken = !selfTest();
         StringBuilder report = new StringBuilder();
         for (ArenaTheme t : Themes.all()) {
             if (args.length > 1) {
@@ -55,6 +55,11 @@ public final class PreviewMain {
             System.out.print(rr);
             if (!rok[0]) { broken = true; System.out.println("  ROUTES BROKEN " + t.id()); }
             report.append(rr);
+            boolean[] lok = {true};
+            new Routes(g, geo, false).report(t.id(), lok);
+            String cmp = "  (round-2 route model on the same grid: " + (lok[0] ? "pass" : "fail") + ")\n";
+            System.out.print(cmp);
+            report.append(cmp);
 
             g.writeDump(new File(out, t.id() + "_full.mcmdump.gz"), null);
             final int ceil = geo.CEIL;
@@ -72,5 +77,35 @@ public final class PreviewMain {
         }
         Files.write(new File(out, "sightlines.txt").toPath(), report.toString().getBytes(StandardCharsets.UTF_8));
         if (broken) System.exit(2);
+    }
+
+    /**
+     * Validator self-test: a 4-step flight onto a deck at y 4. Clean, it must pass; with one block at head
+     * height above a step (y = step + 2, or y = step + 3 where the head rises while stepping up), or with a block
+     * on the approach, the staircase walk must fail.
+     */
+    static boolean selfTest() {
+        int[][] bad = {{0, 3, 0}, {0, 4, 0}, {0, 6, 2}, {0, 3, -1}};
+        boolean ok = mini(null).isEmpty();
+        if (!ok) System.out.println("  SELF-TEST FAIL: clean staircase reported broken: " + mini(null));
+        for (int[] b : bad) {
+            List<String> e = mini(b);
+            if (e.isEmpty()) { ok = false; System.out.println("  SELF-TEST FAIL: block at " + java.util.Arrays.toString(b) + " not caught"); }
+        }
+        System.out.println("validator self-test: " + (ok ? "OK (clean flight passes, 4 planted head/approach blocks all caught)" : "FAILED"));
+        return ok;
+    }
+
+    private static List<String> mini(int[] block) {
+        Grid g = new Grid(-3, -1, -3, 3, 9, 8);
+        for (int x = -3; x <= 3; x++) for (int z = -3; z <= 8; z++) g.set(x, 0, z, "stone");
+        for (int i = 1; i <= 4; i++) {
+            for (int y = 1; y < i; y++) g.set(0, y, i - 1, "stone");
+            g.set(0, i, i - 1, "oak_stairs[facing=south,half=bottom]");
+        }
+        for (int z = 4; z <= 8; z++) for (int x = -3; x <= 3; x++) for (int y = 1; y <= 4; y++) g.set(x, y, z, "stone");
+        if (block != null) g.set(block[0], block[1], block[2], "stone");
+        g.addLane(new Grid.Lane("test", 0, 0, 0, 0, 1, 4));
+        return g.validateStairs();
     }
 }

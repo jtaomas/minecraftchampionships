@@ -19,7 +19,7 @@ Two MinecraftMondayCore games in one plugin (`McmBingo.jar`):
 **Bingo but Fast**
 - Square, by completion order across sides: 1st +6, 2nd +5, 3rd +4, 4th +3, 5th and later +2
 - Line (row, column or diagonal; 12 in total): +12 each for your first 4, then +6
-- Full card: +30. The game ends early once every remaining side has a full card.
+- Full card: +30. The game ends early once every remaining side has a full card. A side with a full card has nothing left to collect, so its members become spectators (above the start area, kept within 320 blocks of it) until the game ends.
 
 **Lockout Bingo**
 - The first side to obtain an item claims that square: +8. Nobody else can get it after that.
@@ -30,7 +30,7 @@ Two MinecraftMondayCore games in one plugin (`McmBingo.jar`):
 - Items are detected in inventories only, not in chests. Handing an item to another side also counts for that side.
 - At game start the chunks around the start points are generated asynchronously while players wait in the lobby ("preparing a fresh area", usually a few seconds); then everyone is teleported and the countdown starts. Set `debug-timing: true` in `plugins/McmBingo/config.yml` to log the timings.
 - If Windows still has region files locked right after unload, deleting the old world fails. It is retried at the next game start.
-- Late joiners spectate inside the bingo world.
+- Late joiners and rejoiners spectate inside the bingo world, kept within 320 blocks of the start area.
 
 ## Admin testing
 - `/mcm skipwait` ends the start countdown (GO within half a second).

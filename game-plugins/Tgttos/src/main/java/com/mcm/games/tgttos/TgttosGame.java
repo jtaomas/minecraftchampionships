@@ -47,6 +47,7 @@ import java.util.UUID;
 final class TgttosGame implements McmGame {
     static final String ENT_TAG = "tg_ent";
     static final String CHICKEN_TAG = "tg_chicken";
+    static final String DECOY_TAG = "tg_decoy";
 
     enum Phase { IDLE, LOADING, PRE, RUNNING, INTERMISSION, RESULTS }
 
@@ -68,6 +69,11 @@ final class TgttosGame implements McmGame {
         boolean glowing;
         Boat boat;
         String tempMsg; long tempUntil;
+        // movement tracking (gliding knockback, lethal falls)
+        Location lastLoc;
+        Vector vel = new Vector();
+        double airPeakY = Double.NaN;
+        boolean refillPending;
         Racer(UUID id, String name, int rounds) { this.id = id; this.name = name; this.places = new int[rounds]; }
     }
 
@@ -95,6 +101,11 @@ final class TgttosGame implements McmGame {
     private final Set<Long> placed = new HashSet<>();
     private final List<Entity> spawned = new ArrayList<>();
     private final List<Chicken> chickens = new ArrayList<>();
+    private final List<Chicken> decoys = new ArrayList<>();
+    private final Map<UUID, Location> decoyHome = new HashMap<>();
+    /** Chicken punches this round (for /tg info). */
+    private int punchAccepted, punchRejected;
+    private String lastPunch = "-";
 
     private BukkitTask tickTask, secondTask, countdownTask, revealTask;
     private final List<BukkitTask> delayed = new ArrayList<>();
@@ -139,7 +150,7 @@ final class TgttosGame implements McmGame {
         running = true;
         finishCalled = false;
         phase = Phase.LOADING;
-        racers.clear(); sideMembers.clear(); placed.clear(); spawned.clear(); chickens.clear();
+        racers.clear(); sideMembers.clear(); placed.clear(); spawned.clear(); chickens.clear(); decoys.clear(); decoyHome.clear();
         round = 0;
         if (world == null) { abort("§cTGTTOS: game world could not be created."); return; }
 
@@ -240,7 +251,12 @@ final class TgttosGame implements McmGame {
             Material m = Material.matchMaterial(b);
             if (m != null) hazardMats.add(m);
         }
-        for (Racer r : racers.values()) { r.finished = false; r.karma = 0; r.protection = 0; r.lockUntil = 0; }
+        for (Racer r : racers.values()) {
+            r.finished = false; r.karma = 0; r.protection = 0; r.lockUntil = 0;
+            r.airPeakY = Double.NaN; r.lastLoc = null; r.vel = new Vector(); r.refillPending = false;
+        }
+        punchAccepted = punchRejected = 0;
+        lastPunch = "-";
         finishOrder.clear();
         bonusSides.clear();
         roundPts.clear(); roundSidePts.clear(); sideShare.clear();
@@ -280,11 +296,18 @@ final class TgttosGame implements McmGame {
     }
 
     private String kitText(Kit kit) {
+        String fall = cur.map.lethalFallHeight() > 0 ? " §cBig falls only end well in water!" : "";
+        return fallText(kit) + fall;
+    }
+
+    private String fallText(Kit kit) {
         return switch (kit) {
-            case CONCRETE_PICKAXE_SNOWBALLS -> s.concrete + " team concrete, pickaxe, " + s.snowballs + " snowballs. Break rival bridges!";
+            case CONCRETE_PICKAXE_SNOWBALLS -> (s.infiniteBlocks ? "Endless" : String.valueOf(s.concrete)) + " team concrete, pickaxe, "
+                    + s.snowballs + " snowballs. Break rival bridges!";
             case SNOWBALLS_ONLY -> s.snowballs + " snowballs. No building on this one.";
             case BOAT -> "You start in a boat. " + s.snowballs + " snowballs.";
-            case ELYTRA_FIREWORKS -> "Elytra + " + s.fireworks + " firework" + (s.fireworks == 1 ? "" : "s") + ". The floor drops at GO!";
+            case ELYTRA_FIREWORKS -> "Elytra + " + s.fireworks + " firework" + (s.fireworks == 1 ? "" : "s") + ". The floor drops "
+                    + (s.elytraFloorDelaySeconds > 0 ? s.elytraFloorDelaySeconds + " s after GO - shove!" : "at GO!");
         };
     }
 
@@ -295,16 +318,28 @@ final class TgttosGame implements McmGame {
         goMillis = System.currentTimeMillis();
         int ox = plugin.placer().ox(cur.slot), oy = plugin.placer().oy(), oz = plugin.placer().oz(cur.slot);
         for (TgMapData.Pos p : data.startBarrier) world.getBlockAt(ox + p.x(), oy + p.y(), oz + p.z()).setType(Material.AIR, false);
-        for (TgMapData.Pos p : data.dropFloor) world.getBlockAt(ox + p.x(), oy + p.y(), oz + p.z()).setType(Material.AIR, false);
+        // elytra maps: the gantry floor stays a few seconds after GO so racers can punch each other off it
+        boolean holdFloor = cur.map.kit() == Kit.ELYTRA_FIREWORKS && s.elytraFloorDelaySeconds > 0 && !data.dropFloor.isEmpty();
+        if (holdFloor) {
+            int r = round;
+            TgMapData d = data;
+            delay(s.elytraFloorDelaySeconds * 20L, () -> { if (phase == Phase.RUNNING && round == r && data == d) dropFloor(); });
+        } else dropFloor();
         if (!data.startBarrier.isEmpty()) {
             TgMapData.Pos p = data.startBarrier.get(data.startBarrier.size() / 2);
             McmFx.soundAt(new Location(world, ox + p.x(), oy + p.y(), oz + p.z()), Sound.BLOCK_GLASS_BREAK, 2f, 0.8f);
         } else if (data.startBarrier.isEmpty() && data.dropFloor.isEmpty()) {
             plugin.getLogger().warning("TGTTOS map " + cur.map.id() + " has no start barrier; players were only held by the strip check.");
         }
-        if (!data.dropFloor.isEmpty()) McmFx.sound(racingPlayers(), Sound.BLOCK_PISTON_CONTRACT, 1f, 0.6f);
         ctx.setTimer(timeLeft, s.roundSeconds);
         ctx.setSidebarLines(sidebar());
+    }
+
+    private void dropFloor() {
+        if (data.dropFloor.isEmpty()) return;
+        int ox = plugin.placer().ox(cur.slot), oy = plugin.placer().oy(), oz = plugin.placer().oz(cur.slot);
+        for (TgMapData.Pos p : data.dropFloor) world.getBlockAt(ox + p.x(), oy + p.y(), oz + p.z()).setType(Material.AIR, false);
+        McmFx.sound(racingPlayers(), Sound.BLOCK_PISTON_CONTRACT, 1f, 0.6f);
     }
 
     private void endRound(String why) {
@@ -385,6 +420,9 @@ final class TgttosGame implements McmGame {
         p.setFallDistance(0f);
         p.setVelocity(new Vector());
         p.setFireTicks(0);
+        r.airPeakY = Double.NaN;
+        r.lastLoc = null;
+        r.vel = new Vector();
         Kit kit = cur.map.kit();
         if (first) {
             p.setGameMode(kit.bridging() ? GameMode.SURVIVAL : GameMode.ADVENTURE);
@@ -399,7 +437,10 @@ final class TgttosGame implements McmGame {
         } else if (p.getGameMode() != GameMode.SURVIVAL && p.getGameMode() != GameMode.ADVENTURE) {
             p.setGameMode(kit.bridging() ? GameMode.SURVIVAL : GameMode.ADVENTURE);
         }
-        p.setCollidable(false);
+        // Must stay collidable: on CraftBukkit/Paper setCollidable(false) also makes a living entity un-pickable,
+        // so projectiles (our snowballs) fly straight through it. Player collision is already off via the
+        // scoreboard team COLLISION_RULE NEVER (ScoreTeams), which vanilla push logic honours on server and client.
+        p.setCollidable(true);
         if (p.isGliding()) p.setGliding(false);
         if (kit == Kit.BOAT) {
             List<TgMapData.Spawn> bs = data.boatSpawns.isEmpty() ? data.startSpawns : data.boatSpawns;
@@ -486,7 +527,10 @@ final class TgttosGame implements McmGame {
     }
 
     /** Void / hazard / out of bounds: back to the start with the starting kit. */
-    void respawn(Player p, boolean hazard) {
+    void respawn(Player p, boolean hazard) { respawn(p, hazard, null); }
+
+    /** @param fallLine chat line for a lethal fall (null = a void/hazard pun). */
+    private void respawn(Player p, boolean hazard, String fallLine) {
         Racer r = racers.get(p.getUniqueId());
         if (r == null || data == null) return;
         if (tick - r.lastRespawnTick < 5) return;
@@ -494,18 +538,84 @@ final class TgttosGame implements McmGame {
         int idx = rnd.nextInt(Math.max(1, data.startSpawns.size()));
         placeAtStart(p, r, idx, false);
         if (phase == Phase.RUNNING) {
-            List<String> lines = hazard ? s.punsHazard : s.punsVoid;
             String name = McmFx.sideColor(ctx, r.side) + p.getName() + "§7";
-            String line = lines.get(rnd.nextInt(lines.size()));
-            ctx.broadcast("§8☠ §7" + (line.contains("%s") ? String.format(line, name) : name + " " + line));
+            if (fallLine != null) {
+                ctx.broadcast("§8☠ " + name + " " + fallLine);
+                p.sendMessage("§cYou missed the water! §7A fall that big only ends well in water. Back to the start.");
+            } else {
+                List<String> lines = hazard ? s.punsHazard : s.punsVoid;
+                String line = lines.get(rnd.nextInt(lines.size()));
+                ctx.broadcast("§8☠ §7" + (line.contains("%s") ? String.format(line, name) : name + " " + line));
+            }
             McmFx.sound(p, Sound.ENTITY_CHICKEN_HURT, 1f, 0.8f);
             temp(r, "§cBack to the start! §7Kit refilled.");
         }
     }
 
+    /**
+     * Lethal falls (map rule {@code lethalFallHeight() > 0}): tracks the highest point since the racer last stood,
+     * swam, climbed, glided or rode; landing on a non-water block after a drop of at least {@code height} blocks
+     * fails the racer (respawn at the start). Never deals damage.
+     */
+    private void checkFall(Player p, Racer r, double y, int height) {
+        boolean reset = p.isInWater() || p.isGliding() || p.isInsideVehicle() || p.isClimbing() || p.isFlying()
+                || p.hasPotionEffect(PotionEffectType.LEVITATION) || p.hasPotionEffect(PotionEffectType.SLOW_FALLING);
+        if (reset) { r.airPeakY = Double.NaN; return; }
+        @SuppressWarnings("deprecation") boolean ground = p.isOnGround();
+        if (!ground) {
+            if (Double.isNaN(r.airPeakY) || y > r.airPeakY) r.airPeakY = y;
+            return;
+        }
+        double peak = r.airPeakY;
+        r.airPeakY = Double.NaN;
+        if (Double.isNaN(peak)) return;
+        double drop = peak - y;
+        if (drop < height) return;
+        Block under = p.getLocation().clone().add(0, -0.2, 0).getBlock();
+        if (under.getType() == Material.WATER || p.getLocation().getBlock().getType() == Material.WATER) return;
+        plugin.getLogger().info("TGTTOS lethal fall: " + p.getName() + " fell " + String.format("%.1f", drop)
+                + " blocks onto " + under.getType() + " (limit " + height + ") -> back to start");
+        respawn(p, false, "§7fell §c" + (int) Math.round(drop) + " blocks §7and missed the water.");
+    }
+
     private void temp(Racer r, String msg) { r.tempMsg = msg; r.tempUntil = tick + 40; }
 
-    /** Called by the listener when a racer punches a goal chicken. */
+    /**
+     * Any punch on a TGTTOS chicken (goal or decoy), from the listener. Decides, logs why, and finishes the racer
+     * when it is a real goal chicken. {@code via} = which event saw it ("attack" or "damage").
+     */
+    void chickenPunched(Player p, Chicken c, String via) {
+        boolean decoy = isDecoy(c);
+        Racer r = racers.get(p.getUniqueId());
+        String why;
+        if (decoy) why = "decoy chicken (does nothing)";
+        else if (!running) why = "no game running";
+        else if (phase != Phase.RUNNING) why = "round not running (phase " + phase + ")";
+        else if (r == null) why = "not a participant";
+        else if (r.finished) why = "already finished";
+        else if (!p.getWorld().equals(world)) why = "not in the game world";
+        else if (p.getGameMode() == GameMode.SPECTATOR) why = "spectator";
+        else why = null;
+        String where = c.isValid() && data != null && data.pen != null
+                ? (data.pen.contains(lx(c.getLocation().getX()), ly(c.getLocation().getY()), lz(c.getLocation().getZ())) ? "in pen" : "OUTSIDE pen")
+                : "?";
+        if (why != null) {
+            punchRejected++;
+            lastPunch = p.getName() + " rejected: " + why;
+            if (s != null && s.logPunches)
+                plugin.getLogger().info("TGTTOS chicken punch by " + p.getName() + " (" + p.getGameMode() + ", via " + via + ", "
+                        + where + ") REJECTED: " + why);
+            return;
+        }
+        punchAccepted++;
+        lastPunch = p.getName() + " accepted (" + ordinal(finishOrder.size() + 1) + ")";
+        if (s.logPunches)
+            plugin.getLogger().info("TGTTOS chicken punch by " + p.getName() + " (" + p.getGameMode() + ", via " + via + ", "
+                    + where + ") ACCEPTED -> finishes " + ordinal(finishOrder.size() + 1) + " on " + cur.map.id());
+        whack(p, c);
+    }
+
+    /** Finishes a racer (goal chicken punched). Use {@link #chickenPunched} from listeners. */
     void whack(Player p, Chicken chicken) {
         if (!running || phase != Phase.RUNNING) return;
         Racer r = racers.get(p.getUniqueId());
@@ -621,16 +731,48 @@ final class TgttosGame implements McmGame {
                 e.setAgeLock(true);
                 e.setAI(s.chickenWander);
                 e.setSilent(false);
+                e.customName(McmFx.text(s.chickenName));
+                e.setCustomNameVisible(true);
             });
             chickens.add(c);
             spawned.add(c);
         }
+        int bad = 0;
+        for (int[] dp : cur.map.decoyChickens()) {
+            if (dp == null || dp.length < 3) { bad++; continue; }
+            Location l = plugin.placer().loc(world, cur.slot, dp[0] + 0.5, dp[1], dp[2] + 0.5);
+            l.setYaw(rnd.nextFloat() * 360f - 180f);
+            Chicken c = world.spawn(l, Chicken.class, e -> {
+                e.addScoreboardTag(ENT_TAG);
+                e.addScoreboardTag(DECOY_TAG);
+                e.setInvulnerable(true);
+                e.setPersistent(false);
+                e.setRemoveWhenFarAway(false);
+                e.setCollidable(false);
+                e.setAdult();
+                e.setAgeLock(true);
+                e.setAI(false);                     // stands still; put back each second if anything moves it
+                e.setGravity(false);
+                e.setSilent(false);
+                e.setCustomNameVisible(false);
+            });
+            decoys.add(c);
+            decoyHome.put(c.getUniqueId(), l);
+            spawned.add(c);
+        }
+        if (bad > 0) plugin.getLogger().warning("TGTTOS map " + cur.map.id() + ": " + bad + " decoy chicken entries are not {x,y,z}");
+        if (s.logPunches)
+            plugin.getLogger().info("TGTTOS round " + round + " " + cur.map.id() + ": spawned " + chickens.size() + " goal chickens"
+                    + (decoys.isEmpty() ? "" : " + " + decoys.size() + " decoys"));
     }
 
     private void cleanupRound() {
         for (Entity e : new ArrayList<>(spawned)) if (e != null && e.isValid()) e.remove();
         spawned.clear();
         chickens.clear();
+        decoys.clear();
+        decoyHome.clear();
+        flying.clear(); flyingLast.clear(); flyingSince.clear(); snowDone.clear();
         for (Racer r : racers.values()) r.boat = null;
         if (world != null) {
             for (long k : placed) {
@@ -679,7 +821,58 @@ final class TgttosGame implements McmGame {
         return box == null || box.contains(lx(b.getX() + 0.5), ly(b.getY() + 0.5), lz(b.getZ() + 0.5));
     }
 
-    void onPlaced(Block b) { placed.add(key(b)); }
+    void onPlaced(Player p, Block b) {
+        placed.add(key(b));
+        if (s.infiniteBlocks) scheduleRefill(p, b.getType());
+    }
+
+    /** Infinite bridging blocks: top the player's concrete back up to kit.concrete (one pending refill per player). */
+    private void scheduleRefill(Player p, Material m) {
+        Racer r = racers.get(p.getUniqueId());
+        if (r == null || r.refillPending) return;
+        r.refillPending = true;
+        UUID id = p.getUniqueId();
+        delay(s.refillDelayTicks, () -> {
+            r.refillPending = false;
+            Player q = Bukkit.getPlayer(id);
+            if (q != null && q.isOnline() && isRacing(q) && cur.map.kit().bridging()) refill(q, m);
+        });
+    }
+
+    /** Counts every stack of {@code m} (main inventory + off hand) so a refill never adds a second full stack. */
+    private void refill(Player p, Material m) {
+        PlayerInventory inv = p.getInventory();
+        int total = 0;
+        for (int i = 0; i < 36; i++) { ItemStack it = inv.getItem(i); if (it != null && it.getType() == m) total += it.getAmount(); }
+        ItemStack off = inv.getItemInOffHand();
+        if (off.getType() == m) total += off.getAmount();
+        int need = s.concrete - total;
+        if (need <= 0) return;
+        if (off.getType() == m && off.getAmount() < 64) {
+            int add = Math.min(need, 64 - off.getAmount());
+            off.setAmount(off.getAmount() + add);
+            inv.setItemInOffHand(off);
+            need -= add;
+        }
+        for (int i = 0; i < 36 && need > 0; i++) {
+            ItemStack it = inv.getItem(i);
+            if (it == null || it.getType() != m || it.getAmount() >= 64) continue;
+            int add = Math.min(need, 64 - it.getAmount());
+            it.setAmount(it.getAmount() + add);
+            inv.setItem(i, it);
+            need -= add;
+        }
+        // stack used up completely: put it back in its kit slot (0, then 3, 4, ...) or the first free slot
+        int[] pref = {0, 3, 4, 5, 6, 7, 8};
+        for (int i = 0; i < pref.length && need > 0; i++) {
+            ItemStack it = inv.getItem(pref[i]);
+            if (it != null && !it.getType().isAir()) continue;
+            int n = Math.min(64, need);
+            inv.setItem(pref[i], new ItemStack(m, n));
+            need -= n;
+        }
+        if (need > 0) inv.addItem(new ItemStack(m, Math.min(64, need)));
+    }
 
     /** Only player-placed concrete can be broken (anyone's), only while racing. */
     boolean canBreak(Player p, Block b) {
@@ -737,23 +930,121 @@ final class TgttosGame implements McmGame {
         v.protection = Math.min(s.protMax, v.protection + s.protPerHit);
     }
 
-    void snowballHit(Player shooter, Player victim, Vector velocity) {
+    // ------------------------------------------------------------------ snowballs
+
+    /** Racers' snowballs in flight: id -> snowball, and its position at the previous sweep. */
+    private final Map<UUID, org.bukkit.entity.Snowball> flying = new HashMap<>();
+    private final Map<UUID, Vector> flyingLast = new HashMap<>();
+    private final Map<UUID, Long> flyingSince = new HashMap<>();
+    /** Snowballs whose hit was already decided (the three detection paths may all see the same one). */
+    private final Set<UUID> snowDone = new HashSet<>();
+
+    void trackSnowball(org.bukkit.entity.Snowball sb) {
+        if (!running) return;
+        flying.put(sb.getUniqueId(), sb);
+        flyingLast.put(sb.getUniqueId(), sb.getLocation().toVector());
+        flyingSince.put(sb.getUniqueId(), tick);
+    }
+
+    /**
+     * Our own hit test, every tick: the segment each racer snowball moved since the last tick against every other
+     * racer's (slightly grown) hitbox. Does not depend on vanilla projectile picking or on a damage event.
+     */
+    private void sweepSnowballs() {
+        if (flying.isEmpty()) return;
+        List<Player> targets = new ArrayList<>();
+        for (Player p : participants()) if (isRacing(p)) targets.add(p);
+        for (java.util.Iterator<Map.Entry<UUID, org.bukkit.entity.Snowball>> it = flying.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<UUID, org.bukkit.entity.Snowball> en = it.next();
+            UUID id = en.getKey();
+            org.bukkit.entity.Snowball sb = en.getValue();
+            Vector last = flyingLast.get(id);
+            if (!sb.isValid() || snowDone.contains(id) || tick - flyingSince.getOrDefault(id, tick) > 200 || !sb.getWorld().equals(world)) {
+                it.remove(); flyingLast.remove(id); flyingSince.remove(id);
+                continue;
+            }
+            Vector now = sb.getLocation().toVector();
+            flyingLast.put(id, now);
+            if (last == null) continue;
+            Vector seg = now.clone().subtract(last);
+            double len = seg.length();
+            UUID shooter = sb.getShooter() instanceof Player sp ? sp.getUniqueId() : null;
+            for (Player p : targets) {
+                if (p.getUniqueId().equals(shooter)) continue;
+                org.bukkit.util.BoundingBox bb = p.getBoundingBox().expand(0.3);
+                boolean hit = len < 1e-4 ? bb.contains(now) : bb.rayTrace(last, seg.clone().multiply(1 / len), len) != null;
+                if (!hit) continue;
+                snowballHit(sb, p, "sweep");
+                sb.remove();
+                break;
+            }
+        }
+    }
+
+    /** A snowball touched a player (from the hit event, the damage event or the sweep). Decides, logs, knocks back. */
+    void snowballHit(org.bukkit.entity.Snowball sb, Player victim, String via) {
+        if (!snowDone.add(sb.getUniqueId())) return;
+        Player shooter = sb.getShooter() instanceof Player sp ? sp : null;
         Racer v = racers.get(victim.getUniqueId());
-        if (v == null) return;
-        Vector dir = velocity.clone().setY(0);
-        if (dir.lengthSquared() < 1e-6 && shooter != null) dir = victim.getLocation().toVector().subtract(shooter.getLocation().toVector()).setY(0);
+        String why;
+        if (!running || phase != Phase.RUNNING) why = "round not running (phase " + phase + ")";
+        else if (shooter != null && shooter.equals(victim)) why = "own snowball";
+        else if (shooter != null && !isRacing(shooter)) why = "thrower not racing (finished / spectator / not a participant)";
+        else if (v == null) why = "victim not a participant";
+        else if (!isRacing(victim)) why = "victim not racing (finished / spectator)";
+        else why = null;
+        String who = (shooter == null ? "?" : shooter.getName()) + " -> " + victim.getName();
+        if (why != null) {
+            if (s != null && s.logSnowballs) plugin.getLogger().info("TGTTOS snowball " + who + " (via " + via + ") REJECTED: " + why);
+            return;
+        }
+        Vector dir = sb.getVelocity().clone().setY(0);
+        if (dir.lengthSquared() < 1e-6) {
+            Vector last = flyingLast.get(sb.getUniqueId());
+            if (last != null) dir = sb.getLocation().toVector().subtract(last).setY(0);
+        }
+        if (dir.lengthSquared() < 1e-6 && shooter != null)
+            dir = victim.getLocation().toVector().subtract(shooter.getLocation().toVector()).setY(0);
+        String mode = victim.isInsideVehicle() ? "boat" : victim.isGliding() ? "gliding" : "on foot";
+        if (s.logSnowballs) plugin.getLogger().info("TGTTOS snowball " + who + " (via " + via + ", " + mode + ") ACCEPTED");
         knock(victim, v, dir, s.kbSnowH, s.kbSnowV);
+        v.protection = Math.min(s.protMax, v.protection + s.protPerHit);
+        McmFx.soundAt(victim.getLocation(), Sound.BLOCK_SNOW_BREAK, 1f, 1.2f);
+        if (s.snowKarma && shooter != null) {
+            Racer a = racers.get(shooter.getUniqueId());
+            if (a != null && v.karma < s.kGlowFrom) {
+                a.karma += s.kPerPunch;
+                if (a.karma >= s.kLockFrom && a.lockUntil <= tick) {
+                    a.lockUntil = tick + s.kLockSeconds * 20L;
+                    temp(a, "§4Karma lock! §7Too much punching - " + s.kLockSeconds + " s cooldown.");
+                }
+            }
+        }
     }
 
     private void knock(Player victim, Racer v, Vector dirIn, double h, double up) {
         if (dirIn.lengthSquared() < 1e-6) return;
         Vector dir = dirIn.clone().normalize();
         double mult = takenMult(v);
+        Entity veh = victim.getVehicle();
+        if (victim.isGliding() && veh == null) {
+            // Elytra: the server does not know a glider's real velocity (the client flies it), and setVelocity
+            // replaces it. Add the shove to the measured flight velocity instead of wiping it out.
+            Vector fly = v.vel.clone();
+            if (fly.lengthSquared() > 9) fly.normalize().multiply(3);
+            double gm = s.glideKbMult;
+            victim.setVelocity(new Vector(fly.getX() + dir.getX() * h * mult * gm,
+                    fly.getY() + up * 0.6 * Math.min(1.25, mult),
+                    fly.getZ() + dir.getZ() * h * mult * gm));
+            v.lastKnockTick = tick;
+            victim.playHurtAnimation(0);
+            McmFx.soundAt(victim.getLocation(), Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, 0.8f, 1f);
+            return;
+        }
         Vector cur = victim.getVelocity();
         Vector out = new Vector(cur.getX() * 0.5 + dir.getX() * h * mult,
                 Math.min(0.45, Math.max(cur.getY() * 0.5, 0) + up * Math.min(1.25, mult)),
                 cur.getZ() * 0.5 + dir.getZ() * h * mult);
-        Entity veh = victim.getVehicle();
         if (veh != null) veh.setVelocity(out.clone().setY(Math.min(0.2, out.getY())));
         else victim.setVelocity(out);
         v.lastKnockTick = tick;
@@ -786,16 +1077,24 @@ final class TgttosGame implements McmGame {
             Set<String> red = new HashSet<>();
             for (Racer r : racers.values()) { names.add(r.name); if (r.glowing) red.add(r.name); }
             for (Chicken c : chickens) names.add(c.getUniqueId().toString());
+            for (Chicken c : decoys) names.add(c.getUniqueId().toString());
             List<Player> viewers = new ArrayList<>();
             for (Player p : Bukkit.getOnlinePlayers()) if (p.getWorld().equals(world)) viewers.add(p);
             ScoreTeams.sync(viewers, names, red);
         }
         if (phase != Phase.PRE && phase != Phase.RUNNING && phase != Phase.INTERMISSION) return;
+        int lethalFall = cur.map.lethalFallHeight();
+        if (phase == Phase.RUNNING) sweepSnowballs();
         for (Player p : on) {
             if (!p.getWorld().equals(world)) continue;
             Racer r = racers.get(p.getUniqueId());
             Location l = p.getLocation();
             double x = lx(l.getX()), y = ly(l.getY()), z = lz(l.getZ());
+            // measured velocity (blocks/tick) for gliding knockback
+            if (r.lastLoc != null && r.lastLoc.getWorld() == l.getWorld() && r.lastLoc.distanceSquared(l) < 64)
+                r.vel = l.toVector().subtract(r.lastLoc.toVector());
+            else r.vel = new Vector();
+            r.lastLoc = l;
             if (p.getGameMode() == GameMode.SPECTATOR) {
                 if (data.playBounds != null && !data.playBounds.contains(x, y, z)) {
                     TgMapData.Region b = data.playBounds;
@@ -819,7 +1118,8 @@ final class TgttosGame implements McmGame {
                 Block feet = l.getBlock();
                 hz = hazardMats.contains(feet.getType()) || hazardMats.contains(l.clone().add(0, -0.2, 0).getBlock().getType());
             }
-            if (hz) respawn(p, true);
+            if (hz) { respawn(p, true); continue; }
+            if (lethalFall > 0) checkFall(p, r, y, lethalFall);
             if (p.getFireTicks() > 0) p.setFireTicks(0);
         }
     }
@@ -885,6 +1185,14 @@ final class TgttosGame implements McmGame {
             if (!data.pen.contains(lx(l.getX()), ly(l.getY()), lz(l.getZ()))) {
                 TgMapData.Spawn sp = data.chickenSpawns.get(rnd.nextInt(data.chickenSpawns.size()));
                 c.teleport(plugin.placer().loc(world, cur.slot, sp));
+                c.setVelocity(new Vector());
+            }
+        }
+        for (Chicken c : decoys) {
+            if (!c.isValid()) continue;
+            Location home = decoyHome.get(c.getUniqueId());
+            if (home != null && c.getLocation().distanceSquared(home) > 0.09) {
+                c.teleport(home);
                 c.setVelocity(new Vector());
             }
         }
@@ -1045,7 +1353,40 @@ final class TgttosGame implements McmGame {
 
     boolean inWorld(World w) { return running && w != null && w.equals(world); }
 
-    boolean isGameChicken(Entity e) { return e instanceof Chicken && e.getScoreboardTags().contains(CHICKEN_TAG); }
+    /** Goal chicken or decoy (both protected). */
+    boolean isGameChicken(Entity e) {
+        return e instanceof Chicken && (e.getScoreboardTags().contains(CHICKEN_TAG) || e.getScoreboardTags().contains(DECOY_TAG));
+    }
+
+    boolean isDecoy(Entity e) { return e.getScoreboardTags().contains(DECOY_TAG); }
+
+    /** /tg info (no map): live goal chickens and punch log for the running round. */
+    List<String> liveStatus() {
+        List<String> out = new ArrayList<>();
+        if (!running || cur == null || data == null) { out.add("§7No TGTTOS game running."); return out; }
+        out.add("§6Live: §fround " + round + "/" + plan.size() + " §7on §e" + cur.map.id() + " §7(slot " + cur.slot + "), phase §f" + phase);
+        int alive = 0, inPen = 0;
+        for (Chicken c : chickens) {
+            if (!c.isValid()) continue;
+            alive++;
+            Location l = c.getLocation();
+            if (data.pen != null && data.pen.contains(lx(l.getX()), ly(l.getY()), lz(l.getZ()))) inPen++;
+        }
+        int dAlive = 0;
+        for (Chicken c : decoys) if (c.isValid()) dAlive++;
+        out.add("§7Goal chickens: §a" + alive + "§7/" + chickens.size() + " alive, " + inPen + " in pen §8| §7decoys: " + dAlive + "/" + decoys.size()
+                + " §8| §7lethal fall: " + (cur.map.lethalFallHeight() > 0 ? cur.map.lethalFallHeight() + " blocks" : "off"));
+        int shown = 0;
+        for (Chicken c : chickens) {
+            if (!c.isValid() || shown++ >= 6) continue;
+            Location l = c.getLocation();
+            out.add(String.format("§8 - goal §7local %.1f %.1f %.1f §8(world %d %d %d)%s", lx(l.getX()), ly(l.getY()), lz(l.getZ()),
+                    l.getBlockX(), l.getBlockY(), l.getBlockZ(), c.isInvulnerable() ? "" : " §cNOT invulnerable"));
+        }
+        out.add("§7Chicken punches this round: §a" + punchAccepted + " accepted§7, §c" + punchRejected + " rejected§7; last: §f" + lastPunch);
+        out.add("§7Finished: " + finishOrder.size() + "/" + participants().size());
+        return out;
+    }
 
     boolean isOwnBoat(Player p, Entity vehicle) {
         Racer r = racers.get(p.getUniqueId());

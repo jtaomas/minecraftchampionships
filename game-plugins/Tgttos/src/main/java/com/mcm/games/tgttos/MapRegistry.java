@@ -91,6 +91,11 @@ final class MapRegistry {
                 TgMapData d = e.map.build(e.fixedSeed());
                 e.cached = d;
                 e.problems = d.check(e.map.kit());
+                for (int[] dp : e.map.decoyChickens())
+                    if (dp == null || dp.length < 3) e.problems.add("decoy chicken entry is not {x,y,z}");
+                    else if (d.playBounds != null && !d.playBounds.contains(dp[0] + 0.5, dp[1], dp[2] + 0.5))
+                        e.problems.add("decoy chicken outside playBounds at " + dp[0] + " " + dp[1] + " " + dp[2]);
+                if (e.map.lethalFallHeight() < 0) e.problems.add("lethalFallHeight < 0 (treated as off)");
                 e.broken = d.startSpawns.isEmpty() || d.chickenSpawns.isEmpty() || d.pen == null
                         || d.playBounds == null || d.startStrip == null;
                 long ms = (System.nanoTime() - t0) / 1_000_000;

@@ -73,6 +73,7 @@ public final class FootRaceGame implements McmGame, Listener {
     private int finishCount;
     private long raceStartMs;
     private int secondsLeft;
+    private SpectatorGuard guard;
 
     FootRaceGame(JavaPlugin plugin) { this.plugin = plugin; }
 
@@ -87,6 +88,7 @@ public final class FootRaceGame implements McmGame, Listener {
     @Override
     public void start(McmGameContext context) {
         if (state != State.IDLE) stop();
+        if (guard == null) guard = new SpectatorGuard(plugin, this::spectatorZone);
         this.ctx = context;
         runners.clear();
         finishCount = 0;
@@ -143,10 +145,19 @@ public final class FootRaceGame implements McmGame, Listener {
     @Override
     public boolean onLateJoin(Player player, McmGameContext context) {
         if (world == null || state == State.IDLE) return false;
-        player.setGameMode(GameMode.SPECTATOR);
-        player.teleport(Track.spectatorSpot(world));
+        SpectatorGuard.makeSpectator(player, Track.spectatorSpot(world));
         player.sendMessage("§6Foot Race §7is in progress — you are spectating.");
         return true;
+    }
+
+    /** Spectators (finished runners, late joiners) stay over the track: the build box plus a margin. */
+    private static final org.bukkit.util.BoundingBox WATCH_BOX = new org.bukkit.util.BoundingBox(
+            Track.SWEEP_MIN_X - 20, Track.SWEEP_MIN_Y - 10, Track.SWEEP_MIN_Z - 20,
+            Track.SWEEP_MAX_X + 21, Track.SWEEP_MAX_Y + 30, Track.SWEEP_MAX_Z + 21);
+
+    private SpectatorGuard.Zone spectatorZone(Player p) {
+        if (state == State.IDLE || world == null || p.getWorld() != world) return null;
+        return new SpectatorGuard.Zone(world, WATCH_BOX, Track.spectatorSpot(world));
     }
 
     // ------------------------------------------------------------------ world
@@ -517,8 +528,7 @@ public final class FootRaceGame implements McmGame, Listener {
                 + " §7in §f" + fmtMs(r.finishMs) + " §7(best lap §f" + fmtMs(r.bestLapMs) + "§7)");
         p.sendTitle("§a§lFINISHED " + ordinal(r.place), "§f" + fmtMs(r.finishMs) + " §8| §a+" + (bonus + LAP_POINTS), 0, 60, 15);
         p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
-        p.setGameMode(GameMode.SPECTATOR);
-        p.teleport(Track.spectatorSpot(world));
+        SpectatorGuard.makeSpectator(p, Track.spectatorSpot(world));
     }
 
     private void respawn(Player p, Runner r, String msg) {

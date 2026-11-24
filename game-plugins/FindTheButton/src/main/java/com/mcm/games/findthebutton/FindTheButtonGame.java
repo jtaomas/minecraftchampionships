@@ -390,6 +390,21 @@ final class FindTheButtonGame implements McmGame {
         endRound(true);
     }
 
+    /** Late joiners and rejoiners (the core no longer counts them) spectate the current room from the overview. */
+    @Override
+    public boolean onLateJoin(Player player, McmGameContext context) {
+        if (ctx == null || world == null) return false;
+        Location o = overview();
+        if (o == null) return false;   // still building: the core's default spectator mode is fine
+        player.closeInventory();
+        player.getInventory().clear();
+        player.setFireTicks(0);
+        player.setGameMode(GameMode.SPECTATOR);
+        player.teleport(o);
+        player.sendMessage(PREFIX + ChatColor.GRAY + "A round is in progress - you are spectating.");
+        return true;
+    }
+
     void onQuit(Player p) {
         if (ctx == null) return;
         // participants() drops the player; re-check next tick

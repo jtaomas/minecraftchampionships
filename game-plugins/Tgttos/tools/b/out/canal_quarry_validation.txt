@@ -1,0 +1,69 @@
+TGTTOS Frozen Canal + Quarry Steps - validation report (seed 20261124)
+
+=== frozen_canal ===
+  133571 blocks, 52 block types, generated in 516 ms, bounds x -119..213 y -8..51 z -51..212, scenery share 48%
+  ok    inside the contract box (x/z -250..250, y -60..180)
+  ok    material richness: 52 block types (>= 25)
+  ok    every block inside playBounds x/z (spectators can see it all)
+  ok    contract check (TgMapData.check): clean
+  ok    no concrete of any colour in blocks or variants (0); reserved team colours: white,orange,magenta,light_blue,yellow,lime,pink,cyan,purple,blue,green,red
+  ok    start holds 40 players (40 inside the strip, 40 on solid floor with headroom, closest pair 2.05 apart)
+        start strip 42 x 9 (x -21..20, z 0..8), barrier 126 blocks, drop floor 0 blocks
+  ok    every barrier / drop-floor position holds a real block (0 missing)
+  ok    connection post-pass: 1290 fence/pane/wall/bar states set, 1378 leaves, 0 unsupported carpets dropped; re-run changes 0
+  ok    staircase helper: 6 flights (20 columns) walked bottom to top
+  ok    12 goal chicken spawns inside the pen 12 x 12
+  --    no decoy chickens on this map
+  ok    landmark visible from the start: 10 of 10 sampled spawn eyes see it (ray-cast)
+  ok    40 boat spawns (40 on ice inside the start lock with headroom), closest pair 2.05 apart (boat is 1.375 wide)
+  course: main (safe) centre line 1117 blocks, causeway 133 (replaces 161 of ring) -> fast centre line 1089; ice y 0 -> -6; 16968 lane columns
+  segments: 1 Grid Straight 88; 2 Mill Hairpin 49; 3 Weavers' Chicane 142; 4 Cellar Hairpin 47; 5 Cellar Steps 63; 6 Fish Market split 165; 7 Brewery Bend 43; 8 Blue Mile 168; 9 Bell Switchbacks 87; 10 Tannery Sweeper 154; 11 Lantern Bend 35; 12 Barge Basin + finish straight 76;
+  ok    boat continuity: start lock -> dock reachable downhill only (16968 lane columns reachable)
+  ok    no trap pockets: every reachable lane cell can still reach the dock (0 trap cells)
+  ok    unreachable lane cells: 0
+  ok    walls: every reachable lane edge is a full block at boat height (0 open edges)
+  ok    no snags: no fence / slab / stair / lantern / wall post at boat height next to the lane (0)
+  ok    elevation: every drop is <= 1 block (0 bigger), downhill only; 205 up-lips (step faces seen from below and the causeway's open edges - boats can't climb them, by design)
+  ok    lane width: 93% of the main line is >= 11 wide (BDC rule: >= 70%), narrowest 9 at s 820; causeway 5 wide (blue ice, open edges)
+  ok    7 bridges, headroom over the lane centre (blocks): s36:2 s68:2 s355:4 s632:5 s682:5 s732:5 s809:7 (2 = low footbridge: boat fits, a standing player can't hop up)
+  ok    on foot: no way out of the canal onto the town before the finish (0 reachable town cells outside the finish zone; jump model: gap <= 4 level, <= 3 with +1)
+  ok    FOOT FAST  stage -> Dock Stairs (3 wide) -> jetty (3 wide) -> pen: 41 blocks on foot, 1 jumps, est. 7.1 s (expert pace)
+  ok    FOOT SAFE  stage -> side flight (4 wide) -> quay -> east bridge (5 wide) -> pen: 61 blocks on foot, 1 jumps, est. 10.3 s (expert pace)
+  ok    knocked off the jetty onto the mere ice: back to the pen via the skaters' steps in 5.5 s (expert pace)
+  ok    SAFE  boats: middle lines, the walled Fish Market ring, wide barge gaps: 1103 blocks, 6 drops, 0 slush / 243 blue-ice cells, narrowest 3, longest featureless stretch 178 (ends at 124,198), est. 47.0 s (avg 23 b/s)
+  ok    FAST  boats: inside kerbs, the raised causeway, blue stripe, 3-wide barge gaps: 1061 blocks, 6 drops, 0 slush / 428 blue-ice cells, narrowest 3, longest featureless stretch 165 (ends at 120,199), est. 40.8 s (avg 26 b/s)
+  ok    expert totals (boat + 1 s dismount + on foot): FAST 49 s, SAFE 58 s (fast saves 16%)
+  time profile [D]: expert 49-58 s; median (safe line, ~1.5x boat time for wall hits / pile-ups / bad hairpins, + 8 s stairs+jetty crowd) ~90 s; weak players who wall-slam every hairpin or fall off the causeway or jetty repeatedly run out of the 100 s
+  RESULT: all checks passed
+
+=== quarry_steps ===
+  158650 blocks, 79 block types, generated in 208 ms, bounds x -82..82 y -33..70 z -32..158, scenery share 64%
+  ok    inside the contract box (x/z -250..250, y -60..180)
+  ok    material richness: 79 block types (>= 25)
+  ok    every block inside playBounds x/z (spectators can see it all)
+  ok    contract check (TgMapData.check): clean
+  ok    no concrete of any colour in blocks or variants (0); reserved team colours: white,orange,magenta,light_blue,yellow,lime,pink,cyan,purple,blue,green,red
+  ok    start holds 45 players (45 inside the strip, 45 on solid floor with headroom, closest pair 2.33 apart)
+        start strip 36 x 7 (x -18..17, z 0..6), barrier 108 blocks, drop floor 0 blocks
+  ok    every barrier / drop-floor position holds a real block (0 missing)
+  ok    connection post-pass: 1475 fence/pane/wall/bar states set, 1088 leaves, 0 unsupported carpets dropped; re-run changes 0
+  ok    staircase helper: 7 flights (28 columns) walked bottom to top
+  ok    12 goal chicken spawns inside the pen 12 x 12
+  ok    9 decoy chickens: 9 inside playBounds, 0 inside the real pen, 9 standing on a block with headroom
+  ok    landmark visible from the start: 12 of 12 sampled spawn eyes see it (ray-cast)
+  route lines (walk: sprint 5.6 b/s, flat gap <= 4, -1 per block of rise; bridging inside buildBounds, blocks unlimited):
+  ok    SAFE  haul road + cut (choke 3 wide): path 222 blocks, 4 jumps, hardest jump gap 3.0 up 1.0 at (-24,-3,46) (difficulty 4.0), 0 blocks placed, longest straight free stretch 13 (at 43,6,62; limit 15), est. 37.0 s (expert pace)
+  ok    SAFE' haul road + wide ramp: path 230 blocks, 6 jumps, hardest jump gap 3.0 up 1.0 at (-24,-3,46) (difficulty 4.0), 0 blocks placed, longest straight free stretch 13 (at 23,6,70; limit 15), est. 38.7 s (expert pace)
+  ok    the built route is completable without placing blocks (both exits)
+  ok    FAST  bridge straight across (expert 4 b/s): path 110 blocks, 1 jumps, hardest jump gap 3.0 up 1.0 at (18,6,63) (difficulty 4.0), 53 blocks placed, longest straight free stretch 9 (at 18,6,63; limit 15), est. 23.6 s (expert pace)
+  ok    FAST  same line, average bridger 2.2 b/s: path 110 blocks, 1 jumps, hardest jump gap 3.0 up 1.0 at (18,6,63) (difficulty 4.0), 53 blocks placed, longest straight free stretch 9 (at 18,6,63; limit 15), est. 34.5 s (expert pace)
+  ok    straight-line bridging need (corridor |x| <= 18, least-blocks search): 53 blocks (>= 50)
+  ok    bridge exposure: 45 of 53 placed blocks hang over open water (nothing below down to the floor), longest unbroken placed run 53, 3 blocks with any cover beside them (sheet piles)
+  ok    MIXED bridge to the ramp pad, ramp E up (avg bridger): path 137 blocks, 3 jumps, hardest jump gap 3.2 down 2 at (25,-1,37) (difficulty 3.2), 24 blocks placed, longest straight free stretch 14 (at 25,-1,37; limit 15), est. 30.6 s (expert pace)
+  ok    the cut is a 3-wide choke over its whole length (narrowest 3)
+  ok    narrow far-wall ledge x 8..16 is 2 wide with 1-wide pinches (narrowest 1): one snowball and you are swimming
+  ok    9 decoys: 9 reachable on foot, all >= 12 from the real pen (nearest 17); 4 fake pens + scaffold deck
+  ok    expert bridge saves 36% vs the best haul-road line (>= 20%)
+  time profile: expert bridge 24 s, expert road 37 s (cut) / 39 s (ramp), mixed 31 s; median players (x1.6 + crowd at the choke / pen search) road ~67 s, bridge ~53 s
+  RESULT: all checks passed
+

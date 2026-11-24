@@ -185,10 +185,12 @@ public abstract class ArenaTheme {
                     set(x, 2, z, corner ? body : States.stairs(st, face, false));
                 } else if (m == 2) {
                     set(x, 1, z, body);
-                    set(x, 2, z, ((x + z) & 1) == 0 ? "yellow_concrete" : "black_concrete");
+                    // hazard ring; its four corners are sea lanterns (the lantern frame around the cells)
+                    set(x, geo.RING_Y, z, corner ? "sea_lantern" : ((x + z) & 1) == 0 ? "yellow_concrete" : "black_concrete");
                 } else {
-                    set(x, 1, z, body);
-                    set(x, 2, z, "sea_lantern");
+                    // the 9 objective cells sit INSIDE the dais top, flush with the ring, where the sea lanterns
+                    // used to be; the lanterns move underneath (they glow through when a cell is broken)
+                    set(x, 1, z, "sea_lantern");
                     set(x, geo.CENTRE_Y, z, neutral);
                 }
             }
@@ -389,14 +391,17 @@ public abstract class ArenaTheme {
                 sym(cx, cy, cz, States.stairs(stairMat, facing, false));
                 sym(cx, cy + 1, cz, (String) null);
                 sym(cx, cy + 2, cz, (String) null);
+                // stepping up onto the next step lifts the head over THIS step to cy + 3.8: 3 free cells
+                if (i < n) sym(cx, cy + 3, cz, (String) null);
             }
             int ex = lx + dx * n, ez = lz + dz * n, ey = floorY + n;
             if (Shapes.standTop(get(ex, ey, ez)) < 0.99 || Shapes.standTop(get(ex, ey, ez)) > 1.01) sym(ex, ey, ez, support);
             sym(ex, ey + 1, ez, (String) null);
             sym(ex, ey + 2, ez, (String) null);
-            // approach cell headroom
+            // approach cell headroom (3 cells: the head rises while stepping onto step 1)
             sym(lx - dx, floorY + 1, lz - dz, (String) null);
             sym(lx - dx, floorY + 2, lz - dz, (String) null);
+            sym(lx - dx, floorY + 3, lz - dz, (String) null);
             g.addLane(new Grid.Lane(name + " A" + w, lx, lz, floorY, dx, dz, n));
             g.addLane(new Grid.Lane(name + " B" + w, -lx, -lz, floorY, -dx, -dz, n));
         }

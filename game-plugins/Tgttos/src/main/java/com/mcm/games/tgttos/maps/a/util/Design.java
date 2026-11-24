@@ -47,6 +47,12 @@ public final class Design {
     public boolean bridgingKit;
     /** Respawn below this y (copied from data). */
     public int voidY;
+    /** Wide brawl spots (crowd next to a drop), reported by {@link ExtraChecks}. */
+    public final List<Region> brawl = new ArrayList<>();
+    /** Report void crossings per line ({@link ExtraChecks}). */
+    public boolean voidReport;
+    /** Minimum void crossings per line when {@link #voidReport} is on. */
+    public int minVoidCrossings = 0;
 
     public Line line(String name, boolean bridge, boolean fast) {
         Line l = new Line(name, bridge, fast);

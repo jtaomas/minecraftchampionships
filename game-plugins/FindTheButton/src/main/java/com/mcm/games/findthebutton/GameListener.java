@@ -145,10 +145,13 @@ final class GameListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onMove(PlayerMoveEvent e) {
         Player p = e.getPlayer();
-        if (!active(p) || !game.participant(p)) return;
+        if (!active(p)) return;
+        boolean participant = game.participant(p);
+        // late joiners / rejoiners are not participants, but as spectators they are kept in the room too
+        if (!participant && p.getGameMode() != GameMode.SPECTATOR) return;
         Location from = e.getFrom(), to = e.getTo();
         if (to == null) return;
-        if (game.frozen() && (from.getX() != to.getX() || from.getZ() != to.getZ() || to.getY() > from.getY())) {
+        if (participant && game.frozen() &&(from.getX() != to.getX() || from.getZ() != to.getZ() || to.getY() > from.getY())) {
             Location stay = from.clone();
             stay.setYaw(to.getYaw());
             stay.setPitch(to.getPitch());
@@ -185,7 +188,7 @@ final class GameListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
-        if (!active(p) || !game.participant(p)) return;
+        if (!active(p) || (!game.participant(p) && p.getGameMode() != GameMode.SPECTATOR)) return;
         if (e.getCause() != PlayerTeleportEvent.TeleportCause.SPECTATE) return;
         Location to = e.getTo();
         double[] box = game.bounds(0.3);

@@ -100,6 +100,7 @@ public final class SandsOfTimeGame implements McmGame, Listener {
     private McmGameContext ctx;
     private World world;
     private boolean running;
+    private SpectatorGuard guard;
     private int gen;
     private Phase phase;
     private int countdown, playSec;
@@ -132,6 +133,7 @@ public final class SandsOfTimeGame implements McmGame, Listener {
         }
         this.ctx = ctx;
         this.world = w;
+        if (guard == null) guard = new SpectatorGuard(plugin, this::spectatorZone);
         running = true;
         gen++;
         phase = Phase.BUILDING;
@@ -963,6 +965,33 @@ public final class SandsOfTimeGame implements McmGame, Listener {
 
     private PS stateOf(Player p) {
         return states.get(p.getUniqueId());
+    }
+
+    /** The dungeon a spectator watches: their own side's, else the first one. */
+    private Dungeon watchedDungeon(Player p) {
+        PS s = stateOf(p);
+        Dungeon d = s == null ? null : bySide.get(s.side);
+        return d != null ? d : (dungeons.isEmpty() ? null : dungeons.get(0));
+    }
+
+    /** Escaped / trapped players and late joiners stay over their dungeon (owner rule: spectators confined). */
+    private SpectatorGuard.Zone spectatorZone(Player p) {
+        if (!running || world == null || !p.getWorld().equals(world)) return null;
+        Dungeon d = watchedDungeon(p);
+        if (d == null) return null;
+        return new SpectatorGuard.Zone(world, new org.bukkit.util.BoundingBox(d.ox - 12, d.oy - 12, d.oz - 16,
+                d.ox + Dungeon.SIZE + 12, d.oy + 40, d.oz + Dungeon.SIZE + 12), d.viewPos());
+    }
+
+    /** Late joiners and rejoiners (the core no longer counts them) spectate over a dungeon. */
+    @Override
+    public boolean onLateJoin(Player player, McmGameContext context) {
+        if (!running || world == null) return false;
+        Dungeon d = watchedDungeon(player);
+        if (d == null) return false;
+        SpectatorGuard.makeSpectator(player, d.viewPos());
+        player.sendMessage("§6Sands of Time §7is in progress - you are spectating.");
+        return true;
     }
 
     // ================================================================== listeners

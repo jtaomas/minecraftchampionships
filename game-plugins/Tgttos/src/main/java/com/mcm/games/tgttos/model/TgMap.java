@@ -25,4 +25,22 @@ public interface TgMap {
 
     /** Generate the map. See {@link TgMapData} for the coordinate conventions. */
     TgMapData build(long seed);
+
+    /**
+     * Lethal falls (default off). When {@code > 0}: a racer who lands on anything that is not water after
+     * falling at least this many blocks (highest point since last standing / swimming / climbing, minus landing
+     * height) fails and is sent back to a start spawn with a fresh kit, exactly like a void fall, plus a chat
+     * message. No health damage is ever dealt. Gliding, riding, climbing and swimming reset the fall.
+     * {@code 0} = off (every map except a deliberate drop map).
+     */
+    default int lethalFallHeight() { return 0; }
+
+    /**
+     * Decoy chickens (default none). Each entry is a local block position {@code {x, y, z}} (feet block of the
+     * chicken, same local integer convention as {@link TgMapData#pen}); the chicken stands at the block centre
+     * (x + 0.5, y, z + 0.5). Decoys have no name tag (real goal chickens show a visible name), never move, can't
+     * be hurt or pushed, and punching one does nothing. Positions may be inside or outside the pen. Removed at
+     * round end like every other game entity.
+     */
+    default java.util.List<int[]> decoyChickens() { return java.util.List.of(); }
 }

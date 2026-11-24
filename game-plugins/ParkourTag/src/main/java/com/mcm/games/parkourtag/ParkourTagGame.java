@@ -129,6 +129,7 @@ public final class ParkourTagGame implements McmGame, Listener {
     private BukkitTask task;
     private boolean running;
     private boolean finished;
+    private SpectatorGuard guard;
     private Phase phase = Phase.IDLE;
     private int phaseTicks;
     private long tickCount;
@@ -169,6 +170,7 @@ public final class ParkourTagGame implements McmGame, Listener {
     @Override
     public void start(McmGameContext ctx) {
         if (running) cleanup();
+        if (guard == null) guard = new SpectatorGuard(plugin, this::spectatorZone);
         this.ctx = ctx;
         this.running = true;
         this.finished = false;
@@ -338,6 +340,32 @@ public final class ParkourTagGame implements McmGame, Listener {
         Location l = arenaOrigin(arena).add(20.5, ArenaBlueprint.H + 5, 20.5);
         l.setPitch(90f);
         return l;
+    }
+
+    /** Spectator box of one arena copy (the build plus a margin and room above). */
+    private static org.bukkit.util.BoundingBox arenaBox(int arena) {
+        double x0 = arena * SPACING;
+        return new org.bukkit.util.BoundingBox(x0 - 15, BASE_Y - 10, -15,
+                x0 + ArenaBlueprint.W + 15, BASE_Y + ArenaBlueprint.H + 25, ArenaBlueprint.W + 15);
+    }
+
+    /** Tagged runners watch their own match's arena; bye sides and late joiners may watch any arena in use. */
+    private SpectatorGuard.Zone spectatorZone(Player p) {
+        if (!running || world == null || !p.getWorld().equals(world)) return null;
+        Match m = matchOf.get(p.getUniqueId());
+        if (m != null) return new SpectatorGuard.Zone(world, arenaBox(m.arena), spectatorSpot(m.arena));
+        int last = 0;
+        for (Match x : matches) last = Math.max(last, x.arena);
+        return new SpectatorGuard.Zone(world, arenaBox(0).union(arenaBox(last)), spectatorSpot(0));
+    }
+
+    /** Late joiners and rejoiners (the core no longer counts them) spectate above arena 0. */
+    @Override
+    public boolean onLateJoin(Player player, McmGameContext context) {
+        if (!running || world == null) return false;
+        SpectatorGuard.makeSpectator(player, spectatorSpot(0));
+        player.sendMessage("§6Parkour Tag §7is in progress - you are spectating.");
+        return true;
     }
 
     private Location padSpot(Match m, int sideIdx, int slot) {

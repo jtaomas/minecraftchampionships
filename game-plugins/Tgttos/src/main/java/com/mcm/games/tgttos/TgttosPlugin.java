@@ -137,8 +137,10 @@ public final class TgttosPlugin extends JavaPlugin {
                 sender.sendMessage(ChatColor.GREEN + e.map.displayName() + " will be played as the "
                         + (game.isRunning() ? "next round" : "first round of the next game") + ".");
             }
+            case "chickens" -> { for (String l : game.liveStatus()) sender.sendMessage(l); }
             case "info" -> {
-                MapRegistry.Entry e = args.length > 1 ? registry.byId(args[1]) : null;
+                if (args.length == 1) { for (String l : game.liveStatus()) sender.sendMessage(l); return true; }
+                MapRegistry.Entry e = registry.byId(args[1]);
                 if (e == null) { usage(sender, "info"); return true; }
                 TgMapData d = e.cached;
                 sender.sendMessage(ChatColor.GOLD + e.map.displayName() + ChatColor.GRAY + " (" + e.map.id() + ", " + e.map.type() + ", kit " + e.map.kit() + ", slot " + e.slot + ")");
@@ -147,8 +149,11 @@ public final class TgttosPlugin extends JavaPlugin {
                         + ", barrier " + d.startBarrier.size() + ", drop floor " + d.dropFloor.size() + ", boats " + d.boatSpawns.size()
                         + ", variants " + d.variants.size() + ", voidY " + d.voidY + ", hazards " + d.hazardBlocks + " + " + d.hazardRegions.size() + " regions");
                 if (!d.variants.isEmpty()) sender.sendMessage(ChatColor.GRAY + "sample roll: " + Variants.summary(d, Variants.pick(d, new Random())));
+                sender.sendMessage(ChatColor.GRAY + "lethal fall: " + (e.map.lethalFallHeight() > 0 ? e.map.lethalFallHeight() + " blocks (water only)" : "off")
+                        + ", decoy chickens " + e.map.decoyChickens().size() + ", pen " + d.pen);
                 for (String p : e.problems) sender.sendMessage(ChatColor.YELLOW + "! " + p);
                 for (Map.Entry<String, String> n : d.notes.entrySet()) sender.sendMessage(ChatColor.DARK_AQUA + n.getKey() + ": " + ChatColor.WHITE + n.getValue());
+                if (game.isRunning() && game.current() == e) for (String l : game.liveStatus()) sender.sendMessage(l);
             }
             case "tp", "build" -> {
                 MapRegistry.Entry e = args.length > 1 ? registry.byId(args[1]) : null;
@@ -178,7 +183,7 @@ public final class TgttosPlugin extends JavaPlugin {
                 sender.sendMessage(ChatColor.GREEN + "Reloaded config; " + registry.playable().size() + " playable maps.");
             }
             default -> sender.sendMessage(ChatColor.GOLD + "TGTTOS admin: " + ChatColor.YELLOW
-                    + "/tg list | map <id> | info <id> | tp <id> | build <id> | reload");
+                    + "/tg list | map <id> | info [id] | chickens | tp <id> | build <id> | reload");
         }
         return true;
     }
@@ -191,7 +196,7 @@ public final class TgttosPlugin extends JavaPlugin {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> out = new ArrayList<>();
         if (args.length == 1) {
-            for (String s : List.of("list", "map", "info", "tp", "build", "reload")) if (s.startsWith(args[0].toLowerCase(Locale.ROOT))) out.add(s);
+            for (String s : List.of("list", "map", "info", "chickens", "tp", "build", "reload")) if (s.startsWith(args[0].toLowerCase(Locale.ROOT))) out.add(s);
         } else if (args.length == 2) {
             for (String s : registry.ids()) if (s.startsWith(args[1].toLowerCase(Locale.ROOT))) out.add(s);
         }

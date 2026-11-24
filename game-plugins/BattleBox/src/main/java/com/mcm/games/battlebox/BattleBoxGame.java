@@ -40,7 +40,8 @@ import java.util.*;
 
 /**
  * Battle Box v2. Sides play a round robin; every round each pair gets its own freshly generated arena copy
- * (all copies share the round's theme). Kit select (menu) behind glass gates, a 60 s one-life fight, and a
+ * (all copies share the round's theme). Kit select (menu) behind glass gates, a one-life fight (no time limit by
+ * default; config fight-seconds > 0 sets one), and a
  * short results phase. Win by filling the 3x3 centre with your team's blocks, or by having more centre blocks
  * at time-out.
  */
@@ -84,6 +85,8 @@ public final class BattleBoxGame implements McmGame {
     private boolean rotate;
     private String forceTheme;
     private int firstKitSeconds, kitSeconds, fightSeconds, endSeconds, maxRounds;
+    /** Seconds since the gates opened (shown instead of a countdown when there is no fight time limit). */
+    private int fightElapsed;
     private ArenaGeo geo = new ArenaGeo();
 
     private final List<Side> sides = new ArrayList<>();
@@ -131,7 +134,11 @@ public final class BattleBoxGame implements McmGame {
         forceTheme = c.getString("force-theme", "");
         firstKitSeconds = Math.max(5, c.getInt("first-kit-seconds", 20));
         kitSeconds = Math.max(5, c.getInt("kit-seconds", 15));
-        fightSeconds = Math.max(15, c.getInt("fight-seconds", 60));
+        // 0 (default) = no time limit: a round ends only when a side fills the centre, every match is decided
+        // (both sides out, or the practice side is out) or an admin skips it. > 0 = limit in seconds (min 15).
+        int fs = c.getInt("fight-seconds", 0);
+        fightSeconds = fs <= 0 ? 0 : Math.max(15, fs);
+        KitMenu.timeLimit = fightSeconds > 0;
         endSeconds = Math.max(3, c.getInt("end-seconds", 5));
         maxRounds = Math.max(1, Math.min(15, c.getInt("max-rounds", 9)));
         geo = new ArenaGeo();
@@ -548,9 +555,11 @@ public final class BattleBoxGame implements McmGame {
     private void intro() {
         ctx.broadcast(ChatColor.GOLD + "" + ChatColor.BOLD + "Battle Box" + ChatColor.GRAY + " - " + sides.size()
                 + " sides, " + totalRounds + " round" + (totalRounds == 1 ? "" : "s") + ", a new arena every round.");
-        ctx.broadcast(ChatColor.YELLOW + " Pick a kit, then the gates open. One life per round, 60 seconds.");
+        ctx.broadcast(ChatColor.YELLOW + " Pick a kit, then the gates open. One life per round"
+                + (fightSeconds > 0 ? ", " + fightSeconds + " seconds." : ", no time limit."));
         ctx.broadcast(ChatColor.YELLOW + " Fill the " + ChatColor.WHITE + "3x3 centre" + ChatColor.YELLOW
-                + " with your " + (woolMode ? "wool" : "concrete") + " to win instantly; at time-out the most centre blocks wins.");
+                + " with your " + (woolMode ? "wool" : "concrete") + " to win"
+                + (fightSeconds > 0 ? " instantly; at time-out the most centre blocks wins." : " - the round lasts until a side does."));
         ctx.broadcast(ChatColor.GRAY + " Points: " + KILL_POINTS + " per elimination, " + WIN_POINTS + " each for a round win, "
                 + DRAW_POINTS + " for a draw, " + BYE_POINTS + " for a bye.");
         if (sides.size() == 1) ctx.broadcast(ChatColor.GRAY + " Only one side: practice rounds against an empty arena.");
@@ -559,8 +568,14 @@ public final class BattleBoxGame implements McmGame {
 
     private void secondTick() {
         if (!running || ctx == null) return;
-        if (phase != Phase.BUILDING) secondsLeft--;
-        ctx.setTimer(Math.max(0, secondsLeft), Math.max(1, phaseTotal));
+        boolean untimedFight = phase == Phase.FIGHT && fightSeconds <= 0;
+        if (untimedFight) {
+            fightElapsed++;
+            ctx.setTimer(fightElapsed, Math.max(1, fightElapsed));   // boss bar counts up, bar stays full
+        } else {
+            if (phase != Phase.BUILDING) secondsLeft--;
+            ctx.setTimer(Math.max(0, secondsLeft), Math.max(1, phaseTotal));
+        }
         switch (phase) {
             case INTRO -> {
                 if (secondsLeft <= 0) {
@@ -580,6 +595,7 @@ public final class BattleBoxGame implements McmGame {
                 if (secondsLeft <= 0) startFight();
             }
             case FIGHT -> {
+                if (untimedFight) break;   // no limit: only the win conditions (endMatch) end the round
                 if (secondsLeft == 30 || secondsLeft == 10) {
                     for (Player p : inMatches()) {
                         McmFx.actionBar(p, ChatColor.YELLOW + "" + secondsLeft + " seconds left!");
@@ -655,8 +671,10 @@ public final class BattleBoxGame implements McmGame {
 
     private void startFight() {
         phase = Phase.FIGHT;
+        fightElapsed = 0;
         secondsLeft = phaseTotal = fightSeconds;
-        ctx.setTimer(secondsLeft, phaseTotal);
+        if (fightSeconds > 0) ctx.setTimer(secondsLeft, phaseTotal);
+        else ctx.setTimer(0, 1);
         Set<UUID> online = onlineIds();
         for (Match m : matches) {
             openGates(m);
@@ -1211,7 +1229,8 @@ public final class BattleBoxGame implements McmGame {
                         + ChatColor.DARK_GRAY + " | " + ChatColor.AQUA + (theme == null ? "" : theme.displayName()));
                 lines.add(switch (phase) {
                     case KIT -> ChatColor.AQUA + "Kit select";
-                    case FIGHT -> ChatColor.RED + "" + ChatColor.BOLD + "Fight!";
+                    case FIGHT -> ChatColor.RED + "" + ChatColor.BOLD + "Fight!" + (fightSeconds > 0 ? ""
+                            : ChatColor.GRAY + " " + (fightElapsed / 60) + ":" + String.format("%02d", fightElapsed % 60));
                     default -> ChatColor.GRAY + "Round over";
                 });
                 int shown = matches.size() <= 3 ? matches.size() : 2;

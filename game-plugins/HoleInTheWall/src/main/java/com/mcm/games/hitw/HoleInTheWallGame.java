@@ -75,6 +75,9 @@ public final class HoleInTheWallGame implements McmGame, Listener {
     private int platformHalf = Arena.HALF;
     private boolean overdrive;
     private boolean finished;
+    /** Config {@code difficulty-head-start-seconds}: the wall ramp starts as if this much time had passed. */
+    private int headStartSec = 60;
+    private SpectatorGuard guard;
 
     HoleInTheWallGame(HoleInTheWallPlugin plugin) {
         this.plugin = plugin;
@@ -94,6 +97,13 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         this.ctx = context;
         this.finished = false;
         resetFields();
+        try {
+            plugin.reloadConfig();
+            headStartSec = Math.max(0, Math.min(MAIN_SECONDS, plugin.getConfig().getInt("difficulty-head-start-seconds", 60)));
+        } catch (Throwable t) {
+            headStartSec = 60;
+        }
+        if (guard == null) guard = new SpectatorGuard(plugin, this::spectatorZone);
 
         World w = arena.ensureWorld();
         if (w == null) {
@@ -155,6 +165,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
             p.teleport(loc);
         }
         initialCount = alive.size();
+        syncGhosts();
         perElimPoints = initialCount >= 2 ? Math.max(1, Math.min(6, (int) Math.round(40.0 / (initialCount - 1)))) : 0;
 
         context.broadcast("§a§lHole in the Wall §7— walls with holes sweep across the platform.");
@@ -179,6 +190,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         if (wasRunning) {
             renderWalls();
             clearItems();
+            clearGhosts();
             arena.clear();
         }
         rendered.clear();
@@ -193,6 +205,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         if (w == null) { endGame("Arena world unloaded"); return; }
 
         refreshAlive();
+        if (Bukkit.getCurrentTick() % 5 == 0) syncGhosts();
 
         if (state == State.COUNTDOWN) {
             // keep people on the platform while counting down
@@ -218,6 +231,13 @@ public final class HoleInTheWallGame implements McmGame, Listener {
                 waveCooldown = 20;
                 titleAll("§a§lGO!", "§7Find the holes!", 0, 20, 10);
                 soundAll(Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.4f);
+                if (headStartSec > 0) {
+                    List<String> already = new ArrayList<>();
+                    for (WallType t : WallType.values())
+                        if (t.unlockSecond > 0 && t.unlockSecond <= headStartSec) already.add(t.color + t.label);
+                    ctx.broadcast("§7Walls start at level §e" + level() + "§7 (a " + headStartSec + " s head start)"
+                            + (already.isEmpty() ? "." : "; already in play: " + String.join("§7, ", already) + "§7."));
+                }
             }
             return;
         }
@@ -243,7 +263,8 @@ public final class HoleInTheWallGame implements McmGame, Listener {
             else if (sec == 210) shrink(1);
             else if (sec == MAIN_SECONDS) startOverdrive();
             else if (sec >= MAIN_SECONDS + OVERDRIVE_SECONDS) { endGame("Time is up"); return; }
-            if (!overdrive && (sec == 30 || sec == 100 || sec == 140)) announceUnlock(sec);
+            // wall-type unlocks follow the difficulty clock (head start included), announced when they really happen
+            if (!overdrive && sec > 0) announceUnlock(difficultySec());
         }
 
         // waves
@@ -278,8 +299,16 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         }
     }
 
+    /**
+     * Seconds used for the difficulty ramp (wall level / speed / spawn spacing / hole count / wall-type unlocks):
+     * real play time plus the configured head start. The game clock, shrinks, overdrive and scoring use real time.
+     */
+    private int difficultySec() {
+        return elapsedTicks / 20 + headStartSec;
+    }
+
     private int level() {
-        return Math.min(INTERVAL_BY_LEVEL.length, 1 + (elapsedTicks / 20) / 30);
+        return Math.min(INTERVAL_BY_LEVEL.length, 1 + difficultySec() / 30);
     }
 
     private int currentInterval() {
@@ -331,7 +360,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
     }
 
     private EnumSet<WallType> rollTypes() {
-        int sec = elapsedTicks / 20;
+        int sec = difficultySec();
         if (rnd.nextDouble() < 0.10) return EnumSet.of(WallType.SIKE);
         List<WallType> pool = new ArrayList<>();
         for (WallType t : WallType.values()) {
@@ -510,11 +539,9 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         UUID id = p.getUniqueId();
         if (!alive.remove(id)) return;
         eliminations.add(Map.entry(id, elapsedTicks));
-        p.setGameMode(GameMode.SPECTATOR);
-        p.setVelocity(new Vector());
-        p.setFallDistance(0);
+        unGhost(p);
         Location spec = arena.spectatorPoint();
-        if (spec.getWorld() != null) p.teleport(spec);
+        SpectatorGuard.makeSpectator(p, spec.getWorld() != null ? spec : null);
         int remaining = alive.size();
         titleAll(p, "§c§lKnocked off!", "§7" + remaining + " still standing");
         p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_HURT, 1f, 0.7f);
@@ -529,6 +556,93 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         }
     }
 
+    // ------------------------------------------------------------------ ghosts (no collision, translucent to each other)
+
+    private static final String GHOST_TEAM = "hitw_ghost";
+
+    /**
+     * Living players are invisible and share a team with "see friendly invisibles" (so they see each other as
+     * translucent ghosts) and collision rule NEVER. Collision and translucency are decided by each viewer's own
+     * scoreboard, and the core hands every player a fresh scoreboard each second, so this is re-applied on every
+     * living player's current board a few times a second. Never setCollidable(false): on Paper that also makes
+     * players untargetable by projectiles.
+     */
+    private void syncGhosts() {
+        List<String> names = new ArrayList<>();
+        List<Player> living = new ArrayList<>();
+        for (UUID id : alive) {
+            Player p = Bukkit.getPlayer(id);
+            if (p == null || !p.isOnline()) continue;
+            living.add(p);
+            names.add(p.getName());
+            if (!p.hasPotionEffect(org.bukkit.potion.PotionEffectType.INVISIBILITY))
+                p.addPotionEffect(new PotionEffect(org.bukkit.potion.PotionEffectType.INVISIBILITY,
+                        PotionEffect.INFINITE_DURATION, 0, false, false, false));
+        }
+        org.bukkit.scoreboard.Scoreboard main = Bukkit.getScoreboardManager().getMainScoreboard();
+        for (Player v : living) {
+            org.bukkit.scoreboard.Scoreboard sb = v.getScoreboard();
+            if (sb == null || sb == main) continue;   // never touch the main scoreboard
+            org.bukkit.scoreboard.Team t = sb.getTeam(GHOST_TEAM);
+            if (t == null) {
+                t = sb.registerNewTeam(GHOST_TEAM);
+                t.setOption(org.bukkit.scoreboard.Team.Option.COLLISION_RULE, org.bukkit.scoreboard.Team.OptionStatus.NEVER);
+                t.setCanSeeFriendlyInvisibles(true);
+                t.setAllowFriendlyFire(false);
+            }
+            for (String n : names) if (!t.hasEntry(n)) t.addEntry(n);
+            for (String n : new ArrayList<>(t.getEntries())) if (!names.contains(n)) t.removeEntry(n);
+        }
+    }
+
+    /** One player stops being a ghost: effect off, name out of the team on every board. */
+    private void unGhost(Player p) {
+        if (p == null) return;
+        p.removePotionEffect(org.bukkit.potion.PotionEffectType.INVISIBILITY);
+        org.bukkit.scoreboard.Scoreboard main = Bukkit.getScoreboardManager().getMainScoreboard();
+        for (Player v : Bukkit.getOnlinePlayers()) {
+            org.bukkit.scoreboard.Scoreboard sb = v.getScoreboard();
+            if (sb == null || sb == main) continue;
+            org.bukkit.scoreboard.Team t = sb.getTeam(GHOST_TEAM);
+            if (t != null && t.hasEntry(p.getName())) t.removeEntry(p.getName());
+        }
+    }
+
+    /** Game end / stop: nobody is a ghost any more. */
+    private void clearGhosts() {
+        for (UUID id : participants) {
+            Player p = Bukkit.getPlayer(id);
+            if (p != null) p.removePotionEffect(org.bukkit.potion.PotionEffectType.INVISIBILITY);
+        }
+        org.bukkit.scoreboard.Scoreboard main = Bukkit.getScoreboardManager().getMainScoreboard();
+        for (Player v : Bukkit.getOnlinePlayers()) {
+            org.bukkit.scoreboard.Scoreboard sb = v.getScoreboard();
+            if (sb == null || sb == main) continue;
+            org.bukkit.scoreboard.Team t = sb.getTeam(GHOST_TEAM);
+            if (t != null) try { t.unregister(); } catch (IllegalStateException ignored) { }
+        }
+    }
+
+    // ------------------------------------------------------------------ spectators
+
+    /** Spectators stay around the platform (the cleared build box plus some room). */
+    private static final BoundingBox WATCH_BOX = new BoundingBox(-40, Arena.ELIM_Y - 15, -40, 41, Arena.WALL_Y + 40, 41);
+
+    private SpectatorGuard.Zone spectatorZone(Player p) {
+        World w = arena.world();
+        if (state == State.IDLE || w == null || !p.getWorld().equals(w)) return null;
+        return new SpectatorGuard.Zone(w, WATCH_BOX, arena.spectatorPoint());
+    }
+
+    /** Late joiners and rejoiners (the core no longer counts them) spectate from the overview. */
+    @Override
+    public boolean onLateJoin(Player player, McmGameContext context) {
+        if (state == State.IDLE || arena.world() == null) return false;
+        SpectatorGuard.makeSpectator(player, arena.spectatorPoint());
+        player.sendMessage("§a§lHole in the Wall §7is in progress — you are spectating.");
+        return true;
+    }
+
     private boolean checkEnd() {
         if (alive.isEmpty()) { endGame("Everyone fell"); return true; }
         if (initialCount >= 2 && alive.size() <= 1) { endGame("Last one standing"); return true; }
@@ -541,6 +655,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         if (loopTask != null) { loopTask.cancel(); loopTask = null; }
         walls.clear();
         renderWalls();
+        clearGhosts();
 
         // placements: survivors first (tied), then in reverse elimination order grouped by tick
         List<List<UUID>> groups = new ArrayList<>();
@@ -614,6 +729,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         walls.clear();
         renderWalls();
         clearItems();
+        clearGhosts();
         state = State.IDLE;
         ctx = null;
         try {
@@ -715,7 +831,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         int interval = currentInterval();
         double speed = 20.0 / interval * (overdrive ? 2 : 1);
         List<String> lines = new ArrayList<>();
-        lines.add("§7Level §e" + (state == State.COUNTDOWN ? 1 : level()) + (overdrive ? " §c§lOVERDRIVE" : ""));
+        lines.add("§7Level §e" + level() + (overdrive ? " §c§lOVERDRIVE" : ""));
         lines.add("§7Wall speed §b" + String.format(Locale.ROOT, "%.1f", speed) + " b/s");
         lines.add("§7Walls at once §e" + sidesNow);
         lines.add("§7Alive §a" + alive.size() + "§7/" + initialCount);

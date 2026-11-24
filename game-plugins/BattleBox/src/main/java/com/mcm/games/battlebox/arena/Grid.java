@@ -247,6 +247,22 @@ public final class Grid implements MapSink {
                         + " (" + get(cx, cy + 1, cz) + " / " + get(cx, cy + 2, cz) + ")");
                 feet = top;
             }
+            // Player-box sweep (0.6 wide, 1.8 tall): stepping from position i (0 = approach cell) onto i+1 lifts the
+            // box while it is still over column i, so column i needs headroom up to the head height on i+1
+            // (step top + 1.8). For a full-block rise that is 3 free cells above every step except the last one.
+            double prevFeet = l.floorY + 1;
+            for (int i = 0; i < l.n; i++) {
+                int cx = l.x + l.dx * (i - 1), cz = l.z + l.dz * (i - 1);
+                double nextFeet = l.floorY + i + 2;   // top of step i+1
+                int head = (int) Math.floor(nextFeet + 1.8 - 1e-9);
+                for (int y = (int) Math.floor(prevFeet + 1e-9); y <= head; y++)
+                    if (!free(cx, y, cz)) {
+                        errs.add(where + ": head hits " + get(cx, y, cz) + " at (" + cx + "," + y + "," + cz + ") stepping from "
+                                + (i == 0 ? "the approach" : "step " + i) + " onto step " + (i + 1));
+                        break;
+                    }
+                prevFeet = nextFeet;
+            }
             int lx = l.x + l.dx * l.n, lz = l.z + l.dz * l.n, ly = l.floorY + l.n;
             double land = Shapes.standTop(get(lx, ly, lz));
             if (land < 0.99 || land > 1.01) errs.add(where + ": no landing flush with the last step at (" + lx + "," + ly + "," + lz + ") = " + get(lx, ly, lz));

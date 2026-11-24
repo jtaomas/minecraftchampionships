@@ -5,18 +5,21 @@ package com.mcm.games.battlebox.arena;
  * floor and foam play mats.
  *
  * Archetype: <b>bridge level over an open middle</b>. A toy-train viaduct (deck at y 7) crosses the whole room
- * from side wall to side wall straight over the centre, which sits underneath it in an open floor; the deck is
- * glass over the dais. Left and right flanks are deliberately different. Layout per half (side A shown, side B is
- * the 180-degree copy):
+ * from side wall to side wall straight over the centre; above the dais the deck has a <b>skylight hole</b>, so
+ * people crossing it are exposed from below and can drop straight onto the pad. Round 3 adds a mid level and more
+ * ways up and down so the bridge is contested rather than owned. Layout per half (side A, which looks toward +z, so
+ * -x is on its RIGHT; side B is the 180-degree copy):
  * <ul>
- *   <li><b>Packing Room</b> (spawn building, x -7..7, z -17..-12): no front door. Its west exit is a long, low play
- *       tunnel that comes out at the top of the shelf corridor; its east side is a wide open porch onto the
- *       play-mat.</li>
- *   <li><b>Left flank: shelf corridor</b> (x -17..-14): a tight, roofed corridor between the side wall and a
- *       4-high toy-shelf wall with one doorway and two windows into the middle.</li>
- *   <li><b>Right flank: open play-mat</b> with low toy blocks only, and the stair up onto the viaduct.</li>
- *   <li><b>Viaduct:</b> a train carriage parked on the deck on each side of the glass section is the only cover
- *       up there; a ladder on the left pier is the second way up. Arched piers at x +-8 and +-15.</li>
+ *   <li><b>Packing Room</b> (spawn building, x -7..7, z -17..-12): no front door. Exits: a long low play tunnel
+ *       (west), a wide open porch (east) and a <b>roof hatch</b> (ladder) onto the roof.</li>
+ *   <li><b>West flank, two tiers:</b> the tight roofed <b>shelf corridor</b> on the floor (one doorway, two windows),
+ *       and on its roof the <b>shelf-top gallery</b> (stand 6), reached by its own stair at the back wall or over
+ *       the tunnel roof from the spawn roof; from the gallery a short stair climbs onto the viaduct.</li>
+ *   <li><b>East flank:</b> open play-mat with the main viaduct stair and the <b>toy fort</b> (a castle with slit
+ *       windows toward the centre and a crenellated roof, stand 4, reached by an inside ladder): a covered mid
+ *       position right under the bridge.</li>
+ *   <li><b>Viaduct:</b> a carriage on each side of the skylight is the only cover up there; three ways up per side
+ *       (main stair, pier ladder, gallery stair), and you leave it by dropping anywhere.</li>
  * </ul>
  */
 public final class ToyWorkshopTheme extends ArenaTheme {
@@ -26,9 +29,9 @@ public final class ToyWorkshopTheme extends ArenaTheme {
 
     @Override
     public String layoutNotes() {
-        return "Bridge level: a toy-train viaduct (y 7) crosses the room over the open centre, glass deck over the dais | "
-                + "Packing Room spawn: play tunnel exit (left) + wide porch (right) | left flank: tight roofed shelf corridor | "
-                + "right flank: open play-mat with low blocks and the viaduct stair | ladder on the left pier";
+        return "Bridge level: a toy-train viaduct (y 7) over the open centre, skylight hole above the dais | Packing Room spawn: "
+                + "play tunnel + wide porch + roof hatch | west flank: shelf corridor below, shelf-top gallery above (stand 6, "
+                + "stair to the viaduct) | east flank: play-mat, main viaduct stair, toy fort with a roof (stand 4) | pier ladder";
     }
 
     private static final String[] TOY = {"red_concrete", "yellow_concrete", "blue_concrete", "lime_concrete", "orange_concrete"};
@@ -119,6 +122,8 @@ public final class ToyWorkshopTheme extends ArenaTheme {
         shelfCorridor();
         viaduct();
         playMat();
+        toyFort();
+        gallery();
         workbenchCorner();
         for (int[] h : new int[][]{{-16, -15}, {13, -15}, {-3, -9}, {4, -6}}) symHangingLantern(h[0], CEIL - 2, h[1], 2, "lantern");
         int[][] mobiles = {{-4, -6}, {11, -12}, {-10, -14}};
@@ -137,10 +142,15 @@ public final class ToyWorkshopTheme extends ArenaTheme {
         waypoint("porch", 9, 1, -14);
         waypoint("play-mat", 15, 1, -5);
         waypoint("viaduct deck", 12, DECK + 1, -1);
-        waypoint("viaduct glass over the centre", 0, DECK + 1, -2);
         waypoint("viaduct far end", -16, DECK + 1, 0);
         waypoint("under the viaduct", -12, 1, 0);
         waypoint("workbench corner", -9, 1, -11);
+        waypoint("packing room roof", 0, 5, -15);
+        waypoint("tunnel-roof bridge", -15, 4, -13);
+        waypoint("shelf-top gallery", -15, 6, -8);
+        waypoint("toy fort (inside)", 9, 1, -8);
+        waypoint("toy fort roof", 9, 4, -8);
+        waypoint("viaduct edge over the skylight", 0, DECK + 1, -2);
     }
 
     /** Spawn building: x -7..7, z -17..-12, roof y 4; west door into the tunnel, east side an open porch. */
@@ -176,7 +186,10 @@ public final class ToyWorkshopTheme extends ArenaTheme {
         // a long parcel-chute screen along the front wall inside (decor)
         for (int x = -2; x <= 2; x++) sym(x, 3, -13, "spruce_trapdoor[facing=north,half=top,open=false]");
 
+        // roof hatch: a ladder up the back wall through the roof
+        symLadder(-3, -17, 1, 4, S);
         exitDoor("play tunnel", -7, 1, -14, -7, 3, -13);
+        exitDoor("roof hatch", -3, 1, -17, -3, 4, -17);
         exitDoor("east porch", 7, 1, -16, 7, 4, -13);
     }
 
@@ -224,7 +237,7 @@ public final class ToyWorkshopTheme extends ArenaTheme {
             for (int z = -11; z <= -3; z++) sym(x, 5, z, x == -13 ? "stripped_dark_oak_wood[axis=z]" : (z & 1) == 0 ? "spruce_planks" : "dark_oak_slab[type=top]");
         for (int z = -10; z <= -4; z += 3) sym(-15, 4, z, "lantern[hanging=true]");
         // a stack of toy crates at the corridor head
-        toyCube(-17, 1, -15, 2, 1);
+        toyCube(-11, 1, -17, 2, 1);
     }
 
     /** The toy-train viaduct across the middle: deck y 7 (stand on 8), z -2..2, glass over the dais. */
@@ -234,6 +247,7 @@ public final class ToyWorkshopTheme extends ArenaTheme {
                 boolean edge = Math.abs(z) == 2;
                 String b = Math.abs(x) <= 4 && !edge ? "glass" : edge ? "stripped_spruce_wood[axis=x]" : "spruce_planks";
                 if (Math.abs(x) <= 4 && edge) b = "white_concrete";
+                if (Math.abs(x) <= 2 && !edge) b = null;   // skylight hole over the dais
                 sym(x, DECK, z, b);
                 if (z == 0 && Math.abs(x) > 4) sym(x, DECK + 1, 0, "rail[shape=east_west]");
             }
@@ -262,17 +276,52 @@ public final class ToyWorkshopTheme extends ArenaTheme {
         // ladder up the left pier (x -8, climbing on its south face)
         symLadder(-8, -3, 1, DECK, N);
         sym(-8, DECK + 1, -2, "air");
-        for (int x : new int[]{-16, -11, 11}) { sym(x, DECK + 1, -2, "lantern"); }
+        for (int x : new int[]{-11, 11}) { sym(x, DECK + 1, -2, "lantern"); }
+        // the skylight rim: yellow/black hazard trim under the hole edge (visible from below)
+        for (int x = -3; x <= 3; x++) sym(x, DECK - 1, -2, ((x & 1) == 0) ? "yellow_concrete" : "black_concrete");
     }
 
     /** Right flank: open foam play-mat with only low toy blocks. */
     private void playMat() {
-        toyCube(9, 1, -7, 0, 0);
         toyCube(16, 1, -11, 3, 1);
         // stacking rings (1 high) and a ball
         for (int[] p : new int[][]{{10, -4}, {16, -6}}) { sym(p[0], 1, p[1], "orange_concrete"); }
         sym(15, 1, -4, "lime_wool");
         spinningTop(9, -11);
+    }
+
+    /** Toy fort on the east flank: x 8..11, z -9..-6; door toward the spawn, slit windows, ladder to the roof. */
+    private void toyFort() {
+        int x1 = 8, x2 = 11, z1 = -9, z2 = -6;
+        for (int x = x1; x <= x2; x++)
+            for (int z = z1; z <= z2; z++) {
+                boolean edge = x == x1 || x == x2 || z == z1 || z == z2;
+                boolean corner = (x == x1 || x == x2) && (z == z1 || z == z2);
+                for (int y = 1; y <= 2; y++) sym(x, y, z, edge ? (corner ? "blue_concrete" : (y == 1 ? "red_concrete" : "white_concrete")) : null);
+                sym(x, 3, z, edge ? "yellow_concrete" : "oak_planks");
+                if (edge && ((x + z) & 1) == 0) sym(x, 4, z, corner ? "blue_concrete" : "white_concrete");   // crenels
+            }
+        symClear(9, 1, z1, 10, 2, z1);                                     // door toward the spawn
+        sym(9, 2, z2, "iron_bars"); sym(10, 2, z2, "iron_bars");           // slit windows toward the centre
+        sym(x2, 2, -8, "iron_bars");
+        symLadder(10, -7, 1, 3, N);                                        // up through the roof
+        for (int[] c : new int[][]{{x1, z1}, {x2, z2}}) { sym(c[0], 5, c[1], "oak_fence"); sym(c[0], 6, c[1], "red_wool"); }
+        sym(9, 1, -7, "barrel[facing=up]");
+    }
+
+    /**
+     * Shelf-top gallery: the shelf corridor's roof (y 5, stand 6) becomes a mid level with toy-block battlements on
+     * its inner edge. Ways on: a stair along the back wall, or the tunnel roof + a plank bridge from the spawn roof.
+     * Way on up: a 2-wide stair onto the viaduct deck. Way off: drop through any battlement gap.
+     */
+    private void gallery() {
+        staircase("Gallery stair", -17, -16, 0, S, 5, 1, "dark_oak", "dark_oak_planks");
+        // plank bridge from the tunnel roof (stand 4) to the gallery stair (side step onto its 4th step)
+        for (int x = -16; x <= -14; x++) sym(x, 3, -13, x == -15 ? "oak_planks" : "stripped_oak_wood[axis=x]");
+        // battlements on the inner edge (x -13), gaps to drop into the middle
+        for (int z = -11; z <= -5; z++) if (Math.floorMod(z, 3) == 0) sym(-13, 6, z, TOY[Math.floorMod(z, TOY.length)]);
+        staircase("Gallery to viaduct", -16, -4, 5, S, DECK, 2, "dark_oak", "dark_oak_planks");
+        sym(-14, 6, -11, "lantern");
     }
 
     /** Left-middle: workbench, paint pots and a toy-block tower (cover between the corridor and the centre lane). */
@@ -283,6 +332,8 @@ public final class ToyWorkshopTheme extends ArenaTheme {
         }
         sym(-10, 2, -9, "crafting_table"); sym(-9, 2, -9, "smithing_table");
         paintPot(-10, -4, "blue");
+        // toy crates in front of the centre (cover from the viaduct, low enough to shoot over)
+        sym(3, 1, -8, "red_concrete"); sym(4, 1, -8, "yellow_concrete"); sym(4, 1, -7, "blue_concrete"); sym(4, 2, -8, "white_concrete");
         for (int y = 1; y <= 4; y++) { sym(-6, y, -6, TOY[y % TOY.length]); }
         sym(-6, 5, -6, "lightning_rod[facing=up]");
         sym(-3, 1, -6, "red_concrete"); sym(-3, 2, -6, "white_concrete");

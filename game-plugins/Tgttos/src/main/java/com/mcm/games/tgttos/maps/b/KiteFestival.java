@@ -1,9 +1,13 @@
 package com.mcm.games.tgttos.maps.b;
 
+import com.mcm.games.tgttos.maps.b.KiteCourse.Hole;
+import com.mcm.games.tgttos.maps.b.KiteCourse.K;
+import com.mcm.games.tgttos.maps.b.KiteCourse.Piece;
+import com.mcm.games.tgttos.maps.b.KiteCourse.Screen;
+import com.mcm.games.tgttos.maps.b.KiteCourse.Tube;
 import com.mcm.games.tgttos.maps.b.util.G;
 import com.mcm.games.tgttos.maps.b.util.Noise;
 import com.mcm.games.tgttos.maps.b.util.Noise.Pal;
-import com.mcm.games.tgttos.maps.b.util.Stairs;
 import com.mcm.games.tgttos.model.Kit;
 import com.mcm.games.tgttos.model.MapType;
 import com.mcm.games.tgttos.model.TgMap;
@@ -12,15 +16,26 @@ import com.mcm.games.tgttos.model.TgMapData.Pos;
 import com.mcm.games.tgttos.model.TgMapData.Region;
 import com.mcm.games.tgttos.model.TgMapData.Spawn;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.mcm.games.tgttos.maps.b.KiteCourse.FIELD_Y;
+import static com.mcm.games.tgttos.maps.b.KiteCourse.GANTRY_Y;
+import static com.mcm.games.tgttos.maps.b.KiteCourse.HW;
+import static com.mcm.games.tgttos.maps.b.KiteCourse.LA;
+import static com.mcm.games.tgttos.maps.b.KiteCourse.LD;
+import static com.mcm.games.tgttos.maps.b.KiteCourse.crestY;
+import static com.mcm.games.tgttos.maps.b.KiteCourse.floorY;
+
 /**
- * Kite Festival (elytra). A launch gantry high above a winding green valley between two floating ridges; the
- * gantry floor drops at GO. Three festival arches close the valley: striped banner screens with one small window
- * (5 x 5) low down and a crossbar on top. Above the crossbars the sky is full of tethered kites: the high (safe)
- * line clears every arch but has to slalom round the kites and their tethers; the low (fast) line dives and threads
- * the three windows in a straight line, then uses its speed to pull up onto the goal meadow. Goal: a fenced
- * meadow pen on a floating hill under a giant kite on a mast (landmark).
+ * Kite Festival (elytra), v2. A ~1,400-block elytra course folded into the slot as a festival canyon: four legs
+ * and three hairpins between tall striped windbreaks, descending from a launch gantry at local y 170 to a landing
+ * meadow at y -30. Every gate is a giant kite banner stretched wall to wall with colour-coded openings (lime =
+ * safe 9-11, orange = fast 6-7, red = needle 4-5), plus a tunnel split, a ring stack, a mast forest and a red-glass
+ * finish frame. The canyon has a meadow floor: a racer who loses height lands instead of dying and relaunches with a
+ * rocket, or climbs one of five wall ledges. Leaving the canyon (over a windbreak) is a hazard: back to the start.
  *
- * <p>Local frame: gantry floor y 40 (x -18..17, z 0..6), valley void below, goal meadow top y 17, course +Z.
+ * <p>Plan data (centre line, altitude profiles, screens, tubes) lives in {@link KiteCourse}; see the README section.
  */
 public final class KiteFestival implements TgMap {
 
@@ -32,304 +47,436 @@ public final class KiteFestival implements TgMap {
     @Override
     public TgMapData build(long seed) { return generate(seed).d; }
 
-    public static final int GANTRY_Y = 40, MEADOW_Y = 17, LEDGE = 10, HALF = 24;
-    /** Arches: z, top of the banner wall (crossbar), window bottom y (window 5 x 5 at the centre), side of the big gate (-1/+1), gate bottom y (gate 9 wide x 10 high at the valley wall). */
-    public static final int[][] ARCHES = {{45, 47, 19, 1, 24}, {80, 52, 15, -1, 19}, {112, 56, 12, 1, 15}};
-    /** Kites: z, x offset from the valley centre, centre y, half width, tether side (-1 / +1). */
-    public static final int[][] KITES = {{22, -4, 39, 5, -1}, {33, 5, 37, 6, -1}, {60, -8, 37, 6, -1}, {70, 5, 33, 6, 1},
-            {93, -4, 32, 6, -1}, {102, 5, 30, 6, 1}};
+    /** Extra rockets on top of the kit's {@code kit.fireworks} (2): total 16. */
+    public static final int EXTRA_ROCKETS = 14;
 
-    static final Pal GRASS = new Pal("grass_block", 6, "moss_block", 1);
-    static final Pal ROCK = new Pal("stone", 5, "andesite", 2, "tuff", 1, "cobblestone", 1);
-    static final String[] WOOL = {"red_wool", "white_wool", "yellow_wool"};
+    /** Decoy chickens on hay bales in the landing field (no name tag; punching them does nothing). */
+    public static final List<int[]> DECOYS = List.of(new int[]{151, FIELD_Y + 2, 112}, new int[]{180, FIELD_Y + 2, 106},
+            new int[]{149, FIELD_Y + 2, 90}, new int[]{181, FIELD_Y + 2, 88});
 
-    /** Valley centre line x(z). */
-    public static double cx(double z) {
-        if (z <= 30) return 0;
-        if (z <= 60) return (z - 30) / 30.0 * 10;
-        if (z <= 95) return 10 - (z - 60) / 35.0 * 18;
-        if (z <= 125) return -8 + (z - 95) / 30.0 * 8;
-        return 0;
-    }
+    @Override public List<int[]> decoyChickens() { return DECOYS; }
+
+    /** Wall ledges (relaunch points): {x, z of the ladder, platform y, inward dx, inward dz}. Filled by generate. */
+    public static final List<int[]> LEDGES = new ArrayList<>();
+    /** Hazard boxes outside the canyon (filled by generate; also in TgMapData.hazardRegions). */
+    public static final int PEN_X1 = 160, PEN_X2 = 171, PEN_Z1 = 72, PEN_Z2 = 83, CHOKE_Z = 96;
+
+    static final Pal GRASS = new Pal("grass_block", 10, "moss_block", 1);
+    static final Pal ROCK = new Pal("stone", 5, "andesite", 3, "tuff", 2, "cobblestone", 1);
+    static final Pal ROCK_LOW = new Pal("deepslate", 3, "tuff", 3, "cobbled_deepslate", 2, "andesite", 1);
+    /** Windbreak canvas stripe colours per centre-line piece. */
+    static final String[][] CANVAS = {{"white_wool", "yellow_wool"}, {"white_wool", "yellow_wool"}, {"white_wool", "light_blue_wool"},
+            {"white_wool", "light_blue_wool"}, {"white_wool", "pink_wool"}, {"white_wool", "pink_wool"}, {"white_wool", "purple_wool"}};
+    static final String[] BUNTING = {"red_carpet", "yellow_carpet", "light_blue_carpet", "lime_carpet", "magenta_carpet", "orange_carpet"};
+    /** Kite banner colour pairs (avoid the ring colours lime / orange / red). */
+    static final String[][] KITE = {{"white_wool", "purple_wool"}, {"white_wool", "cyan_wool"}, {"white_wool", "magenta_wool"},
+            {"light_blue_wool", "purple_wool"}, {"yellow_wool", "cyan_wool"}};
 
     public G generate(long seed) {
         TgMapData d = new TgMapData(id(), seed);
         G g = new G(d);
-        g.scenery = true;
-        ridges(g);
-        g.scenery = false;
+        LEDGES.clear();
+        boolean[][] outside = new boolean[501][501];
+        canyon(g, outside);
+        for (int i = 0; i < KiteCourse.SCREENS.size(); i++) screen(g, KiteCourse.SCREENS.get(i), i);
+        for (Tube t : KiteCourse.TUBES) tube(g, t);
         gantry(g);
-        for (int[] a : ARCHES) arch(g, a[0], a[1], a[2], a[3], a[4]);
-        for (int[] k : KITES) kite(g, k);
-        meadow(g);
+        ledges(g);
+        field(g);
         g.scenery = true;
+        floorProps(g);
         skyKites(g);
         g.scenery = false;
+        hazards(d, outside);
 
-        d.voidY = 0;
-        d.playBounds = Region.of(-70, -5, -14, 70, 90, 172);
-        d.overviewPoints.add(new Spawn(0.5, 60, -12.5, 0f, 25f));
-        d.overviewPoints.add(new Spawn(30.5, 45, 80.5, 90f, 20f));
-        d.notes.put("safeLine", "over the three arch crossbars, slaloming round the six kites and their tethers");
-        d.notes.put("fastLine", "dive and thread the three 5x5 arch windows (y 19 / 15 / 12), pull up onto the meadow");
+        d.voidY = FIELD_Y - 20;
+        d.playBounds = Region.of(-250, -60, -250, 250, 200, 250);
+        d.extraItems.add("minecraft:firework_rocket:" + EXTRA_ROCKETS);
+        d.overviewPoints.add(new Spawn(LA, GANTRY_Y + 6, -6.5, 0f, 18f));
+        d.overviewPoints.add(new Spawn(0.5, 195, -40.5, 0f, 55f));
+        d.notes.put("course", String.format("~%.0f blocks of centre line, gantry y %d -> meadow y %d, 4 legs + 3 hairpins, %d gates",
+                KiteCourse.LEN, GANTRY_Y, FIELD_Y, KiteCourse.SCREENS.size()));
+        d.notes.put("safeLine", "lime 9-11 openings, outside of the hairpins, 11x11 tunnel, low ring of the stack, slalom round the needles");
+        d.notes.put("fastLine", "orange 6-7 openings on the inside, 5x5 tunnel with two bends, high red 5 of the stack, three 4x4 red needles");
+        d.notes.put("rockets", "kit " + 2 + " + " + EXTRA_ROCKETS + " extra (TgMapData.extraItems); no refills (not supported by the runtime)");
+        d.notes.put("failure", "landing on the meadow floor is not a fail: relaunch with a rocket or climb a wall ledge; leaving the canyon = back to start");
         g.finish();
         return g;
     }
 
-    // ------------------------------------------------------------------ ridges
+    // ------------------------------------------------------------------ canyon: floor + windbreak walls
 
-    private void ridges(G g) {
-        for (int z = -14; z <= 170; z++) {
-            double c = cx(z);
-            for (int side = -1; side <= 1; side += 2)
-                for (int t = 0; t <= 16; t++) {
-                    double n = Noise.fbm2((c + side * (HALF + t)) * 0.07, z * 0.07, g.seed + (side > 0 ? 5 : 9));
-                    double wid = 11 + 6 * n;
-                    if (t > wid) continue;
-                    int x = (int) Math.floor(c) + side * (HALF + t) + (side < 0 ? -1 : 0);
-                    double fall = z > 118 ? (z - 118) * 0.55 : z < -2 ? (-2 - z) * 1.2 : 0;
-                    int top = (int) Math.round(33 + t * 0.9 + n * 7 - fall - (t > wid - 3 ? (t - (wid - 3)) * 3 : 0));
-                    if (top < 8) continue;
-                    int bottom = top - 4 - (int) ((1 - t / 17.0) * 10 * (0.5 + n));
-                    for (int y = bottom; y <= top; y++) {
-                        String s = y == top ? GRASS.at(x, y, z, g.seed) : y >= top - 2 ? "dirt" : ROCK.at(x, y, z, g.seed);
-                        if (y == top && top >= 47) s = "stone";
-                        g.set(x, y, z, s);
-                    }
-                    // dressing on the ridge
-                    double r = g.rnd(x, top, z);
-                    if (r < 0.012 && t > 2 && t < wid - 3) tree(g, x, top + 1, z);
-                    else if (r < 0.10) g.setIfAir(x, top + 1, z, r < 0.05 ? "short_grass" : r < 0.07 ? "poppy" : r < 0.085 ? "dandelion" : "oxeye_daisy");
+    private void canyon(G g, boolean[][] outside) {
+        for (int x = -250; x <= 250; x++)
+            for (int z = -250; z <= 250; z++) {
+                double[] n = KiteCourse.nearest(x + 0.5, z + 0.5);
+                double s = n[0], dist = n[1], cap = n[3];
+                Piece p = KiteCourse.PIECES.get((int) n[2]);
+                double bw = p.arc() ? 1.6 : 1.0;
+                boolean in = cap == 0 && dist <= HW;
+                boolean wall = !in && (cap == 0 ? dist <= HW + bw : cap <= 3 && dist <= HW + bw);
+                if (in) floorCol(g, x, z, s, dist);
+                else if (wall) wallCol(g, x, z, s, (int) n[2]);
+                else outside[x + 250][z + 250] = cap > 0 ? cap > 4 || dist > HW + 2.5 : dist > HW + 2.5;
+            }
+    }
+
+    private void floorCol(G g, int x, int z, double s, double dist) {
+        int f = floorY(s);
+        g.set(x, f, z, GRASS.at(x, f, z, g.seed));
+        double r = g.rnd(x, f, z, 3);
+        if (r < 0.06) g.set(x, f + 1, z, r < 0.025 ? "short_grass" : r < 0.035 ? "poppy" : r < 0.045 ? "dandelion" : r < 0.053 ? "cornflower" : "oxeye_daisy");
+        // the floor steps down along the course: fill the riser so the meadow never shows a crack
+        int fn = floorY(s + 1.5);
+        if (fn < f) g.set(x, f - 1, z, "dirt");
+    }
+
+    private void wallCol(G g, int x, int z, double s, int piece) {
+        int f = floorY(s), c = crestY(s), fb = floorY(s + 4) - 2;
+        int si = (int) Math.floor(s);
+        double nz = Noise.fbm2(s * 0.08, piece * 7.0, g.seed + 41);
+        int rockTop = f + 7 + (int) Math.round(nz * 6);
+        String[] cv = CANVAS[piece];
+        boolean post = Math.floorMod(si, 9) == 0;
+        for (int y = fb; y < c; y++) {
+            String b;
+            if (y <= rockTop) b = y < f + 3 ? ROCK_LOW.at(x, y, z, g.seed) : y == rockTop ? "moss_block" : ROCK.at(x, y, z, g.seed);
+            else if (post) b = Math.floorMod(y, 6) == 0 ? "shroomlight" : "spruce_log";
+            else b = cv[Math.floorMod(si / 3, 2)];
+            g.set(x, y, z, b);
+        }
+        g.set(x, c, z, post ? "stripped_dark_oak_log" : "dark_oak_planks");
+        if (((x + z) & 1) == 0) g.set(x, c + 1, z, BUNTING[Math.floorMod(si / 2, BUNTING.length)]);
+    }
+
+    // ------------------------------------------------------------------ kite banner screens
+
+    private void screen(G g, Screen sc, int idx) {
+        double s = sc.s();
+        int f = floorY(s), c = crestY(s), z = sc.z();
+        double lx = KiteCourse.legX(sc.leg());
+        int xa = (int) Math.floor(lx - HW - 1), xb = (int) Math.floor(lx + HW + 1);
+        String[] kite = KITE[idx % KITE.length];
+        double cy = (f + c) / 2.0, ha = HW - 0.5, hb = (c - f) / 2.0 - 1;
+        int door = (int) Math.floor(lx + 16);
+        for (int x = xa; x <= xb; x++)
+            for (int y = f + 1; y <= c; y++) {
+                String b = null;
+                Hole in = null;
+                int frame = 0;   // 1 = inner ring, 2 = outer ring
+                for (Hole h : sc.holes()) {
+                    int y0 = h.slot() ? f + 1 : h.y0(), y1 = h.slot() ? c - 1 : h.y0() + h.h() - 1;
+                    int dx = x < h.x0() ? h.x0() - x : x > h.x0() + h.w() - 1 ? x - (h.x0() + h.w() - 1) : 0;
+                    int dy = y < y0 ? y0 - y : y > y1 ? y - y1 : 0;
+                    int m = Math.max(dx, dy);
+                    if (m == 0) { in = h; frame = 0; break; }
+                    if (m <= 2 && (frame == 0 || m < frame)) { frame = m; in = h; }
+                }
+                if (in != null && frame == 0) { g.set(x, y, z, null); continue; }
+                if (in != null && frame == 1 && !(in.slot() && (y == c))) {
+                    b = ringBlock(in, x, y, f, c);
+                } else if (in != null && frame == 2 && in.k() != K.FINISH && sc.style() != 1) {
+                    b = "black_wool";
+                } else if (y == c) {
+                    b = sc.style() == 1 ? "stripped_spruce_log[axis=x]" : "dark_oak_planks";
+                } else if (sc.style() == 1) {
+                    int m3 = Math.floorMod(x, 3);
+                    b = m3 < 2 ? (Math.floorMod(y, 7) == 0 ? "shroomlight" : (m3 == 0 ? "spruce_log" : "stripped_spruce_log"))
+                            : new String[]{"red_wool", "white_wool", "yellow_wool"}[Math.floorMod(y / 2, 3)];
+                } else if (sc.style() == 3) {
+                    b = Math.floorMod(x + y, 4) < 2 ? "white_wool" : "red_wool";
+                } else {
+                    double u = (x + 0.5 - lx) / ha, v = (y + 0.5 - cy) / hb;
+                    double e = Math.abs(u) + Math.abs(v);
+                    if (e <= 1) {
+                        if (e > 0.93) b = "dark_oak_planks";
+                        else if (Math.abs(x + 0.5 - lx) < 0.6 || Math.abs(y + 0.5 - cy) < 0.6) b = "stripped_spruce_log";
+                        else b = (u >= 0) == (v >= 0) ? kite[0] : kite[1];
+                    } else b = sc.style() == 2 ? (Math.floorMod(y, 4) == 0 ? "light_blue_wool" : "blue_wool") : "blue_wool";
+                }
+                // walk-through door at the floor (for racers who landed)
+                if (sc.style() != 1 && sc.style() != 3 && x == door && y <= f + 2) b = null;
+                else if (sc.style() != 1 && sc.style() != 3 && x == door && y == f + 3 && in == null) b = "spruce_planks";
+                g.set(x, y, z, b);
+            }
+        // bunting on the crest beam, a lantern each end of the frames
+        g.scenery = true;
+        for (int x = xa; x <= xb; x++) if (Math.floorMod(x, 2) == 0) g.set(x, c + 1, z, BUNTING[Math.floorMod(x / 2 + idx, BUNTING.length)]);
+        g.scenery = false;
+    }
+
+    private String ringBlock(Hole h, int x, int y, int f, int c) {
+        int y0 = h.slot() ? f + 1 : h.y0(), y1 = h.slot() ? c - 1 : h.y0() + h.h() - 1;
+        boolean corner = (x == h.x0() - 1 || x == h.x0() + h.w()) && (y == y0 - 1 || y == y1 + 1);
+        boolean glow = corner || (h.slot() && Math.floorMod(y, 5) == 0) || (!h.slot() && h.w() >= 9 && (x == Math.floor(h.cx()) || y == y0 + h.h() / 2));
+        return switch (h.k()) {
+            case SAFE -> glow ? "verdant_froglight" : "lime_wool";
+            case FAST -> glow ? "ochre_froglight" : "orange_wool";
+            case NEEDLE -> glow ? "pearlescent_froglight" : "red_wool";
+            case FINISH -> corner || Math.floorMod(x + y, 3) == 0 ? "sea_lantern" : "red_stained_glass";
+        };
+    }
+
+    // ------------------------------------------------------------------ tunnel tubes
+
+    private void tube(G g, Tube t) {
+        boolean safe = t.k() == K.SAFE;
+        int th = safe ? 1 : 2;
+        for (int z = 63; z <= 131; z++) {
+            int x0 = t.x0(z), y0 = t.y0(z), w = t.inner();
+            for (int x = x0 - th; x < x0 + w + th; x++)
+                for (int y = y0 - th; y < y0 + w + th; y++) {
+                    boolean inside = x >= x0 && x < x0 + w && y >= y0 && y < y0 + w;
+                    if (inside) { g.set(x, y, z, null); continue; }
+                    boolean ringIn = x >= x0 - 1 && x <= x0 + w && y >= y0 - 1 && y <= y0 + w;
+                    String b;
+                    if (safe) b = Math.floorMod(z, 6) == 0 ? "verdant_froglight" : (y == y0 - 1 ? "moss_block" : "lime_wool");
+                    else b = ringIn ? (Math.floorMod(z, 4) == 0 ? "ochre_froglight" : "orange_wool") : "spruce_planks";
+                    g.set(x, y, z, b);
                 }
         }
-        // festival tents on the ridges
-        int[][] tents = {{-30, 30}, {28, 52}, {-24, 90}, {22, 104}, {-30, 64}, {27, 18}};
-        for (int[] t : tents) tent(g, t[0], t[1]);
     }
 
-    private int ground(G g, int x, int z) {
-        for (int y = 60; y > 0; y--) { String s = g.get(x, y, z); if (s != null && !s.contains("grass[") && !s.contains("short_grass") && !s.contains("poppy") && !s.contains("dandelion") && !s.contains("daisy")) return y; }
-        return -1;
-    }
-
-    private void tree(G g, int x, int y, int z) {
-        int h = 4 + (int) (g.rnd(x, 7, z) * 3);
-        for (int i = 0; i < h; i++) g.set(x, y + i, z, "oak_log");
-        for (int dy = h - 2; dy <= h + 1; dy++) {
-            int r = dy >= h ? 1 : 2;
-            for (int dx = -r; dx <= r; dx++)
-                for (int dz = -r; dz <= r; dz++)
-                    if (Math.abs(dx) + Math.abs(dz) <= r + 1 && !(dx == 0 && dz == 0 && dy < h)) g.setIfAir(x + dx, y + dy, z + dz, "oak_leaves[persistent=true,distance=7]");
-        }
-    }
-
-    private void tent(G g, int x0, int z0) {
-        int base = ground(g, x0, z0);
-        if (base < 0) return;
-        for (int dy = 0; dy <= 4; dy++) {
-            int r = 4 - dy;
-            for (int dx = -r; dx <= r; dx++)
-                for (int dz = -3; dz <= 3; dz++) {
-                    boolean shell = Math.abs(dx) == r || dy == 4 || Math.abs(dz) == 3;
-                    if (!shell) { g.set(x0 + dx, base + 1 + dy, z0 + dz, null); continue; }
-                    if (Math.abs(dz) == 3 && Math.abs(dx) <= 1 && dy <= 1) { g.set(x0 + dx, base + 1 + dy, z0 + dz, null); continue; }
-                    g.set(x0 + dx, base + 1 + dy, z0 + dz, ((dx + 40) / 2) % 2 == 0 ? "red_wool" : "white_wool");
-                }
-            for (int dz = -3; dz <= 3; dz++) g.set(x0, base + 6, z0 + dz, "yellow_wool");
-        }
-        for (int dx = -3; dx <= 3; dx++) for (int dz = -2; dz <= 2; dz++) g.set(x0 + dx, base, z0 + dz, "spruce_planks");
-        g.set(x0, base + 7, z0 - 3, "red_banner[rotation=0]");
-        g.set(x0, base + 1, z0, "lantern[hanging=false]");
-    }
-
-    // ------------------------------------------------------------------ gantry
+    // ------------------------------------------------------------------ launch gantry
 
     private void gantry(G g) {
         TgMapData d = g.d;
         int y = GANTRY_Y;
-        for (int x = -18; x <= 17; x++)
+        int x1 = (int) Math.floor(LA - HW + 0.5), x2 = (int) Math.floor(LA + HW - 0.5);   // -183 .. -147
+        for (int x = x1; x <= x2; x++)
             for (int z = 0; z <= 6; z++) {
                 g.set(x, y, z, ((x + z) & 1) == 0 ? "spruce_planks" : "birch_planks");
                 d.dropFloor.add(new Pos(x, y, z));
             }
         for (int yy = y + 1; yy <= y + 3; yy++)
-            for (int x = -18; x <= 17; x++) { g.set(x, yy, 7, "glass"); d.startBarrier.add(new Pos(x, yy, 7)); }
+            for (int x = x1; x <= x2; x++) { g.set(x, yy, 7, "glass"); d.startBarrier.add(new Pos(x, yy, 7)); }
         g.scenery = true;
-        // frame: side glass, back rail, four scaffold legs down into the void, striped awning
         for (int yy = y + 1; yy <= y + 4; yy++) {
-            for (int z = -1; z <= 7; z++) { g.set(-19, yy, z, "glass"); g.set(18, yy, z, "glass"); }
-            for (int x = -19; x <= 18; x++) g.set(x, yy, -1, yy == y + 4 ? "spruce_slab[type=bottom]" : "glass");
+            for (int z = -1; z <= 7; z++) { g.set(x1 - 1, yy, z, "glass"); g.set(x2 + 1, yy, z, "glass"); }
+            for (int x = x1 - 1; x <= x2 + 1; x++) g.set(x, yy, -1, yy == y + 4 ? "spruce_slab[type=bottom]" : "glass");
         }
-        for (int x = -19; x <= 18; x++) { g.set(x, y, -1, "dark_oak_planks"); g.set(x, y, 7, "dark_oak_planks"); }
-        for (int z = -1; z <= 7; z++) { g.set(-19, y, z, "dark_oak_planks"); g.set(18, y, z, "dark_oak_planks"); }
-        for (int[] l : new int[][]{{-20, -2}, {19, -2}, {-20, 8}, {19, 8}})
-            for (int yy = 8; yy <= y + 8; yy++) g.set(l[0], yy, l[1], yy % 6 == 0 ? "stripped_dark_oak_log" : "dark_oak_log");
-        for (int yy = 10; yy <= y - 2; yy += 6) {
-            g.line(-20, yy, -2, -20, yy + 5, 8, "dark_oak_fence");
-            g.line(19, yy, -2, 19, yy + 5, 8, "dark_oak_fence");
-        }
-        for (int x = -21; x <= 20; x++)
-            for (int z = -3; z <= 9; z++) {
-                int yy = y + 8 + (z <= 3 ? 0 : 0);
-                g.set(x, yy, z, ((x + 40) / 3) % 2 == 0 ? "red_wool" : "white_wool");
-            }
-        for (int x = -21; x <= 20; x += 2) g.set(x, y + 7, 9, ((x + 40) / 3) % 2 == 0 ? "red_carpet" : "white_carpet");
-        for (int x = -21; x <= 20; x += 6) g.set(x, y + 7, 8, "lantern[hanging=true]");
-        g.text("KITE FESTIVAL", 26, y + 14, 4, -1, 0, 1, "yellow_wool");
-        for (int x = -28; x <= 28; x++) g.set(x, y + 15, 4, null);
-        // sign board behind the letters
-        for (int x = -28; x <= 27; x++) for (int yy = y + 9; yy <= y + 15; yy++) g.set(x, yy, 5, yy == y + 15 || yy == y + 9 ? "red_wool" : "dark_oak_planks");
+        for (int x = x1 - 1; x <= x2 + 1; x++) g.set(x, y, -1, "dark_oak_planks");
+        for (int z = -1; z <= 7; z++) { g.set(x1 - 1, y, z, "dark_oak_planks"); g.set(x2 + 1, y, z, "dark_oak_planks"); }
+        int fl = floorY(0);
+        // back legs are logs; the front legs are fences so the view down the course (and to the goal kite) stays open
+        for (int[] l : new int[][]{{x1 - 2, -2}, {x2 + 2, -2}})
+            for (int yy = fl - 2; yy <= y + 5; yy++) g.set(l[0], yy, l[1], Math.floorMod(yy, 6) == 0 ? "stripped_dark_oak_log" : "dark_oak_log");
+        for (int[] l : new int[][]{{x1 - 2, 8}, {x2 + 2, 8}})
+            for (int yy = fl - 2; yy <= y + 5; yy++) g.set(l[0], yy, l[1], "dark_oak_fence");
+        for (int x = x1 - 3; x <= x2 + 3; x++)
+            for (int z = -3; z <= 9; z++) g.set(x, y + 6, z, Math.floorMod(x / 3, 2) == 0 ? "red_wool" : "white_wool");
+        for (int x = x1 - 3; x <= x2 + 3; x += 2) g.set(x, y + 7, 9, BUNTING[Math.floorMod(x / 2, BUNTING.length)]);
+        for (int x = x1 + 1; x <= x2; x += 6) g.set(x, y + 5, 8, "lantern[hanging=true]");
+        // sign behind the back rail
+        g.text("KITE FEST", (int) Math.floor(LA) - 16, y + 5, -2, 1, 0, 1, "yellow_wool");
         g.scenery = false;
-        g.startSpawns(-18, 17, 0, 6, y + 1, 15, 3);
-        d.startStrip = Region.of(-18, y + 1, 0, 17, y + 4, 6);
+        g.startSpawns(x1, x2, 0, 6, y + 1, 15, 3);
+        d.startStrip = Region.of(x1, y + 1, 0, x2, y + 4, 6);
     }
 
-    // ------------------------------------------------------------------ arches + kites
+    // ------------------------------------------------------------------ wall ledges (relaunch + shoving spots)
 
-    /** x range of the big gate of an arch. */
-    public static int[] gateX(int z, int side) {
-        int c = (int) Math.floor(cx(z));
-        return side > 0 ? new int[]{c + HALF - 10, c + HALF - 2} : new int[]{c - HALF + 1, c - HALF + 9};
+    private void ledges(G g) {
+        // turn mids (outer wall) and two on the long legs, each 1 below the safe line there
+        ledge(g, -110, 231, 0, -1);
+        ledge(g, 0, -232, 0, 1);
+        ledge(g, 110, 231, 0, -1);
+        ledge(g, -39, -49, -1, 0);
+        ledge(g, 39, -20, 1, 0);
     }
 
-    private void arch(G g, int z, int top, int win, int side, int gate) {
-        int c = (int) Math.floor(cx(z));
-        int[] gx = gateX(z, side);
-        // banner wall across the valley and over both ridges up to the crossbar: a 5 x 5 window in the middle
-        // (fast, straight) and a big 9 x 10 gate at one valley wall (safe, alternating sides = slalom)
-        for (int x = c - HALF - 18; x <= c + HALF + 17; x++)
-            for (int y = 2; y < top; y++) {
-                if (g.get(x, y, z) != null && !com.mcm.games.tgttos.maps.b.util.Bs.passable(g.get(x, y, z))) continue;
-                boolean window = x >= c - 2 && x <= c + 2 && y >= win && y <= win + 4;
-                boolean big = x >= gx[0] && x <= gx[1] && y >= gate && y <= gate + 9;
-                if (window || big) continue;
-                String s = WOOL[Math.floorMod(x - c, 6) / 2];
-                if ((y == win - 1 || y == win + 5) && x >= c - 3 && x <= c + 3 || (x == c - 3 || x == c + 3) && y >= win - 1 && y <= win + 5) s = "gold_block";
-                if ((y == gate - 1 || y == gate + 10) && x >= gx[0] - 1 && x <= gx[1] + 1 || (x == gx[0] - 1 || x == gx[1] + 1) && y >= gate - 1 && y <= gate + 10)
-                    s = "stripped_spruce_log";
-                g.set(x, y, z, s);
+    /** Ladder cell (lx, lz) in front of a tower against the wall; (ix, iz) = inward direction (towards the canyon). */
+    private void ledge(G g, int lx, int lz, int ix, int iz) {
+        double s = KiteCourse.nearest(lx + 0.5, lz + 0.5)[0];
+        int f = floorY(s);
+        int py = (int) Math.round(KiteCourse.safeY(s)) - 2;
+        int tx = -iz, tz = ix;  // tangential
+        String facing = ix > 0 ? "east" : ix < 0 ? "west" : iz > 0 ? "south" : "north";
+        // tower: 3 wide (tangential) x 2 deep behind the ladder, floor to platform
+        for (int t = -1; t <= 1; t++)
+            for (int k = 1; k <= 2; k++)
+                for (int y = f + 1; y <= py; y++)
+                    g.set(lx + t * tx - k * ix, y, lz + t * tz - k * iz, Math.floorMod(y, 5) == 0 ? "stripped_spruce_log" : "spruce_planks");
+        for (int y = f + 1; y <= py; y++) g.set(lx, y, lz, "ladder[facing=" + facing + "]");
+        // platform 5 wide x 5 deep (towards the canyon), open edges: a shoving spot
+        for (int t = -2; t <= 2; t++)
+            for (int k = -2; k <= 2; k++) {
+                int x = lx + t * tx + k * ix, z = lz + t * tz + k * iz;
+                if (t == 0 && k == 0) continue;
+                g.set(x, py, z, ((t + k) & 1) == 0 ? "spruce_planks" : "stripped_spruce_wood");
             }
-        for (int x = c - HALF - 18; x <= c + HALF + 17; x++) { g.set(x, top, z, "dark_oak_planks"); g.set(x, top + 1, z, "spruce_slab[type=bottom]"); }
         g.scenery = true;
-        // pylons + flags at both ends of the crossbar, bunting, lanterns at the window and the gate
-        for (int px : new int[]{c - HALF - 19, c + HALF + 18}) {
-            for (int y = 0; y <= top + 6; y++) for (int dz = -1; dz <= 1; dz++) g.set(px, y, z + dz, dz == 0 ? "stripped_spruce_log" : "spruce_log");
-            g.set(px, top + 7, z, "yellow_wool");
-            g.set(px, top + 7, z - 1, "red_banner[rotation=8]");
-        }
-        for (int x = c - HALF - 18; x <= c + HALF + 17; x += 2) g.set(x, top - 1, z - 1, x % 4 == 0 ? "red_carpet" : "yellow_carpet");
-        g.set(c - 4, win + 2, z - 1, "lantern[hanging=false]");
-        g.set(c + 4, win + 2, z - 1, "lantern[hanging=false]");
-        g.set(gx[0] - 2, gate + 5, z - 1, "lantern[hanging=false]");
-        g.set(gx[1] + 2, gate + 5, z - 1, "lantern[hanging=false]");
+        // beacon pole with a lamp and a flag at the back corner
+        int bx = lx + 2 * tx - 2 * ix, bz = lz + 2 * tz - 2 * iz;
+        for (int y = py + 1; y <= py + 6; y++) g.set(bx, y, bz, "spruce_fence");
+        g.set(bx, py + 7, bz, "sea_lantern");
+        g.set(bx + ix, py + 6, bz + iz, "lime_wool");
+        g.set(bx + ix, py + 5, bz + iz, "lime_wool");
         g.scenery = false;
+        LEDGES.add(new int[]{lx, lz, py, ix, iz});
     }
 
-    private void kite(G g, int[] k) {
-        int kz = k[0], ky = k[2], hw = k[3], side = k[4];
-        int kx = (int) Math.floor(cx(kz)) + k[1];
-        int hh = hw + 1;
-        String a = WOOL[Math.floorMod(kz, 3)], b = WOOL[Math.floorMod(kz + 1, 3)];
-        for (int dx = -hw; dx <= hw; dx++)
-            for (int dy = -hh; dy <= hh; dy++) {
-                if (Math.abs(dx) / (double) hw + Math.abs(dy) / (double) hh > 1.0001) continue;
-                g.set(kx + dx, ky + dy, kz, (dx >= 0) == (dy >= 0) ? a : b);
-            }
-        for (int dx = -hw; dx <= hw; dx++) g.set(kx + dx, ky, kz + 1, "spruce_fence");
-        for (int dy = -hh; dy <= hh; dy++) g.set(kx, ky + dy, kz + 1, "spruce_fence");
-        // tail
-        int ty = ky - hh - 1;
-        for (int i = 0; i < 5; i++) {
-            g.set(kx + ((i & 1) == 0 ? 0 : side), ty - i, kz, i % 2 == 0 ? "tripwire" : "red_wool");
-        }
-        // tether: from the kite's lower corner down to a stake on the ridge on the kite's own side
-        double ax = cx(kz) + side * (HALF + 3);
-        g.tether(kx + side * hw, ky, kz + 1, ax, 31, kz + 6, "chain");
-    }
+    // ------------------------------------------------------------------ landing field, choke, pen, landmark
 
-    /** Decorative kites far above / beside the play space (scenery). */
-    private void skyKites(G g) {
-        int[][] s = {{-38, 58, 40}, {40, 54, 70}, {-36, 50, 110}, {36, 60, 20}, {30, 64, 140}};
-        for (int[] k : s) {
-            int x0 = k[0], y0 = k[1], z0 = k[2];
-            for (int dx = -3; dx <= 3; dx++)
-                for (int dy = -4; dy <= 4; dy++)
-                    if (Math.abs(dx) / 3.0 + Math.abs(dy) / 4.0 <= 1.0001) g.set(x0 + dx, y0 + dy, z0, WOOL[Math.floorMod(dx * dy + z0, 3)]);
-            int gy = ground(g, x0 + (x0 > 0 ? 4 : -4), z0 + 4);
-            if (gy > 0) g.tether(x0, y0 - 4, z0, x0 + (x0 > 0 ? 4 : -4), gy + 1, z0 + 4, "chain");
-        }
-    }
-
-    // ------------------------------------------------------------------ goal meadow + landmark
-
-    private void meadow(G g) {
+    private void field(G g) {
         TgMapData d = g.d;
-        g.scenery = true;
-        // floating hill under the meadow
-        for (int x = -16; x <= 15; x++)
-            for (int z = 124; z <= 166; z++) {
-                double ex = (x + 0.5) / 16.0, ez = (z - 145.0) / 21.5;
-                double e = ex * ex + ez * ez;
-                if (e > 1) continue;
-                int bottom = MEADOW_Y - 3 - (int) ((1 - e) * 16);
-                for (int y = bottom; y < MEADOW_Y; y++) g.set(x, y, z, y >= MEADOW_Y - 3 ? "dirt" : ROCK.at(x, y, z, g.seed));
-                g.set(x, MEADOW_Y, z, GRASS.at(x, MEADOW_Y, z, g.seed));
-            }
-        g.scenery = false;
-        // landing meadow surface is route
-        for (int x = -12; x <= 11; x++) for (int z = 128; z <= 156; z++) if (g.get(x, MEADOW_Y, z) != null) g.set(x, MEADOW_Y, z, GRASS.at(x, MEADOW_Y, z, g.seed));
-        // pen: low hedge ring (1 high) with two gates facing the course
-        int x1 = -7, x2 = 6, z1 = 139, z2 = 152;
+        int y = FIELD_Y;
+        int xa = (int) Math.floor(LD - HW + 0.5), xb = (int) Math.floor(LD + HW - 0.5);   // 147 .. 183
+        // choke: a 2-high hedge across the field with one 3-wide gap in the middle and 2-wide gaps at the walls
+        for (int x = xa; x <= xb; x++) {
+            boolean gap = (x >= 164 && x <= 166) || x <= xa + 1 || x >= xb - 1;
+            if (gap) continue;
+            for (int yy = y + 1; yy <= y + 2; yy++) g.set(x, yy, CHOKE_Z, "oak_leaves[persistent=true,distance=7]");
+            if (Math.floorMod(x, 6) == 0) g.set(x, y + 3, CHOKE_Z, "lantern[hanging=false]");
+        }
+        // pen: low hedge ring, two gates facing the field
+        int x1 = PEN_X1 - 1, x2 = PEN_X2 + 1, z1 = PEN_Z1 - 1, z2 = PEN_Z2 + 1;
         for (int x = x1; x <= x2; x++)
             for (int z = z1; z <= z2; z++) {
-                boolean ring = x == x1 || x == x2 || z == z1 || z == z2;
-                if (!ring) continue;
-                boolean gate = z == z1 && (x >= -5 && x <= -3 || x >= 2 && x <= 4);
-                g.set(x, MEADOW_Y + 1, z, gate ? null : "oak_leaves[persistent=true,distance=7]");
+                if (!(x == x1 || x == x2 || z == z1 || z == z2)) continue;
+                boolean gate = z == z2 && ((x >= 161 && x <= 163) || (x >= 168 && x <= 170));
+                if (!gate) g.set(x, y + 1, z, "oak_leaves[persistent=true,distance=7]");
             }
-        d.pen = Region.of(x1 + 1, MEADOW_Y + 1, z1 + 1, x2 - 1, MEADOW_Y + 3, z2 - 1);
+        for (int x = x1; x <= x2; x++) for (int z = z1; z <= z2; z++) if (x > x1 && x < x2 && z > z1 && z < z2) g.set(x, y, z, "grass_block");
+        d.pen = Region.of(PEN_X1, y + 1, PEN_Z1, PEN_X2, y + 3, PEN_Z2);
         g.chickens(d.pen, 12);
         g.scenery = true;
-        // hay bales and a picnic, flower beds
-        int[][] hay = {{-11, 142}, {-11, 147}, {10, 144}, {10, 149}, {-10, 133}, {9, 132}};
-        for (int[] h : hay) { g.set(h[0], MEADOW_Y + 1, h[1], "hay_block[axis=x]"); g.set(h[0], MEADOW_Y + 1, h[1] + 1, "hay_block[axis=x]"); }
-        for (int x = -14; x <= 14; x++)
-            for (int z = 126; z <= 164; z++)
-                if (g.get(x, MEADOW_Y, z) != null && g.get(x, MEADOW_Y + 1, z) == null && (x < -12 || x > 11 || z > 156) && g.rnd(x, 3, z) < 0.25)
-                    g.set(x, MEADOW_Y + 1, z, g.rnd(x, 4, z) < 0.5 ? "cornflower" : "poppy");
-        // landmark: giant kite on a mast behind the pen
-        int mx = 0, mz = 160;
-        for (int y = MEADOW_Y + 1; y <= 64; y++) g.set(mx, y, mz, "stripped_spruce_log");
-        for (int y = MEADOW_Y + 1; y <= MEADOW_Y + 3; y++) for (int[] o : new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}) g.set(mx + o[0], y, mz + o[1], "spruce_fence");
-        int ky = 68, hw = 8, hh = 11;
-        for (int dx = -hw; dx <= hw; dx++)
+        for (int[] dc : DECOYS) g.set(dc[0], dc[1] - 1, dc[2], "hay_block[axis=y]");
+        int[][] hay = {{150, 118}, {181, 114}, {148, 86}, {182, 76}, {152, 64}, {178, 62}};
+        for (int[] h : hay) { g.set(h[0], y + 1, h[1], "hay_block[axis=x]"); g.set(h[0], y + 1, h[1] + 1, "hay_block[axis=x]"); }
+        // picnic blankets
+        int[][] pic = {{153, 108, 0}, {175, 102, 1}, {150, 74, 2}};
+        String[] cp = {"red_carpet", "white_carpet", "yellow_carpet", "white_carpet"};
+        for (int[] p : pic) for (int dx = 0; dx < 3; dx++) for (int dz = 0; dz < 3; dz++) g.set(p[0] + dx, y + 1, p[1] + dz, cp[(dx + dz + p[2]) & 3]);
+        // landmark: a giant kite on a mast behind the pen (visible from the gantry over the low end of the course)
+        int mx = 165, mz = 58;
+        for (int yy = y + 1; yy <= 150; yy++) { g.set(mx, yy, mz, "stripped_spruce_log"); g.set(mx + 1, yy, mz, "stripped_spruce_log"); }
+        int ky = 160, hw = 9, hh = 13;
+        for (int dx = -hw; dx <= hw + 1; dx++)
             for (int dy = -hh; dy <= hh; dy++) {
-                if (Math.abs(dx) / (double) hw + Math.abs(dy) / (double) hh > 1.0001) continue;
-                boolean edge = Math.abs(dx) / (double) hw + Math.abs(dy) / (double) hh > 0.85;
-                String s = edge ? "yellow_wool" : (dx >= 0) == (dy >= 0) ? "red_wool" : "white_wool";
-                g.set(mx + dx, ky + dy, mz, s);
+                double e = Math.abs(dx - 0.5) / (hw + 0.5) + Math.abs(dy) / (double) hh;
+                if (e > 1.0001) continue;
+                String b = e > 0.88 ? "yellow_wool" : (dx > 0) == (dy >= 0) ? "red_wool" : "white_wool";
+                g.set(mx + dx, ky + dy, mz + 1, b);
             }
-        for (int dx = -hw; dx <= hw; dx++) g.set(mx + dx, ky, mz + 1, "spruce_fence");
-        for (int dy = -hh; dy <= hh; dy++) g.set(mx, ky + dy, mz + 1, "spruce_fence");
-        for (int i = 0; i < 12; i++) {
-            int tx = mx + (int) Math.round(Math.sin(i * 0.7) * 2), ty = ky - hh - 1 - i;
-            g.set(tx, ty, mz - 1, i % 3 == 2 ? "yellow_wool" : "red_wool");
+        for (int dy = -hh; dy <= hh; dy++) g.set(mx, ky + dy, mz + 2, "spruce_fence");
+        for (int i = 0; i < 14; i++) g.set(mx + (int) Math.round(Math.sin(i * 0.7) * 2), ky - hh - 1 - i, mz + 1, i % 3 == 2 ? "yellow_wool" : "red_wool");
+        g.text("GOAL", mx - 6, ky + 3, mz + 3, 1, 0, 1, "black_wool");
+        // a second sail across it (plane x = mx - 1) faces the gantry, far up the course to the west: a box-kite cross
+        for (int dz = -hw; dz <= hw; dz++)
+            for (int dy = -hh; dy <= hh; dy++) {
+                double e = Math.abs(dz) / (hw + 0.5) + Math.abs(dy) / (double) hh;
+                if (e > 1.0001 || dz == 1 || dz == 2) continue;
+                String b = e > 0.88 ? "yellow_wool" : (dz > 0) == (dy >= 0) ? "white_wool" : "red_wool";
+                g.set(mx - 1, ky + dy, mz + 1 + dz, b);
+            }
+        g.landmark.add(new double[]{mx - 1.4, ky + 0.5, mz + 1.5 - 5});
+        g.landmark.add(new double[]{mx - 1.4, ky - 6.5, mz + 1.5 - 4});
+        g.scenery = false;
+    }
+
+    // ------------------------------------------------------------------ props
+
+    private boolean nearGate(double s, double r) {
+        for (Screen sc : KiteCourse.SCREENS) if (Math.abs(sc.s() - s) < r) return true;
+        double t0 = KiteCourse.sOn(1, 132), t1 = KiteCourse.sOn(1, 62);
+        return s > t0 - 3 && s < t1 + 3;
+    }
+
+    /** Festival stalls and lantern posts on the canyon floor, near the walls, far below the flight lines. */
+    private void floorProps(G g) {
+        String[][] roofs = {{"red_wool", "white_wool"}, {"blue_wool", "white_wool"}, {"yellow_wool", "white_wool"}, {"purple_wool", "white_wool"}};
+        int k = 0;
+        for (double s = 24; s < KiteCourse.sOn(3, 110); s += 9) {
+            double[] c = KiteCourse.at(s), c2 = KiteCourse.at(s + 1);
+            double hx = c2[0] - c[0], hz = c2[1] - c[1], hl = Math.hypot(hx, hz);
+            hx /= hl; hz /= hl;
+            double nx = hz, nz = -hx;
+            int side = (k & 1) == 0 ? 1 : -1;
+            k++;
+            int f = floorY(s);
+            if (floorY(s - 4) != f || floorY(s + 4) != f) continue;
+            // lantern post every slot
+            int px = (int) Math.floor(c[0] + side * 17 * nx), pz = (int) Math.floor(c[1] + side * 17 * nz);
+            if (nearGate(s, 3)) continue;
+            g.set(px, f + 1, pz, "spruce_fence");
+            g.set(px, f + 2, pz, "spruce_fence");
+            g.set(px, f + 3, pz, "lantern[hanging=false]");
+            if (Math.floorMod(k, 5) != 0 || nearGate(s, 9)) continue;
+            // stall: 4 x 3 with a striped roof, open towards the canyon
+            int sx = (int) Math.floor(c[0] + side * 12 * nx), sz = (int) Math.floor(c[1] + side * 12 * nz);
+            String[] rf = roofs[Math.floorMod(k / 5, roofs.length)];
+            for (int dx = -2; dx <= 2; dx++)
+                for (int dz = -2; dz <= 2; dz++) {
+                    boolean corner = Math.abs(dx) == 2 && Math.abs(dz) == 2;
+                    if (corner) for (int yy = f + 1; yy <= f + 3; yy++) g.set(sx + dx, yy, sz + dz, "spruce_fence");
+                    g.set(sx + dx, f + 4, sz + dz, Math.floorMod(dx, 2) == 0 ? rf[0] : rf[1]);
+                    if (Math.abs(dx) <= 1 && Math.abs(dz) <= 1) g.set(sx + dx, f + 5, sz + dz, Math.floorMod(dx, 2) == 0 ? rf[0] : rf[1]);
+                }
+            g.set(sx, f + 1, sz, "barrel[facing=up]");
+            g.set(sx + 1, f + 1, sz, "hay_block[axis=y]");
+            g.set(sx, f + 3, sz, "lantern[hanging=true]");
         }
-        g.text("MCM", 5, ky + 2, mz - 1, -1, 0, 1, "black_wool");
-        g.landmark.add(new double[]{mx + 0.5, ky + 0.5, mz + 0.5});
-        g.landmark.add(new double[]{mx + 4.5, ky - 3.5, mz + 0.5});
-        g.scenery = false;
-        // a short climb from the low landing ledge (window line) onto the meadow
-        g.scenery = false;
-        for (int x = -6; x <= 5; x++)
-            for (int z = 117; z <= 122; z++) {
-                g.set(x, LEDGE, z, "coarse_dirt");
-                g.scenery = true;
-                g.set(x, LEDGE - 1, z, "dirt");
-                if (z > 118 || (x + z) % 3 == 0) g.set(x, LEDGE - 2, z, "stone");
-                g.scenery = false;
-                for (int y = LEDGE + 1; y <= LEDGE + 4; y++) g.set(x, y, z, null);
+    }
+
+    /** Big decorative kites flying over the gaps between the legs, tethered to the windbreak crests (scenery). */
+    private void skyKites(G g) {
+        int[][] ks = {{-110, 40, 150}, {-110, -90, 118}, {0, 60, 110}, {0, -60, 96}, {110, -20, 74}, {110, 100, 60},
+                {-215, 80, 160}, {-215, -60, 140}, {218, 120, 70}, {218, -40, 66}, {-60, 215, 140}, {60, -215, 100}};
+        int i = 0;
+        for (int[] k : ks) {
+            int x0 = k[0], z0 = k[1], y0 = Math.min(168, k[2]);
+            String a = KITE[i % KITE.length][0], b = i % 2 == 0 ? "red_wool" : "orange_wool";
+            i++;
+            for (int dx = -4; dx <= 4; dx++)
+                for (int dy = -6; dy <= 6; dy++) {
+                    double e = Math.abs(dx) / 4.0 + Math.abs(dy) / 6.0;
+                    if (e > 1.0001) continue;
+                    g.set(x0 + dx, y0 + dy, z0, e > 0.8 ? "dark_oak_planks" : (dx >= 0) == (dy >= 0) ? a : b);
+                }
+            for (int t = 1; t <= 8; t++) g.set(x0 + ((t & 1) == 0 ? 0 : 1), y0 - 6 - t, z0, t % 2 == 0 ? "white_wool" : b);
+            // tether to the nearest windbreak crest
+            double best = 1e9; int tx = x0, tz = z0;
+            for (int dx = -40; dx <= 40; dx += 2)
+                for (int dz = -30; dz <= 30; dz += 2) {
+                    double[] n = KiteCourse.nearest(x0 + dx + 0.5, z0 + dz + 0.5);
+                    if (n[3] != 0 || n[1] <= HW || n[1] > HW + 1) continue;
+                    double dd = dx * dx + dz * dz;
+                    if (dd < best) { best = dd; tx = x0 + dx; tz = z0 + dz; }
+                }
+            if (best < 1e9) {
+                int cy = crestY(KiteCourse.nearest(tx + 0.5, tz + 0.5)[0]);
+                if (cy + 1 < y0 - 6) g.tether(x0 + 0.5, y0 - 6, z0 + 0.5, tx + 0.5, cy + 1.5, tz + 0.5, "chain");
             }
-        Stairs.flight(g, "meadow", "spruce", "dirt", -6, 123, LEDGE, 0, 1, MEADOW_Y - LEDGE, 12, LEDGE - 2);
+        }
+    }
+
+    // ------------------------------------------------------------------ hazard boxes outside the canyon
+
+    private void hazards(TgMapData d, boolean[][] outside) {
+        int cs = 5, n = 500 / cs;
+        boolean[][] cell = new boolean[n][n];
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++) {
+                boolean all = true;
+                for (int a = 0; a < cs && all; a++) for (int b = 0; b < cs && all; b++) all = outside[i * cs + a][j * cs + b];
+                cell[i][j] = all;
+            }
+        // greedy rectangles: runs along x per row, extended along z while identical
+        boolean[][] used = new boolean[n][n];
+        for (int j = 0; j < n; j++)
+            for (int i = 0; i < n; i++) {
+                if (!cell[i][j] || used[i][j]) continue;
+                int i2 = i;
+                while (i2 + 1 < n && cell[i2 + 1][j] && !used[i2 + 1][j]) i2++;
+                int j2 = j;
+                outer:
+                while (j2 + 1 < n) {
+                    for (int a = i; a <= i2; a++) if (!cell[a][j2 + 1] || used[a][j2 + 1]) break outer;
+                    j2++;
+                }
+                for (int a = i; a <= i2; a++) for (int b = j; b <= j2; b++) used[a][b] = true;
+                d.hazardRegions.add(Region.of(i * cs - 250, -64, j * cs - 250, (i2 + 1) * cs - 251, 320, (j2 + 1) * cs - 251));
+            }
     }
 }

@@ -34,7 +34,9 @@ import java.util.Set;
  *   <li>GO: every {@link #startBarrier} and {@link #dropFloor} position is set to air.</li>
  *   <li>Racing: below {@link #voidY}, outside {@link #playBounds}, inside a {@link #hazardRegions} box, or
  *       touching a {@link #hazardBlocks} type (feet block or block below) = respawn at a start spawn.</li>
- *   <li>Finish: punching a chicken (spawned at {@link #chickenSpawns}, kept inside {@link #pen}).</li>
+ *   <li>Finish: punching a goal chicken (spawned at {@link #chickenSpawns}, kept inside {@link #pen}, visible name
+ *       tag). Unnamed decoys from {@link TgMap#decoyChickens()} do nothing. Optional lethal falls:
+ *       {@link TgMap#lethalFallHeight()}.</li>
  *   <li>Round end: the runtime re-pastes the original {@link #blocks} over every changed position.</li>
  * </ol>
  */

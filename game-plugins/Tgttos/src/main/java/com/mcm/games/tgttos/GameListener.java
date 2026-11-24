@@ -1,5 +1,6 @@
 package com.mcm.games.tgttos;
 
+import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -29,6 +30,8 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -42,7 +45,6 @@ import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
-import org.bukkit.projectiles.ProjectileSource;
 
 /** TGTTOS rules. Every handler only acts while a game runs and only in the game world. */
 final class GameListener implements Listener {
@@ -54,6 +56,20 @@ final class GameListener implements Listener {
 
     // ------------------------------------------------------------------ damage, knockback, finish
 
+    /**
+     * Chicken punches. Goal chickens are invulnerable (so nothing can kill them), and the server drops an attack on
+     * an invulnerable entity inside LivingEntity.hurt() before any EntityDamageEvent is fired - so the finish is
+     * detected here, at the attack itself (Paper fires this before the invulnerability check). Cancelled so the
+     * chicken takes no hit and no knockback. Ignores earlier cancellation on purpose.
+     */
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onAttack(PrePlayerAttackEntityEvent e) {
+        Entity target = e.getAttacked();
+        if (!in(target) || !game.isGameChicken(target)) return;
+        e.setCancelled(true);
+        game.chickenPunched(e.getPlayer(), (Chicken) target, "attack");
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDamage(EntityDamageEvent e) {
         Entity victim = e.getEntity();
@@ -64,20 +80,34 @@ final class GameListener implements Listener {
         Entity damager = ev.getDamager();
 
         if (game.isGameChicken(victim)) {
-            if (damager instanceof Player p && ev.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK && game.isRacing(p))
-                game.whack(p, (Chicken) victim);
+            // fallback only (e.g. creative attackers bypass invulnerability); whack() is idempotent per racer
+            if (damager instanceof Player p && ev.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK)
+                game.chickenPunched(p, (Chicken) victim, "damage");
+            return;
+        }
+        if (damager instanceof Snowball sb && victim instanceof Player v) {
+            game.snowballHit(sb, v, "damage");      // de-duplicated per snowball; decides + logs
             return;
         }
         if (!(victim instanceof Player v) || !game.isRacing(v)) return;
         if (damager instanceof Player a) {
             if (ev.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK || !game.isRacing(a) || a.equals(v)) return;
             game.punch(a, v);
-        } else if (damager instanceof Snowball sb) {
-            ProjectileSource src = sb.getShooter();
-            Player shooter = src instanceof Player sp ? sp : null;
-            if (shooter != null && (!game.isRacing(shooter) || shooter.equals(v))) return;
-            game.snowballHit(shooter, v, sb.getVelocity());
         }
+    }
+
+    /** Snowball knockback, first path: the projectile hit itself (fires before any damage event). */
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onProjectileHit(ProjectileHitEvent e) {
+        if (e.getEntity() instanceof Snowball sb && e.getHitEntity() instanceof Player v && in(v))
+            game.snowballHit(sb, v, "hit");
+    }
+
+    /** Racers' snowballs are tracked so the game can sweep them against racers itself (see TgttosGame.sweepSnowballs). */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onLaunch(ProjectileLaunchEvent e) {
+        if (e.getEntity() instanceof Snowball sb && in(sb) && sb.getShooter() instanceof Player p && game.isParticipant(p))
+            game.trackSnowball(sb);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -103,7 +133,7 @@ final class GameListener implements Listener {
         if (game.canPlace(e.getPlayer(), b, b.getType(), e.getBlockReplacedState().getType())) {
             e.setCancelled(false);
             e.setBuild(true);
-            game.onPlaced(b);
+            game.onPlaced(e.getPlayer(), b);
         } else {
             e.setCancelled(true);
         }
@@ -162,7 +192,7 @@ final class GameListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onInteractEntity(PlayerInteractEntityEvent e) {
         if (!in(e.getPlayer())) return;
-        if (game.isGameChicken(e.getRightClicked())) e.setCancelled(true);
+        if (game.isGameChicken(e.getRightClicked())) e.setCancelled(true);   // no leads, no name tags, no riding
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

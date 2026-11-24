@@ -18,6 +18,10 @@ final class Settings {
     double protPerHit, protMax, protDecay;
     int ptsFirst, ptsStepEvery, ptsMin; List<Integer> top10 = new ArrayList<>(), teamBonus = new ArrayList<>();
     int chickenCount; boolean chickenWander;
+    String chickenName; double decoyPenaltySeconds; boolean logPunches;
+    boolean infiniteBlocks; int refillDelayTicks;
+    double glideKbMult; int elytraFloorDelaySeconds;
+    boolean snowKarma, logSnowballs;
     boolean randomSeeds;
     List<String> punsVoid = new ArrayList<>(), punsHazard = new ArrayList<>();
 
@@ -33,15 +37,17 @@ final class Settings {
         s.baseY = c.getInt("world.base-y", 64);
         s.spacing = Math.max(520, c.getInt("world.map-spacing", 600));
         s.concrete = c.getInt("kit.concrete", 64);
-        s.snowballs = c.getInt("kit.snowballs", 5);
+        s.snowballs = c.getInt("kit.snowballs", 10);
         s.fireworks = c.getInt("kit.fireworks", 2);
         Material pk = Material.matchMaterial(c.getString("kit.pickaxe", "IRON_PICKAXE"));
         s.pickaxe = pk == null ? Material.IRON_PICKAXE : pk;
         s.kbPunchH = c.getDouble("knockback.punch-horizontal", 0.42);
         s.kbPunchV = c.getDouble("knockback.punch-vertical", 0.36);
         s.kbSprint = c.getDouble("knockback.sprint-bonus", 0.35);
-        s.kbSnowH = c.getDouble("knockback.snowball-horizontal", 0.38);
-        s.kbSnowV = c.getDouble("knockback.snowball-vertical", 0.28);
+        s.kbSnowH = c.getDouble("knockback.snowball", c.getDouble("knockback.snowball-horizontal", 0.55));
+        s.kbSnowV = c.getDouble("knockback.snowball-vertical", 0.30);
+        s.snowKarma = c.getBoolean("karma.snowball-hits-count", false);
+        s.logSnowballs = c.getBoolean("knockback.log-snowball-hits", true);
         s.hitCooldownTicks = c.getInt("knockback.hit-cooldown-ticks", 10);
         s.kPerPunch = c.getDouble("karma.per-punch", 1.0);
         s.kSameBonus = c.getDouble("karma.same-victim-bonus", 0.5);
@@ -66,6 +72,13 @@ final class Settings {
         if (s.teamBonus.isEmpty()) s.teamBonus = List.of(20, 15, 10, 5);
         s.chickenCount = Math.max(1, c.getInt("chickens.count", 10));
         s.chickenWander = c.getBoolean("chickens.wander", true);
+        s.chickenName = org.bukkit.ChatColor.translateAlternateColorCodes('&', c.getString("goal.chicken-name", "&e&lPunch me!"));
+        s.decoyPenaltySeconds = c.getDouble("goal.decoy-penalty-seconds", 0);
+        s.logPunches = c.getBoolean("goal.log-punches", true);
+        s.infiniteBlocks = c.getBoolean("bridging.infinite-blocks", true);
+        s.refillDelayTicks = Math.max(1, c.getInt("bridging.refill-delay-ticks", 1));
+        s.glideKbMult = c.getDouble("knockback.glide-multiplier", 1.6);
+        s.elytraFloorDelaySeconds = Math.max(0, c.getInt("elytra.floor-drop-delay-seconds", 3));
         s.randomSeeds = c.getBoolean("random-seeds", false);
         s.punsVoid = c.getStringList("puns-void");
         s.punsHazard = c.getStringList("puns-hazard");

@@ -20,12 +20,12 @@ public final class Validate {
     public int errors;
     public final Map<String, Route.Result> lineResults = new HashMap<>();
 
-    private void ok(boolean pass, String what) {
+    void ok(boolean pass, String what) {
         text.append(pass ? "  [ok]   " : "  [FAIL] ").append(what).append('\n');
         if (!pass) errors++;
     }
 
-    private void info(String s) { text.append("         ").append(s).append('\n'); }
+    void info(String s) { text.append("         ").append(s).append('\n'); }
 
     private static final Set<String> RESERVED = Set.of("white", "orange", "magenta", "light_blue", "yellow", "lime",
             "pink", "cyan", "purple", "blue", "green", "red");
@@ -48,6 +48,7 @@ public final class Validate {
         TgMapData d = g.d;
         Design de = g.design;
         Kit kit = map.kit();
+        lethal = map.lethalFallHeight();
         text.append("==== ").append(map.displayName()).append("  (").append(map.getClass().getName()).append(", ")
                 .append(map.type()).append(", kit ").append(kit).append(") ====\n");
 
@@ -116,6 +117,7 @@ public final class Validate {
         Route.Params wp = Route.Params.expert(false);
         wp.searchBox = de.searchBox;
         wp.falls = true;
+        wp.lethal = map.lethalFallHeight();
         Route walk = new Route(d.blocks, gone, wp);
         Route.Result wr = walk.search(strip, d.pen);
         ok(wr.ok, "built route start -> pen without placing blocks" + (wr.ok ? String.format(" (%.1f s expert, %d jumps, hardest %s)", wr.time, wr.jumps, wr.hardest()) : ""));
@@ -164,6 +166,7 @@ public final class Validate {
         Route.Params sp = Route.Params.expert(false);
         sp.searchBox = de.searchBox;
         sp.falls = true;
+        sp.lethal = map.lethalFallHeight();
         Route sr = new Route(d.blocks, gone, sp);
         Set<Long> reach = sr.reachable(strip, 600000);
         int[] best = sprint(sr, reach, d, de, true), bestX = sprint(sr, reach, d, de, false);
@@ -172,6 +175,7 @@ public final class Validate {
         boolean inPlay = true;
         for (Route.Result r : lineResults.values()) for (Route.Step s : r.path) if (!d.playBounds.contains(s.x(), s.y(), s.z())) inPlay = false;
         ok(inPlay && d.playBounds.contains(d.pen.minX(), d.pen.minY(), d.pen.minZ()), "lines and pen inside playBounds");
+        ExtraChecks.run(this, map, g, strip, gone);
         text.append("  RESULT ").append(errors == 0 ? "PASS" : errors + " problem(s)").append('\n');
     }
 
@@ -201,12 +205,15 @@ public final class Validate {
         return true;
     }
 
+    private int lethal;
+
     private Route.Result runLine(TgMapData d, Design de, Design.Line line, List<int[]> strip, List<Pos> gone, boolean median) {
         Route.Params p = median ? Route.Params.median(line.bridge) : Route.Params.expert(line.bridge);
         p.searchBox = de.searchBox;
         p.buildBox = d.buildBounds != null ? d.buildBounds : d.playBounds;
         p.falls = true;
         p.maxGap = line.maxGap;
+        p.lethal = lethal;
         List<Route.Result> legs = new ArrayList<>();
         List<int[]> starts = strip;
         for (Design.Leg leg : line.legs) {

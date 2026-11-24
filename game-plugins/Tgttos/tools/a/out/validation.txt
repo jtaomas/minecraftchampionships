@@ -2,7 +2,7 @@ Builder-A TGTTOS maps: validation report (seed 20261124)
 Movement model: walk/sprint 5.6 b/s (median 4.3), step 0.6 / stairs 1, jumps edge-to-edge gap <= 4 flat, -1 per block of rise,
 drops reach further (vanilla fall time), bridging 0.30 s/block (median 0.55), pillar 0.40 s/block (median 0.55), ladders 2.35 b/s.
 
-==== Laundry Line  (com.mcm.games.tgttos.maps.a.LaundryLineMap, BRIDGE, kit CONCRETE_PICKAXE_SNOWBALLS) ====  [generate 162 ms, validate 885 ms, 102863 blocks]
+==== Laundry Line  (com.mcm.games.tgttos.maps.a.LaundryLineMap, BRIDGE, kit CONCRETE_PICKAXE_SNOWBALLS) ====  [generate 171 ms, validate 1064 ms, 102863 blocks]
   [ok]   contract check 
   [ok]   no concrete / concrete powder in the build (0)
   [ok]   distinct block types >= 25 (69)
@@ -34,7 +34,7 @@ drops reach further (vanilla fall time), bridging 0.30 s/block (median 0.55), pi
   [ok]   lines and pen inside playBounds
   RESULT PASS
 
-==== Dam Face  (com.mcm.games.tgttos.maps.a.DamFaceMap, CLIMB, kit CONCRETE_PICKAXE_SNOWBALLS) ====  [generate 57 ms, validate 990 ms, 83926 blocks]
+==== Dam Face  (com.mcm.games.tgttos.maps.a.DamFaceMap, CLIMB, kit CONCRETE_PICKAXE_SNOWBALLS) ====  [generate 51 ms, validate 1036 ms, 83926 blocks]
   [ok]   contract check 
   [ok]   no concrete / concrete powder in the build (0)
   [ok]   distinct block types >= 25 (69)
@@ -66,65 +66,90 @@ drops reach further (vanilla fall time), bridging 0.30 s/block (median 0.55), pi
   [ok]   lines and pen inside playBounds
   RESULT PASS
 
-==== Bookshelf Run  (com.mcm.games.tgttos.maps.a.BookshelfRunMap, PARKOUR, kit SNOWBALLS_ONLY) ====  [generate 6 ms, validate 695 ms, 42710 blocks]
+==== Bookshelf Run  (com.mcm.games.tgttos.maps.a.BookshelfRunMap, PARKOUR, kit SNOWBALLS_ONLY) ====  [generate 17 ms, validate 892 ms, 56620 blocks]
   [ok]   contract check 
   [ok]   no concrete / concrete powder in the build (0)
-  [ok]   distinct block types >= 25 (58)
-  [ok]   scenery share 40-60% (52% of 42710 blocks outside the route envelope)
+  [ok]   distinct block types >= 25 (65)
+  [ok]   scenery share 40-60% (53% of 56620 blocks outside the route envelope)
   [ok]   connection post-pass holds (fences/panes/walls/bars: 0 mismatches)
-  [ok]   staircase helper: 3 flights walkable
+  [ok]   staircase helper: 4 flights walkable
   [ok]   start strip holds 40 (261 standable cells, 60/60 spawns valid)
   [ok]   start strip fenced in before GO (cells reachable outside: 0)
   [ok]   start barrier blocks present (87)
-  [ok]   landmark visible from the start (ray-cast): 55/60 spawns (92%)
-  [ok]   built route start -> pen without placing blocks (16.6 s expert, 8 jumps, hardest gap 3.0 rise +1.0)
-  -- line FAST: leaning-book ramp onto the book tops, gaps 2-3 with rises and a head-hitter, leaning ramp, pencil over the void (3 wide), push-pins, coins, leap into the cup
+  [ok]   landmark visible from the start (ray-cast): 60/60 spawns (100%)
+  [ok]   built route start -> pen without placing blocks (26.5 s expert, 11 jumps, hardest gap 3.0 rise +1.0)
+  -- line FAST: three chained books over the void (gaps 3-4, +1/-1), the open atlas, the 3-wide pencil (choke), the dictionary stack, two chained notebooks (gaps 4), the dictionary, two coin stacks down, the 2-wide letter opener onto the teacup rim, drop in
   [ok]   FAST line completes
-         path 79 blocks, blocks placed 0, jumps 12 (3+ gaps: 4, falls 1), hardest jump gap 3.0 rise +1.0, max rise 1.0
-         estimated time: expert 18.2 s, median 25.7 s (+ fails)
-  [ok]   FAST longest obstacle-free straight sprint 6.0 <= 15 (-3,3,54)->(-3,3,60)
+         path 130 blocks, blocks placed 0, jumps 11 (3+ gaps: 8, falls 0), hardest jump gap 3.0 rise +1.0, max rise 1.0
+         estimated time: expert 26.6 s, median 37.0 s (+ fails)
+  [ok]   FAST longest obstacle-free straight sprint 11.0 <= 15 (-13,3,41)->(-13,3,52)
   [ok]   FAST blocks within the 64 kit (0)
-  -- line SAFE: back alley (hop clutter), step books up to the leaning ramp top, ruler slide to the desk, round the stack to the spoon ramp
+  -- line SAFE: boards against the wall (2-gaps), 3-wide ruler bridge, the open atlas, 3-wide ruler stair down, 2-gap, 2-wide bookmark ribbon, 2-gap, stair up to the dictionary, stair down to the drawer, round the saucer, up the spoon, drop in
   [ok]   SAFE line completes
-         path 105 blocks, blocks placed 0, jumps 13 (3+ gaps: 0, falls 0), hardest jump gap 2.0 rise +1.0, max rise 1.0
-         estimated time: expert 23.2 s, median 31.6 s (+ fails)
-  [ok]   SAFE longest obstacle-free straight sprint 10.0 <= 15 (9,1,11)->(9,1,21)
+         path 171 blocks, blocks placed 0, jumps 9 (3+ gaps: 1, falls 1), hardest jump gap 2.2 rise +1.0, max rise 1.0
+         estimated time: expert 33.7 s, median 44.2 s (+ fails)
+  [ok]   SAFE longest obstacle-free straight sprint 12.0 <= 15 (4,2,22)->(5,2,34)
   [ok]   SAFE blocks within the 64 kit (0)
-  [ok]   FAST saves >= 20% vs SAFE (expert 22%, median 19%)
-  [ok]   best line by an expert <= 35 s (18.2 s)
-  [ok]   map-wide: longest straight flat run along the course (z) 14 <= 15 at (-8,1,62)  [2772 reachable cells]
-         longest straight flat run across (x): 16 at (-12,-5,78)
+  [ok]   FAST saves >= 20% vs SAFE (expert 21%, median 16%)
+  [ok]   best line by an expert <= 35 s (26.6 s)
+  [ok]   map-wide: longest straight flat run along the course (z) 14 <= 15 at (-11,3,62)  [2830 reachable cells]
+         longest straight flat run across (x): 28 at (-19,3,9)
   [ok]   lines and pen inside playBounds
+  [ok]   FAST crosses open void 10 times (>= 6), gaps [3.0, 3.0+1, 4.0-1, 3.0, 4.0, 4.0-1, 4.0-1, 2.2-2, 2.8-2, 2.0-1], widest 4.0
+         FAST: 38 of 79 walked cells (48%) have a void drop right beside them (knock-off exposure)
+  [ok]   SAFE crosses open void 6 times (>= 6), gaps [2.0-1, 2.0, 2.0+1, 2.0, 2.0, 7.1-11], widest 7.1
+         SAFE: 43 of 120 walked cells (36%) have a void drop right beside them (knock-off exposure)
+  [ok]   brawl spot 1: 26 x 13 box, 320 standable cells, 50 on a void edge (>= 80 / >= 10)
+  [ok]   brawl spot 2: 24 x 12 box, 288 standable cells, 53 on a void edge (>= 80 / >= 10)
   RESULT PASS
 
-==== Orchard Drop  (com.mcm.games.tgttos.maps.a.OrchardDropMap, DROP, kit SNOWBALLS_ONLY) ====  [generate 79 ms, validate 839 ms, 119177 blocks]
+==== Orchard Drop  (com.mcm.games.tgttos.maps.a.OrchardDropMap, DROP, kit SNOWBALLS_ONLY) ====  [generate 193 ms, validate 2539 ms, 148297 blocks]
   [ok]   contract check 
   [ok]   no concrete / concrete powder in the build (0)
-  [ok]   distinct block types >= 25 (58)
-  [ok]   scenery share 40-60% (60% of 119177 blocks outside the route envelope)
+  [ok]   distinct block types >= 25 (64)
+  [ok]   scenery share 40-60% (54% of 148297 blocks outside the route envelope)
   [ok]   connection post-pass holds (fences/panes/walls/bars: 0 mismatches)
   [ok]   staircase helper: 0 flights walkable
   [ok]   start strip holds 40 (252 standable cells, 52/52 spawns valid)
   [ok]   start strip fenced in before GO (cells reachable outside: 0)
   [ok]   start barrier blocks present (108)
   [ok]   landmark visible from the start (ray-cast): 52/52 spawns (100%)
-  [ok]   built route start -> pen without placing blocks (12.0 s expert, 3 jumps, hardest gap 4.0 drop 9.0)
-  -- line FAST: walk off the right side, 36-block fall onto a 5-wide apple 10 out, 14-block fall onto the second small apple, hop to the meadow in front of the 4-wide yard gate
+  [ok]   built route start -> pen without placing blocks (25.3 s expert, 2 jumps, hardest gap 2.2 rise +1.0)
+  -- line FAST: right: sprint-jump diagonally off the gallery corner (26-block fall) into the 3-wide pool of the small apple, steer 8 out into the next small apple (21 blocks), then 7 out into the small pond; hedge gaps right/middle, the 3-wide fallen branch over the void, the 4-wide ledge along the void edge to the pen
   [ok]   FAST line completes
-         path 64 blocks, blocks placed 0, jumps 4 (3+ gaps: 2, falls 2), hardest jump gap 4.0 drop 10.0, max rise 1.0
-         estimated time: expert 12.5 s, median 16.5 s (+ fails)
-  [ok]   FAST longest obstacle-free straight sprint 9.0 <= 15 (6,1,45)->(6,1,54)
+         path 136 blocks, blocks placed 0, jumps 2 (3+ gaps: 0, falls 3), hardest jump gap 2.2 rise +1.0, max rise 1.0
+         estimated time: expert 25.7 s, median 33.1 s (+ fails)
+  [ok]   FAST longest obstacle-free straight sprint 10.0 <= 15 (15,1,64)->(9,1,72)
   [ok]   FAST blocks within the 64 kit (0)
-  -- line SAFE: walk off the left side onto the big apple below, cross it, drop to the second big apple, drop to the meadow, walk across to the gate (or round by the side gap)
+  -- line SAFE: left: jump out 7 into the 5-wide pool of the big apple (20-block fall), cross it, 8 out into the next big apple (19), drop into the big pond; hedge gaps left, the 5-wide plank bridge far left, up the west side and round the yard to the pen
   [ok]   SAFE line completes
-         path 95 blocks, blocks placed 0, jumps 4 (3+ gaps: 0, falls 3), hardest jump gap 2.0 rise +1.0, max rise 1.0
-         estimated time: expert 17.6 s, median 22.8 s (+ fails)
-  [ok]   SAFE longest obstacle-free straight sprint 8.2 <= 15 (-18,1,70)->(-10,1,68)
+         path 163 blocks, blocks placed 0, jumps 8 (3+ gaps: 0, falls 3), hardest jump gap 2.0 rise +1.0, max rise 1.0
+         estimated time: expert 32.4 s, median 42.2 s (+ fails)
+  [ok]   SAFE longest obstacle-free straight sprint 10.6 <= 15 (-16,1,76)->(-24,1,83)
   [ok]   SAFE blocks within the 64 kit (0)
-  [ok]   FAST saves >= 20% vs SAFE (expert 29%, median 28%)
-  [ok]   best line by an expert <= 35 s (12.5 s)
-  [ok]   map-wide: longest straight flat run along the course (z) 13 <= 15 at (-1,4,36)  [4145 reachable cells]
-         longest straight flat run across (x): 57 at (-29,1,93)
+  [ok]   FAST saves >= 20% vs SAFE (expert 21%, median 22%)
+  [ok]   best line by an expert <= 35 s (25.7 s)
+  [ok]   map-wide: longest straight flat run along the course (z) 14 <= 15 at (17,1,111)  [7010 reachable cells]
+         longest straight flat run across (x): 62 at (-33,1,76)
   [ok]   lines and pen inside playBounds
+  -- lethal falls: limit 8 blocks (drop + 1.25 jump peak counts)
+         FAST drop 1: (17,60,7) -> (20,34,18) falls 26 into WATER, water depth 2, nearest dry surface 25 below take-off (18,34,19)
+         FAST drop 2: (19,35,21) -> (14,14,30) falls 21 into WATER, water depth 2, nearest dry surface 20 below take-off (13,14,29)
+         FAST drop 3: (15,15,33) -> (12,0,42) falls 15 into WATER, water depth 2, nearest dry surface 13 below take-off (7,1,40)
+  [ok]   FAST has >= 3 lethal-height drop stages (3)
+         SAFE drop 1: (-18,60,8) -> (-13,40,17) falls 20 into WATER, water depth 2, nearest dry surface 19 below take-off (-17,40,17)
+         SAFE drop 2: (-17,39,23) -> (-19,22,32) falls 17 into WATER, water depth 2, nearest dry surface 16 below take-off (-24,22,30)
+         SAFE drop 3: (-17,23,36) -> (-17,0,46) falls 23 into WATER, water depth 2, nearest dry surface 21 below take-off (-22,1,48)
+  [ok]   SAFE has >= 3 lethal-height drop stages (3)
+  [ok]   every lethal-height drop on the lines lands in water
+  [ok]   every landing pool on the lines is at least 2 deep
+  [ok]   missing the water is a lethal fall (every dry surface within 5 of each landing is >= 8 below the take-off)
+  [ok]   limit consistent: ordinary hops reach 1.25 < 8, smallest intended drop 15 >= 10
+  [ok]   all water contained (no air beside or below a water block): 262 water blocks, 0 loose
+  [ok]   every pool surface is at least 2 deep (0 shallow columns)
+  [ok]   dry descent from the start stops at h 60.0 (start 60): no way down without a water landing
+  [ok]   dry descent: pen not reachable dry from the start, and no pool above the bottom leads lower than 8 without water (7 pools: [21 cells @y40 (-13,17): min 39] [9 cells @y34 (20,18): min 34] [21 cells @y22 (-21,33): min 21] [9 cells @y14 (12,32): min 14] [13 cells @y0 (12,42): min 0] [37 cells @y0 (-17,49): min 0] [21 cells @y0 (-1,57): min 0])
+         lower pools (below the first stage) visible from 0/52 start spawns
+  [ok]   decoy chickens on solid ground, inside playBounds, outside the goal pen (9/9)
   RESULT PASS
 
