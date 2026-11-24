@@ -778,6 +778,42 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         p.setAllowFlight(false);
         p.setFlying(false);
         p.getInventory().setHeldItemSlot(0);
+        p.getInventory().setBoots(teamBoots(p));
+    }
+
+    /** Owner request: everyone wears leather boots dyed in their team colour, so ghosts can be told apart. */
+    private ItemStack teamBoots(Player p) {
+        ItemStack boots = new ItemStack(Material.LEATHER_BOOTS);
+        if (boots.getItemMeta() instanceof org.bukkit.inventory.meta.LeatherArmorMeta meta) {
+            ChatColor c = ctx == null ? ChatColor.WHITE : ctx.teamColor(ctx.teamOf(p.getUniqueId()));
+            meta.setColor(bootColor(c));
+            meta.setUnbreakable(true);
+            meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_UNBREAKABLE, org.bukkit.inventory.ItemFlag.HIDE_DYE);
+            boots.setItemMeta(meta);
+        }
+        return boots;
+    }
+
+    private static Color bootColor(ChatColor c) {
+        if (c == null) return Color.WHITE;
+        return switch (c) {
+            case RED -> Color.fromRGB(0xFF5555);
+            case DARK_RED -> Color.fromRGB(0xAA0000);
+            case GOLD -> Color.fromRGB(0xFFAA00);
+            case YELLOW -> Color.fromRGB(0xFFFF55);
+            case GREEN -> Color.fromRGB(0x55FF55);
+            case DARK_GREEN -> Color.fromRGB(0x00AA00);
+            case AQUA -> Color.fromRGB(0x55FFFF);
+            case DARK_AQUA -> Color.fromRGB(0x00AAAA);
+            case BLUE -> Color.fromRGB(0x5555FF);
+            case DARK_BLUE -> Color.fromRGB(0x0000AA);
+            case LIGHT_PURPLE -> Color.fromRGB(0xFF55FF);
+            case DARK_PURPLE -> Color.fromRGB(0xAA00AA);
+            case GRAY -> Color.fromRGB(0xAAAAAA);
+            case DARK_GRAY -> Color.fromRGB(0x555555);
+            case BLACK -> Color.fromRGB(0x1D1D21);
+            default -> Color.WHITE;
+        };
     }
 
     private void clearItems() {
@@ -908,6 +944,11 @@ public final class HoleInTheWallGame implements McmGame, Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPickup(EntityPickupItemEvent e) {
         if (active() && inWorld(e.getEntity())) e.setCancelled(true);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onInventoryClick(org.bukkit.event.inventory.InventoryClickEvent e) {
+        if (active() && e.getWhoClicked() instanceof Player p && inWorld(p)) e.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true)
