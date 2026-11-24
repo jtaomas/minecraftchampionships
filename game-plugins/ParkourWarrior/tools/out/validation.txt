@@ -1,127 +1,291 @@
 Parkour Warrior course validation  (seed 20261124)
-blocks: 56045, obstacles: 36, timed groups: 30
-  warn  B1-1: catch ledge above kill-Y (not on route) 7,101,-6 flowering_azalea_leaves
-  warn  B1-1: catch ledge above kill-Y (not on route) 8,101,-5 flowering_azalea_leaves
-B1-1       Alphabet Avalanche       DROP    len 27.0  jumps  4  maxGap 4.0  climb  4  killY 92  diff 3.25  sign EASY
-  warn  B1-2: catch ledge above kill-Y (not on route) 35,96,-1 lime_concrete
-  warn  B1-2: catch ledge above kill-Y (not on route) 35,96,0 lime_concrete
-B1-2       Peg Pole Spiral          SPIRAL  len 15.0  jumps 14  maxGap 2.0  climb  9  killY 93  diff 3.50  sign EASY
-  warn  B1-3: catch ledge above kill-Y (not on route) 53,100,0 yellow_concrete
-  warn  B1-3: catch ledge above kill-Y (not on route) 53,106,0 blue_concrete
-B1-3       Pop Goes the Jester      SLIME   len 18.0  jumps  4  maxGap 3.0  climb  5  killY 97  diff 2.75  sign MEDIUM
-  warn  M1-1: catch ledge above kill-Y (not on route) -2,102,10 lantern
-  warn  M1-1: catch ledge above kill-Y (not on route) -2,102,39 yellow_terracotta
-M1-1       Brick by Brick           UP      len 29.0  jumps  7  maxGap 3.0  climb  4  killY 96  diff 2.75  [easy table]
-  warn  M1-2: catch ledge above kill-Y (not on route) -2,102,39 yellow_terracotta
-  warn  M1-2: catch ledge above kill-Y (not on route) -2,102,43 yellow_terracotta
-M1-2       Domino Line-Up           GAP     len 23.0  jumps  7  maxGap 3.0  climb  0  killY 100  diff 2.75  [easy table]
-  warn  M1-3: catch ledge above kill-Y (not on route) -4,106,94 lantern
-  warn  M1-3: catch ledge above kill-Y (not on route) -1,103,70 dark_oak_slab
-M1-3       Tin Train Trestle        BEAM    len 25.0  jumps  8  maxGap 2.0  climb  2  killY 100  diff 1.38  [easy table]
-  warn  B2-1: catch ledge above kill-Y (not on route) 6,105,98 flowering_azalea_leaves
-  warn  B2-1: catch ledge above kill-Y (not on route) 7,106,97 lantern
-B2-1       Fruit Crate Tumble       GAP     len 27.0  jumps  6  maxGap 3.2  climb  2  killY 98  diff 3.29  sign MEDIUM
-  warn  B2-2: catch ledge above kill-Y (not on route) 33,103,100 melon
-  warn  B2-2: catch ledge above kill-Y (not on route) 33,103,101 melon
-B2-2       Swinging Shop Signs      HANG    len 22.0  jumps  6  maxGap 3.0  climb  1  killY 99  diff 4.25  sign MEDIUM
-  warn  B2-3: catch ledge above kill-Y (not on route) 58,104,102 stripped_spruce_wood
-B2-3       Billboard Bend           NEO     len 20.0  jumps  6  maxGap 3.0  climb  0  killY 100  diff 4.75  sign HARD
-  warn  M2-1: catch ledge above kill-Y (not on route) -5,106,109 lantern
-  warn  M2-1: catch ledge above kill-Y (not on route) -4,106,110 lantern
-M2-1       Awning Alley             DIAG    len 26.0  jumps  7  maxGap 2.2  climb  2  killY 100  diff 2.12  [easy table]
-  warn  M2-2: catch ledge above kill-Y (not on route) -5,110,134 dark_oak_planks
-  warn  M2-2: catch ledge above kill-Y (not on route) -5,110,135 stripped_dark_oak_log
-M2-2       Chimney Pots             POST    len 21.0  jumps  7  maxGap 3.0  climb  2  killY 104  diff 3.25  [easy table]
-  warn  M2-3: catch ledge above kill-Y (not on route) -6,116,184 lantern
-  warn  M2-3: catch ledge above kill-Y (not on route) -5,116,183 lantern
-M2-3       Drainpipe Dash           LADDER  len 18.0  jumps  6  maxGap 2.0  climb  6  killY 104  diff 2.25  [easy table]
-  warn  B3-1: catch ledge above kill-Y (not on route) 6,115,186 flowering_azalea_leaves
-  warn  B3-1: catch ledge above kill-Y (not on route) 6,115,194 flowering_azalea_leaves
-B3-1       Barrel Scatter           POST    len 22.0  jumps  6  maxGap 3.0  climb  1  killY 110  diff 4.50  sign MEDIUM
-  warn  B3-2: catch ledge above kill-Y (not on route) 28,112,189 barrel
-  warn  B3-2: catch ledge above kill-Y (not on route) 28,115,190 barrel
-B3-2       Gun Deck Duck            HEAD    len 21.0  jumps  6  maxGap 3.0  climb  1  killY 110  diff 4.00  sign HARD
-  warn  B3-3: catch ledge above kill-Y (not on route) 52,114,188 polished_blackstone_wall
-  warn  B3-3: catch ledge above kill-Y (not on route) 52,114,189 coal_block
-B3-3       Hull Rib Run             NEO     len 24.0  jumps  6  maxGap 3.0  climb  1  killY 110  diff 5.00  sign HARD
-  warn  M3-1: catch ledge above kill-Y (not on route) -4,116,198 lantern
-  warn  M3-1: catch ledge above kill-Y (not on route) -4,113,201 stripped_spruce_log
-M3-1       Fallen Mainmast          BEAM    len 27.0  jumps  5  maxGap 2.0  climb  3  killY 107  diff 1.25  [easy table]
-  warn  M3-2: catch ledge above kill-Y (not on route) -2,113,230 spruce_fence
-  warn  M3-2: catch ledge above kill-Y (not on route) -2,113,231 spruce_fence
-M3-2       Plankless Rope Bridge    GAP     len 23.0  jumps  7  maxGap 3.0  climb  1  killY 106  diff 2.50  [easy table]
-  warn  M3-3: catch ledge above kill-Y (not on route) -4,113,272 lantern
-  warn  M3-3: catch ledge above kill-Y (not on route) -4,112,274 flowering_azalea_leaves
-M3-3       Cargo Net Catch          LADDER  len 17.0  jumps  7  maxGap 2.0  climb  6  killY 105  diff 2.75  [easy table]
-  warn  B4-1: catch ledge above kill-Y (not on route) 6,112,284 flowering_azalea_leaves
-  warn  B4-1: catch ledge above kill-Y (not on route) 8,113,276 lantern
-B4-1       Pendulum Hall            TIMED   len 22.0  jumps  5  maxGap 3.0  climb  0  killY 107  diff 4.00  sign HARD
-  warn  B4-2: catch ledge above kill-Y (not on route) 28,111,279 gold_block
-  warn  B4-2: catch ledge above kill-Y (not on route) 28,111,280 gold_block
-B4-2       Axle Hop                 POST    len 22.0  jumps  6  maxGap 3.0  climb  2  killY 107  diff 4.75  sign HARD
-  warn  B4-3: catch ledge above kill-Y (not on route) 53,110,278 waxed_cut_copper
-  warn  B4-3: catch ledge above kill-Y (not on route) 53,110,279 gold_block
-B4-3       Cuckoo Chorus            TIMED   len 22.0  jumps  6  maxGap 3.0  climb  2  killY 109  diff 5.00  sign HARD
-  warn  M4-1: catch ledge above kill-Y (not on route) -7,113,285 lantern
-  warn  M4-1: catch ledge above kill-Y (not on route) -6,112,284 flowering_azalea_leaves
-M4-1       Gear Train               ROUND   len 33.0  jumps  5  maxGap 2.0  climb  2  killY 107  diff 2.50
-  warn  M4-2: catch ledge above kill-Y (not on route) -2,111,325 waxed_cut_copper
-  warn  M4-2: catch ledge above kill-Y (not on route) -2,111,326 waxed_cut_copper
-M4-2       Tick-Tock Teeth          TIMED   len 23.0  jumps  8  maxGap 2.0  climb  0  killY 109  diff 3.00
-  warn  M4-3: catch ledge above kill-Y (not on route) -4,113,371 lantern
-  warn  M4-3: catch ledge above kill-Y (not on route) -2,112,345 waxed_copper_bulb
-M4-3       Spring Loaded            SLIME   len 20.0  jumps  5  maxGap 2.0  climb  5  killY 104  diff 2.50
-  warn  B5-1: catch ledge above kill-Y (not on route) 6,112,375 flowering_azalea_leaves
-  warn  B5-1: catch ledge above kill-Y (not on route) 8,113,375 lantern
-B5-1       Runaway Rails            BEAM    len 24.0  jumps  5  maxGap 4.0  climb  1  killY 107  diff 4.13  sign HARD
-  warn  B5-2: catch ledge above kill-Y (not on route) 32,110,377 cobbled_deepslate
-  warn  B5-2: catch ledge above kill-Y (not on route) 32,110,381 cobbled_deepslate
-B5-2       Dripstone Descent        DROP    len 25.0  jumps  6  maxGap 4.0  climb  7  killY 101  diff 4.75  sign HARD
-  warn  B5-3: catch ledge above kill-Y (not on route) 58,101,378 dripstone_block
-  warn  B5-3: catch ledge above kill-Y (not on route) 58,105,379 dripstone_block
-B5-3       Crystal Curtain          NEO     len 17.0  jumps  6  maxGap 2.0  climb  4  killY 102  diff 5.00  sign HARD
-  warn  M5-1: catch ledge above kill-Y (not on route) -4,113,387 lantern
-  warn  M5-1: catch ledge above kill-Y (not on route) -3,107,403 smooth_basalt
-M5-1       Geode Steps              POST    len 21.0  jumps  6  maxGap 3.0  climb  2  killY 107  diff 3.75
-  warn  M5-2: catch ledge above kill-Y (not on route) -2,111,408 cobbled_deepslate
-  warn  M5-2: catch ledge above kill-Y (not on route) -2,111,412 cobbled_deepslate
-M5-2       Lantern Line             HANG    len 25.0  jumps  5  maxGap 3.0  climb  1  killY 109  diff 3.00
-  warn  M5-3: catch ledge above kill-Y (not on route) -4,120,457 lantern
-  warn  M5-3: catch ledge above kill-Y (not on route) -3,120,442 stripped_spruce_log
-M5-3       Rattling Lift            TIMED   len 17.0  jumps  6  maxGap 2.0  climb  4  killY 110  diff 4.00
-  warn  E-EASY-1: catch ledge above kill-Y (not on route) -18,120,471 lantern
-  warn  E-EASY-1: catch ledge above kill-Y (not on route) -16,120,473 lantern
-E-EASY-1   Honeycomb Hop            UP      len 17.1  jumps  5  maxGap 1.0  climb  2  killY 114  diff 1.50  [easy table]
-  warn  E-EASY-2: catch ledge above kill-Y (not on route) -16,119,490 moss_block
-  warn  E-EASY-2: catch ledge above kill-Y (not on route) -16,119,494 moss_block
-E-EASY-2   Bloom Stepping           GAP     len 15.0  jumps  4  maxGap 2.0  climb  0  killY 116  diff 1.50  [easy table]
-  warn  E-MEDIUM-1: catch ledge above kill-Y (not on route) -4,120,473 lantern
-  warn  E-MEDIUM-1: catch ledge above kill-Y (not on route) -2,117,475 snow_block
-E-MEDIUM-1 Ice Floe Slide           ICE     len 20.0  jumps  4  maxGap 3.0  climb  0  killY 114  diff 3.25
-  warn  E-MEDIUM-2: catch ledge above kill-Y (not on route) -2,117,491 snow_block
-  warn  E-MEDIUM-2: catch ledge above kill-Y (not on route) -2,116,493 packed_ice
-E-MEDIUM-2 Lighthouse Ladder        LADDER  len 13.2  jumps  3  maxGap 3.0  climb  7  killY 113  diff 1.50
-  warn  E-HARD-1: catch ledge above kill-Y (not on route) 5,126,468 waxed_weathered_cut_copper_stairs
-  warn  E-HARD-1: catch ledge above kill-Y (not on route) 8,120,473 lantern
-E-HARD-1   Spine Scramble           UP      len 11.5  jumps  9  maxGap 3.0  climb 11  killY 114  diff 5.00
-  warn  E-HARD-2: catch ledge above kill-Y (not on route) 8,128,478 cyan_wool
-  warn  E-HARD-2: catch ledge above kill-Y (not on route) 12,127,478 purple_wool
-E-HARD-2   Missing Treads           SPIRAL  len 11.4  jumps  8  maxGap 4.0  climb  6  killY 125  diff 5.16
+blocks: 53410, obstacles: 36, timed groups: 31
+movement model: Phys (1.21.1 tick simulation, W only 0.98, sprint, one-tick-late jump allowed, rest start at the back of each foothold, 8 alignments, chained landings)
+B1-1       Alphabet Avalanche       DROP    BRONZE len 24.0  steps  4  tightest jump gap 4.0 dh -1.00 window 2/3  est. attempts 1.4  killY 92
+    1     jump gap 4.0 dh -1.00                                window 2/3  (rest 2/3, chained 0/0)
+    2     jump gap 4.0 dh -2.00                                window 4/4  (rest 3/4, chained 4/4)
+    3     jump gap 4.0 dh -1.00                                window 3/3  (rest 2/3, chained 3/3)
+    4     jump gap 3.0 dh +1.00                                window 2/3  (rest 2/3, chained 2/3)
+B1-2       Peg Pole Spiral          SPIRAL  SILVER len 23.0  steps  8  tightest jump gap 3.0 dh +1.00 window 1/2  est. attempts 2.8  killY 93
+    1     jump gap 3.0 dh +0.00                                window 3/4  (rest 3/4, chained 0/0)
+    2     jump gap 2.0 dh +0.00                                window 7/9  (rest 7/8, chained 7/9)
+    3     jump gap 2.0 dh +1.00                                window 4/5  (rest 4/5, chained 3/5)
+    4     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    5     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 3/4)
+    6     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    7     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 4/4)
+    8     jump gap 2.0 dh +1.00                                window 3/4  (rest 3/4, chained 1/3)
+B1-3       Pop Goes the Jester      SLIME   GOLD   len 34.0  steps  6  tightest jump gap 4.0 dh +0.00 window 1/1  est. attempts 12.4  killY 88
+    1     jump gap 4.0 dh -1.00                                window 1/2  (rest 1/2, chained 0/0)
+    2-3   slime bounce gap 1.0 dh -6.00                        window 2/4  (rest 2/4, chained 2/4)
+    4     jump gap 4.0 dh +0.00                                window 1/2  (rest 0/1, chained 1/2)
+    5     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    6     jump gap 4.0 dh +0.00                                window 1/1  (rest 0/1, chained 1/1)
+    7-8   slime bounce gap 1.0 dh -6.00                        window 2/3  (rest 2/3, chained 1/3)
+M1-1       Brick by Brick           UP      Z1     len 30.0  steps  7  tightest jump gap 3.0 dh +0.00 window 4/5  est. attempts 1.1  killY 96
+    1     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 0/0)
+    2     jump gap 2.0 dh +1.00                                window 5/6  (rest 4/5, chained 5/6)
+    3     jump gap 2.0 dh +1.00                                window 5/5  (rest 4/5, chained 5/5)
+    4     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 4/5)
+    5     jump gap 2.0 dh +1.00                                window 5/6  (rest 4/5, chained 5/6)
+    6     jump gap 3.0 dh -1.00                                window 6/8  (rest 6/7, chained 6/8)
+    7     jump gap 3.0 dh +0.00                                window 5/7  (rest 5/6, chained 5/7)
+M1-2       Domino Line-Up           THIN    Z1     len 25.0  steps  7  tightest jump gap 3.0 dh +0.00 window 3/4  est. attempts 1.2  killY 98
+    1     jump gap 3.0 dh +0.00                                window 3/4  (rest 3/4, chained 0/0)
+    2     jump gap 3.0 dh +0.00                                window 4/6  (rest 4/5, chained 3/6)
+    3     jump gap 2.0 dh +1.00                                window 4/5  (rest 4/5, chained 3/5)
+    4     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 3/5)
+    5     jump gap 3.0 dh -1.00                                window 5/6  (rest 5/6, chained 3/6)
+    6     jump gap 2.0 dh +1.00                                window 4/6  (rest 4/5, chained 2/6)
+    7     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 3/5)
+M1-3       Toy Rocket Launch        LADDER  Z1     len 19.0  steps  7  tightest ladder exit gap 2.0 dh +1.00 window 4/4  est. attempts 1.1  killY 99
+    1     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 0/0)
+    2     ladder catch gap 2.0 dh +0.00                        window 6/8  (rest 6/7, chained 6/8)
+    3     ladder exit gap 2.0 dh +1.00                         window 4/4  (rest 0/0, chained 0/0)
+    4     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 3/5)
+    5     ladder catch gap 2.0 dh +0.00                        window 7/8  (rest 6/7, chained 7/8)
+    6     ladder exit gap 2.0 dh +1.00                         window 4/4  (rest 0/0, chained 0/0)
+    7     jump gap 3.0 dh +0.00                                window 5/6  (rest 5/6, chained 5/6)
+B2-1       Fruit Crate Tumble       GAP     BRONZE len 27.0  steps  7  tightest jump gap 3.0 dh +1.00 window 1/2  est. attempts 3.2  killY 107
+    1     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 0/0)
+    2     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    3     jump gap 4.0 dh -1.00                                window 3/4  (rest 2/3, chained 3/4)
+    4     jump gap 3.0 dh +1.00                                window 2/2  (rest 1/2, chained 2/2)
+    5     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    6     jump gap 3.0 dh +0.00                                window 5/5  (rest 4/5, chained 5/5)
+    7     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 3/5)
+B2-2       Swinging Shop Signs      HANG    SILVER len 23.0  steps  6  tightest jump gap 3.0 dh +1.00 window 1/2  est. attempts 4.3  killY 109
+    1     jump gap 3.0 dh +0.00                                window 3/4  (rest 3/4, chained 0/0)
+    2     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/1)
+    3     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/1)
+    4     jump gap 4.0 dh -1.00                                window 2/3  (rest 2/3, chained 2/2)
+    5     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/1)
+    6     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 7/7)
+B2-3       Billboard Bend           NEO     GOLD   len 32.0  steps  7  tightest jump gap 2.0 dh +0.00 curved -25deg/sw0 window 0/1  est. attempts 10.1  killY 109
+    1     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 0/0)
+    2     jump gap 1.0 dh +0.00 curved -25deg/sw0              window 4/5  (rest 4/5, chained 0/4)
+    3     jump gap 1.0 dh +0.00 curved -30deg/sw0              window 4/5  (rest 4/5, chained 0/4)
+    4     jump gap 2.0 dh +0.00 curved -25deg/sw0              window 0/1  (rest 0/1, chained 0/1)
+    5     jump gap 2.0 dh -1.00 curved -25deg/sw0              window 3/4  (rest 0/4, chained 3/3)
+    6     jump gap 4.0 dh -1.00                                window 3/3  (rest 2/3, chained 3/3)
+    7     jump gap 2.0 dh +1.00                                window 4/4  (rest 3/4, chained 4/4)
+M2-1       Shop Window Panes        THIN    Z2     len 27.0  steps  8  tightest jump gap 2.0 dh +1.00 curved 30deg/sw0 window 2/3  est. attempts 1.4  killY 107
+    1     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 0/0)
+    2     jump gap 2.0 dh +0.00 curved -50deg/sw0              window 3/3  (rest 2/3, chained 3/3)
+    3     jump gap 2.0 dh +0.00                                window 4/5  (rest 4/5, chained 2/3)
+    4     jump gap 2.0 dh +1.00 curved 30deg/sw0               window 2/3  (rest 2/3, chained 2/3)
+    5     jump gap 2.0 dh +0.00                                window 4/5  (rest 4/5, chained 2/3)
+    6     jump gap 2.0 dh +1.00 curved -45deg/sw0              window 2/3  (rest 2/3, chained 2/3)
+    7     jump gap 2.0 dh +0.00                                window 4/5  (rest 4/5, chained 2/3)
+    8     jump gap 2.0 dh +0.00                                window 8/9  (rest 8/9, chained 6/9)
+M2-2       Chimney Pots             POST    Z2     len 27.0  steps  8  tightest jump gap 3.0 dh +0.00 window 3/4  est. attempts 1.2  killY 110
+    1     jump gap 3.0 dh +0.00                                window 3/4  (rest 3/4, chained 0/0)
+    2     jump gap 2.0 dh +1.00                                window 4/6  (rest 4/5, chained 3/6)
+    3     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 3/5)
+    4     jump gap 3.0 dh -1.00                                window 5/6  (rest 5/6, chained 3/6)
+    5     jump gap 2.0 dh +1.00                                window 4/6  (rest 4/5, chained 2/6)
+    6     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 3/5)
+    7     jump gap 2.0 dh +1.00                                window 4/5  (rest 4/5, chained 3/5)
+    8     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 3/6)
+M2-3       Railing Run              WALL    Z2     len 30.0  steps  6  tightest jump gap 3.0 dh +0.00 window 2/3  est. attempts 1.2  killY 109
+    1     jump gap 2.0 dh -0.50                                window 8/8  (rest 8/8, chained 0/0)
+    2     jump gap 2.0 dh +0.00                                window 6/7  (rest 6/6, chained 6/7)
+    3     jump gap 3.0 dh +0.00                                window 2/3  (rest 2/3, chained 2/3)
+    4     jump gap 3.0 dh -1.00                                window 5/5  (rest 4/5, chained 5/5)
+    5     jump gap 3.0 dh +0.00                                window 3/3  (rest 2/3, chained 3/3)
+    6     jump gap 2.0 dh -0.50                                window 8/9  (rest 8/9, chained 6/7)
+B3-1       Barrel Scatter           POST    BRONZE len 27.0  steps  7  tightest jump gap 3.0 dh +1.00 window 1/2  est. attempts 4.0  killY 109
+    1     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 0/0)
+    2     jump gap 3.0 dh +0.00                                window 5/5  (rest 4/5, chained 5/5)
+    3     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 3/5)
+    4     jump gap 4.0 dh -1.00                                window 3/4  (rest 2/3, chained 3/4)
+    5     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    6     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    7     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 5/5)
+B3-2       Gun Deck Duck            HEAD    SILVER len 22.0  steps  6  tightest jump gap 2.0 dh +0.00 window 0/2  est. attempts 5.3  killY 110
+    1     jump gap 2.0 dh +0.00                                window 0/2  (rest 0/2, chained 0/0)
+    2     jump gap 2.0 dh +0.00                                window 2/2  (rest 1/2, chained 2/2)
+    3     jump gap 2.0 dh +0.00                                window 2/2  (rest 1/2, chained 2/2)
+    4     jump gap 2.0 dh +0.00                                window 2/2  (rest 1/2, chained 2/2)
+    5     jump gap 2.0 dh -1.00                                window 5/6  (rest 4/5, chained 5/6)
+    6     jump gap 2.0 dh +0.00                                window 8/9  (rest 8/9, chained 6/9)
+B3-3       Hull Rib Run             NEO     GOLD   len 31.0  steps  7  tightest jump gap 2.0 dh +0.00 curved 25deg/sw0 window 0/1  est. attempts 10.6  killY 107
+    1     jump gap 1.0 dh +0.00                                window 11/11  (rest 11/11, chained 0/0)
+    2     jump gap 1.0 dh +0.00 curved -25deg/sw0              window 4/5  (rest 4/5, chained 0/1)
+    3     jump gap 2.0 dh +0.00 curved 25deg/sw0               window 0/1  (rest 0/1, chained 0/0)
+    4     jump gap 1.0 dh -1.00 curved -30deg/sw0              window 6/7  (rest 6/7, chained 1/1)
+    5     jump gap 2.0 dh -1.00 curved 40deg/sw0               window 2/3  (rest 2/3, chained 0/2)
+    6     jump gap 4.0 dh -1.00                                window 3/3  (rest 2/3, chained 3/3)
+    7     jump gap 2.0 dh +1.00                                window 4/4  (rest 3/4, chained 4/4)
+M3-1       Rigging Ropes            VINE    Z3     len 24.0  steps  6  tightest jump gap 3.0 dh +1.00 window 2/3  est. attempts 1.2  killY 102
+    1     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 0/0)
+    2     ladder catch gap 3.0 dh +0.00                        window 3/4  (rest 3/4, chained 3/4)
+    3     ladder-to-ladder gap 3.0 dh +0.00                    window 17/17  (rest 0/0, chained 0/0)
+    4     ladder-to-ladder gap 3.0 dh +0.00                    window 51/51  (rest 0/0, chained 0/0)
+    5     ladder exit gap 2.0 dh +1.00                         window 39/39  (rest 0/0, chained 0/0)
+    6     jump gap 3.0 dh +1.00                                window 2/3  (rest 2/3, chained 2/3)
+M3-2       Plankless Rope Bridge    GAP     Z3     len 25.0  steps  7  tightest jump gap 3.0 dh +0.50 window 2/3  est. attempts 1.4  killY 107
+    1     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 0/0)
+    2     jump gap 3.0 dh +0.50                                window 2/3  (rest 2/3, chained 2/3)
+    3     jump gap 3.0 dh +0.50                                window 2/4  (rest 2/3, chained 2/4)
+    4     jump gap 3.0 dh +0.50                                window 3/4  (rest 2/3, chained 3/4)
+    5     jump gap 3.0 dh +0.50                                window 3/3  (rest 2/3, chained 3/3)
+    6     jump gap 3.0 dh +0.50                                window 3/4  (rest 2/3, chained 3/4)
+    7     jump gap 2.0 dh +0.50                                window 5/5  (rest 5/5, chained 3/4)
+M3-3       Cargo Net Catch          LADDER  Z3     len 26.0  steps  7  tightest ladder exit gap 2.0 dh +1.00 window 4/4  est. attempts 1.1  killY 109
+    1     ladder catch gap 2.0 dh -1.00                        window 8/9  (rest 8/9, chained 0/0)
+    2     ladder exit gap 2.0 dh +1.00                         window 4/4  (rest 0/0, chained 0/0)
+    3     ladder catch gap 3.0 dh -1.00                        window 5/5  (rest 5/5, chained 5/5)
+    4     ladder exit gap 2.0 dh +1.00                         window 4/4  (rest 0/0, chained 0/0)
+    5     ladder catch gap 3.0 dh -1.00                        window 5/5  (rest 5/5, chained 5/5)
+    6     ladder exit gap 2.0 dh +1.00                         window 4/4  (rest 0/0, chained 0/0)
+    7     jump gap 3.0 dh +0.00                                window 5/6  (rest 5/6, chained 5/6)
+  B4-1 timed run 1..4: 12 good start ticks per 60-tick cycle (window 12)
+B4-1       Pendulum Hall            TIMED   BRONZE len 22.0  steps  5  tightest jump gap 3.0 dh +1.00 window 1/2  est. attempts 2.8  killY 119
+    1     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 0/0)
+    2     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    3     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 4/5)
+    4     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 4/5)
+    5     jump gap 2.0 dh +0.00                                window 5/5  (rest 4/5, chained 5/5)
+B4-2       Axle Hop                 POST    SILVER len 22.0  steps  6  tightest jump gap 3.0 dh +1.00 window 1/2  est. attempts 3.9  killY 120
+    1     jump gap 3.0 dh +0.00                                window 3/4  (rest 3/4, chained 0/0)
+    2     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    3     jump gap 3.0 dh -1.00                                window 5/6  (rest 5/6, chained 5/6)
+    4     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    5     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    6     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 5/6)
+  B4-3 timed run 1..5: 12 good start ticks per 50-tick cycle (window 12)
+B4-3       Cuckoo Chorus            TIMED   GOLD   len 21.0  steps  6  tightest jump gap 3.0 dh +1.00 window 1/2  est. attempts 9.7  killY 122
+    1     jump gap 2.0 dh +1.00                                window 3/5  (rest 3/5, chained 0/0)
+    2     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    3     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    4     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    5     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    6     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 5/5)
+M4-1       Gear Train               ROUND   Z4     len 33.0  steps  5  tightest jump gap 3.0 dh +1.00 window 1/2  est. attempts 1.7  killY 119
+    1     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 0/0)
+    2     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 4/5)
+    3     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    4     jump gap 3.2 dh +0.00                                window 3/4  (rest 3/4, chained 2/3)
+    5     jump gap 2.0 dh +1.00                                window 3/4  (rest 3/4, chained 3/4)
+  M4-2 timed run 1..7: 21 good start ticks per 40-tick cycle (window 21)
+M4-2       Tick-Tock Teeth          TIMED   Z4     len 25.0  steps  8  tightest jump gap 3.0 dh +0.00 window 4/5  est. attempts 1.1  killY 121
+    1     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 0/0)
+    2     jump gap 2.0 dh +0.00                                window 6/7  (rest 6/7, chained 3/7)
+    3     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 2/5)
+    4     jump gap 2.0 dh +1.00                                window 4/5  (rest 4/5, chained 3/5)
+    5     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 3/5)
+    6     jump gap 2.0 dh +1.00                                window 4/5  (rest 4/5, chained 3/5)
+    7     jump gap 2.0 dh +0.00                                window 6/7  (rest 6/7, chained 3/5)
+    8     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 2/5)
+M4-3       Spring Loaded            SLIME   Z4     len 20.0  steps  3  tightest slime bounce gap 2.0 dh -4.00 curved -60deg/sw14 window 3/4  est. attempts 1.1  killY 118
+    1-2   slime bounce gap 2.0 dh -4.00 curved -60deg/sw14     window 3/4  (rest 3/4, chained 0/0)
+    3-4   slime bounce gap 2.0 dh -4.00 curved -60deg/sw14     window 4/5  (rest 3/4, chained 4/5)
+    5     jump gap 2.0 dh +0.00                                window 8/10  (rest 8/9, chained 8/10)
+B5-1       Dripstone Descent        DROP    BRONZE len 30.0  steps  6  tightest jump gap 5.4 dh -3.00 window 1/2  est. attempts 3.0  killY 107
+    1     jump gap 3.0 dh -1.00                                window 6/7  (rest 6/7, chained 0/0)
+    2     jump gap 5.1 dh -3.00                                window 2/3  (rest 2/2, chained 2/3)
+    3     jump gap 5.4 dh -3.00                                window 1/2  (rest 1/2, chained 1/2)
+    4     jump gap 5.4 dh -3.00                                window 1/2  (rest 1/2, chained 1/1)
+    5     jump gap 5.1 dh -3.00                                window 2/3  (rest 2/2, chained 2/3)
+    6     jump gap 2.0 dh -1.00                                window 7/8  (rest 7/8, chained 4/6)
+B5-2       Crystal Curtain          NEO     SILVER len 33.0  steps  7  tightest jump gap 3.0 dh +1.00 window 1/2  est. attempts 3.8  killY 107
+    1     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 0/0)
+    2     jump gap 1.0 dh +0.00 curved -25deg/sw0              window 4/5  (rest 4/5, chained 0/4)
+    3     jump gap 1.0 dh +0.00 curved -30deg/sw0              window 4/5  (rest 4/5, chained 0/4)
+    4     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    5     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    6     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/1)
+    7     jump gap 2.0 dh +0.00                                window 9/10  (rest 8/9, chained 9/10)
+B5-3       Runaway Rails            BEAM    GOLD   len 24.0  steps  5  tightest jump gap 4.0 dh +0.00 window 1/1  est. attempts 10.1  killY 110
+    1     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 0/0)
+    2     jump gap 4.0 dh +0.00                                window 1/1  (rest 0/1, chained 1/1)
+    3     jump gap 3.0 dh +1.00                                window 2/2  (rest 1/2, chained 2/2)
+    4     jump gap 4.0 dh +0.00                                window 1/1  (rest 0/1, chained 1/1)
+    5     jump gap 3.0 dh +0.00                                window 6/6  (rest 5/6, chained 6/6)
+M5-1       Geode Steps              POST    Z5     len 22.0  steps  6  tightest jump gap 3.0 dh +1.00 window 1/2  est. attempts 2.0  killY 121
+    1     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 0/0)
+    2     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    3     jump gap 3.0 dh +0.00                                window 5/5  (rest 4/5, chained 5/5)
+    4     jump gap 3.0 dh +1.00                                window 2/2  (rest 1/2, chained 2/2)
+    5     jump gap 3.0 dh +0.00                                window 5/5  (rest 4/5, chained 5/5)
+    6     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 3/5)
+M5-2       Lantern Line             HANG    Z5     len 25.0  steps  5  tightest jump gap 3.0 dh +1.00 window 1/2  est. attempts 1.6  killY 123
+    1     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 0/0)
+    2     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 4/5)
+    3     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    4     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 4/5)
+    5     jump gap 2.0 dh +0.00                                window 9/10  (rest 8/9, chained 9/10)
+  M5-3 timed run 1..6: 20 good start ticks per 90-tick cycle (window 20)
+M5-3       Rattling Lift            TIMED   Z5     len 22.0  steps  7  tightest jump gap 3.0 dh +1.00 window 1/2  est. attempts 1.7  killY 124
+    1     jump gap 2.0 dh +0.00                                window 7/8  (rest 7/8, chained 0/0)
+    2     jump gap 2.0 dh +1.00                                window 4/5  (rest 4/5, chained 3/5)
+    3     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/2)
+    4     jump gap 2.0 dh +0.00                                window 6/7  (rest 6/7, chained 4/5)
+    5     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 2/5)
+    6     jump gap 2.0 dh +1.00                                window 4/5  (rest 4/5, chained 3/5)
+    7     jump gap 2.0 dh +1.00                                window 3/4  (rest 3/4, chained 0/3)
+E-EASY-1   Honeycomb Hop            UP      EASY   len 17.1  steps  5  tightest jump gap 1.0 dh +1.00 window 9/9  est. attempts 1.0  killY 128
+    1     jump (walk/drop) gap 1.0 dh +0.00                    window 6/6  (rest 0/0, chained 0/0) trivial
+    2     jump gap 1.0 dh +1.00                                window 9/9  (rest 8/9, chained 9/9)
+    3     jump gap 1.0 dh +1.00                                window 9/9  (rest 8/9, chained 9/9)
+    4     jump (walk/drop) gap 1.0 dh +0.00                    window 6/6  (rest 0/0, chained 0/0) trivial
+    5     jump gap 1.0 dh +0.00                                window 11/12  (rest 11/11, chained 11/12)
+E-EASY-2   Bloom Stepping           GAP     EASY   len 15.0  steps  4  tightest jump gap 2.0 dh +0.00 window 7/9  est. attempts 1.0  killY 130
+    1     jump gap 1.0 dh +0.00                                window 11/11  (rest 11/11, chained 0/0)
+    2     jump gap 2.0 dh +0.00                                window 7/9  (rest 7/8, chained 7/9)
+    3     jump gap 2.0 dh +0.00                                window 8/8  (rest 7/8, chained 8/8)
+    4     jump gap 1.0 dh +0.00                                window 11/12  (rest 11/11, chained 9/12)
+E-MEDIUM-1 Ice Floe Slide           ICE     MEDIUM len 24.0  steps  5  tightest ice jump gap 4.1 dh +0.00 curved -10deg/sw8 window 3/3  est. attempts 1.2  killY 128
+    1     jump gap 3.0 dh +0.00                                window 4/5  (rest 4/5, chained 0/0)
+    2     ice jump gap 3.2 dh +1.00                            window 3/4  (rest 2/3, chained 3/4)
+    3     ice jump gap 4.1 dh +0.00 curved -10deg/sw8          window 3/3  (rest 3/3, chained 0/0)
+    4     ice jump gap 4.1 dh +0.00                            window 4/5  (rest 2/3, chained 4/5)
+    5     ice jump gap 4.0 dh +0.00                            window 5/6  (rest 4/5, chained 5/6)
+E-MEDIUM-2 Lighthouse Ladder        LADDER  MEDIUM len 14.7  steps  5  tightest jump gap 3.0 dh +1.00 window 1/2  est. attempts 2.5  killY 128
+    1     ladder catch gap 3.0 dh -1.00 curved 20deg/sw6       window 3/4  (rest 3/4, chained 0/0)
+    2     ladder exit gap 0.0 dh +1.00                         window 43/43  (rest 0/0, chained 0/0)
+    3     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/1)
+    4     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/1)
+    5     jump gap 2.0 dh +0.00                                window 8/9  (rest 8/9, chained 8/9)
+E-HARD-1   Spine Scramble           UP      HARD   len 11.5  steps  9  tightest jump gap 4.0 dh +0.00 window 1/1  est. attempts 13.0  killY 128
+    1     jump (walk/drop) gap 1.0 dh +0.00                    window 6/6  (rest 0/0, chained 0/0) trivial
+    2     jump gap 2.2 dh +1.00                                window 4/5  (rest 4/5, chained 3/4)
+    3     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/1)
+    4     jump gap 4.0 dh +0.00                                window 1/1  (rest 0/1, chained 1/1)
+    5     ladder catch (walk/drop) gap 0.0 dh +0.00            window 6/6  (rest 0/0, chained 0/0) trivial
+    6     ladder exit gap 0.0 dh +1.00                         window 41/41  (rest 0/0, chained 0/0)
+    7     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/1)
+    8     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 0/2)
+    9     jump gap 1.0 dh +1.00 curved -35deg/sw0              window 2/2  (rest 2/2, chained 0/0)
+  E-HARD-2 timed run 3..7: 31 good start ticks per 60-tick cycle (window 31)
+E-HARD-2   Missing Treads           SPIRAL  HARD   len 11.4  steps  8  tightest jump gap 4.0 dh +0.00 window 0/1  est. attempts 22.6  killY 139
+    1     jump gap 4.0 dh +0.00                                window 0/1  (rest 0/1, chained 0/0)
+    2     jump gap 2.8 dh +1.00                                window 1/2  (rest 1/2, chained 0/0)
+    3     jump gap 3.0 dh +1.00                                window 1/2  (rest 1/2, chained 1/1)
+    4     jump gap 1.0 dh +1.00                                window 7/8  (rest 7/8, chained 6/6)
+    5     jump gap 2.8 dh +1.00                                window 2/3  (rest 2/3, chained 0/2)
+    6     jump gap 1.0 dh +1.00                                window 7/8  (rest 7/8, chained 5/6)
+    7     jump gap 1.0 dh +1.00                                window 7/8  (rest 7/8, chained 4/7)
+    8     jump gap 1.0 dh +0.00                                window 6/7  (rest 6/7, chained 4/7)
 
 == course checks
+kill-volume overlaps: 0
 pad blocks: 324 (stray 0)
 timed obstacles: [B4-1, B4-3, E-HARD-2, M4-2, M5-3]
-stage 1 difficulty: main 2.29  bonus 3.17
-stage 2 difficulty: main 2.54  bonus 4.10
-stage 3 difficulty: main 2.17  bonus 4.50
-stage 4 difficulty: main 2.67  bonus 4.58
-stage 5 difficulty: main 3.58  bonus 4.63
-endings difficulty: easy 1.50  medium 2.38  hard 5.08
+stage 1 est. attempts: main avg 1.13 (max 1.17)  bronze 1.38  silver 2.79  gold 12.44
+stage 2 est. attempts: main avg 1.28 (max 1.45)  bronze 3.15  silver 4.30  gold 10.06
+stage 3 est. attempts: main avg 1.26 (max 1.42)  bronze 3.98  silver 5.26  gold 10.59
+stage 4 est. attempts: main avg 1.31 (max 1.73)  bronze 2.79  silver 3.87  gold 9.67
+stage 5 est. attempts: main avg 1.78 (max 1.99)  bronze 3.02  silver 3.84  gold 10.08
+Runaway Rails (owner calibration, floor of gold): est. attempts 10.08
+endings est. attempts: easy 1.01  medium 1.83  hard 17.80
+connection post-pass: ok
 staircases: 0 lanes, problems 0
-bounds: x -90..87  y 87..155  z -10..551
-distinct block types: 185
+bounds: x -90..105  y 86..169  z -10..586
+distinct block types: 186
 
-SUMMARY jumps 221 (easy-table checked 70), footholds 224 (tiny objects 0), decoys 0, catch ledges 1122 (warning)
-RESULT: PASS  errors 0  warnings 71
+SUMMARY steps 226, footholds 229 (tiny objects 0), decoys 0, bypasses 0, kill overlaps 0, catch ledges 700 (info)
+RESULT: PASS  errors 0  warnings 0
 
-(generated + validated in 442 ms)
+(generated + validated in 123213 ms)

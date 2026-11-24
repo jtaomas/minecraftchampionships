@@ -117,7 +117,7 @@ final class Crystal {
     static Ob b2(W w, Ob.Slot s) {
         Ob o = new Ob(w, s, "Dripstone Descent", "DROP");
         o.difficultyTag = "MEDIUM";
-        int[][] p = {{0, 5, -1}, {1, 11, -4}, {0, 18, -8}, {1, 24, -11}};
+        int[][] p = {{0, 5, -1}, {2, 11, -4}, {-1, 17, -7}, {2, 23, -10}, {0, 29, -13}};
         for (int[] c : p) {
             for (int y = c[2] - 9; y <= c[2]; y++) {
                 int r = (c[2] - y) / 4;
@@ -131,8 +131,8 @@ final class Crystal {
         for (int[] t : new int[][]{{-3, 6, 3}, {3, 11, 4}, {-2, 19, 2}, {3, 22, 3}, {-4, 14, 3}}) {
             for (int k = 1; k <= t[2]; k++) o.set(t[0], 6 - k, t[1], "pointed_dripstone[thickness=" + (k == t[2] ? "tip" : k == 1 ? "base" : "middle") + ",vertical_direction=down,waterlogged=false]");
         }
-        o.end(0, -12, 29);
-        Sh.padBase(o, 0, -12, 29, "polished_deepslate", "deepslate_tiles", "cobbled_deepslate", 3);
+        o.end(0, -14, 33);
+        Sh.padBase(o, 0, -14, 33, "polished_deepslate", "deepslate_tiles", "cobbled_deepslate", 3);
         return o;
     }
 
@@ -141,11 +141,11 @@ final class Crystal {
         Ob o = new Ob(w, s, "Crystal Curtain", "NEO");
         o.difficultyTag = "HARD";
         // geode wall on the left with one-wide amethyst ledges (3 long); single crystal blades stand between the
-        // first ledges, flush with their outer edge (three single neos), then two 3+1 jumps up the bare ledges
-        for (int z = 1; z <= 33; z++) for (int y = -8; y <= 9; y++) for (int x = -6; x <= -3; x++)
+        // first ledges, flush with their outer edge (two single neos), then three 3+1 jumps up the bare ledges
+        for (int z = 1; z <= 35; z++) for (int y = -8; y <= 9; y++) for (int x = -6; x <= -3; x++)
             o.set(x, y, z, x == -3 ? (W.h(x, y, z, 5) < 0.3 ? "amethyst_block" : "calcite") : x == -6 ? "smooth_basalt" : "calcite");
         // ledge: z0, y, blade after it (1) or none (0)
-        int[][] L = {{4, 0, 1}, {8, 0, 1}, {12, 0, 1}, {16, 0, 0}, {22, 1, 0}, {28, 2, 0}};
+        int[][] L = {{4, 0, 1}, {8, 0, 1}, {12, 0, 0}, {18, 1, 0}, {24, 2, 0}, {30, 3, 0}};
         for (int i = 0; i < L.length; i++) {
             int z0 = L[i][0], y = L[i][1];
             for (int z = z0; z < z0 + 3; z++) { o.set(-2, y, z, "amethyst_block"); o.set(-2, y - 1, z, "calcite"); }
@@ -157,8 +157,8 @@ final class Crystal {
                 o.set(-2, y + 5, bz, "amethyst_cluster[facing=up,waterlogged=false]");
             }
         }
-        o.end(-1, 2, 34);
-        Sh.padBase(o, -1, 2, 34, "polished_deepslate", "deepslate_tiles", "cobbled_deepslate", 3);
+        o.end(-1, 3, 36);
+        Sh.padBase(o, -1, 3, 36, "polished_deepslate", "deepslate_tiles", "cobbled_deepslate", 3);
         return o;
     }
 }

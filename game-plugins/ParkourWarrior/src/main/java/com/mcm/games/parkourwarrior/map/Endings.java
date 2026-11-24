@@ -16,20 +16,13 @@ final class Endings {
         for (int i = 0; i < c.length; i++) {
             int x0 = c[i][0], z0 = c[i][1], y = c[i][2];
             int depth = 7 + i * 2;
-            for (int x = x0 - 1; x <= x0 + 3; x++) for (int z = z0 - 1; z <= z0 + 3; z++) {
-                int ex = Math.abs(x - (x0 + 1)), ez = Math.abs(z - (z0 + 1));
-                if (ex + ez > 3) continue;                 // hexagon-ish 5x5 minus corners
-                boolean top = ex <= 1 && ez <= 1;
-                int yt = top ? y : y - 1;
-                for (int yy = yt; yy >= y - depth + (ex + ez); yy--) {
-                    String st = yy == yt ? (top ? "honeycomb_block" : "bee_nest[facing=north,honey_level=0]") : ((yy + ex + ez) % 4 == 0 ? "bee_nest[facing=north,honey_level=5]" : "honeycomb_block");
-                    o.set(x, yy, z, st);
-                }
-                if (!top) o.set(x, y, z, null);
+            // a straight 3x3 honeycomb column (no lower ring: the old ring was a side path past the tops)
+            for (int x = x0; x <= x0 + 2; x++) for (int z = z0; z <= z0 + 2; z++) for (int yy = y; yy >= y - depth; yy--) {
+                boolean corner = x != x0 + 1 && z != z0 + 1;
+                String st = yy == y ? "honeycomb_block" : (corner && (yy + i) % 3 == 0 ? "bee_nest[facing=north,honey_level=5]" : "honeycomb_block");
+                o.set(x, yy, z, st);
             }
             o.area(x0, y, z0, x0 + 2, z0 + 2);
-            // ring around the top is one lower: register as part of the column
-            for (int x = x0 - 1; x <= x0 + 3; x++) for (int z = z0 - 1; z <= z0 + 3; z++) o.safe(x, y - 1, z, x, z);
         }
         // a bee (yellow/black) hovering off to the side
         for (int x = 7; x <= 8; x++) for (int z = 8; z <= 10; z++) o.set(x, 4, z, z == 9 ? "black_wool" : "yellow_wool");
@@ -52,10 +45,11 @@ final class Endings {
         for (int i = 0; i < f.length; i++) {
             int x = f[i][0], z = f[i][1], y = f[i][2];
             for (int dx = -1; dx <= 1; dx++) for (int dz = -1; dz <= 1; dz++) o.set(x + dx, y, z + dz, dx == 0 && dz == 0 ? "yellow_concrete" : petal[i]);
-            for (int[] d : new int[][]{{2, 0}, {-2, 0}, {0, 2}, {0, -2}}) o.set(x + d[0], y - 1, z + d[1], petal[i].replace("concrete", "wool"));
             for (int dx = -1; dx <= 1; dx++) for (int dz = -1; dz <= 1; dz++) if (dx != 0 || dz != 0) o.set(x + dx, y - 1, z + dz, petal[i].replace("concrete", "terracotta"));
-            for (int yy = y - 2; yy >= y - 10; yy--) o.set(x, yy, z, "green_concrete");
+            for (int yy = y - 1; yy >= y - 10; yy--) o.set(x, yy, z, "green_concrete");
             o.set(x + 1, y - 5, z, "azalea_leaves[distance=7,persistent=true,waterlogged=false]");
+            o.set(x, y - 3, z + 1, "azalea_leaves[distance=7,persistent=true,waterlogged=false]");
+            o.set(x, y - 4, z - 1, "azalea_leaves[distance=7,persistent=true,waterlogged=false]");
             o.set(x - 1, y - 7, z, "azalea_leaves[distance=7,persistent=true,waterlogged=false]");
             o.area(x - 1, y, z - 1, x + 1, z + 1);
         }
@@ -67,21 +61,23 @@ final class Endings {
     // ================================================================ MEDIUM: Frozen Harbour
     static Ob med1(W w, Ob.Slot s) {
         Ob o = new Ob(w, s, "Ice Floe Slide", "ICE");
-        int[][] fl = {{-1, 4, 6, 0}, {0, 10, 12, 0}, {-1, 16, 18, 0}};  // x0, z0, z1, y ; floes 3 wide
+        // one-wide blue-ice floes (3 long), each shifted sideways, with four-block leads of open water between them: the ice keeps
+        // your speed, so the long jumps only work with a clean sprint-jump off the floe's far edge
+        int[][] fl = {{0, 5, 6, 0}, {2, 10, 10, 1}, {0, 15, 16, 1}, {2, 21, 21, 1}};  // x0, z0, z1, y
         for (int[] f : fl) {
-            for (int x = f[0]; x <= f[0] + 2; x++) for (int z = f[1]; z <= f[2]; z++) {
+            for (int z = f[1]; z <= f[2]; z++) {
+                int x = f[0];
                 o.set(x, f[3], z, "blue_ice");
                 for (int k = 1; k <= 6; k++) {
                     double sh = k * 0.35;
-                    if (Math.abs(x - (f[0] + 1)) + Math.abs(z - (f[1] + f[2]) / 2.0) <= 2.6 - sh + 1) o.set(x, f[3] - k, z, k < 3 ? "packed_ice" : "ice");
+                    if (Math.abs(z - (f[1] + f[2]) / 2.0) <= 2.6 - sh) o.set(x, f[3] - k, z, k < 3 ? "packed_ice" : "ice");
                 }
+                if (z == (f[1] + f[2]) / 2) for (int k = 2; k <= 4; k++) { o.set(x - 1, f[3] - k, z, "packed_ice"); o.set(x + 1, f[3] - k - 1, z, "ice"); }
             }
-            for (int x = f[0] - 1; x <= f[0] + 3; x++) for (int z = f[1] - 1; z <= f[2] + 1; z++)
-                if (x < f[0] || x > f[0] + 2 || z < f[1] || z > f[2]) o.set(x, f[3] - 1, z, "snow_block");
-            o.areaT(Ob.T.ICE, f[0], f[3], f[1], f[0] + 2, f[2]);
+            o.areaT(Ob.T.ICE, f[0], f[3], f[1], f[0], f[2]);
         }
-        o.end(0, 0, 23);
-        Sh.padBase(o, 0, 0, 23, "packed_ice", "snow_block", "packed_ice", 3);
+        o.end(1, 1, 27);
+        Sh.padBase(o, 1, 1, 27, "packed_ice", "snow_block", "packed_ice", 3);
         return o;
     }
 
@@ -94,34 +90,40 @@ final class Endings {
             o.set(x, -6, z, "spruce_planks");
             if (x != 6) o.set(x, -5, z, "spruce_slab[type=bottom,waterlogged=false]");
         }
-        // striped tower
+        // striped tower with a rib on its north face carrying the ladder
         for (int y = -12; y <= top; y++) for (int dx = -3; dx <= 3; dx++) for (int dz = -3; dz <= 3; dz++) {
             if (!Sh.inDisc(dx, dz, 2.8)) continue;
             o.set(dx, y, cz + dz, (Math.floorDiv(y, 3) & 1) == 0 ? "red_concrete" : "white_concrete");
         }
-        // gallery ring with a gap over the ladder
-        for (int dx = -5; dx <= 5; dx++) for (int dz = -5; dz <= 5; dz++) {
-            if (!Sh.inDisc(dx, dz, 4.8) || Sh.inDisc(dx, dz, 2.8)) continue;
-            if (dx == 0 && dz < 0) continue;
-            o.set(dx, top, cz + dz, "polished_andesite");
-            o.set(dx, top - 1, cz + dz, Sh.inDisc(dx, dz, 3.8) ? "polished_andesite_slab[type=top,waterlogged=false]" : "andesite_wall");
-        }
+        for (int y = -12; y <= top; y++) o.set(0, y, cz - 3, "polished_andesite");
+        // catch the ladder on the run, climb to the little balcony at the top
         o.ladder(0, 0, top, cz - 4, "north");
-        for (int dx = -3; dx <= 3; dx++) for (int dz = -3; dz <= 3; dz++) if (Sh.inDisc(dx, dz, 2.8)) o.safe(dx, top, cz + dz, dx, cz + dz);
-        java.util.List<int[]> ring = new java.util.ArrayList<>();
-        for (int dx = -5; dx <= 5; dx++) for (int dz = -5; dz <= 5; dz++)
-            if (Sh.inDisc(dx, dz, 4.8) && !Sh.inDisc(dx, dz, 2.8) && !(dx == 0 && dz < 0)) ring.add(new int[]{dx, top, cz + dz});
-        o.cells(Ob.T.AREA, ring.toArray(new int[0][]));
-        // lamp room
-        for (int y = top + 1; y <= top + 4; y++) for (int dx = -2; dx <= 2; dx++) for (int dz = -2; dz <= 2; dz++) {
-            if (!Sh.inDisc(dx, dz, 2.2)) continue;
-            boolean edge = !Sh.inDisc(dx, dz, 1.2);
+        for (int x = -1; x <= 1; x++) { o.set(x, top, cz - 5, "polished_andesite"); o.set(x, top - 1, cz - 5, "polished_andesite_slab[type=top,waterlogged=false]"); }
+        for (int y = top - 2; y >= top - 4; y--) o.set(0, y, cz - 5, "andesite_wall");
+        o.area(-1, top, cz - 5, 1, cz - 5);
+        // then two 3+1 jumps up the broken gallery hanging off the east side
+        gallery(o, 5, 5, cz - 4, cz - 3, top + 1);
+        gallery(o, 5, 5, cz + 1, cz + 2, top + 2);
+        // lamp room covering the whole tower top (no walkable ring to cut across)
+        for (int y = top + 1; y <= top + 4; y++) for (int dx = -3; dx <= 3; dx++) for (int dz = -3; dz <= 3; dz++) {
+            if (!Sh.inDisc(dx, dz, 2.8)) continue;
+            boolean edge = !Sh.inDisc(dx, dz, 1.8);
             o.set(dx, y, cz + dz, y == top + 4 ? "red_concrete" : edge ? (y == top + 1 ? "white_concrete" : "light_blue_stained_glass") : (y == top + 2 ? "sea_lantern" : "air"));
         }
         for (int dx = -1; dx <= 1; dx++) for (int dz = -1; dz <= 1; dz++) o.set(dx, top + 5, cz + dz, Math.abs(dx) + Math.abs(dz) <= 1 ? "red_concrete" : "air");
         o.set(0, top + 6, cz, "lightning_rod[facing=up,powered=false,waterlogged=false]");
-        o.end(0, top, cz + 6);
+        o.end(5, top + 2, cz + 6);
+        Sh.padBase(o, 5, top + 2, cz + 6, "packed_ice", "snow_block", "packed_ice", 3);
         return o;
+    }
+
+    /** A broken gallery piece: andesite deck x0..x1, z0..z1 at y on a wall bracket. */
+    static void gallery(Ob o, int x0, int x1, int z0, int z1, int y) {
+        for (int x = x0; x <= x1; x++) for (int z = z0; z <= z1; z++) {
+            o.set(x, y, z, "polished_andesite");
+            for (int k = 1; k <= 3; k++) o.set(x, y - k, z, k == 1 ? "polished_andesite_slab[type=top,waterlogged=false]" : "andesite_wall");
+        }
+        o.area(x0, y, z0, x1, z1);
     }
 
     // ================================================================ HARD: Library Tower
@@ -146,17 +148,28 @@ final class Endings {
         for (int x = -2; x <= 0; x++) for (int z = 3; z <= 4; z++) { o.set(x, 0, z, BOOK[(x + z + 8) & 7]); o.set(x, -1, z, BOOK[(x + z + 11) & 7]); o.set(x, -2, z, BOOK[(x + z + 13) & 7]); }
         o.set(-1, -3, 3, "dark_oak_fence"); o.set(-1, -3, 4, "dark_oak_fence");
         o.area(-2, 0, 3, 0, 4);
-        int[][] sp = {{-5, 1}, {-1, 2}, {3, 3}};
-        for (int i = 0; i < sp.length; i++) spine(o, sp[i][0], sp[i][1], wz - 1, i);
-        // rolling ladder on a brass rail
-        for (int x = 4; x <= 6; x++) o.set(x, roof - 1, wz - 1, "chain[axis=x,waterlogged=false]");
-        o.ladder(5, 3, 8, wz - 1, "north");
-        int[][] sp2 = {{2, 8}, {-2, 9}, {-6, 10}};
-        for (int i = 0; i < sp2.length; i++) spine(o, sp2[i][0], sp2[i][1], wz - 1, i + 3);
-        o.end(-5, roof, wz + 1);
+        // book spines: a 3+1 onto a double spine, a four-block flat leap to a single one, the rolling ladder up to its
+        // top step, then two 3+1s from single spine to single spine
+        spine(o, -5, 1, wz - 1, 0);
+        spine2(o, -1, 0, 2, wz - 1, 1);
+        spine(o, 5, 2, wz - 1, 2);
+        // rolling ladder with its top step standing out from the shelf
+        o.ladder(6, 3, 8, wz - 1, "north");
+        for (int x = 5; x <= 6; x++) { o.set(x, 8, wz - 2, "stripped_dark_oak_wood[axis=x]"); o.set(x, 7, wz - 2, "dark_oak_trapdoor[facing=north,half=top,open=false,waterlogged=false]"); }
+        for (int y = 6; y >= 2; y--) o.set(5, y, wz - 2, "dark_oak_fence");
+        o.area(5, 8, wz - 2, 6, wz - 2);
+        spine(o, 1, 9, wz - 1, 3);
+        spine(o, -3, 10, wz - 1, 4);
+        o.end(-3, roof, wz + 2);
         // a chandelier in front of the shelves (scenery, well above the lower spines)
         Frame.chandelier(o.w, o.wx(0, 3), o.wy(14), o.wz(0, 3));
         return o;
+    }
+
+    /** Two book spines side by side (x0..x1) sticking out of the shelf. */
+    static void spine2(Ob o, int x0, int x1, int y, int z, int i) {
+        for (int x = x0; x <= x1; x++) { o.set(x, y, z, BOOK[(i + x - x0) % BOOK.length]); o.set(x, y - 1, z, BOOK[(i + 3) % BOOK.length].replace("wool", "terracotta")); }
+        o.area(x0, y, z, x1, z);
     }
 
     /** One book spine sticking out of the shelf (1x1 foothold) with a smaller book under it. */
@@ -187,7 +200,7 @@ final class Endings {
             }
             if (k >= 1) {
                 o.set(x, y - 1, z, "gold_block");
-                o.timed("dark_oak_planks", 60, 36, k * 10, 15, null, new int[]{x, y, z});
+                o.timed("dark_oak_planks", 60, 36, Math.floorMod(-k * 10, 60), 15, null, new int[]{x, y, z});
             } else {
                 o.set(x, y, z, "dark_oak_planks");
                 o.area(x, y, z, x, z);
