@@ -71,7 +71,7 @@ final class Crystal {
     // ---------------------------------------------------------------- M5-3 (TIMED lift)
     static Ob m3(W w, Ob.Slot s) {
         Ob o = new Ob(w, s, "Rattling Lift", "TIMED");
-        int[][] p = {{4, 0}, {7, 1}, {11, 1}, {14, 2}, {18, 2}, {21, 3}};
+        int[][] p = {{4, 0}, {7, 1}, {11, 2}, {14, 2}, {18, 2}, {21, 3}};
         // inclined shaft: timber arches over the path
         for (int k = 0; k < p.length; k++) {
             int z = p[k][0], y = p[k][1];
@@ -117,7 +117,7 @@ final class Crystal {
     static Ob b2(W w, Ob.Slot s) {
         Ob o = new Ob(w, s, "Dripstone Descent", "DROP");
         o.difficultyTag = "MEDIUM";
-        int[][] p = {{0, 5, -1}, {1, 10, -3}, {0, 15, -4}, {1, 20, -6}, {0, 24, -7}};
+        int[][] p = {{0, 5, -1}, {1, 11, -4}, {0, 18, -8}, {1, 24, -11}};
         for (int[] c : p) {
             for (int y = c[2] - 9; y <= c[2]; y++) {
                 int r = (c[2] - y) / 4;
@@ -131,8 +131,8 @@ final class Crystal {
         for (int[] t : new int[][]{{-3, 6, 3}, {3, 11, 4}, {-2, 19, 2}, {3, 22, 3}, {-4, 14, 3}}) {
             for (int k = 1; k <= t[2]; k++) o.set(t[0], 6 - k, t[1], "pointed_dripstone[thickness=" + (k == t[2] ? "tip" : k == 1 ? "base" : "middle") + ",vertical_direction=down,waterlogged=false]");
         }
-        o.end(0, -6, 28);
-        Sh.padBase(o, 0, -6, 28, "polished_deepslate", "deepslate_tiles", "cobbled_deepslate", 3);
+        o.end(0, -12, 29);
+        Sh.padBase(o, 0, -12, 29, "polished_deepslate", "deepslate_tiles", "cobbled_deepslate", 3);
         return o;
     }
 

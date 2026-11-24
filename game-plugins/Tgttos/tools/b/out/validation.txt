@@ -1,7 +1,106 @@
 TGTTOS maps, builder B - validation report (seed 20261124)
 
+=== kite_festival ===
+  340387 blocks, 62 block types, generated in 834 ms, bounds x -219..222 y -47..180 z -235..234, scenery share 1%
+  ok    inside the contract box (x/z -250..250, y -60..180)
+  ok    material richness: 62 block types (>= 25)
+  ok    contract check (TgMapData.check): clean
+  ok    no concrete of any colour in blocks or variants (0); reserved team colours: white,orange,magenta,light_blue,yellow,lime,pink,cyan,purple,blue,green,red
+  ok    start holds 45 players (45 inside the strip, 45 on solid floor with headroom, closest pair 2.33 apart)
+        start strip 37 x 7 (x -183..-147, z 0..6), barrier 111 blocks, drop floor 259 blocks
+  ok    every barrier / drop-floor position holds a real block (0 missing)
+  ok    connection post-pass: 259 fence/pane/wall/bar states set, 106 leaves, 0 unsupported carpets dropped; re-run changes 0
+  ok    staircase helper: 0 flights (0 columns) walked bottom to top
+  ok    12 chicken spawns inside the pen 12 x 12
+  ok    landmark visible from the start: 12 of 12 sampled spawn eyes see it (ray-cast)
+  course: centre line 1426 blocks (4 legs, 3 hairpins r 55), 25 gates + 2 tubes, gantry floor y 173 -> landing meadow y -45, 76 hazard boxes outside the canyon
+  ok    gantry floor (259 blocks) drops 3 s after GO into the canyon: 259 removed, 0 blocks between it and the meadow 35 below
+  ok    25 gates seal the canyon wall to wall, floor to crest, except their openings (+ a 1x2 walk-through door at the floor):
+        Drop Gate Run: drop 1 (s 38, floor 131 crest 171: safe 37x7 y160 dx+0) drop 2 (s 63, floor 128 crest 178: safe 37x7 y151 dx+0) drop 3 (s 88, floor 124 crest 174: safe 11x11 y145 dx-4, fast 7x7 y146 dx+9, needle 3x3 y148 dx-14)
+        Canyon Slalom: slalom 1 (s 116, floor 120 crest 172: safe 9x9 y141 dx+7, fast 7x7 y142 dx-1, needle 4x4 y144 dx-10) slalom 2 (s 146, floor 118 crest 166: safe 9x9 y136 dx-7, fast 7x7 y138 dx+6, needle 4x4 y139 dx+15)
+        Tunnel Split: tunnel mouth (s 369, floor 84 crest 131: safe 11x11 y103 dx+8, fast 5x5 y110 dx-10) tunnel exit (s 439, floor 73 crest 124: safe 11x11 y93 dx+8, fast 5x5 y102 dx-9)
+        Lift Hill: lift 1 (s 465, floor 70 crest 124: safe 9x9 y90 dx+8, fast 6x6 y100 dx-5) lift 2 (s 491, floor 65 crest 126: safe 9x9 y86 dx-8, fast 6x6 y102 dx-2) lift 3 (s 517, floor 62 crest 126: safe 9x9 y83 dx+8, fast 6x6 y104 dx+1)
+        Ring Stack: ring stack (s 543, floor 61 crest 126: safe 11x11 y78 dx+0, fast 7x7 y92 dx+0, needle 3x3 y103 dx+0, brutal 1x1 y104 dx+7)
+        Tether Forest: masts 1 (s 569, floor 58 crest 122: safe 9-wide slot dx-8, fast 5-wide slot dx+3, brutal 1-wide slot dx+11) masts 2 (s 599, floor 53 crest 116: safe 9-wide slot dx+10, fast 5-wide slot dx+3, brutal 1-wide slot dx-7) masts 3 (s 629, floor 49 crest 110: safe 9-wide slot dx-9, fast 5-wide slot dx+8, brutal 1-wide slot dx+0)
+        Dive & Pull-up: low arch (s 858, floor 11 crest 69: safe 11x11 y30 dx+8, fast 7x7 y40 dx-8) pull-up 1 (s 884, floor 7 crest 64: safe 9x9 y28 dx+11, fast 6x6 y41 dx-3) pull-up 2 (s 910, floor 3 crest 64: safe 9x9 y24 dx+11, fast 6x6 y42 dx+1, needle 3x3 y44 dx-8)
+        Needle: needle 1 (s 936, floor 0 crest 64: needle 4x4 y42 dx+1, safe 9x9 y20 dx+9, brutal 1x1 y44 dx-6) needle 2 (s 964, floor -4 crest 62: needle 4x4 y40 dx+1, safe 9x9 y16 dx-9, brutal 1x3 y41 dx+6) needle 3 (s 992, floor -7 crest 60: needle 4x4 y38 dx+1, safe 9x9 y12 dx+9)
+        S-Canyon: swing 1 (s 1018, floor -11 crest 58: safe 9x9 y9 dx-9, fast 6x6 y33 dx-3) swing 2 (s 1048, floor -15 crest 55: safe 9x9 y5 dx+9, fast 6x6 y30 dx+5) swing 3 (s 1078, floor -18 crest 52: safe 9x9 y1 dx-9, fast 6x6 y27 dx-3) swing 4 (s 1108, floor -19 crest 49: safe 9x9 y-2 dx+9, fast 6x6 y23 dx+4)
+        Finish & Field: finish frame (s 1362, floor -45 crest -8: finish 15x15 y-44 dx+0)
+  ok    safe tube: 11x11, 69 long, interior clear (0 blocked), shell closed (0 gaps), drops 10 over its length
+  ok    fast tube: 5x5, 69 long, interior clear (0 blocked), shell closed (0 gaps), drops 8 over its length
+  ok    canyon sealed below the crest: flood fill of 2847482 air cells from the gantry reaches 0 outside cells and 0 cells under the floor
+  ok    the pen is connected to the gantry through the canyon air (flood fill)
+  glide model: vanilla elytra tick (gravity 0.08, lift/drag as in LivingEntity.travel); steady glide (pitch: ratio, speed): -10°: 1:6.9 10.2 b/s; 0°: 1:10.1 30.3 b/s; 10°: 1:9.7 32.9 b/s; 20°: 1:8.8 40.1 b/s; 30°: 1:7.4 50.4 b/s; 40°: 1:5.7 61.2 b/s; rocket (flight 1, ~1.3 s) holds 33.7 b/s level
+  lines (start: 1 s to walk off the gantry edge, 0.4 s free fall; end: safe lands at z 104 and runs 4.1 s through the choke into the pen, fast glides over the hedges into the pen, +0.5 s punch):
+  info  SAFE  lime openings, outside of the hairpins, 11x11 tube, low stack ring, needle detour; NO rockets: 1542 blocks flown, total 72.1 s (flight 66.5 s, avg 23 b/s), speed 17..31 b/s, 0 rockets, gates 26/27, closest clearance 0.00, lowest 4.9 above the floor; swing 4 MISSED at y -3.4 (window -2.0..6.4); first contact at (64.5, -3.4, 114.5); 1 ticks inside blocks  (informational: the course is built to be flown with rockets)
+  ok    SAFE' same line with two boosts per hairpin + rescue rockets when slow and low (6 available): 1542 blocks flown, total 61.2 s (flight 55.6 s, avg 28 b/s), speed 17..36 b/s, 6 rockets, gates 27/27, closest clearance 0.97, lowest 7.5 above the floor; rescue rocket at s=1206
+  ok    FAST  orange / red openings, insides of the hairpins, 5x5 tube, high stack ring, three needles; a rocket whenever slower than 28 b/s: 1337 blocks flown, total 43.5 s (flight 42.0 s, avg 32 b/s), speed 17..44 b/s, 7 rockets, gates 29/29, closest clearance 0.19, lowest 4.6 above the floor
+  info  FAST' same openings without rockets: 1335 blocks flown, total 59.3 s (flight 57.8 s, avg 23 b/s), speed 17..42 b/s, 0 rockets, gates 21/29, closest clearance 0.00, lowest 4.4 above the floor; lift 2 MISSED at y 97.9 (window 102.1..107.4); lift 3 MISSED at y 95.1 (window 104.1..109.4); ring stack MISSED at y 92.3 (window 103.1..105.4); needle 2 MISSED at y 39.3 (window 40.1..43.4); needle 3 MISSED at y 36.2 (window 38.1..41.4); swing 2 MISSED at y 29.8 (window 30.1..35.4); swing 3 MISSED at y 26.2 (window 27.1..32.4); swing 4 MISSED at y 22.7 (window 23.1..28.4); first contact at (-56.0, 98.0, 10.9); 12 ticks inside blocks  (informational: the course is built to be flown with rockets)
+  info  HARD  brutal openings first (1x1 fire ring, 1-wide mast slits, 1x1 pinhole, 1x3 slit), then red 3x3s / 4x4s, orange elsewhere; same rocket habit as FAST: 1346 blocks flown, total 44.6 s (flight 43.1 s, avg 31 b/s), speed 17..44 b/s, 7 rockets, gates 28/29, closest clearance 0.00, lowest 4.8 above the floor; ring stack MISSED at y 104.4 (window 104.1..104.4); first contact at (-61.2, 94.3, -97.0); 1 ticks inside blocks  (informational: the course is built to be flown with rockets)
+        HARD line tightest clearance against the 0.6 gliding box: 0.00 flown (a 1x1 opening leaves 0.20 per side; the 1-wide slits 0.20 sideways) (the model pilot cannot hold the 1x1 windows: informational, see above)
+  ok    6 moving hazards (block displays, our hit test = back to the last checkpoint): the lime line is clear of every one at every phase, the orange / red lines meet each with an open window >= 30%
+        wrecking ball (pendulum, period 5.0 s, reach 14.4): SAFE' never within reach; FAST within reach for 0.7 s, open at 52% of the phases; HARD within reach for 0.7 s, open at 52% of the phases;
+        turn 1 pendulum (pendulum, period 4.5 s, reach 15.0): SAFE' never within reach; FAST within reach for 0.8 s, open at 76% of the phases; HARD within reach for 0.8 s, open at 76% of the phases;
+        turn 2 pendulum (pendulum, period 4.5 s, reach 15.0): SAFE' never within reach; FAST within reach for 0.7 s, open at 77% of the phases; HARD within reach for 0.7 s, open at 76% of the phases;
+        lift fan (rotor, period 8.0 s, reach 10.1): SAFE' never within reach; FAST within reach for 0.6 s, open at 78% of the phases; HARD within reach for 0.6 s, open at 78% of the phases;
+        windmill (rotor, period 10.0 s, reach 12.1): SAFE' never within reach; FAST within reach for 0.7 s, open at 78% of the phases; HARD within reach for 0.7 s, open at 80% of the phases;
+        needle shutter (slider, period 3.5 s, reach 9.7): SAFE' never within reach; FAST within reach for 0.7 s, open at 63% of the phases; HARD within reach for 0.6 s, open at 63% of the phases;
+  ok    33 bonus openings in 5 groups (best tier per group pays once, only on finishing, cap 8): opening: 3 orange, 3 red, 0 brutal; tunnel & lift: 5 orange, 0 red, 0 brutal; stack & masts: 4 orange, 1 red, 4 brutal; dive & needle: 3 orange, 4 red, 2 brutal; S-canyon: 4 orange, 0 red, 0 brutal; orange line earns 5, the hardest line 10 -> capped at 8
+  ok    8 gold refill openings (+2 rockets each, once per opening per attempt): [tunnel exit, ring stack, low arch, swing 2]; SAFE' refilled 8, FAST 6 on the way (6 up front)
+  ok    5 ledge checkpoints (crossing the canyon at a ledge saves it; void / hazard / mover respawns go there with a fresh kit): 0 Turn 1 ledge (3/3 spawns on the platform); 1 Tether Forest ledge (3/3 spawns on the platform); 2 Turn 2 ledge (3/3 spawns on the platform); 3 Needle ledge (3/3 spawns on the platform); 4 Turn 3 ledge (3/3 spawns on the platform);
+  ok    fast line saves 29% vs the safe line with the same rocket habit (>= 20%)
+  time profile: expert FAST 43 s (not flyable without rockets); safe line flown perfectly: short of height at the S-canyon without rockets, 61 s with boosts; median (safe line, 20% slower flying than the model pilot, 1-2 landings at ~8 s) ~85 s; weak (35% slower, 3-5 landings) ~115 s -> DNF at 100 s. Targets: expert 35-42, median 70-85.
+  ok    expert time 43 s within 33-45 s
+  ok    5 wall ledges (ladder from the meadow, open 5x5 platform = shoving spot), each relaunches onto the safe line with at most 3 rockets (one to take off):
+        ledge at (-110, 231): platform y 122, 19 above the floor (ladder 19 rungs, ~8 s climb); relaunch glide to the next 3 gates OK
+        ledge at (0, -232): platform y 51, 21 above the floor (ladder 21 rungs, ~9 s climb); relaunch glide to the next 3 gates OK
+        ledge at (110, 231): platform y -20, 20 above the floor (ladder 20 rungs, ~9 s climb); relaunch glide to the next 2 gates OK
+        ledge at (-39, -49): platform y 80, 20 above the floor (ladder 20 rungs, ~9 s climb); relaunch glide to the next 3 gates OK
+        ledge at (39, -20): platform y 17, 23 above the floor (ladder 23 rungs, ~10 s climb); relaunch glide to the next 3 gates OK
+  ok    76 hazard boxes cover everything outside the canyon walls (leaving the canyon = back to checkpoint); none touches a spawn, the pen, a ledge, a hay bale or a decoy; 6 wandering decoys in the low end (turn 3 / field), outside the pen
+        largest gap between gates: 255 blocks after s 1108 (S-Canyon; hairpins have no gates, the turn itself is the obstacle)
+  RESULT: all checks passed
+
+=== frozen_canal ===
+  133580 blocks, 53 block types, generated in 600 ms, bounds x -119..213 y -8..51 z -51..212, scenery share 48%
+  ok    inside the contract box (x/z -250..250, y -60..180)
+  ok    material richness: 53 block types (>= 25)
+  ok    contract check (TgMapData.check): clean
+  ok    no concrete of any colour in blocks or variants (0); reserved team colours: white,orange,magenta,light_blue,yellow,lime,pink,cyan,purple,blue,green,red
+  ok    start holds 40 players (40 inside the strip, 40 on solid floor with headroom, closest pair 2.05 apart)
+        start strip 42 x 9 (x -21..20, z 0..8), barrier 126 blocks, drop floor 0 blocks
+  ok    every barrier / drop-floor position holds a real block (0 missing)
+  ok    connection post-pass: 1290 fence/pane/wall/bar states set, 1378 leaves, 0 unsupported carpets dropped; re-run changes 0
+  ok    staircase helper: 6 flights (20 columns) walked bottom to top
+  ok    12 chicken spawns inside the pen 12 x 12
+  ok    landmark visible from the start: 10 of 10 sampled spawn eyes see it (ray-cast)
+  ok    features: 1 mover, 2 toggles, 6 bonus regions on the lane (6 ok: hairpin kerbs orange, causeway gate red, blue stripe orange), 5 checkpoints + 2 depots (7/7 boat spawns on ice with headroom)
+        Blue Mile pendulum: 63 edge lane cells (|d| >= 4.9) hit at no phase (0 hit), 12/84 middle cells swept, 0 display cells inside blocks over a period
+        causeway lock gate: 2 frames, period 4.5 s, 10 cells (10 on the lane), frame 0 = the built map (10/10), 5 indicator blocks warn 1.0 s before
+        Blue Mile slush: 2 frames, period 7.0 s, 100 cells (100 on the lane), frame 0 = the built map (100/100), 4 indicator blocks warn 1.0 s before
+  ok    40 boat spawns (40 on ice inside the start lock with headroom), closest pair 2.05 apart (boat is 1.375 wide)
+  course: main (safe) centre line 1117 blocks, causeway 133 (replaces 161 of ring) -> fast centre line 1089; ice y 0 -> -6; 16968 lane columns
+  segments: 1 Grid Straight 88; 2 Mill Hairpin 49; 3 Weavers' Chicane 142; 4 Cellar Hairpin 47; 5 Cellar Steps 63; 6 Fish Market split 165; 7 Brewery Bend 43; 8 Blue Mile 168; 9 Bell Switchbacks 87; 10 Tannery Sweeper 154; 11 Lantern Bend 35; 12 Barge Basin + finish straight 76;
+  ok    boat continuity: start lock -> dock reachable downhill only (16968 lane columns reachable)
+  ok    no trap pockets: every reachable lane cell can still reach the dock (0 trap cells)
+  ok    unreachable lane cells: 0
+  ok    walls: every reachable lane edge is a full block at boat height (0 open edges)
+  ok    no snags: no fence / slab / stair / lantern / wall post at boat height next to the lane (0)
+  ok    elevation: every drop is <= 1 block (0 bigger), downhill only; 205 up-lips (step faces seen from below and the causeway's open edges - boats can't climb them, by design)
+  ok    lane width: 93% of the main line is >= 11 wide (BDC rule: >= 70%), narrowest 9 at s 820; causeway 5 wide (blue ice, open edges)
+  ok    7 bridges, headroom over the lane centre (blocks): s36:2 s68:2 s355:4 s632:5 s682:5 s732:5 s809:7 (2 = low footbridge: boat fits, a standing player can't hop up)
+  ok    on foot: no way out of the canal onto the town before the finish (0 reachable town cells outside the finish zone; jump model: gap <= 4 level, <= 3 with +1)
+  ok    FOOT FAST  stage -> Dock Stairs (3 wide) -> jetty (3 wide) -> pen: 41 blocks on foot, 1 jumps, est. 7.1 s (expert pace)
+  ok    FOOT SAFE  stage -> side flight (4 wide) -> quay -> east bridge (5 wide) -> pen: 61 blocks on foot, 1 jumps, est. 10.3 s (expert pace)
+  ok    knocked off the jetty onto the mere ice: back to the pen via the skaters' steps in 5.5 s (expert pace)
+  ok    SAFE  boats: middle lines, the walled Fish Market ring, wide barge gaps: 1103 blocks, 6 drops, 0 slush / 243 blue-ice cells, narrowest 3, longest featureless stretch 178 (ends at 124,198), est. 47.0 s (avg 23 b/s)
+  ok    FAST  boats: inside kerbs, the raised causeway, blue stripe, 3-wide barge gaps: 1061 blocks, 6 drops, 0 slush / 428 blue-ice cells, narrowest 3, longest featureless stretch 165 (ends at 120,199), est. 40.8 s (avg 26 b/s)
+  ok    expert totals (boat + 1 s dismount + on foot): FAST 49 s, SAFE 58 s (fast saves 16%)
+  time profile [D]: expert 49-58 s; median (safe line, ~1.5x boat time for wall hits / pile-ups / bad hairpins, + 8 s stairs+jetty crowd) ~90 s; weak players who wall-slam every hairpin or fall off the causeway or jetty repeatedly run out of the 100 s
+  RESULT: all checks passed
+
 === ticket_gates ===
-  45713 blocks, 55 block types, generated in 292 ms, bounds x -35..23 y -7..23 z -4..150, scenery share 82%
+  45713 blocks, 55 block types, generated in 84 ms, bounds x -35..23 y -7..23 z -4..150, scenery share 82%
   ok    inside the contract box (x/z -250..250, y -60..180)
   ok    material richness: 55 block types (>= 25)
   ok    contract check (TgMapData.check): clean
@@ -24,5 +123,34 @@ TGTTOS maps, builder B - validation report (seed 20261124)
   ok    expert time 25.1 s within 25-35 s (owner, playtest 2: longer map: third track + queue hall, plaza moved 56 along)
   gamble estimate (1/3 open, 1/3 jammed, 1/3 drop, crowd-following): ~28 s expert; median ~50 s; safe line median ~54 s
   ok    3 coupling anvil traps (creak 0.4 s after a racer lands, drop into the live pit, back 3.0 s later): track 1 coupling anvil at (0,0,44); track 2 coupling anvil at (10,0,58); track 3 coupling anvil at (-8,0,72);
+  RESULT: all checks passed
+
+=== quarry_steps ===
+  158526 blocks, 79 block types, generated in 173 ms, bounds x -82..82 y -33..70 z -32..158, scenery share 64%
+  ok    inside the contract box (x/z -250..250, y -60..180)
+  ok    material richness: 79 block types (>= 25)
+  ok    contract check (TgMapData.check): clean
+  ok    no concrete of any colour in blocks or variants (0); reserved team colours: white,orange,magenta,light_blue,yellow,lime,pink,cyan,purple,blue,green,red
+  ok    start holds 45 players (45 inside the strip, 45 on solid floor with headroom, closest pair 2.33 apart)
+        start strip 36 x 7 (x -18..17, z 0..6), barrier 108 blocks, drop floor 0 blocks
+  ok    every barrier / drop-floor position holds a real block (0 missing)
+  ok    connection post-pass: 1523 fence/pane/wall/bar states set, 1088 leaves, 0 unsupported carpets dropped; re-run changes 0
+  ok    staircase helper: 7 flights (28 columns) walked bottom to top
+  ok    12 chicken spawns inside the pen 12 x 12
+  ok    landmark visible from the start: 12 of 12 sampled spawn eyes see it (ray-cast)
+  route lines (walk: sprint 5.6 b/s, flat gap <= 4, -1 per block of rise; bridging inside buildBounds, blocks unlimited):
+  ok    SAFE  haul road + cut (choke 3 wide): path 222 blocks, 4 jumps, hardest jump gap 3.0 up 1.0 at (-24,-3,46) (difficulty 4.0), 0 blocks placed, longest straight free stretch 13 (at 43,6,62; limit 15), est. 37.0 s (expert pace)
+  ok    SAFE' haul road + wide ramp: path 232 blocks, 6 jumps, hardest jump gap 3.0 up 1.0 at (-24,-3,46) (difficulty 4.0), 0 blocks placed, longest straight free stretch 13 (at 32,6,62; limit 15), est. 39.1 s (expert pace)
+  ok    the built route is completable without placing blocks (both exits)
+  ok    FAST  bridge straight across (expert 4 b/s): path 110 blocks, 1 jumps, hardest jump gap 3.0 up 1.0 at (-17,6,63) (difficulty 4.0), 53 blocks placed, longest straight free stretch 13 (at -16,6,65; limit 15), est. 23.6 s (expert pace)
+  ok    FAST  same line, average bridger 2.2 b/s: path 110 blocks, 1 jumps, hardest jump gap 3.0 up 1.0 at (-17,6,63) (difficulty 4.0), 53 blocks placed, longest straight free stretch 13 (at -16,6,67; limit 15), est. 34.5 s (expert pace)
+  ok    straight-line bridging need (corridor |x| <= 18, least-blocks search): 53 blocks (>= 50)
+  ok    bridge exposure: 45 of 53 placed blocks hang over open water (nothing below down to the floor), longest unbroken placed run 53, 3 blocks with any cover beside them (sheet piles)
+  ok    MIXED bridge to the ramp pad, ramp E up (avg bridger): path 140 blocks, 3 jumps, hardest jump gap 3.2 down 2 at (25,-1,37) (difficulty 3.2), 24 blocks placed, longest straight free stretch 14 (at 25,-1,37; limit 15), est. 31.0 s (expert pace)
+  ok    the cut is a 3-wide choke over its whole length (narrowest 3)
+  ok    narrow far-wall ledge x 8..16 is 2 wide with 1-wide pinches (narrowest 1): one snowball and you are swimming
+  ok    6 wandering decoys (scattered over the later part, no fake pens): 6 reachable on foot, all >= 4 outside the real pen (nearest 28)
+  ok    expert bridge saves 36% vs the best haul-road line (>= 20%)
+  time profile: expert bridge 24 s, expert road 37 s (cut) / 39 s (ramp), mixed 31 s; median players (x1.6 + crowd at the choke / pen search) road ~67 s, bridge ~53 s
   RESULT: all checks passed
 

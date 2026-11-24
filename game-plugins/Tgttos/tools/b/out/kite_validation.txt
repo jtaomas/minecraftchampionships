@@ -1,8 +1,8 @@
 TGTTOS Kite Festival v2 - validation report (seed 20261124)
 === kite_festival ===
-  340387 blocks, 62 block types, generated in 258 ms, bounds x -219..222 y -47..180 z -235..234, scenery share 1%; paste >= 9 ticks at the BuildQueue cap of 40k blocks/tick (more if the 25 ms/tick budget binds)
+  340387 blocks, 62 block types, generated in 206 ms, bounds x -219..222 y -47..180 z -235..234, scenery share 1%; paste >= 9 ticks at the BuildQueue cap of 40k blocks/tick (more if the 25 ms/tick budget binds)
   ok    inside the contract box (x/z -250..250, y -60..180)
-  ok    generation under a second (258 ms)
+  ok    generation under a second (206 ms)
   ok    material richness: 62 block types (>= 25)
   ok    contract check (TgMapData.check): clean
   ok    no concrete of any colour in blocks or variants (0); reserved team colours: white,orange,magenta,light_blue,yellow,lime,pink,cyan,purple,blue,green,red

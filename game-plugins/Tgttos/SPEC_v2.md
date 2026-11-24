@@ -8,7 +8,7 @@ Game id `tgttos`, plugin `McmTgttos`, world `mcc_tgttos` (created at plugin enab
 - **Void/hazard fall:** back to the map start within 1 s, keep racing; a pun death message in chat.
 - **No damage ever.** Punches and snowballs knock back only. **Players don't collide.**
 - **Kits by map type:** bridging maps = 64 team-colour concrete + pickaxe + 5 snowballs (SURVIVAL, may break only player-placed concrete, anyone's); parkour/door maps = 5 snowballs only (ADVENTURE); boat map = start seated in a boat; elytra map = elytra + fireworks; other map-specific items as listed per map.
-- **Karma:** repeated punching makes the puncher take more knockback, glow red, then lose punching for a few seconds; decays. Players punched a lot take less knockback.
+- **Karma (owner decision after playtest 2: karma off; `karma.enabled: false` by default, code kept):** repeated punching makes the puncher take more knockback, glow red, then lose punching for a few seconds; decays. Players punched a lot take less knockback.
 - **Round ends** when everyone has finished or at 0:00. Player-placed blocks cleared between rounds.
 - **HUD:** boss-bar timer; sidebar: round n/6, map name, players finished n/N, your placement per round so far; `McmFx` title card per map, countdown, finish effects, results.
 
