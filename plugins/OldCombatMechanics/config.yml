@@ -29,6 +29,9 @@ disabled_modules:
   # Modules listed here are always disabled, regardless of modeset.
   # Of course, disabling a module which disables something will enable that something!
   - "disable-offhand"
+  # Owner: no shield when right-clicking a sword in the 1.8-style games.
+  - "sword-blocking"
+  - "shield-damage-reduction"
   - "disable-sword-sweep-particles"
   - "disable-attack-sounds"
   - "chorus-fruit"
@@ -65,8 +68,6 @@ modesets:
     - "disable-attack-cooldown"
     - "disable-sword-sweep"
     - "old-tool-damage"
-    - "sword-blocking"
-    - "shield-damage-reduction"
     - "old-golden-apples"
     - "old-player-knockback"
     - "old-player-regen"

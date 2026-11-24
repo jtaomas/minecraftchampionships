@@ -190,6 +190,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     private boolean skipRoundNoAwards = false;
     private String forcedSgMap;
     private AdminTools adminTools;
+    private FeedbackLog feedback;
     private final Map<Location, BlockData> podiumOriginal = new LinkedHashMap<>();
     private final List<UUID> podiumPlayers = new ArrayList<>();
     private Location podiumCenter;
@@ -210,6 +211,88 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     private static final String ADMIN_GUI_TITLE = ChatColor.GOLD + "" + ChatColor.BOLD + "MCM Tournament Controller";
     private static final String TEAM_GUI_TITLE = ChatColor.AQUA + "" + ChatColor.BOLD + "Select Your Team";
     private static final String KIT_GUI_TITLE = ChatColor.DARK_RED + "" + ChatColor.BOLD + "Choose Your PvP Kit";
+
+    /** Context for the chat feedback log: {game id, map id}. */
+    String[] chatLogContext() {
+        try {
+            return new String[] { feedbackGameId(), feedbackMapId() };
+        } catch (Throwable t) {
+            return new String[] { "unknown", "unknown" };
+        }
+    }
+
+    /** Current game id for /pfb, /gfb and chat logs: registered game id, built-in id, or "lobby". */
+    String feedbackGameId() {
+        try {
+            if (currentGame == GameType.EXTERNAL && activeExternal != null) return activeExternal.id();
+            return currentGame == GameType.LOBBY ? "lobby" : builtInId(currentGame);
+        } catch (Throwable t) {
+            return "unknown";
+        }
+    }
+
+    /** Current game display name for feedback. */
+    String feedbackGameName() {
+        try {
+            return currentDisplay();
+        } catch (Throwable t) {
+            return feedbackGameId();
+        }
+    }
+
+    /**
+     * Current map/arena id for feedback. Built-in games have one or two fixed arenas; external games
+     * report their own current map. Never null.
+     */
+    String feedbackMapId() {
+        try {
+            if (currentGame == GameType.EXTERNAL && activeExternal != null) {
+                String m = activeExternal.currentMap();
+                return (m == null || m.isBlank()) ? "default" : m;
+            }
+            return switch (currentGame) {
+                case SURVIVAL_GAMES -> useSg4Map ? "sg4" : "kalas";
+                case PARKOUR -> "spiral";
+                case DROPPER -> "multi-stage";
+                case TNT_RUN -> "tntrun";
+                case SPLEEF -> "spleef";
+                case KIT_PVP -> "battle-arena";
+                case SURVIVAL -> "survival";
+                case ONE_SHOT -> "oneshot";
+                default -> "lobby";
+            };
+        } catch (Throwable t) {
+            return "unknown";
+        }
+    }
+
+    /** Human-readable map/arena name for feedback; the id itself when a game has no separate display name. */
+    String feedbackMapName() {
+        try {
+            if (currentGame == GameType.EXTERNAL && activeExternal != null) return feedbackMapId();
+            return switch (currentGame) {
+                case SURVIVAL_GAMES -> useSg4Map ? "SG4" : "Kalas";
+                case PARKOUR -> "Parkour Spiral";
+                case DROPPER -> "Multi-Stage Dropper";
+                case TNT_RUN -> "TNT Run";
+                case SPLEEF -> "Spleef / Splegg";
+                case KIT_PVP -> "Battle Arena";
+                case SURVIVAL -> "Speed Survival";
+                case ONE_SHOT -> "One Shot";
+                default -> "Lobby";
+            };
+        } catch (Throwable t) {
+            return feedbackMapId();
+        }
+    }
+
+    /** "MCC" for an MCC event, "MM" for Minecraft Monday, "lobby" between events. */
+    String feedbackEvent() {
+        if (currentGame == GameType.LOBBY && !championshipMode) return "lobby";
+        return mccContext ? "MCC" : "MM";
+    }
+
+    boolean feedbackChampionship() { return championshipMode; }
 
     @Override
     public void onEnable() {
@@ -281,6 +364,9 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         McmApi.setFastTest(getConfig().getBoolean("fast-test", false));
         if (McmApi.isFastTest()) getLogger().info("Admin fast-test mode is ON (all core waits <= 1 s). /mcm fast off to disable.");
         adminTools = new AdminTools(this);
+        feedback = new FeedbackLog(this);
+        Bukkit.getPluginManager().registerEvents(new FishHookFix(this), this);
+        Bukkit.getPluginManager().registerEvents(new ChatLog(this), this);
         adminTools.enable();
 
         McmLobby.setBridge(new McmLobby.Bridge() {
@@ -383,6 +469,11 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (cmd.getName().equalsIgnoreCase("pfb") || cmd.getName().equalsIgnoreCase("gfb")) {
+            if (feedback == null) feedback = new FeedbackLog(this);
+            feedback.handle(sender, cmd.getName(), args);
+            return true;
+        }
         if (cmd.getName().equalsIgnoreCase("mcm") && args.length > 0 && args[0].equalsIgnoreCase("selftest")) {
             if (sender instanceof Player pl && !pl.isOp()) {
                 pl.sendMessage(ChatColor.RED + "Only tournament admins (OPs) can run selftest.");

@@ -12,3 +12,9 @@ commands:
     description: Open the Team Selector GUI.
     usage: /team
     aliases: [teams]
+  pfb:
+    description: Save point feedback (game, map, exact position, message) to feedback/feedback.jsonl.
+    usage: /pfb <message>
+  gfb:
+    description: Save general feedback (game, map, message) to feedback/feedback.jsonl.
+    usage: /gfb <message>

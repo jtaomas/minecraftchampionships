@@ -61,4 +61,7 @@ public interface McmGame {
 
     /** Admin ran {@code /mcm map <id>}: the next round uses that map. Return false if unknown/unsupported. */
     default boolean forceNextMap(String id) { return false; }
+
+    /** Id or name of the map/arena/course being played right now, for the chat feedback log; null if the game has only one. */
+    default String currentMap() { return null; }
 }

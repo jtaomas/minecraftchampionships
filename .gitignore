@@ -20,3 +20,8 @@ target/
 *.class
 node_modules/
 __pycache__/
+
+# Third-party candidate maps and screenshots (not ours to publish)
+_candidates/
+# Screenshots of third-party maps used for research stay local
+game-plugins/research/img/

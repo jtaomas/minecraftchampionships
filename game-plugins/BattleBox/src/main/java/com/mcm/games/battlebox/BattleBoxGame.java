@@ -1140,6 +1140,8 @@ public final class BattleBoxGame implements McmGame {
     // ---------- admin helpers
 
     String currentThemeId() { return theme == null ? null : theme.id(); }
+    /** Chat feedback log (core 3.2.0+ optional hook; no @Override so older cores still load us). */
+    public String currentMap() { return currentThemeId(); }
 
     /** Build one arena copy of a theme at the admin spot and teleport the player into it. */
     void adminArena(Player p, ArenaTheme t) {
