@@ -243,30 +243,7 @@ final class HubSights {
 
     // ------------------------------------------------------------------------------------------------ beach
     void beach() {
-        // pier
-        int px = 34, pz0 = 150;
-        int y = HubLayout.SEA + 1;
-        for (int z = pz0; z <= pz0 + 46; z++) for (int x = px - 2; x <= px + 2; x++) {
-            int gt = g.hAt(x, z);
-            if (gt > y) continue;
-            d.set(x, y, z, Math.abs(x - px) == 2 ? "stripped_spruce_log[axis=z]" : "spruce_planks");
-            if (Math.abs(x - px) == 2 && z % 5 == 0) {
-                for (int yy = gt; yy < y; yy++) d.set(x, yy, z, "spruce_log[axis=y]");
-                d.set(x, y + 1, z, "spruce_fence");
-                d.set(x, y + 2, z, z % 10 == 0 ? "lantern[hanging=false]" : "spruce_fence");
-            } else if (Math.abs(x - px) == 2) d.set(x, y + 1, z, "spruce_fence");
-            g.paved(x, z, y);
-        }
-        // pier head deck
-        for (int x = px - 5; x <= px + 5; x++) for (int z = pz0 + 46; z <= pz0 + 54; z++) {
-            d.set(x, y, z, (x + z) % 3 == 0 ? "stripped_spruce_wood[axis=y]" : "spruce_planks");
-            boolean rim = Math.abs(x - px) == 5 || z == pz0 + 54;
-            if (rim) d.set(x, y + 1, z, "spruce_fence");
-            if (rim && (x + z) % 4 == 0) d.set(x, y + 2, z, "lantern[hanging=false]");
-            g.paved(x, z, y);
-        }
-        for (int yy = y + 1; yy <= y + 4; yy++) d.set(px, yy, pz0 + 50, "spruce_log[axis=y]");
-        d.set(px, y + 5, pz0 + 50, "sea_lantern");
+        new HubHarbour(g).build();
         // umbrellas + towels on the sand
         String[][] cols = {{"red", "white"}, {"blue", "yellow"}, {"orange", "white"}, {"lime", "light_blue"}, {"pink", "white"}, {"cyan", "yellow"}};
         int k = 0;

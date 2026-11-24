@@ -338,6 +338,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         });
         getConfig().addDefault("championship-playlist", new ArrayList<String>());
         getConfig().addDefault("mcc-hub.enabled", true);
+        getConfig().addDefault("mcc-hub.ambient-fireworks-per-minute", 3.0);
         getConfig().addDefault("mcc-championship-playlist", new ArrayList<String>());
         getConfig().addDefault("fast-test", false);
         getConfig().addDefault("admin-tools-item", true);
@@ -346,6 +347,8 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         getConfig().options().copyDefaults(true);
         getConfig().setInlineComments("mcc-hub.enabled", List.of(
                 "Build/load the MCC hub island (world mcc_lobby) as the lobby for MCC games. The MM lobby stays the default spawn."));
+        getConfig().setInlineComments("mcc-hub.ambient-fireworks-per-minute", List.of(
+                "Average ambient fireworks per minute over the MCC hub between games (0 = none). Game wins, the podium and the vote reveal still fire."));
         getConfig().setInlineComments("mcc-championship-playlist", List.of(
                 "MCC game ids for /mcm start mcc. Empty = every installed MCC game."));
         getConfig().setInlineComments("championship-playlist", List.of(

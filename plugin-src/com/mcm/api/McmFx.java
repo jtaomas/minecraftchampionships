@@ -275,7 +275,8 @@ public final class McmFx {
     }
 
     /**
-     * Firework show around a centre point: 2-3 bursts every 5 ticks for {@code seconds} seconds, random
+     * Firework show around a centre point: 1-2 bursts every 10 ticks for {@code seconds} seconds (was 2-3 every
+     * 5 ticks; cut after playtest feedback "too many fireworks"), random
      * offsets within ~7 blocks horizontally and 3-12 blocks above the centre, in {@code color} mixed with
      * white/gold. Cancel the returned task to stop early.
      */
@@ -288,7 +289,7 @@ public final class McmFx {
             @Override public void run() {
                 if (c == null || c.getWorld() == null || t >= ticks) { cancel(); return; }
                 ThreadLocalRandom r = ThreadLocalRandom.current();
-                int n = 2 + r.nextInt(2);
+                int n = 1 + r.nextInt(2);
                 for (int i = 0; i < n; i++) {
                     Location l = c.clone().add(r.nextDouble(-7, 7), r.nextDouble(3, 12), r.nextDouble(-7, 7));
                     FireworkEffect.Type[] types = FireworkEffect.Type.values();
@@ -298,9 +299,9 @@ public final class McmFx {
                     spawnFirework(l, FireworkEffect.builder().withColor(main, second).withFade(main)
                             .with(type).trail(r.nextBoolean()).flicker(r.nextBoolean()).build());
                 }
-                t += 5;
+                t += 10;
             }
-        }.runTaskTimer(plugin, 0L, 5L);
+        }.runTaskTimer(plugin, 0L, 10L);
     }
 
     /** {@link #celebrate(Plugin, Collection, Color)} with a gold/random-colour mix. */
@@ -309,7 +310,7 @@ public final class McmFx {
     }
 
     /**
-     * Fireworks around each winner for ~5 seconds, 1 s in admin fast-test mode (one burst per winner every 8 ticks, 1-3 blocks away,
+     * Fireworks around each winner for ~5 seconds, 1 s in admin fast-test mode (one burst per winner every 16 ticks, 1-3 blocks away,
      * 2-5 blocks up) plus a victory sound for them. A winner who goes offline or changes world stops getting
      * fireworks. {@code color} null = gold mixed with random bright colours.
      */
@@ -334,9 +335,9 @@ public final class McmFx {
                     Color c = color != null ? color : bright[r.nextInt(bright.length)];
                     teamFirework(l, c, r.nextInt(3) == 0);
                 }
-                t += 8;
+                t += 16;
             }
-        }.runTaskTimer(plugin, 0L, 8L);
+        }.runTaskTimer(plugin, 0L, 16L);
     }
 
     /** Puff of coloured dust plus cloud particles at a location (e.g. pickups, eliminations). */

@@ -5,7 +5,7 @@ cd /c/Users/USER/Desktop/Mcc/tools/lobby_preview
 J='/c/Users/USER/Desktop/java/bin'
 TAG=$1
 rm -rf out/*.class out/com
-(cd ../../plugin-src/com/mcm/lobby && "$J/javac" -d ../../../../tools/lobby_preview/out HNoise.java Vox.java HubLayout.java Glyphs.java Draw.java Trees.java Shapes.java BlockFix.java HubGenerator.java HubVenue.java HubPlaza.java HubSights.java ../../../../tools/lobby_preview/HubPreview.java)
+(cd ../../plugin-src/com/mcm/lobby && "$J/javac" -d ../../../../tools/lobby_preview/out HNoise.java Vox.java HubLayout.java Glyphs.java Draw.java Trees.java Shapes.java BlockFix.java HubGenerator.java HubVenue.java HubPlaza.java HubSights.java HubHarbour.java ../../../../tools/lobby_preview/HubPreview.java)
 "$J/java" -Xmx6g -cp out HubPreview out island:-215:48:-235:215:200:215 venue:-75:55:-135:75:185:12 plaza:-62:60:24:62:120:128 cut:-50:58:-112:50:150:-62 cutq:-50:58:-112:0:105:-62 ${EXTRA}
 P=../previews/lobby
 python ../render_preview.py out/island.mcmdump.gz $P/${TAG}_island_a0.png > /dev/null

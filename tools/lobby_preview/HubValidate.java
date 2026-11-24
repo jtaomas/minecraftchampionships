@@ -50,6 +50,32 @@ public final class HubValidate {
         }
         System.out.println("staircases walked: " + walks.size() + " columns");
         for (var e : groups.entrySet()) System.out.println("  " + e.getKey() + ": " + e.getValue()[1] + "/" + e.getValue()[0] + " ok");
+        // paths / jetties: every registered route walked end to end in both directions
+        List<String> pathFails = new ArrayList<>();
+        try {
+            List<?> pws = (List<?>) HubGenerator.class.getDeclaredField("pathWalks").get(g);
+            // the stair/slab steps laid along path slopes are part of the paths, not loose stairs
+            for (Object o : (List<?>) HubGenerator.class.getDeclaredField("pathSteps").get(g)) { int[] s = (int[]) o; walkCells.add(key(s[0], s[1], s[2])); }
+            int okCount = 0, jumps = 0;
+            for (Object o : pws) {
+                Class<?> c = o.getClass();
+                PW pw = new PW((String) c.getMethod("name").invoke(o), (int[]) c.getMethod("xs").invoke(o),
+                        (int[]) c.getMethod("zs").invoke(o), (int[]) c.getMethod("ys").invoke(o));
+                int[] jc = new int[1];
+                List<String> f = new ArrayList<>(walkPath(v, pw, false, walkCells, jc));
+                f.addAll(walkPath(v, pw, true, walkCells, jc));
+                jumps += jc[0];
+                if (f.isEmpty()) okCount++;
+                System.out.println("  " + pw.name() + ": " + pw.xs().length + " cells, " + (f.isEmpty() ? "ok" : f.size() + " faults") + (jc[0] > 0 ? ", " + jc[0] + " one-block jumps" : ""));
+                pathFails.addAll(f);
+            }
+            System.out.println("paths walked: " + okCount + "/" + pws.size() + " ok (" + jumps + " one-block jumps in total, allowed)");
+        } catch (ReflectiveOperationException e) {
+            System.out.println("generator has no path registry: paths not walked");
+        }
+        System.out.println("path failures: " + pathFails.size());
+        pathFails.forEach(f -> System.out.println("  FAIL " + f));
+        fails.addAll(pathFails);
         // connection audit (independent re-check of the final grid)
         List<String> conn = new ArrayList<>();
         List<String> carpets = new ArrayList<>();
@@ -117,6 +143,70 @@ public final class HubValidate {
             }
             int[] xs = cells.stream().mapToInt(c -> c[0]).toArray(), zs = cells.stream().mapToInt(c -> c[1]).toArray();
             out.add(new W("dome aisle " + (k * 36) + "deg", xs, zs, 64, 79));
+        }
+        return out;
+    }
+
+    record PW(String name, int[] xs, int[] zs, int[] ys) {}
+
+    static boolean clear(Vox v, int x, int y0, int y1, int z) {
+        for (int y = y0; y <= y1; y++) if (!Shapes.passable(v.get(x, y, z))) return false;
+        return true;
+    }
+
+    /**
+     * Walk a path's centre line (a 0.6 x 1.8 player keeps to the centre). Each move may rise at most 1 block
+     * (a plain step-up is 0.6; anything between 0.6 and 1.0 is a jump and needs 3 free blocks above both cells);
+     * the floor must be found within 2 blocks up / 3 down; 2 blocks of headroom everywhere. Walking the route
+     * reversed turns every drop into a rise, so a drop deeper than 1 block fails too.
+     */
+    static List<String> walkPath(Vox v, PW w, boolean reverse, Set<Long> cells, int[] jumps) {
+        List<String> out = new ArrayList<>();
+        int n = w.xs().length;
+        String nm = w.name() + (reverse ? " (reversed)" : "");
+        int py = 0;
+        double exit = Double.NaN;
+        for (int k = 0; k < n; k++) {
+            int i = reverse ? n - 1 - k : k;
+            int x = w.xs()[i], z = w.zs()[i];
+            int d = 2;
+            String at = "(" + x + "," + z + ")";
+            int top, bottom;
+            if (k == 0) { top = w.ys()[i] + 2; bottom = w.ys()[i] - 3; }
+            else {
+                int px = w.xs()[reverse ? i + 1 : i - 1], pz = w.zs()[reverse ? i + 1 : i - 1];
+                int dx = x - px, dz = z - pz;
+                if (Math.abs(dx) + Math.abs(dz) != 1) { out.add(nm + ": cells " + at + " not adjacent to the previous one"); return out; }
+                d = dx > 0 ? 1 : dx < 0 ? 3 : dz > 0 ? 2 : 0;
+                top = py + 2; bottom = py - 3;
+            }
+            int sy = Integer.MIN_VALUE;
+            for (int y = top; y >= bottom; y--) {
+                if (!Shapes.passable(v.get(x, y, z)) && clear(v, x, y + 1, y + 1, z)) { sy = y; break; }
+            }
+            if (sy == Integer.MIN_VALUE) {
+                if (!reverse) out.add(nm + ": " + at + " no standable floor between y " + bottom + " and " + top + " (water, wall or a drop)");
+                return out;
+            }
+            String st = v.get(x, sy, z);
+            double[] h = heights(st, sy, d);
+            boolean jump = false;
+            if (k > 0) {
+                double rise = h[0] - exit;
+                if (rise > 1.0 + EPS) out.add(nm + ": " + at + " rises " + rise + " blocks onto " + Shapes.base(st) + " y " + sy + " - more than a 1-block jump");
+                else if (rise > 0.6 + EPS) {
+                    jump = true;
+                    jumps[0]++;
+                    if (System.getenv("HUB_SHOW_JUMPS") != null) System.out.println("    jump " + nm + " " + at + " onto " + Shapes.base(st) + " y " + sy + " dir " + d + " rise " + rise + " from y " + py);
+                    int ppx = w.xs()[reverse ? i + 1 : i - 1], ppz = w.zs()[reverse ? i + 1 : i - 1];
+                    if (!clear(v, ppx, py + 1, py + 3, ppz) || !clear(v, x, sy + 1, sy + 3, z))
+                        out.add(nm + ": " + at + " 1-block jump onto y " + sy + " without 3 blocks of headroom");
+                }
+            }
+            if (!jump && !clear(v, x, sy + 1, sy + 2, z)) out.add(nm + ": " + at + " y " + sy + " headroom blocked (" + v.get(x, sy + 2, z) + ")");
+            cells.add(key(x, sy, z));
+            exit = h[1];
+            py = sy;
         }
         return out;
     }

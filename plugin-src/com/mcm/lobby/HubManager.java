@@ -346,16 +346,19 @@ public final class HubManager implements Listener, McmLobby.Venue {
                 }
             }
         }, 20L, 3L));
-        // ambient fireworks during intermissions
-        tasks.add(Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+        // ambient fireworks during intermissions: config mcc-hub.ambient-fireworks-per-minute (default 3, 0 = off;
+        // was ~13/min). Real events (game wins, the podium, the vote reveal) fire their own shows independently.
+        final double perMinute = Math.max(0, plugin.getConfig().getDouble("mcc-hub.ambient-fireworks-per-minute", 3.0));
+        if (perMinute > 0) tasks.add(Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             if (world.getPlayers().isEmpty() || !intermission.getAsBoolean()) return;
             ThreadLocalRandom r = ThreadLocalRandom.current();
-            if (r.nextDouble() < 0.45 || layout.fireworkSpots.isEmpty()) return;
+            // checked once a second: chance perMinute / 60 per check
+            if (r.nextDouble() >= perMinute / 60.0 || layout.fireworkSpots.isEmpty()) return;
             double[] p = layout.fireworkSpots.get(r.nextInt(layout.fireworkSpots.size()));
             ChatColor[] cols = {ChatColor.RED, ChatColor.GOLD, ChatColor.YELLOW, ChatColor.GREEN, ChatColor.AQUA, ChatColor.BLUE, ChatColor.LIGHT_PURPLE, ChatColor.DARK_PURPLE};
             McmFx.teamFirework(new Location(world, p[0] + r.nextDouble(-14, 14), p[1] + r.nextDouble(-4, 10), p[2] + r.nextDouble(-14, 14)),
                     cols[r.nextInt(cols.length)], r.nextBoolean());
-        }, 60L, 50L));
+        }, 60L, 20L));
     }
 
     // =====================================================================================================

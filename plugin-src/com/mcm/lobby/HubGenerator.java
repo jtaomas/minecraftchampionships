@@ -15,8 +15,10 @@ public final class HubGenerator {
      * server with an older hub clears and rebuilds it on the next start.
      * v2: staircase helper (first step on the floor, last step flush), baked fence/pane/wall connections,
      *     no floating carpets, walkable stair aisles in the dome bowl.
+     * v3: blended flatten zones (no 3-block cliff on the rainbow path), graded paths with stair steps, canopy
+     *     trimmed over paths, the harbour rebuilt as a natural cove (HubHarbour).
      */
-    public static final int VERSION = 2;
+    public static final int VERSION = 3;
     static final int SEA = HubLayout.SEA;
     static final int OCEAN = 330;      // ocean half-extent
     static final int ISLAND_R = 172;   // nominal coast radius
@@ -75,6 +77,7 @@ public final class HubGenerator {
         new HubSights(this).build();
         vegetation();
         new HubSights(this).balloons();
+        trimPathCanopy();
         fixCounts = BlockFix.apply(v);
         L.minX = -OCEAN; L.maxX = OCEAN - 1; L.minZ = -OCEAN; L.maxZ = OCEAN - 1;
         L.minY = v.minY(); L.maxY = v.maxY();
@@ -111,15 +114,32 @@ public final class HubGenerator {
 
     /** Flatten zones: returns {weight, targetHeight}. */
     double[] flatten(int x, int z) {
-        double w = 0, target = GROUND - 1;
+        // Soft zones (plaza, venue, attraction pads) are blended by weight^4: where two zones with different target
+        // heights overlap (plaza 69 / rainbow pad 66) they meet in a gentle slope instead of the 3-block cliff a
+        // "strongest zone wins" rule leaves where the winner switches. Zones with equal targets are unaffected.
+        double w = 0, sw = 0, st = 0;
         // plaza circle
         double dp = Math.hypot(x - PLAZA_X, z - PLAZA_Z);
         double wp = 1 - smooth((dp - 46) / 26.0);
-        if (wp > w) { w = wp; target = GROUND - 1; }
         // venue
         double dv = Math.hypot(x - DOME_X, z - DOME_Z);
         double wv = 1 - smooth((dv - 60) / 26.0);
-        if (wv > w) { w = wv; target = GROUND - 1; }
+        double[][] soft = new double[2 + HubSights.PADS.length][];
+        soft[0] = new double[]{wp, GROUND - 1};
+        soft[1] = new double[]{wv, GROUND - 1};
+        for (int i = 0; i < HubSights.PADS.length; i++) {
+            double[] p = HubSights.PADS[i];
+            double dd = Math.hypot(x - p[0], z - p[1]);
+            soft[2 + i] = new double[]{1 - smooth((dd - p[2]) / 16.0), p[3]};
+        }
+        for (double[] s : soft) {
+            if (s[0] <= 0) continue;
+            w = Math.max(w, s[0]);
+            double k = s[0] * s[0] * s[0] * s[0];
+            sw += k;
+            st += k * s[1];
+        }
+        double target = sw > 0 ? st / sw : GROUND - 1;
         // approach + raised terraces either side
         if (z > -30 && z < 44) {
             double ax = Math.abs(x);
@@ -131,12 +151,6 @@ public final class HubGenerator {
                 double wt = Math.min(wz, 1 - smooth((ax - 50) / 14.0));
                 if (wt >= w * 0.999) { w = Math.max(w, wt); target = 77; }
             }
-        }
-        // attraction pads
-        for (double[] p : HubSights.PADS) {
-            double dd = Math.hypot(x - p[0], z - p[1]);
-            double wa = 1 - smooth((dd - p[2]) / 16.0);
-            if (wa > w) { w = wa; target = p[3]; }
         }
         return new double[]{w, target};
     }
@@ -201,7 +215,24 @@ public final class HubGenerator {
             h[idx(x, z)] = (int) Math.round(hh);
         }
         // 2. columns
-        for (int x = -OCEAN; x < OCEAN; x++) for (int z = -OCEAN; z < OCEAN; z++) {
+        for (int x = -OCEAN; x < OCEAN; x++) for (int z = -OCEAN; z < OCEAN; z++) column(x, z);
+    }
+
+    /**
+     * Re-shape one terrain column to a new top height (used by attractions that sculpt the land, e.g. the harbour
+     * cove): clears what stood above the lower of the two tops and redraws the column (land or sea floor + water).
+     */
+    void reshape(int x, int z, int newTop) {
+        if (!inMap(x, z)) return;
+        int old = h[idx(x, z)];
+        for (int y = Math.min(old, newTop) + 1; y <= Math.max(old, SEA) + 3; y++) d.air(x, y, z);
+        h[idx(x, z)] = newTop;
+        column(x, z);
+    }
+
+    /** Draw the terrain column at (x, z) from the heightmap. */
+    void column(int x, int z) {
+        {
             int top = h[idx(x, z)];
             int slope = 0;
             for (int[] o : new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}) slope = Math.max(slope, Math.abs(top - hAt(x + o[0], z + o[1])));
@@ -220,7 +251,7 @@ public final class HubGenerator {
                     d.set(x, top + 1, z, coral[(int) (d.rnd(x, 3, z, 7) * coral.length)]);
                 }
                 surf[idx(x, z)] = 0;
-                continue;
+                return;
             }
             int bottom = SEA - 10;
             double r = Math.hypot(x, z);
@@ -278,6 +309,8 @@ public final class HubGenerator {
         int np = pts.length / 2;
         double dist = 0, lastLamp = 0;
         int side = 1;
+        java.util.LinkedHashSet<Long> cellsPaved = new java.util.LinkedHashSet<>();
+        List<int[]> centre = new ArrayList<>();
         for (int i = 0; i < np - 1; i++) {
             double x0 = pts[Math.max(0, i - 1) * 2], z0 = pts[Math.max(0, i - 1) * 2 + 1];
             double x1 = pts[i * 2], z1 = pts[i * 2 + 1];
@@ -296,6 +329,7 @@ public final class HubGenerator {
                 double tx = cx - px, tz = cz - pz;
                 double tl = Math.max(1e-6, Math.hypot(tx, tz));
                 px = cx; pz = cz;
+                addCell(centre, (int) Math.floor(cx), (int) Math.floor(cz));
                 double hw = w / 2.0;
                 for (int ox = (int) Math.floor(cx - hw - 1); ox <= cx + hw + 1; ox++)
                     for (int oz = (int) Math.floor(cz - hw - 1); oz <= cz + hw + 1; oz++) {
@@ -314,6 +348,7 @@ public final class HubGenerator {
                         // remove plants above
                         for (int yy = gy + 1; yy <= gy + 2; yy++) if (!d.isAir(ox, yy, oz) && !d.id(ox, yy, oz).contains("log")) d.air(ox, yy, oz);
                         reserve(ox, oz);
+                        cellsPaved.add(cellKey(ox, oz));
                     }
                 if (lampEvery > 0 && dist - lastLamp >= lampEvery) {
                     lastLamp = dist;
@@ -331,6 +366,122 @@ public final class HubGenerator {
                 }
             }
         }
+        // grading: where the terrain under the paving jumps by 2+ blocks (lagoon banks, terrace edges) the lower
+        // cells are banked up until neighbouring cells differ by at most one block (a causeway ramp, never a cut)
+        boolean changed = true;
+        java.util.Map<Long, Integer> raised = new java.util.HashMap<>();
+        while (changed) {
+            changed = false;
+            for (long k : cellsPaved) {
+                int x = (int) (k >> 32), z = (int) k;
+                int gy = h[idx(x, z)];
+                for (int f = 0; f < 4; f++) {
+                    int nx = x + Shapes.DXZ[f][0], nz = z + Shapes.DXZ[f][1];
+                    if (!cellsPaved.contains(cellKey(nx, nz))) continue;
+                    int ny = h[idx(nx, nz)];
+                    if (ny - gy > 1) { raised.putIfAbsent(k, gy); gy = ny - 1; h[idx(x, z)] = gy; changed = true; }
+                }
+            }
+        }
+        String fill = style.equals("stone") ? "stone" : style.equals("sand") ? "sandstone" : "dirt";
+        for (var e : raised.entrySet()) {
+            int x = (int) (e.getKey() >> 32), z = (int) (long) e.getKey();
+            int oldY = e.getValue(), gy = h[idx(x, z)];
+            String top = d.v.get(x, oldY, z);
+            for (int y = oldY; y < gy; y++) d.set(x, y, z, fill);
+            d.set(x, gy, z, top);
+            for (int yy = gy + 1; yy <= gy + 2; yy++) if (!d.isAir(x, yy, z) && !d.id(x, yy, z).contains("log")) d.air(x, yy, z);
+        }
+        // 1-block rises along the paving get a step: a stair on the lower cell facing its higher neighbour (the
+        // slope direction when it has several), so consecutive rises form a flight and the path is walked, not jumped
+        String stepMat = style.equals("stone") ? "polished_andesite" : style.equals("sand") ? "smooth_sandstone" : "spruce";
+        List<int[]> steps = new ArrayList<>();
+        for (long k : cellsPaved) {
+            int x = (int) (k >> 32), z = (int) k;
+            int gy = h[idx(x, z)];
+            int dir = -1, best = -1;
+            for (int f = 0; f < 4; f++) {
+                int nx = x + Shapes.DXZ[f][0], nz = z + Shapes.DXZ[f][1];
+                if (!inMap(nx, nz) || h[idx(nx, nz)] != gy + 1) continue;
+                // the next path cell up, or the paving of a structure the path runs into (plaza, aprons)
+                boolean structure = !cellsPaved.contains(cellKey(nx, nz)) && surf[idx(nx, nz)] == 5
+                        && Shapes.fullTop(d.v.get(nx, gy + 1, nz)) && d.isAir(nx, gy + 2, nz) && d.isAir(nx, gy + 3, nz);
+                if (!cellsPaved.contains(cellKey(nx, nz)) && !structure) continue;
+                // prefer the direction of the actual slope (the cell behind is not higher)
+                int bx = x - Shapes.DXZ[f][0], bz = z - Shapes.DXZ[f][1];
+                int score = cellsPaved.contains(cellKey(bx, bz)) && h[idx(bx, bz)] <= gy ? 2 : 1;
+                if (score > best) { best = score; dir = f; }
+            }
+            if (dir >= 0) steps.add(new int[]{x, z, gy, dir});
+        }
+        for (int[] s : steps) {
+            int x = s[0], z = s[1], gy = s[2];
+            if (!d.isAir(x, gy + 1, z)) continue;
+            d.set(x, gy + 1, z, Draw.stairs(stepMat, Shapes.DIRS[s[3]], false));
+            for (int yy = gy + 2; yy <= gy + 4; yy++) if (!d.isAir(x, yy, z) && !d.id(x, yy, z).contains("log")) d.air(x, yy, z);
+            pathSteps.add(new int[]{x, gy + 1, z});
+        }
+        for (long k : cellsPaved) pathCells.add(new int[]{(int) (k >> 32), (int) k});
+        registerPathWalk("path " + style + " (" + (int) pts[0] + "," + (int) pts[1] + ")->(" + (int) pts[pts.length - 2] + "," + (int) pts[pts.length - 1] + ")", centre);
+    }
+
+    static long cellKey(int x, int z) { return ((long) x << 32) | (z & 0xffffffffL); }
+
+    /** Append a cell to a 4-connected route (a diagonal move gets an intermediate cell). */
+    static void addCell(List<int[]> cells, int x, int z) {
+        if (!cells.isEmpty()) {
+            int[] p = cells.get(cells.size() - 1);
+            if (p[0] == x && p[1] == z) return;
+            if (p[0] != x && p[1] != z) cells.add(new int[]{x, p[1]});
+            else if (Math.abs(p[0] - x) + Math.abs(p[1] - z) > 1) {
+                // a jump of 2+ cells along an axis (should not happen with half-block sampling): fill it
+                int sx = Integer.signum(x - p[0]), sz = Integer.signum(z - p[1]);
+                for (int cx = p[0] + sx, cz = p[1] + sz; cx != x || cz != z; cx += sx, cz += sz) cells.add(new int[]{cx, cz});
+            }
+        }
+        cells.add(new int[]{x, z});
+    }
+
+    /** A straight route between cell centres (x1,z1) -> (x2,z2), 4-connected. */
+    static List<int[]> lineCells(int x1, int z1, int x2, int z2) {
+        List<int[]> out = new ArrayList<>();
+        int n = Math.max(Math.abs(x2 - x1), Math.abs(z2 - z1)) * 2;
+        for (int i = 0; i <= n; i++) {
+            double t = n == 0 ? 0 : i / (double) n;
+            addCell(out, (int) Math.floor(x1 + 0.5 + (x2 - x1) * t), (int) Math.floor(z1 + 0.5 + (z2 - z1) * t));
+        }
+        return out;
+    }
+
+    /** A walkable route (path, jetty...) checked end to end, in both directions, by the offline validator. */
+    record PathWalk(String name, int[] xs, int[] zs, int[] ys) {}
+    final List<PathWalk> pathWalks = new ArrayList<>();
+    /** Every paved path cell {x, z}, and the step blocks {x, y, z} placed on them. */
+    final List<int[]> pathCells = new ArrayList<>();
+    final List<int[]> pathSteps = new ArrayList<>();
+
+    /**
+     * After the vegetation: leaves and plants that grew over a path (canopies spreading in from beside it) are
+     * trimmed to 3 blocks of headroom above the walking surface, so nobody bumps their head or has to jump.
+     */
+    void trimPathCanopy() {
+        for (int[] c : pathCells) {
+            int x = c[0], z = c[1];
+            int gy = h[idx(x, z)];
+            for (int y = gy + 1; y <= gy + 4; y++) {
+                String id = d.id(x, y, z);
+                if (id == null) continue;
+                if (id.endsWith("_leaves") || id.equals("vine") || Shapes.passable(d.v.get(x, y, z)) && !Shapes.isCarpet(id) && !id.equals("water") && !id.equals("lava")) d.air(x, y, z);
+            }
+        }
+    }
+
+    void registerPathWalk(String name, List<int[]> cells) {
+        if (cells.size() < 2) return;
+        int n = cells.size();
+        int[] xs = new int[n], zs = new int[n], ys = new int[n];
+        for (int i = 0; i < n; i++) { xs[i] = cells.get(i)[0]; zs[i] = cells.get(i)[1]; ys[i] = hAt(xs[i], zs[i]); }
+        pathWalks.add(new PathWalk(name, xs, zs, ys));
     }
 
     // =====================================================================================================
