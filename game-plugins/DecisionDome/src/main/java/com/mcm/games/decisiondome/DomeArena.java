@@ -4,64 +4,70 @@ import com.mcm.api.McmApi;
 import com.mcm.api.McmGame;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Difficulty;
+import org.bukkit.GameRule;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Display;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemDisplay;
-import org.bukkit.entity.TextDisplay;
 import org.bukkit.generator.ChunkGenerator;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.Transformation;
-import org.joml.AxisAngle4f;
-import org.joml.Vector3f;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 
-/** The generated dome: a void world with a hub, a ring of vote wedges and a glass hemisphere. */
-final class DomeArena implements VoteStage {
+/**
+ * The plugin-owned fallback venue in the void world {@code mcc_dome}. This class owns only static
+ * geometry and block mutations; the vote runtime and all entities live in {@link DomeSession}.
+ */
+final class DomeArena {
     static final String WORLD_NAME = "mcc_dome";
     static final String TAG = "mcm_dome";
-    static final int HUB_R = 6;       // neutral centre radius
-    static final int WEDGE_R = 20;    // outer radius of the voting wedges
-    static final int RING_R = 23;     // outer floor ring
-    static final int SHELL_R = 24;    // glass dome radius
-    static final double LABEL_R = 13.5;
-    static final int MAX_WEDGES = 12;
+    static final int HUB_R = 6;
+    static final int WEDGE_R = 20;
+    static final int RING_R = 23;
+    static final int SHELL_R = 24;
+    static final int MAX_WEDGES = 8;
 
-    private static final Material[] COLORS = {
+    static final Material[] COLORS = {
             Material.RED_CONCRETE, Material.ORANGE_CONCRETE, Material.YELLOW_CONCRETE, Material.LIME_CONCRETE,
             Material.GREEN_CONCRETE, Material.CYAN_CONCRETE, Material.LIGHT_BLUE_CONCRETE, Material.BLUE_CONCRETE,
             Material.PURPLE_CONCRETE, Material.MAGENTA_CONCRETE, Material.PINK_CONCRETE, Material.WHITE_CONCRETE
     };
     static final String[] COLOR_CODES = {"§c", "§6", "§e", "§a", "§2", "§3", "§b", "§9", "§5", "§d", "§d", "§f"};
 
+    /** Pod centres from the Nocturne Orrery schematic: 36 degrees apart with the 90-degree stair gap. */
+    static final double[] POD_ANGLES_DEG = {18, 54, 72, 108, 126, 162, 198, 234, 270, 306};
+
     private final Plugin plugin;
     private World world;
     private int floorY = 100;
-
-    private int wedgeCount = 0;
+    private int wedgeCount;
+    private double baseAngle = Math.PI / 2.0;
     private final List<List<Block>> wedgeBlocks = new ArrayList<>();
-    private final List<TextDisplay> labels = new ArrayList<>();
-    private final List<ItemDisplay> icons = new ArrayList<>();
-    private float iconYaw = 0f;
+    private final List<Block> dividerBlocks = new ArrayList<>();
+    private final List<List<Block>> podBlocks = new ArrayList<>();
 
     DomeArena(Plugin plugin) { this.plugin = plugin; }
 
-    @Override public World world() { return world; }
-    int floorY() { return floorY; }
-    int wedgeCount() { return wedgeCount; }
-    boolean isDomeWorld(World w) { return world != null && w != null && w.equals(world); }
-
     static Component c(String legacy) { return LegacyComponentSerializer.legacySection().deserialize(legacy); }
 
-    /** Create / load the void world and build the static parts of the dome. Safe to call repeatedly. */
+    World world() { return world; }
+
+    int floorY() { return floorY; }
+
+    boolean isDomeWorld(World w) { return world != null && w != null && w.equals(world); }
+
+    /** Create / load the void world and its permanent shell. Safe to call repeatedly. */
     World ensureWorld() {
         if (world != null && Bukkit.getWorld(WORLD_NAME) == world) return world;
         World main = Bukkit.getWorlds().isEmpty() ? null : Bukkit.getWorlds().get(0);
-        // The core teleports LOBBY-state players whose Y drops below (lobbySpawnY - 50), in any world,
-        // so keep the dome floor at or above the main world's spawn height.
         floorY = Math.max(100, main == null ? 100 : main.getSpawnLocation().getBlockY());
         floorY = Math.min(floorY, 280);
         World w = Bukkit.getWorld(WORLD_NAME);
@@ -94,13 +100,18 @@ final class DomeArena implements VoteStage {
         for (int cx = -2; cx <= 1; cx++) for (int cz = -2; cz <= 1; cz++) w.addPluginChunkTicket(cx, cz, plugin);
         removeStrayEntities();
         buildStatic();
-        buildWedges(1);
+        buildDial(8, baseAngle);
+        buildPods();
         return w;
     }
 
     void removeStrayEntities() {
         if (world == null) return;
-        for (Entity e : world.getEntities()) if (e.getScoreboardTags().contains(TAG)) e.remove();
+        for (Entity e : world.getEntities()) {
+            for (String tag : e.getScoreboardTags()) {
+                if (tag.equals(TAG) || tag.startsWith(TAG + ":")) { e.remove(); break; }
+            }
+        }
     }
 
     private void buildStatic() {
@@ -118,12 +129,12 @@ final class DomeArena implements VoteStage {
                 } else if (r > WEDGE_R && r <= SHELL_R + 0.5) {
                     Material m = Material.DARK_PRISMARINE;
                     if (r > WEDGE_R && r <= WEDGE_R + 1) m = Material.POLISHED_DEEPSLATE;
-                    else if (r > 21.6 && r <= 22.6 && (Math.floorMod(x * 7 + z * 13, 9) == 0)) m = Material.SEA_LANTERN;
+                    else if (r > 21.6 && r <= 22.6 && Math.floorMod(x * 7 + z * 13, 9) == 0) m = Material.SEA_LANTERN;
                     world.getBlockAt(x, floorY, z).setType(m, false);
                 }
                 for (int dy = 1; dy <= SHELL_R + 1; dy++) {
-                    double d = Math.sqrt((x + 0.5) * (x + 0.5) + (dy - 0.5) * (dy - 0.5) + (z + 0.5) * (z + 0.5));
                     Block b = world.getBlockAt(x, floorY + dy, z);
+                    double d = Math.sqrt((x + 0.5) * (x + 0.5) + (dy - 0.5) * (dy - 0.5) + (z + 0.5) * (z + 0.5));
                     if (d >= RING_R + 0.5 && d < SHELL_R + 0.75) {
                         Material glass = dy <= 3 ? Material.LIGHT_BLUE_STAINED_GLASS
                                 : (Math.floorMod(x, 6) == 0 || Math.floorMod(z, 6) == 0) ? Material.WHITE_STAINED_GLASS : Material.GLASS;
@@ -137,46 +148,31 @@ final class DomeArena implements VoteStage {
         }
     }
 
-    /** Index of the wedge at the given horizontal position, or -1 if on the hub / outside. */
-    int wedgeAt(double x, double z) {
-        if (wedgeCount <= 0) return -1;
-        double r = Math.hypot(x, z);
-        if (r <= HUB_R || r > WEDGE_R + 0.6) return -1;
-        double a = Math.atan2(z, x);
-        if (a < 0) a += Math.PI * 2;
-        int idx = (int) Math.floor(a / (Math.PI * 2 / wedgeCount));
-        return Math.min(Math.max(idx, 0), wedgeCount - 1);
-    }
-
-    int wedgeAt(Location l) {
-        if (l == null || !isDomeWorld(l.getWorld())) return -1;
-        if (l.getY() < floorY || l.getY() > floorY + 6) return -1;
-        return wedgeAt(l.getX(), l.getZ());
-    }
-
-    /** Lay out n wedges (floor colours + dividers). Removes labels. */
-    void buildWedges(int n) {
-        clearLabels();
+    /** Lay out n coloured wedges. Wedge 0 is centred on {@code baseAngle}. */
+    boolean buildDial(int n, double baseAngle) {
+        if (world == null) return false;
         n = Math.max(1, Math.min(MAX_WEDGES, n));
-        wedgeCount = n;
+        this.wedgeCount = n;
+        this.baseAngle = baseAngle;
         wedgeBlocks.clear();
+        dividerBlocks.clear();
         for (int i = 0; i < n; i++) wedgeBlocks.add(new ArrayList<>());
-        double w = Math.PI * 2 / n;
+        double step = Math.PI * 2.0 / n;
         for (int x = -WEDGE_R - 1; x <= WEDGE_R + 1; x++) {
             for (int z = -WEDGE_R - 1; z <= WEDGE_R + 1; z++) {
                 double cx = x + 0.5, cz = z + 0.5;
                 double r = Math.hypot(cx, cz);
-                if (r <= HUB_R || r > WEDGE_R) continue;
-                double a = Math.atan2(cz, cx);
-                if (a < 0) a += Math.PI * 2;
-                int idx = Math.min((int) Math.floor(a / w), n - 1);
-                double local = a - idx * w;
-                double arc = Math.min(local, w - local) * r;
+                if (r < HUB_R || r > WEDGE_R) continue;
+                double rel = DialGeometry.normalise(Math.atan2(cz, cx) - (baseAngle - step / 2.0));
+                int idx = Math.min((int) Math.floor(rel / step), n - 1);
+                double local = rel - idx * step;
+                double arc = Math.min(local, step - local) * r;
                 Block floor = world.getBlockAt(x, floorY, z);
                 Block above = world.getBlockAt(x, floorY + 1, z);
-                if (n > 1 && arc < 0.6) {
+                if (n > 1 && arc < 0.55) {
                     floor.setType(Material.POLISHED_BLACKSTONE, false);
-                    above.setType(r >= HUB_R + 2.5 ? Material.WHITE_STAINED_GLASS : Material.AIR, false);
+                    above.setType(Material.AIR, false);
+                    dividerBlocks.add(floor);
                 } else {
                     floor.setType(COLORS[idx % COLORS.length], false);
                     above.setType(Material.AIR, false);
@@ -184,75 +180,115 @@ final class DomeArena implements VoteStage {
                 }
             }
         }
+        setDividers(0.0);
+        return true;
     }
 
-    void spawnLabels(List<String> ids) {
-        clearLabels();
-        double w = Math.PI * 2 / wedgeCount;
-        for (int i = 0; i < wedgeCount && i < ids.size(); i++) {
-            double a = (i + 0.5) * w;
-            double lx = Math.cos(a) * LABEL_R, lz = Math.sin(a) * LABEL_R;
-            final String id = ids.get(i);
-            final int idx = i;
-            Location tl = new Location(world, lx, floorY + 4.3, lz);
-            TextDisplay td = world.spawn(tl, TextDisplay.class, d -> {
-                d.setPersistent(false);
-                d.addScoreboardTag(TAG);
-                d.setBillboard(Display.Billboard.CENTER);
-                d.setAlignment(TextDisplay.TextAlignment.CENTER);
-                d.setShadowed(true);
-                d.setBackgroundColor(Color.fromARGB(120, 0, 0, 0));
-                d.setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(1.6f, 1.6f, 1.6f), new AxisAngle4f()));
-                d.text(c(labelText(idx, id, 0, false)));
-            });
-            labels.add(td);
-            Location il = new Location(world, lx, floorY + 2.4, lz);
-            ItemDisplay idp = world.spawn(il, ItemDisplay.class, d -> {
-                d.setPersistent(false);
-                d.addScoreboardTag(TAG);
-                d.setItemStack(new ItemStack(iconFor(id)));
-                d.setBillboard(Display.Billboard.FIXED);
-                d.setTeleportDuration(3);
-                d.setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(1.5f, 1.5f, 1.5f), new AxisAngle4f()));
-            });
-            icons.add(idp);
+    private void buildPods() {
+        podBlocks.clear();
+        for (int i = 0; i < POD_ANGLES_DEG.length; i++) {
+            List<Block> blocks = new ArrayList<>();
+            double a = Math.toRadians(POD_ANGLES_DEG[i]);
+            double px = Math.cos(a) * 21.7;
+            double pz = Math.sin(a) * 21.7;
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    Block b = world.getBlockAt((int) Math.floor(px) + dx, floorY, (int) Math.floor(pz) + dz);
+                    b.setType(Material.POLISHED_DEEPSLATE, false);
+                    blocks.add(b);
+                }
+            }
+            // A low back rail on the outside so the pod reads as a room, not a pad.
+            double ox = Math.cos(a), oz = Math.sin(a);
+            for (int sideways = -1; sideways <= 1; sideways++) {
+                for (int h = 1; h <= 2; h++) {
+                    double sx = -oz * sideways * 0.9;
+                    double sz = ox * sideways * 0.9;
+                    Block b = world.getBlockAt((int) Math.floor(px + ox * 1.4 + sx), floorY + h,
+                            (int) Math.floor(pz + oz * 1.4 + sz));
+                    b.setType(Material.STONE_BRICK_WALL, false);
+                }
+            }
+            podBlocks.add(blocks);
         }
     }
 
-    static String labelText(int idx, String id, int votes, boolean winner) {
-        String col = COLOR_CODES[idx % COLOR_CODES.length];
-        String name = McmApi.displayName(id);
-        if (winner) return "§6§l★ " + name + " ★\n§e" + votes + (votes == 1 ? " vote" : " votes");
-        return col + "§l" + name + "\n§f" + votes + (votes == 1 ? " §7vote" : " §7votes");
+    int wedgeAt(double x, double z) {
+        if (wedgeCount <= 0) return -1;
+        return new DialGeometry(floorY, HUB_R, WEDGE_R, baseAngle).wedgeAt(x, z, wedgeCount);
     }
 
-    @Override public void updateLabel(int idx, String id, int votes, boolean winner) {
-        if (idx < 0 || idx >= labels.size()) return;
-        TextDisplay td = labels.get(idx);
-        if (td != null && td.isValid()) td.text(c(labelText(idx, id, votes, winner)));
+    int wedgeAt(Location l) {
+        if (l == null || !isDomeWorld(l.getWorld())) return -1;
+        if (l.getY() < floorY - 0.5 || l.getY() > floorY + 6) return -1;
+        return wedgeAt(l.getX(), l.getZ());
     }
 
-    /** Slowly spin the floating icons. Call every few ticks. */
-    void spinIcons() {
-        iconYaw = (iconYaw + 9f) % 360f;
-        for (ItemDisplay d : icons) if (d != null && d.isValid()) d.setRotation(iconYaw, 0f);
+    void setDividers(double progress) {
+        if (world == null) return;
+        int height = progress <= 0.02 ? 0 : Math.max(1, Math.min(3, (int) Math.ceil(progress * 3.0)));
+        for (Block floor : dividerBlocks) {
+            for (int dy = 1; dy <= 3; dy++) {
+                Block b = world.getBlockAt(floor.getX(), floor.getY() + dy, floor.getZ());
+                if (dy <= height) b.setType(Material.WHITE_STAINED_GLASS_PANE, false);
+                else if (b.getType() == Material.WHITE_STAINED_GLASS_PANE || b.getType() == Material.BARRIER) {
+                    b.setType(Material.AIR, false);
+                }
+            }
+        }
     }
 
-    void setWedgeMaterial(int idx, Material m) {
-        if (idx < 0 || idx >= wedgeBlocks.size()) return;
-        for (Block b : wedgeBlocks.get(idx)) b.setType(m, false);
+    void setWedge(int slot, Wedge.State state, int colorIndex) {
+        if (slot < 0 || slot >= wedgeBlocks.size()) return;
+        Material m = switch (state) {
+            case ACTIVE -> COLORS[Math.floorMod(colorIndex, COLORS.length)];
+            case HIGHLIGHT -> Material.SEA_LANTERN;
+            case WINNER -> Material.GOLD_BLOCK;
+            case REMOVED, BLANK -> Material.BLACK_CONCRETE;
+        };
+        for (Block b : wedgeBlocks.get(slot)) b.setType(m, false);
     }
 
-    void restoreWedge(int idx) { setWedgeMaterial(idx, COLORS[idx % COLORS.length]); }
-
-    void restoreAllWedges() { for (int i = 0; i < wedgeBlocks.size(); i++) restoreWedge(i); }
-
-    Location labelLocation(int idx) {
-        double a = (idx + 0.5) * (Math.PI * 2 / Math.max(1, wedgeCount));
-        return new Location(world, Math.cos(a) * LABEL_R, floorY + 1.5, Math.sin(a) * LABEL_R);
+    void restoreWedges() {
+        for (int i = 0; i < wedgeBlocks.size(); i++) setWedge(i, Wedge.State.ACTIVE, i);
     }
 
-    /** Random spot on the hub, facing outwards. */
+    void setPodColor(int pod, int colorIndex) {
+        if (pod < 0 || pod >= podBlocks.size()) return;
+        Material m = COLORS[Math.floorMod(colorIndex, COLORS.length)];
+        for (Block b : podBlocks.get(pod)) b.setType(m, false);
+    }
+
+    void clearRuntime() {
+        if (world == null) return;
+        setDividers(0.0);
+        restoreWedges();
+        for (int i = 0; i < podBlocks.size(); i++) {
+            for (Block b : podBlocks.get(i)) b.setType(Material.POLISHED_DEEPSLATE, false);
+        }
+    }
+
+    Location center() { return new Location(world, 0.5, floorY, 0.5); }
+
+    Location revealLocation() { return new Location(world, 0.5, floorY + 3.0, 0.5); }
+
+    Location at(double x, double z, double dy) { return new Location(world, 0.5 + x, floorY + dy, 0.5 + z); }
+
+    Location wedgeCenter(int slot) {
+        if (wedgeCount <= 0) return center();
+        double a = baseAngle + slot * (Math.PI * 2.0 / wedgeCount);
+        double r = (HUB_R + WEDGE_R) / 2.0;
+        return new Location(world, Math.cos(a) * r, floorY + 1, Math.sin(a) * r);
+    }
+
+    Location podSpawn(int pod) {
+        double a = Math.toRadians(POD_ANGLES_DEG[Math.floorMod(pod, POD_ANGLES_DEG.length)]);
+        double x = Math.cos(a) * 21.2;
+        double z = Math.sin(a) * 21.2;
+        float yaw = (float) Math.toDegrees(Math.atan2(x, -z));
+        return new Location(world, x, floorY + 1, z, yaw, 0f);
+    }
+
     Location hubSpot(Random rng) {
         double a = rng.nextDouble() * Math.PI * 2;
         double rad = 1.0 + rng.nextDouble() * (HUB_R - 2.5);
@@ -261,11 +297,11 @@ final class DomeArena implements VoteStage {
         return new Location(world, x, floorY + 1, z, yaw, 0f);
     }
 
-    void clearLabels() {
-        for (TextDisplay d : labels) if (d != null && d.isValid()) d.remove();
-        for (ItemDisplay d : icons) if (d != null && d.isValid()) d.remove();
-        labels.clear();
-        icons.clear();
+    static String labelText(int colorIndex, String id, int votes, boolean showVotes, boolean winner) {
+        String col = COLOR_CODES[Math.floorMod(colorIndex, COLOR_CODES.length)];
+        String name = McmApi.displayName(id);
+        if (winner) return "§6§l★ " + name + " ★" + (showVotes ? "\n§e" + votes + (votes == 1 ? " vote" : " votes") : "");
+        return col + "§l" + name + (showVotes ? "\n§f" + votes + (votes == 1 ? " §7vote" : " §7votes") : "");
     }
 
     static Material iconFor(String id) {
@@ -306,32 +342,25 @@ final class DomeArena implements VoteStage {
         return g != null ? Material.COMMAND_BLOCK : Material.PAPER;
     }
 
-
-    // ---------------- VoteStage (fallback dome world) ----------------
-    @Override public int maxOptions() { return MAX_WEDGES; }
-    @Override public boolean prepare(List<String> ids) {
-        if (ensureWorld() == null) return false;
-        buildWedges(ids.size());
-        spawnLabels(ids);
-        return true;
+    static Color colorFor(int index) {
+        return switch (Math.floorMod(index, 8)) {
+            case 0 -> Color.RED;
+            case 1 -> Color.ORANGE;
+            case 2 -> Color.YELLOW;
+            case 3 -> Color.LIME;
+            case 4 -> Color.GREEN;
+            case 5 -> Color.TEAL;
+            case 6 -> Color.AQUA;
+            default -> Color.PURPLE;
+        };
     }
-    @Override public boolean isStageWorld(World w) { return isDomeWorld(w); }
-    @Override public Location arrival(Random rng) { return hubSpot(rng); }
-    @Override public int optionAt(Location l) { return wedgeAt(l); }
-    @Override public void tickVisuals(int tick) { if (tick % 3 == 0) spinIcons(); }
-    @Override public void setCountdown(int seconds) { }
-    @Override public void highlight(int idx, boolean on) { if (on) setWedgeMaterial(idx, Material.SEA_LANTERN); else restoreWedge(idx); }
-    @Override public void eliminate(int idx, String id) { setWedgeMaterial(idx, Material.GRAY_CONCRETE); }
-    @Override public void winner(int idx, String id, int votes) { setWedgeMaterial(idx, Material.GOLD_BLOCK); updateLabel(idx, id, votes, true); }
-    @Override public Location optionLocation(int idx) { return labelLocation(idx); }
-    @Override public Location revealLocation() { return new Location(world, 0.5, floorY + 1, 0.5); }
-    @Override public void clear() { if (world != null) { clearLabels(); restoreAllWedges(); } }
-    @Override public double voidY() { return floorY - 6; }
 
     /** Generates no blocks at all. */
     static final class VoidGenerator extends ChunkGenerator {
         private final int y;
         VoidGenerator(int y) { this.y = y; }
-        @Override public Location getFixedSpawnLocation(World world, Random random) { return new Location(world, 0.5, y + 1, 0.5); }
+        @Override public Location getFixedSpawnLocation(World world, Random random) {
+            return new Location(world, 0.5, y + 1, 0.5);
+        }
     }
 }

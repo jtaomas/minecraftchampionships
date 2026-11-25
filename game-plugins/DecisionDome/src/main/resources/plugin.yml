@@ -1,13 +1,13 @@
 name: McmDecisionDome
-version: 1.0.0
+version: 2.0.0
 main: com.mcm.games.decisiondome.DecisionDomePlugin
 api-version: '1.21'
 depend: [MinecraftMondayCore]
-description: Decision Dome vote provider for MinecraftMondayCore
+description: Faithful egg-and-chicken Decision Dome vote provider for MinecraftMondayCore
 commands:
   dome:
     description: Decision Dome admin commands
-    usage: /dome <test|cancel|status>
+    usage: /dome <test [hub|dome]|end|skipwait|cancel|status|tp|simulate <n>>
     permission: mcm.dome.admin
 permissions:
   mcm.dome.admin:

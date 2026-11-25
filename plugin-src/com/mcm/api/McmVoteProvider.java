@@ -11,6 +11,14 @@ import java.util.function.Consumer;
 public interface McmVoteProvider {
     void runVote(List<String> remainingGameIds, Consumer<String> onChosen);
 
+    /**
+     * Full request, including teams, event index and dial capacity. The default implementation
+     * forwards to the id-only method so existing providers keep working.
+     */
+    default void runVote(McmVoteRequest request, Consumer<String> onChosen) {
+        runVote(request == null ? List.of() : request.gameIds(), onChosen);
+    }
+
     /** Abort a running vote (tournament stopped). Do not call onChosen afterwards. */
     void cancelVote();
 

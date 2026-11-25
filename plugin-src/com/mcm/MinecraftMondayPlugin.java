@@ -1527,8 +1527,15 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                 @Override public void run() { if (McmApi.isFastTest()) endVoteNow.run(); else hardFallback.run(); }
             }.runTaskLater(this, voteTicks);
             setPendingWait("Decision Dome vote", endVoteNow);
+            Map<UUID, String> teams = new HashMap<>();
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                String team = scoring.getTeam(p.getUniqueId());
+                if (team != null && !team.isBlank()) teams.put(p.getUniqueId(), team);
+            }
+            McmVoteRequest request = new McmVoteRequest(voteIds, teams, playlistIndex + 1,
+                    playlistIndex > 0, false, 8);
             try {
-                vp.runVote(voteIds, chosen -> {
+                vp.runVote(request, chosen -> {
                     if (!championshipMode || playlistIndex != idxAtVote || currentGame != GameType.LOBBY) return;
                     if (pendingTransitionTask != null) { pendingTransitionTask.cancel(); pendingTransitionTask = null; }
                     clearPendingWait();

@@ -2,12 +2,16 @@ package com.mcm.games.decisiondome;
 
 import com.mcm.api.McmApi;
 import com.mcm.api.McmGame;
+import com.mcm.api.McmLobby;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -15,39 +19,62 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 
 public final class DecisionDomePlugin extends JavaPlugin implements Listener {
     private DomeArena arena;
-    private DomeVote vote;
+    private DomeSettings settings;
+    private DomeController controller;
     private final Random rng = new Random();
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+        settings = DomeSettings.load(this);
         arena = new DomeArena(this);
         try {
             arena.ensureWorld();
         } catch (Throwable t) {
-            getLogger().severe("Failed to build the Decision Dome world now (will retry on first vote): " + t);
+            getLogger().severe("Failed to build the fallback dome world now (will retry on first vote): " + t);
         }
-        vote = new DomeVote(this, arena);
+        controller = new DomeController(this, arena, settings);
         getServer().getPluginManager().registerEvents(this, this);
-        McmApi.setVoteProvider(vote);
-        getLogger().info("Decision Dome registered as the MCM vote provider.");
+        McmApi.setVoteProvider(controller);
+        sweepStale();
+        getLogger().info("Decision Dome registered as the MCM vote provider; "
+                + controller.venueDescription() + ".");
     }
 
     @Override
     public void onDisable() {
-        if (McmApi.voteProvider() == vote) McmApi.setVoteProvider(null);
-        if (vote != null) vote.shutdown();
+        if (McmApi.voteProvider() == controller) McmApi.setVoteProvider(null);
+        if (controller != null) controller.stopAll();
         if (arena != null) arena.removeStrayEntities();
     }
 
-    // ---------------- command ----------------
+    private void sweepStale() {
+        try {
+            if (arena != null && arena.world() != null) ChickenService.sweepStale(arena.world(), this);
+            McmLobby.Venue v = McmLobby.venue();
+            World hub = v == null ? null : v.world();
+            if (hub != null) ChickenService.sweepStale(hub, this);
+        } catch (Throwable ignored) { }
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // Command
+    // ---------------------------------------------------------------------------------------------
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -62,55 +89,85 @@ public final class DecisionDomePlugin extends JavaPlugin implements Listener {
                     sender.sendMessage("§cA game or championship is running; stop it before testing the dome.");
                     return true;
                 }
-                // /dome test [hub|dome]: hub (MCC games, in the MCC hub's Decision Dome) when available, else the fallback dome
-                String where = args.length > 1 ? args[1].toLowerCase(Locale.ROOT) : (HubStage.available() ? "hub" : "dome");
-                boolean hub = "hub".equals(where);
-                if (hub && !HubStage.available()) {
-                    sender.sendMessage("§cThe MCC hub venue isn't available (hub disabled or still building). Use /dome test dome.");
+                boolean hub = args.length > 1 ? "hub".equalsIgnoreCase(args[1]) : controller.venueDescription().contains("v2");
+                if (hub && McmLobby.venue() == null) {
+                    sender.sendMessage("§cThe MCC hub venue isn't available. Use /dome test dome.");
                     return true;
                 }
                 LinkedHashSet<String> ids = new LinkedHashSet<>();
+                if (hub) {
+                    for (McmGame g : McmApi.games()) ids.add(g.id().toLowerCase(Locale.ROOT));
+                }
+                for (String id : McmApi.builtInGameIds()) ids.add(id.toLowerCase(Locale.ROOT));
                 for (McmGame g : McmApi.games()) ids.add(g.id().toLowerCase(Locale.ROOT));
-                if (!hub || ids.size() < 2) ids.addAll(McmApi.builtInGameIds());
                 if (ids.isEmpty()) {
                     sender.sendMessage("§cNo games installed to vote on.");
                     return true;
                 }
                 List<String> list = new ArrayList<>(ids);
-                if (list.size() > DomeArena.MAX_WEDGES) {
-                    Collections.shuffle(list, rng);
-                    list = new ArrayList<>(list.subList(0, DomeArena.MAX_WEDGES));
+                if (list.size() > 12) {
+                    java.util.Collections.shuffle(list, rng);
+                    list = new ArrayList<>(list.subList(0, 12));
                 }
-                if (!vote.startTest(list, hub)) {
+                if (!controller.startTest(list, hub)) {
                     sender.sendMessage("§cA real championship vote is running.");
                 } else {
-                    sender.sendMessage("§aStarted a test vote with " + list.size() + " games " + (hub ? "in the MCC hub dome." : "in the fallback dome."));
+                    sender.sendMessage("§aStarted a test vote with " + list.size() + " games in "
+                            + (hub ? "the MCC hub dome" : "the fallback dome") + ".");
                 }
             }
             case "cancel" -> {
-                if (!vote.isActive()) sender.sendMessage("§7No vote is running.");
-                else { vote.adminCancel(); sender.sendMessage("§aVote cancelled."); }
+                if (!controller.isActive()) sender.sendMessage("§7No vote is running.");
+                else { controller.adminCancel(); sender.sendMessage("§aVote cancelled."); }
             }
             case "end" -> {
-                if (vote.state() != DomeVote.State.VOTING) sender.sendMessage("§7Not in the voting phase.");
-                else { vote.endVotingNow(); sender.sendMessage("§aEnding the voting phase."); }
+                if (controller.phase() != Phase.VOTING) sender.sendMessage("§7Not in the voting phase.");
+                else { controller.endVoting(); sender.sendMessage("§aEnding the voting phase (chickens still settle)."); }
             }
             case "skipwait" -> {
-                if (vote.skipWait()) sender.sendMessage("§aSkipped the current vote phase.");
+                if (controller.skipWait()) sender.sendMessage("§aSkipped to the current result.");
                 else sender.sendMessage("§7Nothing to skip.");
+            }
+            case "simulate" -> {
+                int n = 200;
+                if (args.length > 1) {
+                    try { n = Math.max(1, Math.min(5000, Integer.parseInt(args[1]))); }
+                    catch (NumberFormatException ignored) { }
+                }
+                VoteSimulator.Summary s = VoteSimulator.run(n, 0xD0DE5EEDL);
+                sender.sendMessage("§bDome simulate §f" + n + " votes: " + s.describe());
             }
             case "tp" -> {
                 if (!(sender instanceof Player p)) return true;
-                boolean hub = args.length > 1 ? "hub".equalsIgnoreCase(args[1]) : HubStage.available();
-                if (hub && HubStage.available()) p.teleport(vote.hubArrival(rng));
-                else if (arena.ensureWorld() != null) p.teleport(arena.hubSpot(rng));
+                String where = args.length > 1 ? args[1].toLowerCase(Locale.ROOT) : "auto";
+                String part = args.length > 2 ? args[2].toLowerCase(Locale.ROOT) : "dial";
+                DomeSession session = controller.session();
+                if (session != null && session.venue() != null && session.venue().available()) {
+                    if ("pod".equals(part)) {
+                        TeamPod pod = null;
+                        for (TeamPod candidate : session.pods()) {
+                            if (candidate.members().contains(p.getUniqueId())) { pod = candidate; break; }
+                        }
+                        Location l = session.venue().podSpawn(pod == null ? 0 : pod.index());
+                        if (l != null) p.teleport(l);
+                    } else {
+                        Location l = session.venue().center();
+                        if (l != null) p.teleport(l.clone().add(0, 4, 0));
+                    }
+                    sender.sendMessage("§aTeleported to the active dome.");
+                    return true;
+                }
+                if (!"dome".equals(where) && McmLobby.venue() != null) {
+                    p.teleport(McmLobby.venue().interiorSpawn());
+                } else if (arena.ensureWorld() != null) {
+                    p.teleport(arena.hubSpot(rng));
+                }
             }
             default -> {
-                sender.sendMessage("§bDecision Dome: §f" + vote.state() + (vote.isTest() ? " (test)" : "")
-                        + " §7| provider registered: " + (McmApi.voteProvider() == vote));
-                sender.sendMessage("§7  stage: §f" + (vote.isActive() ? (vote.isHubMode() ? "MCC hub dome" : "fallback dome") : "-")
-                        + " §7| hub venue available: " + HubStage.available());
-                sender.sendMessage("§7/dome test [hub|dome] §f- demo vote  §7/dome end §f- end voting now  §7/dome skipwait §f- leader wins now  §7/dome cancel  §7/dome tp [hub|dome]");
+                sender.sendMessage("§bDecision Dome §7— " + controller.status());
+                sender.sendMessage("§7Venue: §f" + controller.venueDescription()
+                        + " §7| provider: " + (McmApi.voteProvider() == controller));
+                sender.sendMessage("§7/dome test [hub|dome] §8· §7end §8· §7skipwait §8· §7cancel §8· §7tp §8· §7simulate <n> §8· §7status");
             }
         }
         return true;
@@ -120,7 +177,7 @@ public final class DecisionDomePlugin extends JavaPlugin implements Listener {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
             List<String> out = new ArrayList<>();
-            for (String s : List.of("test", "end", "skipwait", "cancel", "status", "tp"))
+            for (String s : List.of("test", "end", "skipwait", "cancel", "status", "tp", "simulate"))
                 if (s.startsWith(args[0].toLowerCase(Locale.ROOT))) out.add(s);
             return out;
         }
@@ -129,80 +186,141 @@ public final class DecisionDomePlugin extends JavaPlugin implements Listener {
             for (String s : List.of("hub", "dome")) if (s.startsWith(args[1].toLowerCase(Locale.ROOT))) out.add(s);
             return out;
         }
+        if (args.length == 3 && "tp".equalsIgnoreCase(args[0])) {
+            List<String> out = new ArrayList<>();
+            for (String s : List.of("pod", "dial")) if (s.startsWith(args[2].toLowerCase(Locale.ROOT))) out.add(s);
+            return out;
+        }
         return List.of();
     }
 
-    // ---------------- rules inside mcc_dome ----------------
+    // ---------------------------------------------------------------------------------------------
+    // Interaction and rules
+    // ---------------------------------------------------------------------------------------------
 
-    /** The fallback dome world always; the MCC hub only while a vote runs there (the core owns the hub otherwise). */
-    private boolean inDome(org.bukkit.World w) {
-        return (arena != null && arena.isDomeWorld(w)) || (vote != null && vote.isHubMode() && vote.inStageWorld(w));
+    private DomeSession session() { return controller == null ? null : controller.session(); }
+
+    private boolean inVenue(World world) {
+        if (arena != null && arena.isDomeWorld(world)) return true;
+        DomeSession s = session();
+        return s != null && s.isVenueWorld(world);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onInteract(PlayerInteractEvent e) {
+        if (e.getHand() != EquipmentSlot.HAND) return;
+        ItemStack item = e.getItem();
+        if (item == null) return;
+        DomeSession s = session();
+        if (s == null) return;
+        if (e.getAction() == org.bukkit.event.block.Action.RIGHT_CLICK_AIR
+                || e.getAction() == org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK) {
+            if (s.tryThrowEgg(e.getPlayer(), item)) { e.setCancelled(true); return; }
+            if (s.usePowerUp(e.getPlayer(), item)) { e.setCancelled(true); }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onEggThrow(PlayerEggThrowEvent e) {
+        DomeSession s = session();
+        if (s != null && s.ownsProjectile(e.getEgg())) e.setHatching(false);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onProjectileHit(ProjectileHitEvent e) {
+        if (!(e.getEntity() instanceof Projectile projectile)) return;
+        DomeSession s = session();
+        if (s == null || !s.ownsProjectile(projectile)) return;
+        e.setCancelled(true);
+        s.handleEggHit(projectile, e);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onInteractEntity(PlayerInteractEntityEvent e) {
+        DomeSession s = session();
+        if (s != null && s.isVoteEntity(e.getRightClicked())) e.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDamage(EntityDamageEvent e) {
-        if (inDome(e.getEntity().getWorld())) e.setCancelled(true);
+        if (inVenue(e.getEntity().getWorld())) e.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onFood(FoodLevelChangeEvent e) {
-        if (inDome(e.getEntity().getWorld())) e.setCancelled(true);
+        if (inVenue(e.getEntity().getWorld())) e.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBreak(BlockBreakEvent e) {
-        if (inDome(e.getBlock().getWorld()) && !(e.getPlayer().getGameMode() == GameMode.CREATIVE && !vote.isActive()))
+        if (inVenue(e.getBlock().getWorld())
+                && !(e.getPlayer().getGameMode() == GameMode.CREATIVE && !controller.isActive())) {
             e.setCancelled(true);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlace(BlockPlaceEvent e) {
-        if (inDome(e.getBlock().getWorld()) && !(e.getPlayer().getGameMode() == GameMode.CREATIVE && !vote.isActive()))
+        if (inVenue(e.getBlock().getWorld())
+                && !(e.getPlayer().getGameMode() == GameMode.CREATIVE && !controller.isActive())) {
             e.setCancelled(true);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onHanging(HangingBreakEvent e) {
-        if (inDome(e.getEntity().getWorld())) e.setCancelled(true);
+        if (inVenue(e.getEntity().getWorld())) e.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDrop(PlayerDropItemEvent e) {
-        if (inDome(e.getPlayer().getWorld()) && vote.isActive()) e.setCancelled(true);
+        if (controller.isActive() && inVenue(e.getPlayer().getWorld())) e.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBucket(PlayerBucketEmptyEvent e) {
-        if (inDome(e.getPlayer().getWorld())) e.setCancelled(true);
+        if (inVenue(e.getPlayer().getWorld())) e.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onBucketFill(PlayerBucketFillEvent e) {
+        if (inVenue(e.getPlayer().getWorld())) e.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onMove(PlayerMoveEvent e) {
         Location to = e.getTo();
-        if (!inDome(to.getWorld())) return;
-        boolean hub = vote.isHubMode() && vote.inStageWorld(to.getWorld());
-        double limit = hub ? vote.stage().voidY() : arena.floorY() - 6;
-        if (to.getY() < limit) {
-            e.getPlayer().setFallDistance(0f);
-            e.getPlayer().teleport(hub ? vote.stage().arrival(rng) : arena.hubSpot(rng));
+        if (to == null || !inVenue(to.getWorld())) return;
+        DomeSession s = session();
+        if (s == null) return;
+        if (to.getY() < s.venue().geometry().floorY() - 8) {
+            TeamPod pod = null;
+            for (TeamPod candidate : s.pods()) {
+                if (candidate.members().contains(e.getPlayer().getUniqueId())) { pod = candidate; break; }
+            }
+            Location back = s.venue().podSpawn(pod == null ? 0 : pod.index());
+            if (back != null) {
+                e.getPlayer().setFallDistance(0f);
+                e.getPlayer().teleport(back);
+            }
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerJoinEvent e) {
-        if (vote != null) vote.onJoin(e.getPlayer());
+        DomeSession s = session();
+        if (s != null) s.onJoin(e.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent e) {
-        if (vote != null) vote.onQuit(e.getPlayer());
+        DomeSession s = session();
+        if (s != null) s.onQuit(e.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onRespawn(PlayerRespawnEvent e) {
-        if (vote != null && vote.isActive() && vote.stage() != null && vote.stage().world() != null) {
-            Player p = e.getPlayer();
-            Bukkit.getScheduler().runTaskLater(this, () -> { if (vote.isActive() && p.isOnline()) vote.bringIn(p); }, 2L);
-        }
+        DomeSession s = session();
+        if (s != null) s.onRespawn(e.getPlayer());
     }
 }

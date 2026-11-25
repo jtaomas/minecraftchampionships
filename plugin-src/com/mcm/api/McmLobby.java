@@ -51,6 +51,58 @@ public final class McmLobby {
         void showCountdown(int seconds);
         /** Spectator spots in the stands (for ceremonies). */
         List<Location> standSpots();
+
+        // -------------------------------------------------------------------------------------
+        // Venue v2 (Decision Dome rebuild). Defaults keep every v1 venue working.
+        // -------------------------------------------------------------------------------------
+
+        /** 1 = original pads, 2 = dial + pods + dividers + reveal. */
+        default int apiVersion() { return 1; }
+
+        /** Number of live wedges: 8 (45 degrees) or 6 (60 degrees). */
+        default int dialCapacity() { return padCount(); }
+
+        /** Reconfigure the dial to 8 or 6 games. No-op in v1 venues. */
+        default void setDial(int games) { }
+
+        /** Centre of wedge i (the floor area where chickens gather). */
+        default Location wedgeCenter(int i) { return padCenter(i); }
+
+        /** Outer radius of a wedge. */
+        default double wedgeRadius() { return padRadius(); }
+
+        /** Recolour/re-light a wedge; the v1 implementation forwards to the pad. */
+        default void setWedge(int i, DyeColor color, boolean lit) { setPad(i, color, lit); }
+
+        /** Number of team pods. Ten in the reference; solos share/are grouped by the provider. */
+        default int podCount() { return 10; }
+
+        /** Spawn point inside pod i, facing the dial. */
+        default Location podSpawn(int i) { return interiorSpawn(); }
+
+        /** Open/close a pod gate. */
+        default void setPodGate(int i, boolean open) { }
+
+        /** Optional visual pod state: "normal", "caged", "dunked", "frozen", "invaded". */
+        default void setPodState(int i, String state) { }
+
+        /** 0 = flush floor seam, 1 = fully raised dividers. */
+        default void setDividers(double progress) { }
+
+        /** Clear per-vote labels, overlays and divider/pod state; keep the permanent build. */
+        default void clearRuntime() { resetPads(); }
+
+        /** Reveal the winning wedge (label, light, podium surface). */
+        default void revealWedge(int i, String gameId) { }
+
+        /** Bumped whenever the permanent venue geometry changes; the provider can invalidate caches. */
+        default int dialGeneration() { return 0; }
+
+        /** Reveal surface index 0..3 (cube faces/screens), or the podium for v1. */
+        default Location revealSurface(int face) { return revealPodium(); }
+
+        /** Interior clock/timer anchor (above the reveal podium). */
+        default Location interiorClock() { return interiorTimer(); }
     }
 
     /** Implemented by the core. */
