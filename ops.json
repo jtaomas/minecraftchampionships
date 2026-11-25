@@ -10,5 +10,11 @@
     "name": "Vortorix",
     "level": 4,
     "bypassesPlayerLimit": false
+  },
+  {
+    "uuid": "74771901-6620-4a4e-937e-4a73189c6f80",
+    "name": "aFein",
+    "level": 4,
+    "bypassesPlayerLimit": false
   }
 ]
