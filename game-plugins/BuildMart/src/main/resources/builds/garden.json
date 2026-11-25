@@ -1,0 +1,28 @@
+{
+  "id": "garden",
+  "name": "Garden",
+  "debut": "MCC 3",
+  "stars": 2,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Garden.png",
+  "floor": ["ggggggg","ggggggg","ggggggg","ggggggg","ggggggg","ggggggg","ggggggg"],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "f": "minecraft:spruce_fence",
+    "l": "minecraft:dark_oak_log[axis=y]",
+    "e": "minecraft:dark_oak_leaves[persistent=true]",
+    "x": "minecraft:oxeye_daisy",
+    "y": "minecraft:dandelion",
+    "v": "minecraft:lily_of_the_valley"
+  },
+  "layers": [
+    [".......", ".l.....", ".fffff.", ".fxyvf.", ".fvxyf.", ".fffff.", "......."],
+    [".......", ".l.....", ".......", ".......", ".......", ".......", "......."],
+    [".......", ".ee....", ".......", ".......", ".......", ".......", "......."]
+  ],
+  "guessed": [
+    "fenced flower bed read as a 5x4 fence ring (cols 1-5, rows 2-5); exact size estimated",
+    "flowers inside are mostly hidden: white/yellow flowers filled with oxeye daisy, dandelion, lily of the valley",
+    "fence wood read as spruce; tree log read as dark oak, 2 tall with 2 leaves on top",
+    "lighter floor patches ignored (all grass_block)"
+  ]
+}

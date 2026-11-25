@@ -36,3 +36,6 @@ plugins/McmRocketSpleef/imported-arenas/
 plugins/McmSurvivalGames/worlds/
 mcc_hg_*/
 game-plugins/*/previews/imported/
+
+# Private reference archive (2.94 GB, not for redistribution)
+game-plugins/research/mcc_archive/

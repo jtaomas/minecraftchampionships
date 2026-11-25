@@ -17,6 +17,6 @@ public final class VoidGenerator extends ChunkGenerator {
 
     @Override
     public Location getFixedSpawnLocation(World world, Random random) {
-        return new Location(world, 0.5, Arena.FLOOR_Y + 1, 0.5);
+        return new Location(world, 0.5, Arena.RIM_Y + 1, -(Arena.WALL_Z + 2) + 0.5);
     }
 }

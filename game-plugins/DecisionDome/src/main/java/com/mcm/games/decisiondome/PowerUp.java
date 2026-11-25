@@ -50,6 +50,12 @@ public final class PowerUp {
     public void cancel() { this.state = State.CANCELLED; this.charges = 0; }
 
     /** Consume one charge; returns true when a charge was actually spent. */
+    /** Give back a charge that was spent on a power-up that found nothing to act on. */
+    public void refund() {
+        charges++;
+        if (state == State.USED) state = State.AVAILABLE;
+    }
+
     public boolean spend() {
         if (charges <= 0) return false;
         charges--;

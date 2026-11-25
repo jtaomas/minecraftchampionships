@@ -17,8 +17,13 @@ public final class HubGenerator {
      *     no floating carpets, walkable stair aisles in the dome bowl.
      * v3: blended flatten zones (no 3-block cliff on the rainbow path), graded paths with stair steps, canopy
      *     trimmed over paths, the harbour rebuilt as a natural cove (HubHarbour).
+     * v4: Nocturne Orrery exterior and bowl, ten team pods, 8/6-wedge dial, brass orrery reveal.
+     * v5: Decision Dome interior: ten tall team cage towers, white-quartz dial on a floating shadow ring, a
+     *     gold/white/yellow crown truss in place of the orrery, white concourse and warm team lighting.
+     * v6: the downloaded Decision Dome recreation placed 1:1 inside our shell (pit, ten team cages, dial, crown),
+     *     joined by a paved ring with two low tiers; the red-carpet corridor runs from the tunnel onto its terrace.
      */
-    public static final int VERSION = 3;
+    public static final int VERSION = 6;
     static final int SEA = HubLayout.SEA;
     static final int OCEAN = 330;      // ocean half-extent
     static final int ISLAND_R = 172;   // nominal coast radius

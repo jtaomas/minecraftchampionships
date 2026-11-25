@@ -4,3 +4,11 @@ main: com.mcm.games.parkourtag.ParkourTagPlugin
 api-version: '1.21'
 depend: [MinecraftMondayCore]
 description: Parkour Tag minigame for MinecraftMondayCore
+commands:
+  parkourtag:
+    description: Parkour Tag admin tools (status, hunt counts)
+    usage: /parkourtag status | hunts <player> <n>
+    permission: mcm.parkourtag.admin
+permissions:
+  mcm.parkourtag.admin:
+    default: op

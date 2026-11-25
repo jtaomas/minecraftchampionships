@@ -1,0 +1,43 @@
+Race: Frozen Canal - validation report (in-game seed of each map)
+
+=== frozen_canal ===
+  133404 blocks, 55 block types, generated in 1278 ms, bounds x -119..213 y -8..51 z -51..212, scenery share 48%
+  ok    inside the contract box (x/z -250..250, y -60..180)
+  ok    material richness: 55 block types (>= 25)
+  ok    every block inside playBounds x/z (spectators can see it all)
+  ok    contract check (TgMapData.check): clean
+  ok    no concrete of any colour in blocks or variants (0); reserved team colours: white,orange,magenta,light_blue,yellow,lime,pink,cyan,purple,blue,green,red
+  ok    start holds 40 players (40 inside the strip, 40 on solid floor with headroom, closest pair 2.05 apart)
+        start strip 42 x 9 (x -21..20, z 0..8), barrier 126 blocks, drop floor 0 blocks
+  ok    every barrier / drop-floor position holds a real block (0 missing)
+  ok    connection post-pass: 1271 fence/pane/wall/bar states set, 1492 leaves, 0 unsupported carpets dropped; re-run changes 0
+  ok    staircase helper: 6 flights (20 columns) walked bottom to top
+  ok    12 goal chicken spawns inside the pen 23 x 1
+  ok    finish row: 12 chickens in one row 23 wide (pen 23 x 1), spacing 2.0..2.0, 12/12 with a standing cell in front, 12/12 in sight from 8 blocks out (owner, feedback 3: the ending is a whole row of chickens)
+  --    no decoy chickens on this map
+  ok    landmark visible from the start: 10 of 10 sampled spawn eyes see it (ray-cast)
+  ok    features: 1 mover, 2 toggles, 6 bonus regions on the lane (6 ok: hairpin kerbs orange, causeway gate red, blue stripe orange), 5 checkpoints + 2 depots (7/7 boat spawns on ice with headroom)
+        Blue Mile pendulum: 63 edge lane cells (|d| >= 4.9) hit at no phase (0 hit), 12/84 middle cells swept, 0 display cells inside blocks over a period
+        causeway lock gate: 2 frames, period 4.5 s, 10 cells (10 on the lane), frame 0 = the built map (10/10), 5 indicator blocks warn 1.0 s before
+        Blue Mile slush: 2 frames, period 7.0 s, 100 cells (100 on the lane), frame 0 = the built map (100/100), 4 indicator blocks warn 1.0 s before
+  ok    40 boat spawns (40 on ice inside the start lock with headroom), closest pair 2.05 apart (boat is 1.375 wide)
+  course: main (safe) centre line 1117 blocks, causeway 133 (replaces 161 of ring) -> fast centre line 1089; ice y 0 -> -6; 16968 lane columns
+  segments: 1 Grid Straight 88; 2 Mill Hairpin 49; 3 Weavers' Chicane 142; 4 Cellar Hairpin 47; 5 Cellar Steps 63; 6 Fish Market split 165; 7 Brewery Bend 43; 8 Blue Mile 168; 9 Bell Switchbacks 87; 10 Tannery Sweeper 154; 11 Lantern Bend 35; 12 Barge Basin + finish straight 76;
+  ok    boat continuity: start lock -> dock reachable downhill only (16968 lane columns reachable)
+  ok    no trap pockets: every reachable lane cell can still reach the dock (0 trap cells)
+  ok    unreachable lane cells: 0
+  ok    walls: every reachable lane edge is a full block at boat height (0 open edges)
+  ok    no snags: no fence / slab / stair / lantern / wall post at boat height next to the lane (0)
+  ok    elevation: every drop is <= 1 block (0 bigger), downhill only; 205 up-lips (step faces seen from below and the causeway's open edges - boats can't climb them, by design)
+  ok    lane width: 93% of the main line is >= 11 wide (BDC rule: >= 70%), narrowest 9 at s 820; causeway 5 wide (blue ice, open edges)
+  ok    7 bridges, headroom over the lane centre (blocks): s36:2 s68:2 s355:4 s632:5 s682:5 s732:5 s809:7 (2 = low footbridge: boat fits, a standing player can't hop up)
+  ok    on foot: no way out of the canal onto the town before the finish (0 reachable town cells outside the finish zone; jump model: gap <= 4 level, <= 3 with +1)
+  ok    FOOT FAST  stage -> Dock Stairs (3 wide) -> jetty (3 wide) -> pen: 51 blocks on foot, 1 jumps, est. 8.8 s (expert pace)
+  ok    FOOT SAFE  stage -> side flight (4 wide) -> quay -> east bridge (5 wide) -> pen: 56 blocks on foot, 1 jumps, est. 9.5 s (expert pace)
+  ok    knocked off the jetty onto the mere ice: back to the pen via the skaters' steps in 7.3 s (expert pace)
+  ok    SAFE  boats: middle lines, the walled Fish Market ring, wide barge gaps: 1103 blocks, 6 drops, 0 slush / 243 blue-ice cells, narrowest 3, longest featureless stretch 178 (ends at 124,198), est. 47.0 s (avg 23 b/s)
+  ok    FAST  boats: inside kerbs, the raised causeway, blue stripe, 3-wide barge gaps: 1061 blocks, 6 drops, 0 slush / 428 blue-ice cells, narrowest 3, longest featureless stretch 165 (ends at 120,199), est. 40.8 s (avg 26 b/s)
+  ok    expert totals (boat + 1 s dismount + on foot): FAST 51 s, SAFE 57 s (fast saves 12%)
+  time profile [D]: expert 51-57 s; median (safe line, ~1.5x boat time for wall hits / pile-ups / bad hairpins, + 8 s stairs+jetty crowd) ~89 s; weak players who wall-slam every hairpin or fall off the causeway or jetty repeatedly are cut off by the time skip (half finished -> 20 s left; round 300 s)
+  RESULT: all checks passed
+

@@ -1,0 +1,25 @@
+{
+  "id": "mine",
+  "name": "Mine",
+  "debut": "MCC 3",
+  "stars": 2,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Mine.png",
+  "floor": ["sssssss","sssssss","sssssss","sssssss","scsssss","sccssss","ssscsss"],
+  "palette": {
+    "s": "minecraft:stone",
+    "c": "minecraft:coal_ore",
+    "f": "minecraft:oak_fence",
+    "p": "minecraft:oak_planks"
+  },
+  "layers": [
+    [".......", "..s....", ".sf.f..", ".......", "..f.fs.", ".....s.", "......."],
+    [".......", ".......", "..f.f..", ".......", "..f.f..", ".......", "......."],
+    [".......", ".......", "..f.f..", ".......", "..f.f..", ".......", "......."],
+    [".......", ".......", "..ppp..", "..ppp..", "..ppp..", ".......", "......."]
+  ],
+  "guessed": [
+    "roof read as a 3x3 oak plank slab on four oak fence posts (cols 2/4, rows 2/4); depth of the roof estimated",
+    "coal ore spots in the floor placed approximately from the dark patches front-left",
+    "stone boulders: left pair at (row2,col1)+(row1,col2), right pair at (row4,col5)+(row5,col5); exact depth estimated"
+  ]
+}

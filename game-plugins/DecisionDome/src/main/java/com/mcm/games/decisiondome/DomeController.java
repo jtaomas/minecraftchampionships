@@ -71,11 +71,16 @@ final class DomeController implements McmVoteProvider {
 
     /** Demo vote with no result callback. Returns false if a championship vote is already running. */
     boolean startTest(List<String> ids, boolean preferHub) {
+        return startTest(ids, preferHub, null);
+    }
+
+    /** Demo vote with an optional result callback (used by the viewing-mode game entry). */
+    boolean startTest(List<String> ids, boolean preferHub, Consumer<String> onFinished) {
         if (active != null && active.running() && !active.testMode()) return false;
         if (active != null) active.abort();
         McmVoteRequest request = new McmVoteRequest(ids, syntheticTeams(), 1, true, false,
                 settings.dialCapacity);
-        begin(request, null, true, preferHub);
+        begin(request, onFinished, true, preferHub);
         return true;
     }
 
@@ -158,6 +163,20 @@ final class DomeController implements McmVoteProvider {
         if (s == null) { stopTaskIfIdle(); return; }
         s.tickSafe();
         if (active == null) stopTaskIfIdle();
+    }
+
+    /** The dial of the last championship vote, so the next vote keeps every game in its slot. */
+    private List<String> lastBoard;
+    private int lastBoardEvent = -1;
+
+    List<String> rememberedBoard(int eventIndex, int capacity) {
+        if (eventIndex <= 1 || lastBoard == null || lastBoardEvent != eventIndex - 1 || lastBoard.size() != capacity) return null;
+        return new java.util.ArrayList<>(lastBoard);
+    }
+
+    void rememberBoard(List<String> layout, int eventIndex) {
+        lastBoard = layout == null ? null : new java.util.ArrayList<>(layout);
+        lastBoardEvent = eventIndex;
     }
 
     void sessionFinished(DomeSession session) {

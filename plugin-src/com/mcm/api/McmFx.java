@@ -57,6 +57,14 @@ public final class McmFx {
     // Titles, action bars, sounds
     // =====================================================================================
 
+    /** MCC's HUD font from the server pack ({@code mcc:hud}); titles and action bars use it for players who have the pack. */
+    public static final net.kyori.adventure.key.Key HUD_FONT = net.kyori.adventure.key.Key.key("mcc", "hud");
+
+    /** The component in MCC's HUD font when this player has the server pack, unchanged otherwise. */
+    public static Component hudFont(Player p, Component c) {
+        return hasPack(p) && c != null ? c.font(HUD_FONT) : c;
+    }
+
     /** Converts a legacy section-sign string to an Adventure component (null-safe). */
     public static Component text(String legacy) {
         return LEGACY.deserialize(legacy == null ? "" : legacy);
@@ -67,7 +75,7 @@ public final class McmFx {
      */
     public static void title(Player p, String title, String subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
         if (p == null || !p.isOnline()) return;
-        p.showTitle(Title.title(text(title), text(subtitle), Title.Times.times(
+        p.showTitle(Title.title(hudFont(p, text(title)), hudFont(p, text(subtitle)), Title.Times.times(
                 Duration.ofMillis(Math.max(0, fadeInTicks) * 50L),
                 Duration.ofMillis(Math.max(0, stayTicks) * 50L),
                 Duration.ofMillis(Math.max(0, fadeOutTicks) * 50L))));
@@ -98,7 +106,7 @@ public final class McmFx {
     /** Sends an action-bar message to one player. */
     public static void actionBar(Player p, String message) {
         if (p == null || !p.isOnline()) return;
-        p.sendActionBar(text(message));
+        p.sendActionBar(hudFont(p, text(message)));
     }
 
     /** Sends an action-bar message to every player in the collection. */
@@ -114,6 +122,30 @@ public final class McmFx {
     }
 
     /** Plays a sound to one player at their own position (only they hear it). */
+    // ---- server resource pack sounds (keys "mcc.*" from the Block Showdown pack) ----
+    private static final java.util.Set<java.util.UUID> PACK = java.util.concurrent.ConcurrentHashMap.newKeySet();
+
+    /** Core only: records whether this player's client has the server pack loaded. */
+    public static void packLoaded(java.util.UUID id, boolean loaded) { if (loaded) PACK.add(id); else PACK.remove(id); }
+
+    /** True when the player's client has the server resource pack (so "mcc.*" sounds are audible). */
+    public static boolean hasPack(Player p) { return p != null && PACK.contains(p.getUniqueId()); }
+
+    /** Plays a pack sound (e.g. "mcc.go") to one player if they have the pack. Returns false if they do not. */
+    public static boolean packSound(Player p, String key, float volume, float pitch) {
+        if (!hasPack(p) || !p.isOnline()) return false;
+        p.playSound(p.getLocation(), "minecraft:" + key, org.bukkit.SoundCategory.MASTER, volume, pitch);
+        return true;
+    }
+
+    /** Pack sound for those who have the pack; everyone else is returned so the caller can play a vanilla fallback. */
+    public static List<Player> packSound(Collection<? extends Player> players, String key, float volume, float pitch) {
+        List<Player> without = new ArrayList<>();
+        if (players == null) return without;
+        for (Player p : players) if (!packSound(p, key, volume, pitch)) without.add(p);
+        return without;
+    }
+
     public static void sound(Player p, Sound sound, float volume, float pitch) {
         if (p == null || sound == null || !p.isOnline()) return;
         p.playSound(p.getLocation(), sound, volume, pitch);
@@ -196,8 +228,9 @@ public final class McmFx {
                 ChatColor c = n == 1 ? ChatColor.GREEN : n == 2 ? ChatColor.YELLOW : n == 3 ? ChatColor.RED : ChatColor.AQUA;
                 title(online, c + "" + ChatColor.BOLD + n, sub, 0, 18, 4);
                 float pitch = (float) Math.max(0.5, Math.min(2.0, 1.4 - 0.2 * (n - 1)));
-                sound(online, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, pitch);
-                sound(online, Sound.BLOCK_NOTE_BLOCK_HAT, 0.6f, pitch);
+                List<Player> plain = n <= 3 ? packSound(online, "mcc.countdown", 1f, 1f) : online;
+                sound(plain, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, pitch);
+                sound(plain, Sound.BLOCK_NOTE_BLOCK_HAT, 0.6f, pitch);
                 n--;
                 return;
             }
@@ -223,9 +256,10 @@ public final class McmFx {
             try { cancel(); } catch (IllegalStateException ignored) {}
             List<Player> online = online();
             title(online, ChatColor.GREEN + "" + ChatColor.BOLD + "GO!", "", 0, 20, 10);
-            sound(online, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 2f);
-            sound(online, Sound.ENTITY_PLAYER_LEVELUP, 0.8f, 1.2f);
-            sound(online, Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, 0.8f, 1f);
+            List<Player> plain = packSound(online, "mcc.go", 1f, 1f);
+            sound(plain, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 2f);
+            sound(plain, Sound.ENTITY_PLAYER_LEVELUP, 0.8f, 1.2f);
+            sound(plain, Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, 0.8f, 1f);
             safeRun(plugin, onGo, "countdown onGo");
         }
     }
@@ -318,7 +352,7 @@ public final class McmFx {
         final List<Player> list = winners == null ? new ArrayList<>() : new ArrayList<>(winners);
         final Map<UUID, World> startWorld = new java.util.HashMap<>();
         for (Player p : list) startWorld.put(p.getUniqueId(), p.getWorld());
-        sound(list, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
+        sound(packSound(list, "mcc.victory.win", 0.5f, 1f), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.4f, 1f);   // owner: end sound too loud
         final int celebrateTicks = Waits.ticks(100);
         final Color[] bright = {Color.fromRGB(0xFFD24A), Color.fromRGB(0xFF3B3B), Color.fromRGB(0x5FD8FF),
                 Color.fromRGB(0x7CFF3B), Color.fromRGB(0xFF6FD8), Color.fromRGB(0xB86BFF)};
@@ -520,11 +554,13 @@ public final class McmFx {
         title(victim, ChatColor.RED + "" + ChatColor.BOLD + "ELIMINATED",
                 killerOrNull != null && !killerOrNull.equals(victim) ? ChatColor.GRAY + "by " + coloredName(ctx, killerOrNull) : "",
                 0, 40, 15);
-        sound(victim, Sound.ENTITY_ITEM_BREAK, 1f, 0.6f);
-        sound(victim, Sound.ENTITY_PLAYER_HURT, 0.8f, 0.8f);
+        if (!packSound(victim, "mcc.death", 1f, 1f)) {
+            sound(victim, Sound.ENTITY_ITEM_BREAK, 1f, 0.6f);
+            sound(victim, Sound.ENTITY_PLAYER_HURT, 0.8f, 0.8f);
+        }
         if (killerOrNull != null && !killerOrNull.equals(victim)) {
             actionBar(killerOrNull, ChatColor.GOLD + "⚔ Eliminated " + v);
-            sound(killerOrNull, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.6f);
+            if (!packSound(killerOrNull, "mcc.ui.score", 0.9f, 1f)) sound(killerOrNull, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.6f);
             sound(killerOrNull, Sound.ENTITY_ARROW_HIT_PLAYER, 0.7f, 1.2f);
         }
         burst(victim.getLocation().add(0, 1, 0), colorOf(sideColor(ctx, sideKeyOf(ctx, victim))), 40);
@@ -567,7 +603,7 @@ public final class McmFx {
      *
      * @param sideKeysInOrder side keys, best first ("TEAM:Red", "SOLO:&lt;uuid&gt;")
      * @param details         optional text per place (same order, may be shorter or null), shown after the
-     *                        label, e.g. "+85 pts"
+     *                        label, e.g. "+85 coins"
      */
     public static BukkitTask placementReveal(Plugin plugin, McmGameContext ctx, List<String> sideKeysInOrder, List<String> details, Runnable after) {
         final List<String> keys = new ArrayList<>();
@@ -606,8 +642,9 @@ public final class McmFx {
         if (Waits.fast()) title(all, head, label + d, 2, place == 0 ? 16 : 8, 2);
         else title(all, head, label + d, 5, place == 0 ? 70 : 40, 10);
         if (place == 0) {
-            sound(all, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
-            sound(all, Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
+            List<Player> plainAll = packSound(all, "mcc.victory.big_success", 0.5f, 1f);   // owner: end sound too loud
+            sound(plainAll, Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.4f, 1f);
+            sound(plainAll, Sound.ENTITY_PLAYER_LEVELUP, 0.4f, 1f);
             List<Player> winners = playersOfSide(ctx, key);
             Color c = colorOf(sideColor(ctx, key));
             for (Player w : winners) teamFirework(w.getLocation().add(0, 2.5, 0), c, true);

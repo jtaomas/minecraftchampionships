@@ -18,3 +18,12 @@ kit-seconds: 15
 fight-seconds: 0
 end-seconds: 5
 max-rounds: 9
+
+# MCC coins (base x1.0; the core applies the event multiplier). Source: MCC wiki, Battle Box "Coin Rewards"
+# (https://mcchampionship.fandom.com/wiki/Battle_Box; research/mcc_archive/battle_box/bb-2/notes.md). See game-plugins/COINS.md.
+# Team pools are shared: each member gets the MCC per-member share (pool / 4), e.g. 40 for a round win.
+coins:
+  elimination: 15          # MCC: per personal elimination
+  round-win: 160           # MCC: team pool for capturing the centre or holding the most centre blocks at time-out
+  draw: 60                 # MCC: team pool to both teams on a draw
+  bye: 60                  # OURS: MCC never has byes; a bye round pays like a draw

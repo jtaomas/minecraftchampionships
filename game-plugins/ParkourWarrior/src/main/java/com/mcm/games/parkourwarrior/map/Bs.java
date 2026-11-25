@@ -114,6 +114,18 @@ final class Bs {
                 if (v.equals("x")) v = "z"; else if (v.equals("z")) v = "x";
             } else if (kv[0].equals("rotation")) {
                 try { v = String.valueOf((Integer.parseInt(v) + 4 * q) % 16); } catch (NumberFormatException ignored) { }
+            } else if (kv[0].equals("shape")) {
+                // rails: straight, ascending and corner shapes (stairs shapes are relative and stay)
+                if ((q & 1) == 1 && v.equals("north_south")) v = "east_west";
+                else if ((q & 1) == 1 && v.equals("east_west")) v = "north_south";
+                else if (v.startsWith("ascending_") && dirIndex(v.substring(10)) >= 0) v = "ascending_" + DIRS[(dirIndex(v.substring(10)) + q) & 3];
+                else {
+                    String[] two = v.split("_");
+                    if (two.length == 2 && dirIndex(two[0]) >= 0 && dirIndex(two[1]) >= 0) {
+                        String a = DIRS[(dirIndex(two[0]) + q) & 3], c = DIRS[(dirIndex(two[1]) + q) & 3];
+                        v = (a.equals("north") || a.equals("south")) ? a + "_" + c : c + "_" + a;
+                    }
+                }
             }
             if (i > 0) out.append(',');
             out.append(k).append('=').append(v);

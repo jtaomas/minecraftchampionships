@@ -16,12 +16,12 @@ border:
   final-radius: 16
   deathmatch-radius: 22
 
-scoring:
-  kill-points: 10
-  survival-per-elimination: 1
-  airdrop-team-points: 24
-  placement-1st: 40
-  placement-2nd: 30
-  placement-3rd: 22
-  placement-4th: 16
-  placement-5th: 12
+# MCC coins (base x1.0; the core applies the event multiplier). Source: MCC wiki, Survival Games "Coin Rewards"
+# (https://mcchampionship.fandom.com/wiki/Survival_Games; research/mcc_archive/survival_games). See game-plugins/COINS.md.
+# Team pools are shared amongst the team: each member gets the MCC per-member share (pool / 4).
+coins:
+  kill: 65                 # MCC: personal elimination
+  outlive: 3               # MCC: every time another player is eliminated and you are still alive
+  airdrop: 180             # MCC: team pool for breaking open an airdrop crate
+  # MCC team placement by how long the team survived: 1st 650 ... 10th 330 (later teams get the last value)
+  placement: [650, 600, 560, 520, 480, 450, 420, 390, 360, 330]

@@ -1,0 +1,8 @@
+# McmFootRace settings.
+# MCC coins (base x1.0; the core applies the event multiplier). Foot Race was in MCC 1-6; values from the MCC wiki
+# (https://mcchampionship.fandom.com/wiki/Foot_Race, "Coin Rewards"). See game-plugins/COINS.md.
+coins:
+  finish-first: 500        # MCC: the 1st player to finish both laps
+  finish-step: 12.5        # MCC: 12.5 less for every later finisher (487.5, 475, ...)
+  finish-minimum: 0        # MCC: no floor
+  lap: 0                   # MCC: nothing per lap. No coins if you don't finish.

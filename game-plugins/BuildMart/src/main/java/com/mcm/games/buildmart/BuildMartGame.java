@@ -7,191 +7,177 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.Container;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Leaves;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.*;
+import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Transformation;
-import org.bukkit.util.Vector;
-import org.joml.AxisAngle4f;
-import org.joml.Vector3f;
+import org.bukkit.util.RayTraceResult;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.*;
 import java.util.logging.Level;
 
 /**
- * Build Mart: every side gets a plot and a pedestal showing a small target build. Gather the exact
- * blocks at the central mart (regenerating stalls + shop counters) and copy the build on your plot.
+ * Big Sales at Build Mart, Classic Mall version (MCC 3 to 13).
+ *
+ * Old rules (MCC 13 tutorial, bm-1/frames/021550..021640): 12 minutes; each team has a private build zone with templates
+ * of THREE builds to copy on the neighbouring plots; as you complete builds new ones spawn; run or ride your trolley through
+ * Build Mart to collect resources and bring them back through the portal; falling in a hole loses everything you carry.
+ * Scoring (021640): each build is worth 30 coins per player to begin with and 2 less every time a team completes it; at the
+ * very end the % of your unfinished builds you filled in is paid too. These are the real MCC coins (config coins.*,
+ * game-plugins/COINS.md); the core applies the event multiplier.
  */
-public final class BuildMartGame implements McmGame, Listener {
+public final class BuildMartGame implements McmGame, Listener, CommandExecutor {
     static final String WORLD = "mcc_buildmart";
-    private static final int FLOOR_Y = 64;
-    private static final int GAME_SECONDS = 480;
-    private static final int PREGAME_SECONDS = 10;
-    private static final int NORMAL_REGEN_TICKS = 60;
-    private static final int SALE_REGEN_TICKS = 10;
-    private static final int SALE_EVERY = 75;
-    private static final int SALE_LENGTH = 40;
-    private static final int VOID_Y = 45;
-    // Mart bounds (floor)
-    private static final int MART_X = 25, MART_Z = 13;
+    static final String ENT_TAG = "bm_ent";
 
-    private static final Material[] RAW_STALLS = {
-            Material.OAK_PLANKS, Material.OAK_LOG, Material.SPRUCE_PLANKS, Material.BIRCH_PLANKS,
-            Material.COBBLESTONE, Material.SAND, Material.CLAY, Material.IRON_BLOCK, Material.GLOWSTONE,
-            Material.QUARTZ_BLOCK, Material.SANDSTONE, Material.SNOW_BLOCK,
-            Material.WHITE_WOOL, Material.RED_WOOL, Material.ORANGE_WOOL, Material.YELLOW_WOOL,
-            Material.LIME_WOOL, Material.GREEN_WOOL, Material.LIGHT_BLUE_WOOL, Material.BLUE_WOOL,
-            Material.BLACK_WOOL, Material.PINK_WOOL, Material.BROWN_WOOL,
-            Material.OAK_LEAVES, Material.PUMPKIN, Material.HAY_BLOCK, Material.MELON
-    };
-
-    private static final Material[] SOLO_COLORS = {
-            Material.WHITE_CONCRETE, Material.LIGHT_GRAY_CONCRETE, Material.BROWN_CONCRETE, Material.MAGENTA_CONCRETE,
-            Material.CYAN_CONCRETE, Material.ORANGE_CONCRETE, Material.LIME_CONCRETE, Material.PINK_CONCRETE,
-            Material.LIGHT_BLUE_CONCRETE, Material.YELLOW_CONCRETE, Material.PURPLE_CONCRETE, Material.GREEN_CONCRETE
-    };
-
-    // ---------------------------------------------------------------- model
-
-    private static final class Stall {
-        final Material material;
-        final int x0, z0, height;
-        final TextDisplay[] label = new TextDisplay[1];
-        long saleUntilTick = -1;
-        Stall(Material material, int x0, int z0, int height) { this.material = material; this.x0 = x0; this.z0 = z0; this.height = height; }
-    }
-
-    private record Cost(Material material, int amount) {}
-
-    private static final class Shop {
-        final String name;
-        final List<Cost> costs;
-        final Material product;
-        final int productAmount;
-        Shop(String name, Material product, int productAmount, Cost... costs) {
-            this.name = name; this.product = product; this.productAmount = productAmount; this.costs = List.of(costs);
-        }
-    }
-
-    private static final class Regen {
-        final int x, y, z; final Material material; final long due;
-        Regen(int x, int y, int z, Material material, long due) { this.x = x; this.y = y; this.z = z; this.material = material; this.due = due; }
-    }
-
-    private static final class Area {
-        final String side;
-        final int cx, cz;
-        final int plotX, plotZ, tgtX, tgtZ;
-        final Material color;
-        Location spawn;
-        int seqIndex;
-        int completed;
-        long buildStartTick;
-        int lastCorrect, lastNeeded, lastWrong;
-        TextDisplay targetLabel, plotLabel;
-        Area(String side, int cx, int cz, Material color) {
-            this.side = side; this.cx = cx; this.cz = cz; this.color = color;
-            plotX = cx - 7; plotZ = cz - 2;
-            tgtX = cx + 3; tgtZ = cz - 2;
-        }
-    }
+    // ---------------------------------------------------------------- config
+    private int gameSeconds, pregameSeconds, regrowTicks, coinBase, coinDecay, coinMin;
+    private boolean bookEnabled, fast;
 
     // ---------------------------------------------------------------- state
-
-    private final JavaPlugin plugin;
-    private final NamespacedKey toolKey;
+    final JavaPlugin plugin;
+    final NamespacedKey kitKey, bookKey;
     private final Random random = new Random();
+    private List<BuildDef> builds = new ArrayList<>();
+    private World world;
+    private MallMap map;
+    final Trolley trolley;
 
     private McmGameContext ctx;
-    private World world;
-    private boolean running;   // our listeners are active
-    private boolean playing;   // building/gathering allowed
+    private boolean running, playing;
     private BukkitTask task;
     private long tick;
-    private int secondsLeft;
-    private int pregameLeft;
-
-    private final List<int[]> arenaBlocks = new ArrayList<>();
-    private final Set<Long> arenaKeys = new HashSet<>();
-    private final Set<Long> forcedChunks = new HashSet<>();
+    private int secondsLeft, pregameLeft;
     private final List<Entity> entities = new ArrayList<>();
-    private final Map<Long, Stall> stallBlocks = new HashMap<>();
-    private final List<Stall> stalls = new ArrayList<>();
-    private final Map<Long, Shop> shopBlocks = new HashMap<>();
-    private final Map<Long, Regen> regen = new HashMap<>();
-    private final Map<String, Area> areas = new LinkedHashMap<>();
+    private final Set<Long> forced = new HashSet<>();
+    private final Map<Long, Long> regrow = new HashMap<>();
+    private final Map<String, Team> teams = new LinkedHashMap<>();
     private final Map<UUID, String> sideOf = new HashMap<>();
-    private final Map<UUID, Long> shopCooldown = new HashMap<>();
-    private final Set<String> dirty = new HashSet<>();
-    private final List<BuildPreset> sequence = new ArrayList<>();
-    private final Map<Integer, Integer> finishersPerIndex = new HashMap<>();
+    private final List<BuildDef> deck = new ArrayList<>();
+    private final Map<String, Integer> completions = new HashMap<>();
+    private final Set<Long> dirty = new HashSet<>();      // room*3+slot
+    private final Map<UUID, Long> portalCd = new HashMap<>();
+    private final Map<UUID, Long> counterCd = new HashMap<>();
+
+    static final class Team {
+        final String side; final int room;
+        final BuildDef[] slot = new BuildDef[3];
+        final TextDisplay[] holo = new TextDisplay[3];
+        int next, built, coins, points;
+        Team(String side, int room) { this.side = side; this.room = room; }
+    }
+
+    record Progress(int correct, int total, int wrong) {
+        boolean complete() { return total > 0 && correct == total && wrong == 0; }
+    }
 
     public BuildMartGame(JavaPlugin plugin) {
         this.plugin = plugin;
-        this.toolKey = new NamespacedKey(plugin, "tool");
+        kitKey = new NamespacedKey(plugin, "kit");
+        bookKey = new NamespacedKey(plugin, "book");
+        trolley = new Trolley(plugin, this);
+        loadConfig();
+    }
+
+    void loadConfig() {
+        plugin.saveDefaultConfig();
+        plugin.reloadConfig();
+        FileConfiguration c = plugin.getConfig();
+        gameSeconds = c.getInt("game-seconds", 720);
+        pregameSeconds = c.getInt("pregame-seconds", 20);
+        regrowTicks = (int) Math.round(c.getDouble("regrow-seconds", 3) * 20);
+        coinBase = c.getInt("coins.per-build", 30);
+        coinDecay = c.getInt("coins.decay-per-completion", 2);
+        coinMin = c.getInt("coins.min-per-build", 10);
+        bookEnabled = c.getBoolean("shopping-list-book", true);
     }
 
     @Override public String id() { return "buildmart"; }
     @Override public String displayName() { return "Build Mart"; }
-    @Override public Material icon() { return Material.BRICKS; }
-    @Override public String description() { return "Gather blocks at the mart and copy the target builds on your plot."; }
-    @Override public boolean useCoreScoreboard() { return true; }
+    @Override public Material icon() { return Material.CHEST_MINECART; }   // owner: a new icon - the shopping cart
+    @Override public String description() { return "Big Sales at Build Mart (Classic Mall): shop with your trolley, copy the builds."; }
+    @Override public List<String> maps() { return List.of("classic"); }
+    @Override public boolean forceNextMap(String id) { return "classic".equalsIgnoreCase(id); }
+    @Override public String currentMap() { return "classic"; }
 
-    // ---------------------------------------------------------------- lifecycle
+    // ================================================================= world
+
+    void enable() {
+        builds = BuildDef.loadAll(pluginFile(), plugin.getLogger());
+        ensureWorld();
+    }
+
+    private File pluginFile() {
+        try {
+            var m = JavaPlugin.class.getDeclaredMethod("getFile");
+            m.setAccessible(true);
+            return (File) m.invoke(plugin);
+        } catch (Exception e) { throw new IllegalStateException(e); }
+    }
 
     World ensureWorld() {
         World w = Bukkit.getWorld(WORLD);
         if (w == null) {
-            try {
-                w = new WorldCreator(WORLD).generator(new VoidGenerator()).environment(World.Environment.NORMAL)
-                        .generateStructures(false).createWorld();
-            } catch (Throwable t) {
-                plugin.getLogger().log(Level.SEVERE, "Could not create world " + WORLD, t);
-                return null;
-            }
+            w = new WorldCreator(WORLD).generator(new VoidGenerator()).environment(World.Environment.NORMAL)
+                    .generateStructures(false).createWorld();
         }
-        if (w != null) {
-            w.setGameRule(GameRule.DO_MOB_SPAWNING, false);
-            w.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-            w.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-            w.setGameRule(GameRule.FALL_DAMAGE, false);
-            w.setGameRule(GameRule.KEEP_INVENTORY, true);
-            w.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
-            w.setGameRule(GameRule.DO_FIRE_TICK, false);
-            w.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-            w.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-            w.setGameRule(GameRule.DO_TILE_DROPS, false);
-            w.setGameRule(GameRule.MOB_GRIEFING, false);
-            w.setTime(6000);
-            w.setStorm(false);
-            w.setThundering(false);
-            w.setDifficulty(Difficulty.PEACEFUL);
-            w.setSpawnLocation(0, FLOOR_Y + 1, 0);
-        }
+        if (w == null) return null;
+        w.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+        w.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        w.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        w.setGameRule(GameRule.FALL_DAMAGE, false);
+        w.setGameRule(GameRule.KEEP_INVENTORY, true);
+        w.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
+        w.setGameRule(GameRule.DO_FIRE_TICK, false);
+        w.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        w.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+        w.setGameRule(GameRule.DO_TILE_DROPS, false);
+        w.setGameRule(GameRule.MOB_GRIEFING, false);
+        w.setTime(6000);
+        w.setStorm(false);
+        w.setDifficulty(Difficulty.PEACEFUL);
+        w.setSpawnLocation(0, MallMap.FY + 1, 30);
         world = w;
+        map = new MallMap(w);
+        NamespacedKey vk = new NamespacedKey(plugin, "mall_version");
+        Integer v = w.getPersistentDataContainer().get(vk, PersistentDataType.INTEGER);
+        if (v == null || v != MallMap.VERSION) {
+            long t0 = System.currentTimeMillis();
+            long n = map.generate();
+            w.getPersistentDataContainer().set(vk, PersistentDataType.INTEGER, MallMap.VERSION);
+            w.save();
+            plugin.getLogger().info("Generated the Classic Mall v" + MallMap.VERSION + ": " + n + " blocks in "
+                    + (System.currentTimeMillis() - t0) + " ms");
+        } else {
+            map.index();
+        }
         return w;
     }
+
+    // ================================================================= lifecycle
 
     @Override
     public void start(McmGameContext context) {
@@ -199,46 +185,47 @@ public final class BuildMartGame implements McmGame, Listener {
         this.ctx = context;
         try {
             if (ensureWorld() == null) throw new IllegalStateException("world " + WORLD + " unavailable");
+            if (builds.size() < 4) throw new IllegalStateException("only " + builds.size() + " builds loaded");
             tick = 0;
-            secondsLeft = GAME_SECONDS;
-            pregameLeft = PREGAME_SECONDS;
-            buildSequence();
-            buildMart();
-
-            Map<String, List<Player>> sides = context.sides();
-            List<String> keys = new ArrayList<>();
-            for (Map.Entry<String, List<Player>> e : sides.entrySet()) {
-                if (e.getValue() != null && !e.getValue().isEmpty()) keys.add(e.getKey());
+            secondsLeft = fast ? Math.min(gameSeconds, 240) : gameSeconds;
+            pregameLeft = fast ? 3 : pregameSeconds;
+            for (long k : map.chunks(MallMap.ROOMS)) {
+                int cx = (int) (k >> 32), cz = (int) k;
+                world.setChunkForceLoaded(cx, cz, true);
+                forced.add(k);
             }
-            int n = Math.max(1, keys.size());
-            double radius = n < 2 ? 48 : Math.max(48, 11.5 / Math.sin(Math.PI / n));
-            int soloIdx = 0;
-            for (int i = 0; i < keys.size(); i++) {
-                String key = keys.get(i);
-                double ang = 2 * Math.PI * i / n - Math.PI / 2;
-                int cx = (int) Math.round(radius * Math.cos(ang));
-                int cz = (int) Math.round(radius * Math.sin(ang));
-                Material color;
-                if (key.startsWith("TEAM:")) color = concreteFor(context.teamColor(key.substring(5)));
-                else color = SOLO_COLORS[soloIdx++ % SOLO_COLORS.length];
-                Area a = new Area(key, cx, cz, color);
-                areas.put(key, a);
-                for (Player p : sides.get(key)) sideOf.put(p.getUniqueId(), key);
-                buildArea(a);
-            }
-            for (Area a : areas.values()) showTarget(a);
+            resetStock();
+            clearAllRooms();
+            spawnLabels();
+            deck.clear();
+            deck.addAll(builds);
+            Collections.shuffle(deck, random);
+            completions.clear();
 
+            int i = 0;
+            for (var e : context.sides().entrySet()) {
+                if (e.getValue() == null || e.getValue().isEmpty()) continue;
+                if (i >= MallMap.ROOMS) {
+                    plugin.getLogger().warning("Build Mart has " + MallMap.ROOMS + " build zones; " + e.getKey() + " spectates");
+                    continue;
+                }
+                Team t = new Team(e.getKey(), i++);
+                teams.put(t.side, t);
+                for (Player p : e.getValue()) sideOf.put(p.getUniqueId(), t.side);
+            }
+            for (Team t : teams.values()) {
+                for (int s = 0; s < 3; s++) setSlot(t, s, nextBuild(t));
+            }
             running = true;
             playing = false;
             for (Player p : new ArrayList<>(context.participants())) {
-                Area a = areaOf(p);
-                if (a == null) continue;
+                Team t = teamOf(p);
+                if (t == null) { p.setGameMode(GameMode.SPECTATOR); p.teleport(arrive()); continue; }
                 preparePlayer(p);
-                p.teleport(a.spawn);
+                p.teleport(roomSpawn(t));
             }
-            context.broadcast("§6§lBuild Mart §7- Copy the target build next to your plot! Gather blocks at the mart in the middle.");
-            context.broadcast("§7Stalls regrow a few seconds after mining. Glass, Stone Bricks, Bricks and Gold are made at the shop counters (right-click).");
-            context.setTimer(GAME_SECONDS, GAME_SECONDS);
+            tutorial();
+            context.setTimer(secondsLeft, secondsLeft);
             updateSidebar();
             task = Bukkit.getScheduler().runTaskTimer(plugin, this::tickLoop, 1L, 1L);
         } catch (Throwable t) {
@@ -255,8 +242,27 @@ public final class BuildMartGame implements McmGame, Listener {
         playing = false;
         if (task != null) { task.cancel(); task = null; }
         resetPlayers();
-        cleanupArena();
+        cleanup();
         ctx = null;
+    }
+
+    @Override
+    public boolean skipWait() {
+        if (running && !playing && pregameLeft > 0) { pregameLeft = 1; return true; }
+        return false;
+    }
+
+    @Override
+    public boolean onLateJoin(Player p, McmGameContext c) {
+        if (!running) return false;
+        String side = null;
+        String team = c.teamOf(p.getUniqueId());
+        if (team != null && teams.containsKey("TEAM:" + team)) side = "TEAM:" + team;
+        if (side == null) return false;
+        sideOf.put(p.getUniqueId(), side);
+        preparePlayer(p);
+        p.teleport(roomSpawn(teams.get(side)));
+        return true;
     }
 
     private void endGame(String reason) {
@@ -265,777 +271,872 @@ public final class BuildMartGame implements McmGame, Listener {
         running = false;
         playing = false;
         if (task != null) { task.cancel(); task = null; }
-        try {
-            awardFinalBonuses(c);
-        } catch (Throwable t) {
-            plugin.getLogger().log(Level.WARNING, "Error awarding final bonuses", t);
-        }
+        try { payPartials(c); } catch (Throwable t) { plugin.getLogger().log(Level.WARNING, "partial pay failed", t); }
         resetPlayers();
         ctx = null;
-        try {
-            c.finish(reason);
-        } finally {
-            cleanupArena();
-        }
-    }
-
-    // ---------------------------------------------------------------- arena building
-
-    private static long key(int x, int y, int z) {
-        return ((long) (x & 0x3FFFFFF) << 38) | ((long) (z & 0x3FFFFFF) << 12) | (y & 0xFFF);
-    }
-
-    private void forceChunk(int x, int z) {
-        int cx = x >> 4, cz = z >> 4;
-        long k = ((long) cx << 32) | (cz & 0xFFFFFFFFL);
-        if (forcedChunks.add(k)) world.setChunkForceLoaded(cx, cz, true);
-    }
-
-    private static void setType(Block b, Material m) {
-        BlockData data = m.createBlockData();
-        if (data instanceof Leaves leaves) leaves.setPersistent(true);
-        b.setBlockData(data, false);
-    }
-
-    /** Place an arena block and remember it for cleanup. */
-    private void put(int x, int y, int z, Material m) {
-        forceChunk(x, z);
-        setType(world.getBlockAt(x, y, z), m);
-        if (arenaKeys.add(key(x, y, z))) arenaBlocks.add(new int[]{x, y, z});
-    }
-
-    private TextDisplay label(double x, double y, double z, String text, float scale) {
-        Location loc = new Location(world, x, y, z);
-        forceChunk(loc.getBlockX(), loc.getBlockZ());
-        TextDisplay d = world.spawn(loc, TextDisplay.class, td -> {
-            td.text(c(text));
-            td.setBillboard(Display.Billboard.CENTER);
-            td.setPersistent(false);
-            td.setShadowed(true);
-            td.setLineWidth(220);
-            td.setBackgroundColor(Color.fromARGB(110, 0, 0, 0));
-            if (scale != 1f) {
-                td.setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(),
-                        new Vector3f(scale, scale, scale), new AxisAngle4f()));
-            }
-        });
-        entities.add(d);
-        return d;
-    }
-
-    private void buildMart() {
-        // floor
-        for (int x = -MART_X; x <= MART_X; x++) {
-            for (int z = -MART_Z; z <= MART_Z; z++) {
-                boolean edge = Math.abs(x) == MART_X || Math.abs(z) == MART_Z;
-                Material m;
-                if (edge) m = (Math.abs(x) == MART_X && Math.abs(z) == MART_Z) ? Material.SEA_LANTERN : Material.POLISHED_BLACKSTONE;
-                else m = ((x + z) & 1) == 0 ? Material.SMOOTH_STONE : Material.POLISHED_ANDESITE;
-                put(x, FLOOR_Y, z, m);
-            }
-        }
-        // lamp posts at the corners
-        for (int sx : new int[]{-MART_X, MART_X}) for (int sz : new int[]{-MART_Z, MART_Z}) {
-            put(sx, FLOOR_Y + 1, sz, Material.POLISHED_BLACKSTONE_WALL);
-            put(sx, FLOOR_Y + 2, sz, Material.POLISHED_BLACKSTONE_WALL);
-            put(sx, FLOOR_Y + 3, sz, Material.GLOWSTONE);
-        }
-        label(0.5, FLOOR_Y + 11, 0.5, "§6§lBUILD MART\n§eBig Sales every day!", 3f);
-
-        // stall grid: 8 columns x 4 rows; centre 4 slots are shops
-        Shop[] shopDefs = {
-                new Shop("Glassworks", Material.GLASS, 1, new Cost(Material.SAND, 2)),
-                new Shop("Mason", Material.STONE_BRICKS, 1, new Cost(Material.COBBLESTONE, 2)),
-                new Shop("Kiln", Material.BRICKS, 1, new Cost(Material.CLAY, 2)),
-                new Shop("Jeweller", Material.GOLD_BLOCK, 2, new Cost(Material.IRON_BLOCK, 1), new Cost(Material.GLOWSTONE, 1))
-        };
-        Material[] shopBlocksMat = {Material.FURNACE, Material.STONECUTTER, Material.SMOKER, Material.SMITHING_TABLE};
-        int raw = 0, shop = 0;
-        for (int row = 0; row < 4; row++) {
-            for (int col = 0; col < 8; col++) {
-                int x0 = -22 + col * 6, z0 = -10 + row * 6;
-                boolean isShop = (col == 3 || col == 4) && (row == 1 || row == 2);
-                if (isShop) {
-                    Shop s = shopDefs[shop];
-                    Material blockMat = shopBlocksMat[shop];
-                    shop++;
-                    for (int dx = -1; dx <= 2; dx++) for (int dz = -1; dz <= 2; dz++)
-                        put(x0 + dx, FLOOR_Y, z0 + dz, Material.ORANGE_TERRACOTTA);
-                    for (int dx = 0; dx <= 1; dx++) for (int dz = 0; dz <= 1; dz++) {
-                        put(x0 + dx, FLOOR_Y + 1, z0 + dz, blockMat);
-                        put(x0 + dx, FLOOR_Y + 2, z0 + dz, s.product);
-                        shopBlocks.put(key(x0 + dx, FLOOR_Y + 1, z0 + dz), s);
-                        shopBlocks.put(key(x0 + dx, FLOOR_Y + 2, z0 + dz), s);
-                    }
-                    StringBuilder cost = new StringBuilder();
-                    for (Cost cst : s.costs) {
-                        if (cost.length() > 0) cost.append(" §7+ ");
-                        cost.append("§f").append(cst.amount()).append(" ").append(nice(cst.material()));
-                    }
-                    label(x0 + 1, FLOOR_Y + 4.2, z0 + 1, "§6§l" + s.name + "\n" + cost + " §7→ §a" + s.productAmount + " " + nice(s.product)
-                            + "\n§8Right-click (sneak = x16)", 1f);
-                } else {
-                    if (raw >= RAW_STALLS.length) continue;
-                    Material m = RAW_STALLS[raw++];
-                    int h = m.hasGravity() ? 1 : 3;
-                    Stall st = new Stall(m, x0, z0, h);
-                    stalls.add(st);
-                    for (int dx = -1; dx <= 2; dx++) for (int dz = -1; dz <= 2; dz++)
-                        put(x0 + dx, FLOOR_Y, z0 + dz, (dx == -1 || dx == 2 || dz == -1 || dz == 2) ? Material.STRIPPED_SPRUCE_WOOD : Material.SPRUCE_PLANKS);
-                    for (int dx = 0; dx <= 1; dx++) for (int dz = 0; dz <= 1; dz++) for (int dy = 1; dy <= h; dy++) {
-                        put(x0 + dx, FLOOR_Y + dy, z0 + dz, m);
-                        stallBlocks.put(key(x0 + dx, FLOOR_Y + dy, z0 + dz), st);
-                    }
-                    st.label[0] = label(x0 + 1, FLOOR_Y + h + 1.4, z0 + 1, stallText(st), 1f);
-                }
-            }
-        }
-    }
-
-    private String stallText(Stall st) {
-        if (st.saleUntilTick > tick) return "§c§lSALE! §f" + nice(st.material) + "\n§efast restock";
-        return "§f" + nice(st.material);
-    }
-
-    private void buildArea(Area a) {
-        int y = FLOOR_Y;
-        // platform 17 x 11
-        for (int x = a.cx - 8; x <= a.cx + 8; x++) for (int z = a.cz - 5; z <= a.cz + 5; z++) {
-            boolean edge = x == a.cx - 8 || x == a.cx + 8 || z == a.cz - 5 || z == a.cz + 5;
-            put(x, y, z, edge ? a.color : Material.SMOOTH_STONE);
-        }
-        // rings around plot and pedestal
-        for (int[] base : new int[][]{{a.plotX, a.plotZ}, {a.tgtX, a.tgtZ}}) {
-            for (int x = base[0] - 1; x <= base[0] + 5; x++) for (int z = base[1] - 1; z <= base[1] + 5; z++) {
-                boolean ring = x == base[0] - 1 || x == base[0] + 5 || z == base[1] - 1 || z == base[1] + 5;
-                if (ring) put(x, y, z, base[0] == a.tgtX ? Material.QUARTZ_BRICKS : a.color);
-            }
-        }
-        // spawn pad in the middle strip
-        for (int x = a.cx - 1; x <= a.cx + 1; x++) for (int z = a.cz - 1; z <= a.cz + 1; z++)
-            put(x, y, z, (x == a.cx && z == a.cz) ? Material.SEA_LANTERN : a.color);
-        a.spawn = new Location(world, a.cx + 0.5, y + 1, a.cz + 0.5);
-        a.spawn.setDirection(new Vector(-a.cx, 0, -a.cz).lengthSquared() < 1 ? new Vector(0, 0, 1) : new Vector(-a.cx, 0, -a.cz));
-
-        // path towards the mart
-        double len = Math.sqrt((double) a.cx * a.cx + (double) a.cz * a.cz);
-        if (len > 1) {
-            double dx = -a.cx / len, dz = -a.cz / len;
-            for (double t = 0; t < len; t += 0.5) {
-                int px = (int) Math.floor(a.cx + 0.5 + dx * t), pz = (int) Math.floor(a.cz + 0.5 + dz * t);
-                if (Math.abs(px) <= MART_X && Math.abs(pz) <= MART_Z) break;
-                for (int ox = -1; ox <= 1; ox++) for (int oz = -1; oz <= 1; oz++) {
-                    int bx = px + ox, bz = pz + oz;
-                    if (arenaKeys.contains(key(bx, y, bz))) continue;
-                    if (bx >= a.cx - 8 && bx <= a.cx + 8 && bz >= a.cz - 5 && bz <= a.cz + 5) continue;
-                    put(bx, y, bz, (ox == 0 && oz == 0) ? Material.POLISHED_ANDESITE : Material.STONE_BRICK_SLAB);
-                }
-            }
-        }
-        forceChunk(a.plotX, a.plotZ);
-        forceChunk(a.plotX + 4, a.plotZ + 4);
-        forceChunk(a.tgtX + 4, a.tgtZ + 4);
-
-        a.plotLabel = label(a.plotX + 2.5, y + 7.3, a.plotZ + 2.5, "§a§l▼ BUILD HERE ▼\n" + label(a.side), 1f);
-        a.targetLabel = label(a.tgtX + 2.5, y + 7.3, a.tgtZ + 2.5, "", 1f);
-    }
-
-    private String label(String side) {
-        try { return ctx == null ? side : ctx.sideLabel(side); } catch (Throwable t) { return side; }
-    }
-
-    private void clearRegion(int bx, int bz) {
-        for (int x = 0; x < 5; x++) for (int y = 1; y <= 5; y++) for (int z = 0; z < 5; z++) {
-            Block b = world.getBlockAt(bx + x, FLOOR_Y + y, bz + z);
-            if (!b.getType().isAir()) b.setType(Material.AIR, false);
-        }
-    }
-
-    private BuildPreset presetAt(int index) {
-        while (sequence.size() <= index) appendShuffle(false);
-        return sequence.get(index);
-    }
-
-    private void buildSequence() {
-        sequence.clear();
-        appendShuffle(true);
-    }
-
-    /** Adds one pass over all presets. The first pass ramps difficulty up; later passes are random. */
-    private void appendShuffle(boolean ramp) {
-        List<BuildPreset> list = new ArrayList<>(BuildPreset.ALL);
-        if (ramp) {
-            Map<BuildPreset, Double> w = new HashMap<>();
-            for (BuildPreset p : list) w.put(p, p.stars + random.nextDouble() * 2.0);
-            list.sort(Comparator.comparingDouble(w::get));
-        } else {
-            Collections.shuffle(list, random);
-            if (!sequence.isEmpty() && list.get(0) == sequence.get(sequence.size() - 1)) Collections.swap(list, 0, list.size() - 1);
-        }
-        sequence.addAll(list);
-    }
-
-    private void showTarget(Area a) {
-        BuildPreset p = presetAt(a.seqIndex);
-        clearRegion(a.tgtX, a.tgtZ);
-        for (int x = 0; x < 5; x++) for (int z = 0; z < 5; z++) {
-            Material floor = p.columnUsed(x, z) ? Material.LIGHT_GRAY_CONCRETE : Material.WHITE_CONCRETE;
-            put(a.plotX + x, FLOOR_Y, a.plotZ + z, floor);
-            put(a.tgtX + x, FLOOR_Y, a.tgtZ + z, floor);
-            for (int y = 0; y < 5; y++) {
-                Material m = p.at(x, y, z);
-                if (m != Material.AIR) setType(world.getBlockAt(a.tgtX + x, FLOOR_Y + 1 + y, a.tgtZ + z), m);
-            }
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append("§eBuild #").append(a.seqIndex + 1).append(": §f§l").append(p.name).append("\n").append(p.starString()).append("\n");
-        for (Map.Entry<Material, Integer> e : p.counts.entrySet()) {
-            sb.append("§f").append(e.getValue()).append("x §7").append(nice(e.getKey()));
-            if (BuildPreset.SHOP_MATERIALS.contains(e.getKey())) sb.append(" §6(shop)");
-            sb.append("\n");
-        }
-        if (a.targetLabel != null && a.targetLabel.isValid()) a.targetLabel.text(c(sb.toString().trim()));
-        a.buildStartTick = tick;
-        a.lastCorrect = 0; a.lastNeeded = p.blocks; a.lastWrong = 0;
-    }
-
-    private void cleanupArena() {
-        World w = world != null ? Bukkit.getWorld(WORLD) : null;
-        if (w != null) {
-            try {
-                for (Area a : areas.values()) {
-                    clearRegion(a.plotX, a.plotZ);
-                    clearRegion(a.tgtX, a.tgtZ);
-                }
-                for (int i = arenaBlocks.size() - 1; i >= 0; i--) {
-                    int[] p = arenaBlocks.get(i);
-                    w.getBlockAt(p[0], p[1], p[2]).setType(Material.AIR, false);
-                }
-                for (Entity e : entities) if (e.isValid()) e.remove();
-                for (Entity e : w.getEntities()) if (!(e instanceof Player)) e.remove();
-                for (long k : forcedChunks) w.setChunkForceLoaded((int) (k >> 32), (int) k, false);
-            } catch (Throwable t) {
-                plugin.getLogger().log(Level.WARNING, "Error while clearing the Build Mart arena", t);
-            }
-        }
-        arenaBlocks.clear();
-        arenaKeys.clear();
-        forcedChunks.clear();
-        entities.clear();
-        stallBlocks.clear();
-        stalls.clear();
-        shopBlocks.clear();
-        regen.clear();
-        areas.clear();
-        sideOf.clear();
-        shopCooldown.clear();
-        dirty.clear();
-        finishersPerIndex.clear();
-    }
-
-    // ---------------------------------------------------------------- players
-
-    private ItemStack tool(Material m) {
-        ItemStack it = new ItemStack(m);
-        ItemMeta meta = it.getItemMeta();
-        if (meta != null) {
-            meta.setUnbreakable(true);
-            meta.addEnchant(Enchantment.EFFICIENCY, 5, true);
-            meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-            meta.getPersistentDataContainer().set(toolKey, PersistentDataType.BYTE, (byte) 1);
-            it.setItemMeta(meta);
-        }
-        return it;
-    }
-
-    private boolean isTool(ItemStack it) {
-        if (it == null || !it.hasItemMeta()) return false;
-        ItemMeta m = it.getItemMeta();
-        return m != null && m.getPersistentDataContainer().has(toolKey, PersistentDataType.BYTE);
-    }
-
-    private void preparePlayer(Player p) {
-        p.setGameMode(GameMode.SURVIVAL);
-        PlayerInventory inv = p.getInventory();
-        inv.clear();
-        inv.setArmorContents(null);
-        inv.setItem(0, tool(Material.IRON_PICKAXE));
-        inv.setItem(1, tool(Material.IRON_AXE));
-        inv.setItem(2, tool(Material.IRON_SHOVEL));
-        inv.setItem(3, tool(Material.SHEARS));
-        p.setFoodLevel(20);
-        p.setSaturation(20f);
-        p.setFallDistance(0);
-        p.setFireTicks(0);
-        p.setAllowFlight(true);
-        p.setFlying(false);
-        p.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, PotionEffect.INFINITE_DURATION, 1, false, false, true));
+        try { c.finish(reason); } finally { cleanup(); }
     }
 
     private void resetPlayers() {
-        if (ctx == null) return;
-        Collection<Player> parts;
-        try { parts = new ArrayList<>(ctx.participants()); } catch (Throwable t) { return; }
-        for (Player p : parts) {
-            if (p == null || !p.isOnline()) continue;
-            if (!p.getWorld().getName().equals(WORLD)) continue;
+        trolley.removeAll();
+        for (UUID id : new ArrayList<>(sideOf.keySet())) {
+            Player p = Bukkit.getPlayer(id);
+            if (p == null) continue;
+            if (p.getVehicle() != null) p.leaveVehicle();
             p.getInventory().clear();
-            p.removePotionEffect(PotionEffectType.HASTE);
+            p.setItemOnCursor(null);
+            p.setAllowFlight(false);
             p.setFlying(false);
-            if (p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE) p.setAllowFlight(false);
         }
     }
 
-    private Area areaOf(Player p) {
-        String s = sideOf.get(p.getUniqueId());
-        return s == null ? null : areas.get(s);
-    }
-
-    private List<Player> members(String side) {
-        List<Player> out = new ArrayList<>();
-        if (ctx == null) return out;
-        for (Player p : new ArrayList<>(ctx.participants())) {
-            if (p != null && p.isOnline() && side.equals(sideOf.get(p.getUniqueId()))) out.add(p);
+    private void cleanup() {
+        for (Entity e : entities) if (e != null && e.isValid()) e.remove();
+        entities.clear();
+        if (world != null) {
+            for (Entity e : world.getEntities()) {
+                if (e.getScoreboardTags().contains(ENT_TAG) || e instanceof Item || (e instanceof Boat && !(e.getPassengers().stream().anyMatch(x -> x instanceof Player))))
+                    e.remove();
+            }
+            if (map != null) { clearAllRooms(); resetStock(); }
+            for (long k : forced) world.setChunkForceLoaded((int) (k >> 32), (int) k, false);
         }
-        return out;
+        forced.clear();
+        teams.clear();
+        sideOf.clear();
+        regrow.clear();
+        dirty.clear();
+        portalCd.clear();
     }
 
-    private boolean inOurWorld(World w) {
-        return running && world != null && w != null && w.getName().equals(WORLD);
+    // ================================================================= players
+
+    private Location roomSpawn(Team t) {
+        double[] s = MallMap.roomSpawn(t.room);
+        return new Location(world, s[0], s[1], s[2], (float) s[3], 0);
     }
 
-    private static boolean inRegion(Block b, int bx, int bz) {
-        int x = b.getX() - bx, z = b.getZ() - bz, y = b.getY() - FLOOR_Y;
-        return x >= 0 && x < 5 && z >= 0 && z < 5 && y >= 1 && y <= 5;
+    private Location arrive() {
+        double[] a = MallMap.MALL_ARRIVE;
+        return new Location(world, a[0], a[1], a[2], (float) a[3], 0);
     }
 
-    // ---------------------------------------------------------------- game loop
+    Team teamOf(Player p) { String s = sideOf.get(p.getUniqueId()); return s == null ? null : teams.get(s); }
+
+    boolean isParticipant(Player p) { return running && sideOf.containsKey(p.getUniqueId()); }
+
+    boolean trolleyAllowed(Player p) {
+        return playing && isParticipant(p) && p.getWorld() == world && MallMap.inMall(p.getLocation().getX(), p.getLocation().getZ());
+    }
+
+    private ItemStack kit(Material m, String name) {
+        ItemStack it = new ItemStack(m);
+        ItemMeta meta = it.getItemMeta();
+        meta.displayName(Component.text(name).decoration(net.kyori.adventure.text.format.TextDecoration.ITALIC, false));
+        meta.setUnbreakable(true);
+        if (m.name().endsWith("_PICKAXE") || m.name().endsWith("_AXE") || m.name().endsWith("_SHOVEL"))
+            meta.addEnchant(Enchantment.EFFICIENCY, 4, true);
+        meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES);
+        meta.getPersistentDataContainer().set(kitKey, PersistentDataType.BYTE, (byte) 1);
+        it.setItemMeta(meta);
+        return it;
+    }
+
+    boolean isKit(ItemStack it) {
+        return it != null && it.hasItemMeta() && it.getItemMeta().getPersistentDataContainer().has(kitKey, PersistentDataType.BYTE);
+    }
+
+    void preparePlayer(Player p) {
+        if (p.getVehicle() != null) p.leaveVehicle();
+        p.setGameMode(GameMode.SURVIVAL);
+        p.getInventory().clear();
+        p.setItemOnCursor(null);
+        p.setHealth(Math.min(20, p.getHealth() <= 0 ? 20 : 20));
+        p.setFoodLevel(20);
+        p.setSaturation(20);
+        p.setFireTicks(0);
+        p.setAllowFlight(false);
+        p.setFlying(false);
+        giveKit(p);
+    }
+
+    void giveKit(Player p) {
+        // MCC 13 hotbar (cart/frames/ref/11, 12): pickaxe, axe, shovel, shears, Shopping Cart in slot 5
+        p.getInventory().setItem(0, kit(Material.DIAMOND_PICKAXE, "Pickaxe"));
+        p.getInventory().setItem(1, kit(Material.DIAMOND_AXE, "Axe"));
+        p.getInventory().setItem(2, kit(Material.DIAMOND_SHOVEL, "Shovel"));
+        p.getInventory().setItem(3, kit(Material.SHEARS, "Shears"));
+        p.getInventory().setItem(Trolley.SLOT, trolley.item());
+        Team t = teamOf(p);
+        if (bookEnabled && t != null) p.getInventory().setItem(8, book(t));
+    }
+
+    /** Fell in a hole: lose every carried resource, keep the kit, back to your build zone. */
+    private void fall(Player p) {
+        Team t = teamOf(p);
+        if (t == null) return;
+        trolley.reclaim(p, false);
+        p.closeInventory();
+        p.setItemOnCursor(null);
+        int lost = 0;
+        ItemStack[] inv = p.getInventory().getContents();
+        for (int i = 0; i < inv.length; i++) {
+            if (inv[i] != null && !isKit(inv[i])) { lost += inv[i].getAmount(); p.getInventory().setItem(i, null); }
+        }
+        trolley.giveBack(p);
+        p.setFallDistance(0);
+        p.setVelocity(new org.bukkit.util.Vector());
+        p.teleport(roomSpawn(t));
+        broadcast(colorOf(t) + p.getName() + " §fwas thrown out by security!");
+        p.showTitle(Title.title(lc("§cYou fell!"), lc("§7You lost the resources you were carrying"),
+                Title.Times.times(Duration.ofMillis(100), Duration.ofMillis(1600), Duration.ofMillis(400))));
+        p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
+        plugin.getLogger().info("[bm] " + p.getName() + " fell into a pit, lost " + lost + " items");
+    }
+
+    private String colorOf(Team t) {
+        if (t.side.startsWith("TEAM:")) return ctx.teamColor(t.side.substring(5)).toString();
+        return "§f";
+    }
+
+    // ================================================================= loop
 
     private void tickLoop() {
-        if (!running || ctx == null) return;
-        try {
-            tick++;
-            processRegen();
-            if (!dirty.isEmpty()) {
-                List<String> d = new ArrayList<>(dirty);
-                dirty.clear();
-                if (playing) for (String s : d) {
-                    Area a = areas.get(s);
-                    if (a != null) evaluate(a, true);
-                }
+        if (!running) return;
+        tick++;
+        if (!dirty.isEmpty()) {
+            for (Long k : new ArrayList<>(dirty)) {
+                dirty.remove(k);
+                Team t = teamByRoom((int) (k / 3));
+                if (t != null) check(t, (int) (k % 3));
             }
-            if (tick % 5 == 0) voidCheck();
-            if (tick % 20 == 0) second();
-        } catch (Throwable t) {
-            plugin.getLogger().log(Level.WARNING, "Error in Build Mart tick", t);
         }
-    }
-
-    private void processRegen() {
-        if (regen.isEmpty()) return;
-        Iterator<Regen> it = regen.values().iterator();
-        while (it.hasNext()) {
-            Regen r = it.next();
-            if (r.due > tick) continue;
-            Block b = world.getBlockAt(r.x, r.y, r.z);
-            if (b.getType().isAir()) {
-                setType(b, r.material);
-                if (r.y == FLOOR_Y + 1 || random.nextInt(4) == 0)
-                    world.spawnParticle(Particle.HAPPY_VILLAGER, r.x + 0.5, r.y + 0.5, r.z + 0.5, 3, 0.3, 0.3, 0.3, 0);
+        if (tick % 2 == 0) {
+            for (UUID id : new ArrayList<>(sideOf.keySet())) {
+                Player p = Bukkit.getPlayer(id);
+                if (p == null || p.getWorld() != world || p.getGameMode() == GameMode.SPECTATOR) continue;
+                Location l = p.getLocation();
+                if (l.getY() < MallMap.FALL_Y && MallMap.inMall(l.getX(), l.getZ())) { fall(p); continue; }
+                if (l.getY() < 0) { p.teleport(roomSpawn(teamOf(p))); continue; }
+                if (playing) portal(p);
             }
-            it.remove();
         }
-    }
-
-    private void voidCheck() {
-        for (Player p : new ArrayList<>(ctx.participants())) {
-            if (!p.getWorld().getName().equals(WORLD) || p.getLocation().getY() > VOID_Y) continue;
-            Area a = areaOf(p);
-            if (a == null) continue;
-            // Like the original: falling off costs you the blocks you carried.
-            PlayerInventory inv = p.getInventory();
-            for (int i = 0; i < inv.getSize(); i++) {
-                ItemStack it = inv.getItem(i);
-                if (it != null && !isTool(it)) inv.setItem(i, null);
+        if (tick % 4 == 0) blockTitles();
+        if (tick % 10 == 0 && !map.leds.isEmpty()) {
+            // data-centre status lights: a few rack lamps flicker on and off
+            for (int i = 0; i < 6; i++) {
+                long[] l = map.leds.get(random.nextInt(map.leds.size()));
+                Block lb = world.getBlockAt((int) l[0], (int) l[1], (int) l[2]);
+                if (lb.getBlockData() instanceof org.bukkit.block.data.Lightable lt) { lt.setLit(!lt.isLit()); lb.setBlockData(lt, false); }
             }
-            p.setFallDistance(0);
-            p.setVelocity(new Vector());
-            p.teleport(a.spawn);
-            p.sendMessage("§cYou fell off and dropped everything you were carrying!");
-            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
         }
+        if (!regrow.isEmpty()) {
+            Iterator<Map.Entry<Long, Long>> it = regrow.entrySet().iterator();
+            while (it.hasNext()) {
+                var e = it.next();
+                if (e.getValue() > tick) continue;
+                it.remove();
+                long k = e.getKey();
+                BlockData bd = map.stock.get(k);
+                Block b = blockAt(k);
+                if (bd != null && b.getType().isAir()) b.setBlockData(bd, false);
+                else if (bd != null) regrow.put(k, tick + 20);     // someone stands in the spot: try again
+            }
+        }
+        if (tick % 20 == 0) second();
     }
 
     private void second() {
-        if (ctx.participants().isEmpty()) {
-            endGame("Everyone left");
-            return;
-        }
         if (!playing) {
             pregameLeft--;
-            if (pregameLeft > 0) {
-                for (Player p : new ArrayList<>(ctx.participants())) {
-                    if (pregameLeft <= 5) {
-                        p.showTitle(title("§e" + pregameLeft, "§7Study your first build!", 0, 900, 100));
-                        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1f, 1f);
-                    }
-                    Area a = areaOf(p);
-                    if (a != null) p.sendActionBar(c("§eFirst build: §f" + presetAt(a.seqIndex).name + " §7- starting in " + pregameLeft + "s"));
+            if (pregameLeft <= 5 && pregameLeft > 0) {
+                for (Player p : online()) {
+                    p.showTitle(Title.title(lc("§b§oStarting in"), lc("§e▸" + pregameLeft + "◂"),
+                            Title.Times.times(Duration.ZERO, Duration.ofMillis(1100), Duration.ZERO)));
+                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1f, 1f);
                 }
-                ctx.setTimer(GAME_SECONDS, GAME_SECONDS);
-                return;
             }
-            playing = true;
-            for (Area a : areas.values()) a.buildStartTick = tick;
-            for (Player p : new ArrayList<>(ctx.participants())) {
-                p.showTitle(title("§a§lGO!", "§7Shop, build, repeat!", 0, 1000, 300));
-                p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.2f);
-                Area a = areaOf(p);
-                if (a != null) sendShoppingList(p, a);
+            if (pregameLeft <= 0) {
+                playing = true;
+                for (Player p : online()) {
+                    p.showTitle(Title.title(lc("§a§lGO!"), lc("§7Head through the portal into Build Mart"),
+                            Title.Times.times(Duration.ZERO, Duration.ofMillis(1200), Duration.ofMillis(300))));
+                    p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.2f);
+                }
             }
-            ctx.setTimer(secondsLeft, GAME_SECONDS);
             return;
         }
-
         secondsLeft--;
-        ctx.setTimer(Math.max(0, secondsLeft), GAME_SECONDS);
-        int elapsed = GAME_SECONDS - secondsLeft;
-
-        // Big Sales
-        if (elapsed % SALE_EVERY == 0 && secondsLeft > 20) startSale();
-        for (Stall st : stalls) {
-            if (st.saleUntilTick > 0 && st.saleUntilTick <= tick) {
-                st.saleUntilTick = -1;
-                if (st.label[0] != null && st.label[0].isValid()) st.label[0].text(c(stallText(st)));
-            }
-        }
-
-        for (Area a : new ArrayList<>(areas.values())) evaluate(a, true);
-        if (!running) return;
-
-        for (Player p : new ArrayList<>(ctx.participants())) {
-            Area a = areaOf(p);
-            if (a == null) continue;
-            BuildPreset bp = presetAt(a.seqIndex);
-            String wrong = a.lastWrong > 0 ? " §c(" + a.lastWrong + " wrong)" : "";
-            p.sendActionBar(c("§e#" + (a.seqIndex + 1) + " " + bp.name + " §7| §a" + a.lastCorrect + "§7/" + a.lastNeeded + " placed" + wrong));
-        }
-        if (secondsLeft == 60 || secondsLeft == 30 || secondsLeft == 10) ctx.broadcast("§6[Build Mart] §e" + secondsLeft + " seconds left!");
+        if (ctx != null) ctx.setTimer(Math.max(0, secondsLeft), fast ? 240 : gameSeconds);
+        for (Team t : teams.values()) for (int s = 0; s < 3; s++) check(t, s);
+        refreshHolos();
         updateSidebar();
+        if (secondsLeft == 60 || secondsLeft == 30 || secondsLeft == 10) broadcast("§e" + secondsLeft + " seconds left!");
         if (secondsLeft <= 0) endGame("Time's up");
     }
 
-    private void startSale() {
-        List<Stall> pool = new ArrayList<>(stalls);
-        Collections.shuffle(pool, random);
-        List<String> names = new ArrayList<>();
-        for (int i = 0; i < Math.min(3, pool.size()); i++) {
-            Stall st = pool.get(i);
-            st.saleUntilTick = tick + SALE_LENGTH * 20L;
-            names.add(nice(st.material));
-            if (st.label[0] != null && st.label[0].isValid()) st.label[0].text(c(stallText(st)));
-        }
-        if (ctx == null) return;
-        ctx.broadcast("§c§lBIG SALE! §e" + String.join(", ", names) + " §7restock almost instantly for " + SALE_LENGTH + "s!");
-        for (Player p : new ArrayList<>(ctx.participants())) p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1.5f);
+    private List<Player> online() {
+        List<Player> out = new ArrayList<>();
+        for (UUID id : sideOf.keySet()) { Player p = Bukkit.getPlayer(id); if (p != null) out.add(p); }
+        return out;
     }
 
-    /** Compare the plot with the target; completes the build when it matches exactly. */
-    private void evaluate(Area a, boolean allowComplete) {
-        BuildPreset p = presetAt(a.seqIndex);
-        int correct = 0, wrong = 0;
-        for (int x = 0; x < 5; x++) for (int y = 0; y < 5; y++) for (int z = 0; z < 5; z++) {
-            Material want = p.at(x, y, z);
-            Material have = world.getBlockAt(a.plotX + x, FLOOR_Y + 1 + y, a.plotZ + z).getType();
-            if (have.isAir()) have = Material.AIR;
-            if (want != Material.AIR) {
-                if (have == want) correct++;
-                else if (have != Material.AIR) wrong++;
-            } else if (have != Material.AIR) wrong++;
-        }
-        a.lastCorrect = correct;
-        a.lastNeeded = p.blocks;
-        a.lastWrong = wrong;
-        if (allowComplete && playing && correct == p.blocks && wrong == 0) complete(a);
+    private Team teamByRoom(int room) {
+        for (Team t : teams.values()) if (t.room == room) return t;
+        return null;
     }
 
-    private void complete(Area a) {
-        BuildPreset p = presetAt(a.seqIndex);
-        int order = finishersPerIndex.merge(a.seqIndex, 1, Integer::sum);
-        int secs = (int) ((tick - a.buildStartTick) / 20);
-        int base = 4 + 3 * p.stars;
-        int speed = Math.max(0, 5 - secs / 30);
-        int orderBonus = areas.size() > 1 ? (order == 1 ? 4 : order == 2 ? 2 : order == 3 ? 1 : 0) : 0;
-        int pts = base + speed + orderBonus;
-        List<Player> mem = members(a.side);
-        for (Player m : mem) ctx.addPoints(m.getUniqueId(), pts, "Build Mart: built " + p.name);
-        a.completed++;
-
-        String place = orderBonus > 0 ? (order == 1 ? " §6(first!)" : order == 2 ? " §7(2nd)" : " §7(3rd)") : "";
-        ctx.broadcast("§6[Build Mart] " + label(a.side) + " §7completed §f" + p.name + " §7in " + fmt(secs) + place + " §a+" + pts);
-        for (Player m : mem) {
-            m.showTitle(title("§a§lBUILD COMPLETE!", "§f" + p.name + " §a+" + pts + " points", 0, 1400, 300));
-            m.playSound(m.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.8f, 1f);
+    private void portal(Player p) {
+        Block feet = p.getLocation().getBlock();
+        if (feet.getType() != Material.NETHER_PORTAL && p.getEyeLocation().getBlock().getType() != Material.NETHER_PORTAL) return;
+        Long cd = portalCd.get(p.getUniqueId());
+        if (cd != null && cd > tick) return;
+        Location l = p.getLocation();
+        Team t = teamOf(p);
+        if (t == null) return;
+        if (MallMap.inMall(l.getX(), l.getZ()) && MallMap.MALL_PORTAL.in(feet.getX(), feet.getZ())) {
+            trolley.reclaim(p, true);
+            portalCd.put(p.getUniqueId(), tick + 40);
+            p.teleport(roomSpawn(t));
+            p.playSound(p.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.25f, 1.6f);
+        } else if (MallMap.roomAt(l.getX(), l.getZ()) >= 0 && MallMap.roomPortal(MallMap.roomAt(l.getX(), l.getZ())).in(feet.getX(), feet.getZ())) {
+            portalCd.put(p.getUniqueId(), tick + 40);
+            p.teleport(arrive());
+            p.playSound(p.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.25f, 1.6f);
         }
-        world.spawnParticle(Particle.TOTEM_OF_UNDYING, a.plotX + 2.5, FLOOR_Y + 3, a.plotZ + 2.5, 60, 1.5, 1.5, 1.5, 0.3);
-
-        clearRegion(a.plotX, a.plotZ);
-        a.seqIndex++;
-        showTarget(a);
-        for (Player m : mem) sendShoppingList(m, a);
-        updateSidebar();
     }
 
-    private void sendShoppingList(Player p, Area a) {
-        BuildPreset bp = presetAt(a.seqIndex);
-        StringBuilder sb = new StringBuilder("§6[Build Mart] §eBuild #" + (a.seqIndex + 1) + ": §f§l" + bp.name + " " + bp.starString() + "\n§7Needs: ");
-        boolean first = true;
-        for (Map.Entry<Material, Integer> e : bp.counts.entrySet()) {
-            if (!first) sb.append("§7, ");
-            first = false;
-            sb.append("§f").append(e.getValue()).append(" ").append(nice(e.getKey()));
-            if (BuildPreset.SHOP_MATERIALS.contains(e.getKey())) sb.append(" §6(shop)");
+    /** MCC 7 "block titles": the name of the block you look at, in green above the hotbar; your plot progress on your plot. */
+    private void blockTitles() {
+        for (Player p : online()) {
+            if (p.getWorld() != world) continue;
+            Team t = teamOf(p);
+            String msg = null;
+            if (t != null && playing) {
+                Location l = p.getLocation();
+                for (int s = 0; s < 3; s++) {
+                    int px = MallMap.plotX(t.room, s), pz = MallMap.copyZ();
+                    if (Math.abs(l.getX() - (px + 0.5)) <= 5.5 && Math.abs(l.getZ() - (pz + 0.5)) <= 5.5 && t.slot[s] != null) {
+                        Progress pr = evaluate(t, s);
+                        msg = "§f" + t.slot[s].name + " §7• §a" + pr.correct + "/" + pr.total
+                                + (pr.wrong > 0 ? " §7• §c" + pr.wrong + " wrong" : "");
+                    }
+                }
+            }
+            if (msg == null) {
+                RayTraceResult r = p.rayTraceBlocks(6);
+                if (r != null && r.getHitBlock() != null) msg = "§a" + Canonical.nice(r.getHitBlock().getType());
+            }
+            if (msg != null) actionBar(p, msg);
         }
-        p.sendMessage(sb.toString());
     }
 
-    private void updateSidebar() {
-        if (ctx == null) return;
-        List<Area> list = new ArrayList<>(areas.values());
-        list.sort((x, y) -> Integer.compare(y.completed, x.completed));
-        List<String> lines = new ArrayList<>();
-        lines.add("§7Builds completed:");
-        for (int i = 0; i < Math.min(5, list.size()); i++) {
-            Area a = list.get(i);
-            String name = presetAt(a.seqIndex).name;
-            if (name.length() > 12) name = name.substring(0, 12);
-            lines.add(label(a.side) + " §f" + a.completed + " §8" + name);
+    // ================================================================= plots
+
+    private BuildDef nextBuild(Team t) {
+        for (int guard = 0; guard < deck.size(); guard++) {
+            BuildDef d = deck.get(t.next++ % deck.size());
+            boolean dup = false;
+            for (BuildDef a : t.slot) if (a == d) dup = true;
+            if (!dup) return d;
         }
-        ctx.setSidebarLines(lines);
+        return deck.get(t.next++ % deck.size());
     }
 
-    private void awardFinalBonuses(McmGameContext c) {
-        List<Area> list = new ArrayList<>(areas.values());
-        list.sort((x, y) -> Integer.compare(y.completed, x.completed));
-        c.broadcast("§6§lBuild Mart results:");
-        int[] bonus = {10, 6, 3};
-        int rank = 0;
-        for (int i = 0; i < list.size(); i++) {
-            Area a = list.get(i);
-            if (i > 0 && a.completed < list.get(i - 1).completed) rank = i;
-            c.broadcast("§e#" + (rank + 1) + " " + label(a.side) + " §7- §f" + a.completed + " builds");
-            if (list.size() >= 2 && rank < bonus.length && a.completed > 0) {
-                for (Player m : members(a.side)) c.addPoints(m.getUniqueId(), bonus[rank], "Build Mart: placed #" + (rank + 1));
+    private void clearVolume(int px, int pz, boolean floorToo) {
+        for (int x = px - 3; x <= px + 3; x++)
+            for (int z = pz - 3; z <= pz + 3; z++) {
+                for (int y = MallMap.PLOT_FLOOR_Y + BuildDef.MAX_H + 2; y > MallMap.PLOT_FLOOR_Y; y--)
+                    world.getBlockAt(x, y, z).setType(Material.AIR, false);
+                if (floorToo) world.getBlockAt(x, MallMap.PLOT_FLOOR_Y, z).setType(Material.SMOOTH_QUARTZ, false);
+            }
+    }
+
+    private void placeFloor(int px, int pz, BuildDef d) {
+        for (int z = 0; z < 7; z++) for (int x = 0; x < 7; x++)
+            world.getBlockAt(px - 3 + x, MallMap.PLOT_FLOOR_Y, pz - 3 + z).setBlockData(d.floor[z][x], false);
+    }
+
+    void placeBuild(int px, int pz, BuildDef d, String rotateFirstStair) {
+        boolean rotated = false;
+        for (int y = 0; y < d.height; y++)
+            for (int z = 0; z < 7; z++)
+                for (int x = 0; x < 7; x++) {
+                    BlockData bd = d.cells[y][z][x];
+                    if (bd == null) continue;
+                    bd = bd.clone();
+                    if (bd instanceof Leaves l) l.setPersistent(true);
+                    if (rotateFirstStair != null && !rotated && bd instanceof org.bukkit.block.data.type.Stairs st) {
+                        st.setFacing(st.getFacing() == org.bukkit.block.BlockFace.NORTH ? org.bukkit.block.BlockFace.SOUTH
+                                : org.bukkit.block.BlockFace.NORTH);
+                        rotated = true;
+                    }
+                    world.getBlockAt(px - 3 + x, MallMap.PLOT_FLOOR_Y + 1 + y, pz - 3 + z).setBlockData(bd, false);
+                }
+    }
+
+    void setSlot(Team t, int s, BuildDef d) {
+        int px = MallMap.plotX(t.room, s);
+        clearVolume(px, MallMap.templateZ(), true);
+        clearVolume(px, MallMap.copyZ(), true);
+        t.slot[s] = d;
+        if (d != null) {
+            placeFloor(px, MallMap.templateZ(), d);
+            placeFloor(px, MallMap.copyZ(), d);
+            placeBuild(px, MallMap.templateZ(), d, null);
+        }
+        if (t.holo[s] == null || !t.holo[s].isValid()) {
+            t.holo[s] = world.spawn(new Location(world, px + 0.5, MallMap.FY + 3.2, MallMap.ROOM_Z + 0.5), TextDisplay.class, e -> {
+                e.setBillboard(Display.Billboard.CENTER);
+                e.setPersistent(false);
+                e.setShadowed(true);
+                e.addScoreboardTag(ENT_TAG);
+            });
+            entities.add(t.holo[s]);
+        }
+        holoText(t, s);
+        refreshBooks(t);
+    }
+
+    private void holoText(Team t, int s) {
+        BuildDef d = t.slot[s];
+        String txt = d == null ? "§7Empty plot #" + (s + 1)
+                : "§f§l" + d.name + "\n§e" + d.starString() + "\n§6[+" + coinValue(d) + "⛃]\n§7Completions: "
+                + completions.getOrDefault(d.id, 0);
+        t.holo[s].text(lc(txt));
+    }
+
+    private void refreshHolos() {
+        for (Team t : teams.values()) for (int s = 0; s < 3; s++) if (t.holo[s] != null && t.holo[s].isValid()) holoText(t, s);
+    }
+
+    int coinValue(BuildDef d) { return Math.max(coinMin, coinBase - coinDecay * completions.getOrDefault(d.id, 0)); }
+
+    Progress evaluate(Team t, int s) {
+        BuildDef d = t.slot[s];
+        if (d == null) return new Progress(0, 0, 0);
+        int px = MallMap.plotX(t.room, s) - 3, pz = MallMap.copyZ() - 3;
+        int correct = 0, total = 0, wrong = 0;
+        for (int y = 0; y < BuildDef.MAX_H; y++)
+            for (int z = 0; z < 7; z++)
+                for (int x = 0; x < 7; x++) {
+                    String want = y < d.height ? d.canon[y][z][x] : Canonical.AIR;
+                    String have = Canonical.of(world.getBlockAt(px + x, MallMap.PLOT_FLOOR_Y + 1 + y, pz + z).getBlockData());
+                    if (!want.equals(Canonical.AIR)) {
+                        total++;
+                        if (want.equals(have)) correct++;
+                        else if (!have.equals(Canonical.AIR)) wrong++;
+                    } else if (!have.equals(Canonical.AIR)) wrong++;
+                }
+        return new Progress(correct, total, wrong);
+    }
+
+    private void check(Team t, int s) {
+        if (!playing || t.slot[s] == null) return;
+        if (evaluate(t, s).complete()) completeBuild(t, s);
+    }
+
+    private void completeBuild(Team t, int s) {
+        BuildDef d = t.slot[s];
+        int coins = coinValue(d);
+        completions.merge(d.id, 1, Integer::sum);
+        t.built++;
+        t.coins += coins;
+        List<Player> members = members(t);
+        // MCC (MCC 3-13): the build value is paid to EACH player of the team (30 coins per player at first)
+        if (ctx != null && coins > 0) {
+            for (Player p : members) ctx.addCoins(p.getUniqueId(), coins, "Build Mart: " + d.name);
+            t.points += coins * members.size();
+        }
+        for (Player p : members) {
+            p.sendMessage(lc("§fYour team completed §e" + d.name + " §7(" + d.starString() + ")"));
+            p.showTitle(Title.title(lc("§a§lBUILD COMPLETED!"), lc("§f" + d.name),
+                    Title.Times.times(Duration.ofMillis(100), Duration.ofMillis(1500), Duration.ofMillis(300))));
+            p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.7f, 1.2f);
+        }
+        broadcast(ctx == null ? "" : ctx.sideLabel(t.side) + " §fcompleted §e" + d.name + "§f! §7(" + completions.get(d.id) + "x)");
+        plugin.getLogger().info("[bm] " + t.side + " completed " + d.id + " slot " + (s + 1) + " for " + coins + " coins ("
+                + coins * members.size() + " team coins)");
+        int px = MallMap.plotX(t.room, s), pz = MallMap.copyZ();
+        world.spawnParticle(Particle.TOTEM_OF_UNDYING, px + 0.5, MallMap.FY + 5, pz + 0.5, 80, 2, 2, 2, 0.4);
+        setSlot(t, s, nextBuild(t));
+        dirty.remove((long) t.room * 3 + s);
+    }
+
+    private void payPartials(McmGameContext c) {
+        for (Team t : teams.values()) {
+            List<Player> members = members(t);
+            int coins = 0;
+            for (int s = 0; s < 3; s++) {
+                if (t.slot[s] == null) continue;
+                Progress pr = evaluate(t, s);
+                if (pr.total == 0) continue;
+                coins += (int) Math.floor((double) pr.correct / pr.total * coinValue(t.slot[s]));
+            }
+            if (coins > 0) {
+                for (Player p : members) c.addCoins(p.getUniqueId(), coins, "Build Mart: unfinished builds filled in");
+                t.points += coins * members.size();
+            }
+            t.coins += coins;
+        }
+        List<Team> order = new ArrayList<>(teams.values());
+        order.sort((a, b) -> b.built != a.built ? b.built - a.built : b.coins - a.coins);
+        c.broadcast("§6§lBuild Mart §7- builds completed:");
+        for (Team t : order) c.broadcast("  " + c.sideLabel(t.side) + "§7: §f" + t.built + " §7(" + t.coins + "⛃)");
+    }
+
+    private List<Player> members(Team t) {
+        List<Player> out = new ArrayList<>();
+        for (var e : sideOf.entrySet()) if (e.getValue().equals(t.side)) { Player p = Bukkit.getPlayer(e.getKey()); if (p != null) out.add(p); }
+        return out;
+    }
+
+    /** room, slot of a copy plot build volume containing the block, or null. */
+    private int[] copyPlotAt(Block b) {
+        int y = b.getY();
+        if (y <= MallMap.PLOT_FLOOR_Y || y > MallMap.PLOT_FLOOR_Y + BuildDef.MAX_H) return null;
+        int room = MallMap.roomAt(b.getX(), b.getZ());
+        if (room < 0) return null;
+        if (Math.abs(b.getZ() - MallMap.copyZ()) > 3) return null;
+        for (int s = 0; s < 3; s++) if (Math.abs(b.getX() - MallMap.plotX(room, s)) <= 3) return new int[]{room, s};
+        return null;
+    }
+
+    private boolean ownPlot(Player p, Block b) {
+        Team t = teamOf(p);
+        int[] at = copyPlotAt(b);
+        return t != null && at != null && at[0] == t.room && t.slot[at[1]] != null;
+    }
+
+    // ================================================================= stock
+
+    private Block blockAt(long k) {
+        int x = (int) (k >> 38), z = (int) ((k << 26) >> 38), y = (int) (k & 0xFFF);
+        if (y >= 2048) y -= 4096;
+        return world.getBlockAt(x, y, z);
+    }
+
+    private void resetStock() {
+        for (var e : map.stock.entrySet()) {
+            Block b = blockAt(e.getKey());
+            if (!b.getBlockData().equals(e.getValue())) b.setBlockData(e.getValue(), false);
+        }
+        regrow.clear();
+    }
+
+    private void clearAllRooms() {
+        for (int r = 0; r < MallMap.ROOMS; r++) {
+            for (int s = 0; s < 3; s++) {
+                clearVolume(MallMap.plotX(r, s), MallMap.templateZ(), true);
+                clearVolume(MallMap.plotX(r, s), MallMap.copyZ(), true);
+                Block c = world.getBlockAt(MallMap.plotX(r, s) - 6, MallMap.FY + 1, MallMap.copyZ() + 6);
+                if (c.getState() instanceof Container ct) ct.getInventory().clear();
+            }
+            MallMap.Box b = MallMap.roomBox(r);
+            for (int z = b.z1(); z <= b.z2(); z++) {
+                Block f = world.getBlockAt(b.x2() - 1, MallMap.FY + 1, z);
+                if (f.getState() instanceof Container ct) ct.getInventory().clear();
             }
         }
     }
 
-    // ---------------------------------------------------------------- listeners
+    private void spawnLabels() {
+        for (MallMap.Label l : map.labels) {
+            TextDisplay td = world.spawn(new Location(world, l.x(), l.y(), l.z()), TextDisplay.class, e -> {
+                e.setBillboard(Display.Billboard.CENTER);
+                e.setPersistent(false);
+                e.addScoreboardTag(ENT_TAG);
+                e.text(lc(l.text()));
+                e.setTransformation(new org.bukkit.util.Transformation(new org.joml.Vector3f(), new org.joml.AxisAngle4f(),
+                        new org.joml.Vector3f(l.scale(), l.scale(), l.scale()), new org.joml.AxisAngle4f()));
+                if (l.text().startsWith("§0")) e.setBackgroundColor(Color.fromARGB(0, 0, 0, 0));
+            });
+            entities.add(td);
+        }
+    }
+
+    // ================================================================= book
+
+    private ItemStack book(Team t) {
+        ItemStack it = new ItemStack(Material.WRITTEN_BOOK);
+        BookMeta m = (BookMeta) it.getItemMeta();
+        m.setTitle("Shopping List");
+        m.setAuthor("Build Mart");
+        m.displayName(lc("§eShopping List").decoration(net.kyori.adventure.text.format.TextDecoration.ITALIC, false));
+        List<Component> pages = new ArrayList<>();
+        for (int s = 0; s < 3; s++) {
+            BuildDef d = t.slot[s];
+            if (d == null) continue;
+            List<String> lines = new ArrayList<>();
+            for (var e : d.materials.entrySet()) lines.add("§0" + Canonical.nice(e.getKey()) + " §8" + e.getValue() + "x");
+            int i = 0;
+            boolean first = true;
+            do {
+                StringBuilder sb = new StringBuilder();
+                if (first) sb.append("§l").append(d.name).append("§r\n§6").append(d.starString()).append("\n§0Materials:\n");
+                int max = first ? 9 : 12;
+                for (int k = 0; k < max && i < lines.size(); k++) sb.append(lines.get(i++)).append('\n');
+                pages.add(lc(sb.toString()));
+                first = false;
+            } while (i < lines.size());
+        }
+        if (pages.isEmpty()) pages.add(lc("§7Your build zone has no builds right now."));
+        m.pages(pages);
+        m.getPersistentDataContainer().set(bookKey, PersistentDataType.BYTE, (byte) 1);
+        m.getPersistentDataContainer().set(kitKey, PersistentDataType.BYTE, (byte) 1);
+        it.setItemMeta(m);
+        return it;
+    }
+
+    private void refreshBooks(Team t) {
+        if (!bookEnabled || !running) return;
+        for (Player p : members(t)) {
+            ItemStack[] inv = p.getInventory().getContents();
+            int at = 8;
+            for (int i = 0; i < inv.length; i++)
+                if (inv[i] != null && inv[i].hasItemMeta() && inv[i].getItemMeta().getPersistentDataContainer().has(bookKey)) {
+                    at = i; p.getInventory().setItem(i, null);
+                }
+            if (p.getInventory().getItem(at) == null) p.getInventory().setItem(at, book(t));
+            else p.getInventory().addItem(book(t));
+        }
+    }
+
+    // ================================================================= HUD
+
+    private void updateSidebar() {
+        if (ctx == null) return;
+        List<String> lines = new ArrayList<>();
+        lines.add("§aBuilds completed:");
+        List<Team> order = new ArrayList<>(teams.values());
+        order.sort((a, b) -> b.built - a.built);
+        for (int i = 0; i < Math.min(5, order.size()); i++)
+            lines.add(" " + ctx.sideLabel(order.get(i).side) + "§7: §f" + order.get(i).built);
+        ctx.setSidebarLines(lines);
+    }
+
+    void actionBar(Player p, String s) { p.sendActionBar(lc(s)); }
+
+    private void broadcast(String s) {
+        if (ctx != null) ctx.broadcast(s); else Bukkit.broadcast(lc(s));
+    }
+
+    static Component lc(String s) { return LegacyComponentSerializer.legacySection().deserialize(s); }
+
+    private void tutorial() {
+        // MCC 13 how-to-play card, word for word (bm-1/frames/021550, 021610, 021620)
+        broadcast("§e§lWelcome to Big Sales at Build Mart!");
+        broadcast("§fBuild Mart is a speed-building challenge! You have " + (secondsLeft / 60) + " minutes to run out into Build Mart, "
+                + "collect resources, bring them back to your plot, and build as many monuments as you can!");
+        broadcast("§fEach team has their own private build zone. You'll have templates of §lthree§f different builds "
+                + "that you must copy in the neighbouring build plots. As you complete builds, new ones will spawn.");
+        broadcast("§fUse your trolley to make traversing Build Mart faster. "
+                + "§c- But be careful you don't fall in any holes, as you'll lose all the resources you're carrying.");
+        broadcast("§7Extra tips: use the provided furnaces and crafting tables to create anything you can't find around Build Mart.");
+    }
+
+    // ================================================================= events
+
+    private boolean ours(World w) { return running && w == world; }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onBreak(BlockBreakEvent e) {
-        Block b = e.getBlock();
-        if (!inOurWorld(b.getWorld())) return;
         Player p = e.getPlayer();
-        Area a = areaOf(p);
-        if (!playing || a == null || p.getGameMode() != GameMode.SURVIVAL) { e.setCancelled(true); return; }
-        long k = key(b.getX(), b.getY(), b.getZ());
-        Stall st = stallBlocks.get(k);
-        if (st != null && b.getType() == st.material) {
-            if (!give(p, st.material)) { e.setCancelled(true); return; }
-            e.setCancelled(false);
-            e.setDropItems(false);
-            e.setExpToDrop(0);
-            long delay = st.saleUntilTick > tick ? SALE_REGEN_TICKS : NORMAL_REGEN_TICKS;
-            regen.put(k, new Regen(b.getX(), b.getY(), b.getZ(), st.material, tick + delay));
-            return;
-        }
-        if (inRegion(b, a.plotX, a.plotZ)) {
-            Material m = b.getType();
-            if (m.isItem() && !give(p, m)) { e.setCancelled(true); return; }
-            e.setCancelled(false);
-            e.setDropItems(false);
-            e.setExpToDrop(0);
-            dirty.add(a.side);
-            return;
-        }
+        if (!ours(p.getWorld())) return;
+        if (!isParticipant(p)) { if (p.getGameMode() != GameMode.CREATIVE) e.setCancelled(true); return; }
         e.setCancelled(true);
-    }
-
-    private boolean give(Player p, Material m) {
-        Map<Integer, ItemStack> left = p.getInventory().addItem(new ItemStack(m));
-        if (!left.isEmpty()) {
-            p.sendActionBar(c("§cYour inventory is full!"));
-            return false;
-        }
-        return true;
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onPlace(BlockPlaceEvent e) {
-        Block b = e.getBlockPlaced();
-        if (!inOurWorld(b.getWorld())) return;
-        Player p = e.getPlayer();
-        Area a = areaOf(p);
-        if (!playing || a == null || p.getGameMode() != GameMode.SURVIVAL || !inRegion(b, a.plotX, a.plotZ)) {
-            e.setCancelled(true);
-            if (playing && a != null) p.sendActionBar(c("§cYou can only build on your own plot."));
+        if (!playing) return;
+        Block b = e.getBlock();
+        long k = MallMap.key(b.getX(), b.getY(), b.getZ());
+        BlockData st = map.stock.get(k);
+        if (st != null) {
+            ItemStack drop = new ItemStack(BuildDef.itemOf(st));
+            if (!p.getInventory().addItem(drop).isEmpty()) { actionBar(p, "§cYour inventory is full!"); return; }
+            b.setType(Material.AIR, false);
+            regrow.put(k, tick + regrowTicks);
+            p.playSound(b.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.4f, 1.4f);
             return;
         }
-        e.setCancelled(false);
-        e.setBuild(true);
-        dirty.add(a.side);
+        if (ownPlot(p, b)) {
+            BlockData bd = b.getBlockData();
+            Material item = BuildDef.itemOf(bd);
+            boolean giveBack = bd.getMaterial() != Material.NETHER_PORTAL && bd.getMaterial() != Material.WATER
+                    && bd.getMaterial() != Material.LAVA && item != Material.BARRIER;
+            b.setType(Material.AIR, true);
+            if (giveBack) p.getInventory().addItem(new ItemStack(item));
+            int[] at = copyPlotAt(b);
+            dirty.add((long) at[0] * 3 + at[1]);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onPlace(BlockPlaceEvent e) {
+        Player p = e.getPlayer();
+        if (!ours(p.getWorld())) return;
+        if (!isParticipant(p)) { if (p.getGameMode() != GameMode.CREATIVE) e.setCancelled(true); return; }
+        Block b = e.getBlockPlaced();
+        if (!playing || !ownPlot(p, b)) {
+            e.setCancelled(true);
+            if (playing) actionBar(p, "§cYou can only build on your team's build plots!");
+            return;
+        }
+        int[] at = copyPlotAt(b);
+        dirty.add((long) at[0] * 3 + at[1]);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onBucket(PlayerBucketEmptyEvent e) {
+        if (!ours(e.getPlayer().getWorld())) return;
+        Block b = e.getBlockClicked().getRelative(e.getBlockFace());
+        if (!playing || !ownPlot(e.getPlayer(), b)) { e.setCancelled(true); return; }
+        int[] at = copyPlotAt(b);
+        dirty.add((long) at[0] * 3 + at[1]);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onBucketFill(PlayerBucketFillEvent e) {
+        if (!ours(e.getPlayer().getWorld())) return;
+        if (!playing || !ownPlot(e.getPlayer(), e.getBlockClicked())) e.setCancelled(true);
+        else { int[] at = copyPlotAt(e.getBlockClicked()); dirty.add((long) at[0] * 3 + at[1]); }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onIgnite(BlockIgniteEvent e) {
+        if (!ours(e.getBlock().getWorld())) return;
+        if (e.getPlayer() == null || copyPlotAt(e.getBlock()) == null) e.setCancelled(true);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPortalCreate(PortalCreateEvent e) {
+        if (!ours(e.getWorld())) return;
+        for (var st : e.getBlocks()) if (copyPlotAt(st.getBlock()) == null) { e.setCancelled(true); return; }
+        for (var st : e.getBlocks()) { int[] at = copyPlotAt(st.getBlock()); dirty.add((long) at[0] * 3 + at[1]); }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onFlow(BlockFromToEvent e) {
+        if (e.getBlock().getWorld() != world) return;
+        int[] to = copyPlotAt(e.getToBlock());
+        if (to == null) { e.setCancelled(true); return; }
+        dirty.add((long) to[0] * 3 + to[1]);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onFade(BlockFadeEvent e) { if (e.getBlock().getWorld() == world) e.setCancelled(true); }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onForm(BlockFormEvent e) { if (e.getBlock().getWorld() == world) e.setCancelled(true); }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onSpread(BlockSpreadEvent e) { if (e.getBlock().getWorld() == world) e.setCancelled(true); }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onDecay(LeavesDecayEvent e) { if (e.getBlock().getWorld() == world) e.setCancelled(true); }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPortal(PlayerPortalEvent e) { if (e.getFrom().getWorld() == world) e.setCancelled(true); }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityPortal(EntityPortalEvent e) { if (e.getFrom().getWorld() == world) e.setCancelled(true); }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onDamage(EntityDamageEvent e) {
+        if (e.getEntity() instanceof Player && e.getEntity().getWorld() == world && running) e.setCancelled(true);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onFood(FoodLevelChangeEvent e) { if (e.getEntity().getWorld() == world && running) e.setCancelled(true); }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onDrop(PlayerDropItemEvent e) {
+        if (ours(e.getPlayer().getWorld()) && isKit(e.getItemDrop().getItemStack())) e.setCancelled(true);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onClick(InventoryClickEvent e) {
+        if (!(e.getWhoClicked() instanceof Player p) || !ours(p.getWorld())) return;
+        if (e.getView().getTopInventory().getType() == InventoryType.CRAFTING) return;
+        if (isKit(e.getCurrentItem()) || isKit(e.getCursor())
+                || (e.getHotbarButton() >= 0 && isKit(p.getInventory().getItem(e.getHotbarButton())))) e.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onInteract(PlayerInteractEvent e) {
-        if (e.getClickedBlock() == null || !inOurWorld(e.getClickedBlock().getWorld())) return;
-        Block b = e.getClickedBlock();
-        Shop s = shopBlocks.get(key(b.getX(), b.getY(), b.getZ()));
-        if (s == null) {
-            // block opening anything that isn't ours (nothing else interactive exists, but be safe)
-            if (e.getAction() == org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK && b.getType().isInteractable()
-                    && !inPlotOf(e.getPlayer(), b)) {
-                e.setUseInteractedBlock(org.bukkit.event.Event.Result.DENY);
-            }
-            return;
-        }
-        e.setUseInteractedBlock(org.bukkit.event.Event.Result.DENY);
-        e.setUseItemInHand(org.bukkit.event.Event.Result.DENY);
-        e.setCancelled(true);
-        if (e.getAction() != org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK || e.getHand() != EquipmentSlot.HAND) return;
         Player p = e.getPlayer();
-        if (!playing || areaOf(p) == null) return;
-        long now = System.currentTimeMillis();
-        Long last = shopCooldown.get(p.getUniqueId());
-        if (last != null && now - last < 150) return;
-        shopCooldown.put(p.getUniqueId(), now);
-        int times = p.isSneaking() ? 16 : 1;
-        int done = 0;
-        PlayerInventory inv = p.getInventory();
-        for (int i = 0; i < times; i++) {
-            boolean ok = true;
-            for (Cost cst : s.costs) if (!inv.containsAtLeast(new ItemStack(cst.material()), cst.amount())) { ok = false; break; }
-            if (!ok) break;
-            if (!hasRoom(inv, s.product, s.productAmount)) {
-                p.sendActionBar(c("§cYour inventory is full!"));
+        if (!ours(p.getWorld()) || e.getClickedBlock() == null || e.getAction() != org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK) return;
+        Block b = e.getClickedBlock();
+        for (MallMap.Counter c : map.counters) {
+            if (b.getX() == c.x() && b.getY() == c.y() && b.getZ() == c.z()) {
+                e.setCancelled(true);
+                if (!playing || !isParticipant(p)) return;
+                Long cd = counterCd.get(p.getUniqueId());
+                if (cd != null && cd > tick) return;
+                counterCd.put(p.getUniqueId(), tick + 10);
+                if (c.item() != Material.COAL && p.getInventory().contains(c.item())) { actionBar(p, "§eYou already have " + c.name()); return; }
+                p.getInventory().addItem(new ItemStack(c.item(), c.item() == Material.COAL ? 8 : 1));
+                p.playSound(b.getLocation(), Sound.BLOCK_BARREL_OPEN, 0.6f, 1.2f);
                 return;
             }
-            for (Cost cst : s.costs) inv.removeItem(new ItemStack(cst.material(), cst.amount()));
-            inv.addItem(new ItemStack(s.product, s.productAmount));
-            done++;
         }
-        if (done > 0) {
-            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_YES, 0.7f, 1.3f);
-            p.sendActionBar(c("§a+" + (done * s.productAmount) + " " + nice(s.product)));
-        } else {
-            StringBuilder need = new StringBuilder();
-            for (Cost cst : s.costs) {
-                if (need.length() > 0) need.append(" + ");
-                need.append(cst.amount()).append(" ").append(nice(cst.material()));
+        if (b.getType() == Material.CHEST && isParticipant(p)) {
+            Team t = teamOf(p);
+            if (t == null || MallMap.roomAt(b.getX(), b.getZ()) != t.room) e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e) {
+        if (running) trolley.reclaim(e.getPlayer(), true);
+    }
+
+    // ================================================================= admin command
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] a) {
+        if (a.length == 0) {
+            say(sender, "/bm status | fast | fill <team> <slot> [rotate] | clear <team> <slot> | assign <team> <build> | "
+                    + "list | stock | regen | tp <mall|room> [n] | dump <mall|room|plot> | preview <build> [slot] | kit <player> | reload");
+            return true;
+        }
+        try {
+            switch (a[0].toLowerCase(Locale.ROOT)) {
+                case "stock" -> {
+                    Map<Material, Integer> n = new TreeMap<>();
+                    for (BlockData bd : map.stock.values()) n.merge(bd.getMaterial(), 1, Integer::sum);
+                    StringBuilder sb = new StringBuilder("stock: " + map.stock.size() + " blocks, " + n.size() + " materials, "
+                            + map.labels.size() + " labels, " + map.leds.size() + " blinking lamps:");
+                    n.forEach((m, c) -> sb.append(' ').append(m.name().toLowerCase()).append('=').append(c));
+                    say(sender, sb.toString());
+                    plugin.getLogger().info(sb.toString());
+                }
+                case "debug" -> { trolley.debug = !trolley.debug; say(sender, "trolley debug " + trolley.debug); }
+                case "fast" -> { fast = !fast; say(sender, "Build Mart fast mode " + (fast ? "ON (3 s pregame, 4 min game)" : "OFF")); }
+                case "reload" -> { loadConfig(); builds = BuildDef.loadAll(pluginFile(), plugin.getLogger()); say(sender, "reloaded, " + builds.size() + " builds"); }
+                case "list" -> {
+                    for (BuildDef d : builds) say(sender, d.id + " §7" + d.name + " " + d.starString() + " " + d.blockCount + " blocks " + d.materials.size() + " materials");
+                }
+                case "status" -> {
+                    say(sender, "running=" + running + " playing=" + playing + " secondsLeft=" + secondsLeft + " trolleys=" + trolley.count());
+                    for (Team t : teams.values()) {
+                        StringBuilder sb = new StringBuilder("team " + t.room + " " + t.side + " built=" + t.built + " coins=" + t.coins + " points=" + t.points + " |");
+                        for (int s = 0; s < 3; s++) {
+                            BuildDef d = t.slot[s];
+                            if (d == null) { sb.append(" [").append(s + 1).append(": empty]"); continue; }
+                            Progress pr = evaluate(t, s);
+                            sb.append(" [").append(s + 1).append(": ").append(d.id).append(' ').append(pr.correct).append('/').append(pr.total)
+                                    .append(" wrong=").append(pr.wrong).append(']');
+                        }
+                        say(sender, sb.toString());
+                    }
+                }
+                case "fill" -> {
+                    Team t = team(sender, a[1]);
+                    int s = Integer.parseInt(a[2]) - 1;
+                    if (t.slot[s] == null) { say(sender, "slot empty"); return true; }
+                    int px = MallMap.plotX(t.room, s);
+                    clearVolume(px, MallMap.copyZ(), false);
+                    placeBuild(px, MallMap.copyZ(), t.slot[s], a.length > 3 && a[3].equalsIgnoreCase("rotate") ? "rotate" : null);
+                    dirty.add((long) t.room * 3 + s);
+                    say(sender, "filled team " + t.room + " slot " + (s + 1) + " with " + t.slot[s].id + (a.length > 3 ? " (one stair rotated)" : ""));
+                }
+                case "clear" -> {
+                    Team t = team(sender, a[1]);
+                    int s = Integer.parseInt(a[2]) - 1;
+                    setSlot(t, s, null);
+                    say(sender, "cleared team " + t.room + " slot " + (s + 1));
+                }
+                case "assign" -> {
+                    Team t = team(sender, a[1]);
+                    BuildDef d = builds.stream().filter(x -> x.id.equalsIgnoreCase(a[2])).findFirst().orElse(null);
+                    if (d == null) { say(sender, "unknown build " + a[2]); return true; }
+                    int free = -1;
+                    for (int s = 0; s < 3; s++) if (t.slot[s] == null) { free = s; break; }
+                    if (free < 0) { say(sender, "REFUSED: all 3 plots of team " + t.room + " are busy - finish a build first"); return true; }
+                    setSlot(t, free, d);
+                    say(sender, "assigned " + d.id + " to team " + t.room + " slot " + (free + 1));
+                }
+                case "regen" -> {
+                    NamespacedKey vk = new NamespacedKey(plugin, "mall_version");
+                    if (world != null) world.getPersistentDataContainer().remove(vk);
+                    ensureWorld();
+                    say(sender, "regenerated");
+                }
+                case "tp" -> {
+                    if (!(sender instanceof Player p)) { say(sender, "players only"); return true; }
+                    if (a[1].equalsIgnoreCase("mall")) p.teleport(arrive());
+                    else {
+                        double[] s = MallMap.roomSpawn(a.length > 2 ? Integer.parseInt(a[2]) : 0);
+                        p.teleport(new Location(world, s[0], s[1], s[2], (float) s[3], 0));
+                    }
+                }
+                case "kit" -> { Player p = Bukkit.getPlayerExact(a[1]); if (p != null) giveKit(p); }
+                case "preview" -> {
+                    BuildDef d = builds.stream().filter(x -> x.id.equalsIgnoreCase(a[1])).findFirst().orElse(null);
+                    if (d == null) { say(sender, "unknown build"); return true; }
+                    int s = a.length > 2 ? Integer.parseInt(a[2]) - 1 : 0;
+                    int px = MallMap.plotX(MallMap.ROOMS - 1, s);
+                    clearVolume(px, MallMap.templateZ(), true);
+                    placeFloor(px, MallMap.templateZ(), d);
+                    placeBuild(px, MallMap.templateZ(), d, null);
+                    say(sender, "preview " + d.id + " on room " + (MallMap.ROOMS - 1) + " template " + (s + 1) + " at " + px + "," + MallMap.templateZ());
+                }
+                case "fdump" -> {
+                    // full-state dump for the preview renderers: bm fdump x1,y1,z1,x2,y2,z2 <name>
+                    String[] c = a[1].split(",");
+                    int x1 = Integer.parseInt(c[0]), y1 = Integer.parseInt(c[1]), z1 = Integer.parseInt(c[2]);
+                    int x2 = Integer.parseInt(c[3]), y2 = Integer.parseInt(c[4]), z2 = Integer.parseInt(c[5]);
+                    File dir = new File(plugin.getDataFolder(), "dumps");
+                    dir.mkdirs();
+                    File out = new File(dir, a[2] + ".mcmdump.gz");
+                    try (var w = new java.io.PrintWriter(new java.io.OutputStreamWriter(new java.util.zip.GZIPOutputStream(
+                            new java.io.FileOutputStream(out)), java.nio.charset.StandardCharsets.UTF_8))) {
+                        w.println("MCMDUMP 1 " + (x2 - x1 + 1) + " " + (y2 - y1 + 1) + " " + (z2 - z1 + 1));
+                        for (int x = x1; x <= x2; x++) for (int y = y1; y <= y2; y++) for (int z = z1; z <= z2; z++) {
+                            BlockData bd = world.getBlockAt(x, y, z).getBlockData();
+                            if (!bd.getMaterial().isAir()) w.println((x - x1) + " " + (y - y1) + " " + (z - z1) + " " + bd.getAsString());
+                        }
+                    }
+                    say(sender, "dumped " + out.getAbsolutePath());
+                }
+                case "dump" -> {
+                    File dir = new File(plugin.getDataFolder(), "dumps");
+                    dir.mkdirs();
+                    String what = a[1].toLowerCase(Locale.ROOT);
+                    Location lo, hi;
+                    switch (what) {
+                        case "mall" -> { lo = new Location(world, -68, 62, -151); hi = new Location(world, 68, 91, 47); }
+                        case "room" -> { MallMap.Box b = MallMap.roomBox(a.length > 2 ? Integer.parseInt(a[2]) : 0);
+                            lo = new Location(world, b.x1(), 62, b.z1()); hi = new Location(world, b.x2(), 82, b.z2()); }
+                        case "plot" -> { int px = MallMap.plotX(MallMap.ROOMS - 1, a.length > 2 ? Integer.parseInt(a[2]) - 1 : 0);
+                            lo = new Location(world, px - 7, 63, MallMap.templateZ() - 6); hi = new Location(world, px + 7, 78, MallMap.templateZ() + 9); }
+                        default -> {
+                            String[] c = a[2].split(",");
+                            lo = new Location(world, Integer.parseInt(c[0]), Integer.parseInt(c[1]), Integer.parseInt(c[2]));
+                            hi = new Location(world, Integer.parseInt(c[3]), Integer.parseInt(c[4]), Integer.parseInt(c[5]));
+                        }
+                    }
+                    File out = new File(dir, what + (a.length > 2 && !what.equals("mall") ? "_" + a[2].replace(',', '_') : "") + ".mcmdump.gz");
+                    com.mcm.api.McmBuild.dumpRegion(world, lo, hi, out, r -> say(sender, "dumped " + out.getAbsolutePath()));
+                }
+                default -> say(sender, "unknown subcommand");
             }
-            p.sendActionBar(c("§c" + s.name + " needs " + need));
-            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.7f, 1f);
+        } catch (Exception ex) {
+            say(sender, "error: " + ex);
         }
+        return true;
     }
 
-    private static boolean hasRoom(PlayerInventory inv, Material m, int amount) {
-        int room = 0;
-        for (ItemStack it : inv.getStorageContents()) {
-            if (it == null || it.getType().isAir()) room += m.getMaxStackSize();
-            else if (it.getType() == m && !it.hasItemMeta()) room += Math.max(0, it.getMaxStackSize() - it.getAmount());
-            if (room >= amount) return true;
-        }
-        return false;
+    private Team team(CommandSender sender, String arg) {
+        Player p = Bukkit.getPlayerExact(arg);
+        if (p != null && teamOf(p) != null) return teamOf(p);
+        int room = Integer.parseInt(arg);
+        Team t = teamByRoom(room);
+        if (t == null) throw new IllegalArgumentException("no team in room " + room);
+        return t;
     }
 
-    private boolean inPlotOf(Player p, Block b) {
-        Area a = areaOf(p);
-        return a != null && inRegion(b, a.plotX, a.plotZ);
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onDamage(EntityDamageEvent e) {
-        if (e.getEntity() instanceof Player && inOurWorld(e.getEntity().getWorld())) e.setCancelled(true);
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onFood(FoodLevelChangeEvent e) {
-        if (inOurWorld(e.getEntity().getWorld())) {
-            e.setCancelled(true);
-            e.getEntity().setFoodLevel(20);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onDrop(PlayerDropItemEvent e) {
-        if (inOurWorld(e.getPlayer().getWorld()) && isTool(e.getItemDrop().getItemStack())) e.setCancelled(true);
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onLeavesDecay(LeavesDecayEvent e) {
-        if (e.getBlock().getWorld().getName().equals(WORLD)) e.setCancelled(true);
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onFade(BlockFadeEvent e) {
-        if (e.getBlock().getWorld().getName().equals(WORLD)) e.setCancelled(true);
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onSpread(BlockSpreadEvent e) {
-        if (e.getBlock().getWorld().getName().equals(WORLD)) e.setCancelled(true);
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onFallingLand(EntityChangeBlockEvent e) {
-        // sand dropped inside a plot: re-check that plot after it lands
-        if (!inOurWorld(e.getBlock().getWorld()) || !(e.getEntity() instanceof FallingBlock)) return;
-        for (Area a : areas.values()) if (inRegion(e.getBlock(), a.plotX, a.plotZ)) dirty.add(a.side);
-    }
-
-    // ---------------------------------------------------------------- utils
-
-    private static Component c(String legacy) {
-        return LegacyComponentSerializer.legacySection().deserialize(legacy);
-    }
-
-    private static Title title(String t, String s, int inMs, int stayMs, int outMs) {
-        return Title.title(c(t), c(s), Title.Times.times(Duration.ofMillis(inMs), Duration.ofMillis(stayMs), Duration.ofMillis(outMs)));
-    }
-
-    private static String fmt(int secs) {
-        return (secs / 60) + ":" + String.format("%02d", secs % 60);
-    }
-
-    static String nice(Material m) {
-        String[] parts = m.name().toLowerCase(Locale.ROOT).split("_");
-        StringBuilder sb = new StringBuilder();
-        for (String s : parts) {
-            if (s.isEmpty()) continue;
-            if (sb.length() > 0) sb.append(' ');
-            sb.append(Character.toUpperCase(s.charAt(0))).append(s.substring(1));
-        }
-        return sb.toString();
-    }
-
-    private static Material concreteFor(ChatColor color) {
-        if (color == null) return Material.WHITE_CONCRETE;
-        return switch (color) {
-            case RED, DARK_RED -> Material.RED_CONCRETE;
-            case GOLD -> Material.ORANGE_CONCRETE;
-            case YELLOW -> Material.YELLOW_CONCRETE;
-            case GREEN -> Material.LIME_CONCRETE;
-            case DARK_GREEN -> Material.GREEN_CONCRETE;
-            case DARK_AQUA -> Material.CYAN_CONCRETE;
-            case AQUA -> Material.LIGHT_BLUE_CONCRETE;
-            case BLUE, DARK_BLUE -> Material.BLUE_CONCRETE;
-            case DARK_PURPLE -> Material.PURPLE_CONCRETE;
-            case LIGHT_PURPLE -> Material.PINK_CONCRETE;
-            case GRAY -> Material.LIGHT_GRAY_CONCRETE;
-            case DARK_GRAY -> Material.GRAY_CONCRETE;
-            case BLACK -> Material.BLACK_CONCRETE;
-            default -> Material.WHITE_CONCRETE;
-        };
+    private void say(CommandSender s, String msg) {
+        s.sendMessage(lc("§6[BM] §f" + msg));
+        if (!(s instanceof org.bukkit.command.ConsoleCommandSender)) plugin.getLogger().info("[bm] " + msg.replaceAll("§.", ""));
     }
 }

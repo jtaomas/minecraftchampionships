@@ -92,8 +92,11 @@ public final class RailroadRushGame implements McmGame, Listener {
     static final int MINE_X = -120, MINE_Z = 90, MINE_R = 20;
     static final Material WEAK = Material.OAK_PLANKS;
     static final int WEAK_TICKS = 160;
-    static final int[] PLACE_POINTS = {40, 32, 27, 23, 19, 16, 13, 10, 8, 6};
-    static final int DOOR_POINTS = 15, EMERALD_POINTS = 5;
+    // MCC coins (base x1.0, config coins.*; the core applies the event multiplier). All are TEAM pools "split equally
+    // amongst the team": each online member gets the MCC per-member share (pool / 4). See game-plugins/COINS.md.
+    int[] PLACE_POINTS = {650, 525, 475, 425, 350, 300, 250, 200, 175, 150};   // MCC: by track length
+    int DOOR_POINTS = 100, EMERALD_POINTS = 25;   // MCC: per checkpoint reached / emerald mined
+    int BLOCK_COINS = 2;                          // MCC: per block the track travelled forward
     static final int MAX_CHAIN = 1500;
 
     enum Phase { IDLE, BUILDING, COUNTDOWN, PLAYING, FINAL }
@@ -170,6 +173,12 @@ public final class RailroadRushGame implements McmGame, Listener {
         if (running) cleanup(false);
         this.ctx = context;
         finished = false;
+        plugin.saveDefaultConfig();
+        var cfg = plugin.getConfig();
+        PLACE_POINTS = com.mcm.api.McmCoins.toIntArray(cfg.getList("coins.placement"), PLACE_POINTS);
+        DOOR_POINTS = Math.max(0, cfg.getInt("coins.checkpoint", 100));
+        EMERALD_POINTS = Math.max(0, cfg.getInt("coins.emerald", 25));
+        BLOCK_COINS = Math.max(0, cfg.getInt("coins.per-block", 2));
         running = true;
         gen++;
         tick = 0;
@@ -635,8 +644,10 @@ public final class RailroadRushGame implements McmGame, Listener {
         world.playSound(c, Sound.BLOCK_COPPER_BREAK, 2f, 0.6f);
         l.doorsOpened++;
         l.nextCartSec = sec + 3;
-        for (Player p : onlineMembers(l)) {
-            ctx.addPoints(p.getUniqueId(), DOOR_POINTS, "Railroad Rush checkpoint " + (k + 1));
+        List<Player> doorTeam = onlineMembers(l);
+        double doorShare = ctx.teamShare(DOOR_POINTS, doorTeam.size());
+        for (Player p : doorTeam) {
+            if (doorShare > 0) ctx.addCoins(p.getUniqueId(), doorShare, "Railroad Rush checkpoint " + (k + 1));
             p.sendTitle("§6Checkpoint " + (k + 1) + "!", k == 0 ? "§7The trader now sells everything. TNT carts incoming!" : (k == 2 ? "§7Final door down! Extend into the station." : "§7Next room unlocked"), 5, 50, 10);
             p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
         }
@@ -906,11 +917,13 @@ public final class RailroadRushGame implements McmGame, Listener {
         ctx.broadcast("§6§lRailroad Rush results:");
         for (int i = 0; i < sorted.size(); i++) {
             Lane l = sorted.get(i);
-            int place = i < PLACE_POINTS.length ? PLACE_POINTS[i] : 4;
-            int dist = l.reach / 5;
-            for (Player p : onlineMembers(l)) {
-                ctx.addPoints(p.getUniqueId(), place, "Railroad Rush #" + (i + 1));
-                if (dist > 0) ctx.addPoints(p.getUniqueId(), dist, "Railroad length (" + l.reach + " blocks)");
+            int place = com.mcm.api.McmCoins.placementOrLast(PLACE_POINTS, i + 1);
+            int dist = Math.max(0, l.reach) * BLOCK_COINS;
+            List<Player> team = onlineMembers(l);
+            double placeShare = ctx.teamShare(place, team.size()), distShare = ctx.teamShare(dist, team.size());
+            for (Player p : team) {
+                if (placeShare > 0) ctx.addCoins(p.getUniqueId(), placeShare, "Railroad Rush #" + (i + 1));
+                if (distShare > 0) ctx.addCoins(p.getUniqueId(), distShare, "Railroad length (" + l.reach + " blocks)");
             }
             if (i < 10) ctx.broadcast(" §e#" + (i + 1) + " " + l.label + " §7- §f" + l.reach + " blocks§7, " + l.doorsOpened + "/3 checkpoints");
         }
@@ -1136,8 +1149,10 @@ public final class RailroadRushGame implements McmGame, Listener {
             case OAK_PLANKS, GRAVEL, COBBLESTONE -> { }
             case GOLD_ORE -> addGold(lane, lane.goldMult, p);
             case EMERALD_ORE -> {
-                ctx.addPoints(p.getUniqueId(), EMERALD_POINTS, "Railroad Rush emerald");
-                p.sendActionBar(legacy("§a+" + EMERALD_POINTS + " points §7(emerald)"));
+                List<Player> emTeam = onlineMembers(lane);
+                double emShare = ctx.teamShare(EMERALD_POINTS, emTeam.size());
+                for (Player q : emTeam) if (emShare > 0) ctx.addCoins(q.getUniqueId(), emShare, "Railroad Rush emerald");
+                p.sendActionBar(legacy("§6+" + EMERALD_POINTS + " team coins §7(emerald)"));
                 p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.7f, 1.6f);
             }
             default -> {

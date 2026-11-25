@@ -1,0 +1,30 @@
+{
+  "id": "penguin",
+  "name": "Penguin",
+  "debut": "MCC 8",
+  "stars": 2,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Penguin.png",
+  "floor": ["sssssss","sssssss","sssssss","sssssss","sssssss","sxxxssx","xxxxxxx"],
+  "palette": {
+    "s": "minecraft:snow_block",
+    "x": "minecraft:ice",
+    "B": "minecraft:blue_concrete",
+    "K": "minecraft:black_concrete",
+    "Y": "minecraft:yellow_concrete",
+    "W": "minecraft:white_concrete",
+    "O": "minecraft:orange_concrete"
+  },
+  "layers": [
+    [".......", ".......", "..BBB..", ".BBBBB.", "..OWO..", ".......", "......."],
+    [".......", ".......", "..BBB..", ".BBBBB.", ".BWWWB.", ".......", "......."],
+    [".......", ".......", "..BBB..", ".BBBBB.", ".BYYYB.", ".......", "......."],
+    [".......", ".......", "..BBB..", "..BBB..", "..KBK..", ".......", "......."],
+    [".......", ".......", "..BBB..", "..BBB..", "..BBB..", ".......", "......."]
+  ],
+  "guessed": [
+    "body depth (3 rows) and the back are hidden; filled solid blue_concrete",
+    "wings: front wing blocks at layers 1-2 in the face row, the set-back blue at layer 0 placed one row behind; wings assumed 2 deep",
+    "beak colour read as yellow_concrete (shaded), belly as white_concrete",
+    "ice/snow floor pattern in the back rows hidden by the penguin; assumed snow_block"
+  ]
+}

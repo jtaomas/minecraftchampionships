@@ -1,6 +1,14 @@
 name: McmBuildMart
-version: '1.0.0'
+version: '2.0.0'
 main: com.mcm.games.buildmart.BuildMartPlugin
 api-version: '1.21'
 depend: [MinecraftMondayCore]
-description: Build Mart minigame for MinecraftMondayCore
+description: Big Sales at Build Mart (Classic Mall, MCC 3-13) for MinecraftMondayCore
+commands:
+  bm:
+    description: Build Mart admin commands
+    usage: /bm
+    permission: mcm.buildmart.admin
+permissions:
+  mcm.buildmart.admin:
+    default: op

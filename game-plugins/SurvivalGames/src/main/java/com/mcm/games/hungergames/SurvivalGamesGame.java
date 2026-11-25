@@ -949,14 +949,15 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     private void handleElimination(UUID victimId, Player killer) {
         if (!alive.remove(victimId)) return;
 
-        int killPts = plugin.getConfig().getInt("scoring.kill-points", 10);
-        int survPts = plugin.getConfig().getInt("scoring.survival-per-elimination", 1);
+        // MCC coins (base x1.0; the core applies the event multiplier). See game-plugins/COINS.md.
+        int killPts = plugin.getConfig().getInt("coins.kill", 65);       // MCC: personal elimination
+        int survPts = plugin.getConfig().getInt("coins.outlive", 3);     // MCC: another player eliminated, you alive
 
-        if (killer != null && !killer.getUniqueId().equals(victimId)) {
-            ctx.addPoints(killer.getUniqueId(), killPts, "Elimination");
+        if (killer != null && !killer.getUniqueId().equals(victimId) && killPts > 0) {
+            ctx.addCoins(killer.getUniqueId(), killPts, "Elimination");
         }
-        for (UUID survivor : alive) {
-            ctx.addPoints(survivor, survPts, "Survived elimination");
+        if (survPts > 0) for (UUID survivor : alive) {
+            ctx.addCoins(survivor, survPts, "Survived elimination");
         }
 
         String victimSide = sideOfPlayer.get(victimId);
@@ -1005,17 +1006,12 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             if (!ranked.contains(s)) ranked.add(s);
         }
 
-        int[] bonuses = {
-                plugin.getConfig().getInt("scoring.placement-1st", 40),
-                plugin.getConfig().getInt("scoring.placement-2nd", 30),
-                plugin.getConfig().getInt("scoring.placement-3rd", 22),
-                plugin.getConfig().getInt("scoring.placement-4th", 16),
-                plugin.getConfig().getInt("scoring.placement-5th", 12)
-        };
-        for (int i = 0; i < ranked.size() && i < bonuses.length; i++) {
-            if (bonuses[i] > 0) {
-                ctx.addSidePoints(ranked.get(i), bonuses[i], "Team Placement #" + (i + 1));
-            }
+        // MCC team placement by how long the team survived: 1st 650 ... 10th 330, shared amongst the team
+        int[] bonuses = com.mcm.api.McmCoins.toIntArray(plugin.getConfig().getList("coins.placement"),
+                new int[]{650, 600, 560, 520, 480, 450, 420, 390, 360, 330});
+        for (int i = 0; i < ranked.size(); i++) {
+            int pool = com.mcm.api.McmCoins.placementOrLast(bonuses, i + 1);
+            if (pool > 0) ctx.addTeamCoins(ranked.get(i), pool, "Team Placement #" + (i + 1));
         }
     }
 
@@ -1237,8 +1233,8 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             world.playSound(loc, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.2f);
             String side = sideOfPlayer.get(e.getPlayer().getUniqueId());
             if (side != null) {
-                int pts = plugin.getConfig().getInt("scoring.airdrop-team-points", 24);
-                ctx.addSidePoints(side, pts, "Supply Airdrop");
+                int pts = plugin.getConfig().getInt("coins.airdrop", 180);   // MCC: airdrop crate, shared amongst the team
+                if (pts > 0) ctx.addTeamCoins(side, pts, "Supply Airdrop");
                 ctx.broadcast(ctx.sideLabel(side) + ChatColor.LIGHT_PURPLE + " captured a Supply Airdrop!");
             }
         }

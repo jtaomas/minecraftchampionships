@@ -274,6 +274,7 @@ public final class ParkourWarriorGame implements McmGame {
         // no setCollidable(false): on Paper it also makes the player untargetable by projectiles; the ghost team's
         // COLLISION_RULE NEVER (ensureGhostTeams) turns player pushing off in both ghost modes
         if (s.translucent) p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, PotionEffect.INFINITE_DURATION, 0, false, false, false));
+        p.getInventory().setBoots(teamBoots(p));
         BossBar b = bars.computeIfAbsent(p.getUniqueId(), k -> Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SEGMENTED_10));
         b.addPlayer(p);
         if (inPlay()) giveItems(p, r);
@@ -302,9 +303,45 @@ public final class ParkourWarriorGame implements McmGame {
         return it.getItemMeta().getPersistentDataContainer().get(itemKey, PersistentDataType.STRING);
     }
 
+    /** Owner request (as in Hole in the Wall): invisible runners wear leather boots in their team colour. */
+    private ItemStack teamBoots(Player p) {
+        ItemStack boots = new ItemStack(Material.LEATHER_BOOTS);
+        if (boots.getItemMeta() instanceof org.bukkit.inventory.meta.LeatherArmorMeta meta) {
+            ChatColor c = ctx == null ? ChatColor.WHITE : ctx.teamColor(ctx.teamOf(p.getUniqueId()));
+            meta.setColor(bootColor(c));
+            meta.setUnbreakable(true);
+            meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_DYE);
+            boots.setItemMeta(meta);
+        }
+        return boots;
+    }
+
+    private static org.bukkit.Color bootColor(ChatColor c) {
+        if (c == null) return org.bukkit.Color.WHITE;
+        return switch (c) {
+            case RED -> org.bukkit.Color.fromRGB(0xFF5555);
+            case DARK_RED -> org.bukkit.Color.fromRGB(0xAA0000);
+            case GOLD -> org.bukkit.Color.fromRGB(0xFFAA00);
+            case YELLOW -> org.bukkit.Color.fromRGB(0xFFFF55);
+            case GREEN -> org.bukkit.Color.fromRGB(0x55FF55);
+            case DARK_GREEN -> org.bukkit.Color.fromRGB(0x00AA00);
+            case AQUA -> org.bukkit.Color.fromRGB(0x55FFFF);
+            case DARK_AQUA -> org.bukkit.Color.fromRGB(0x00AAAA);
+            case BLUE -> org.bukkit.Color.fromRGB(0x5555FF);
+            case DARK_BLUE -> org.bukkit.Color.fromRGB(0x0000AA);
+            case LIGHT_PURPLE -> org.bukkit.Color.fromRGB(0xFF55FF);
+            case DARK_PURPLE -> org.bukkit.Color.fromRGB(0xAA00AA);
+            case GRAY -> org.bukkit.Color.fromRGB(0xAAAAAA);
+            case DARK_GRAY -> org.bukkit.Color.fromRGB(0x555555);
+            case BLACK -> org.bukkit.Color.fromRGB(0x1D1D21);
+            default -> org.bukkit.Color.WHITE;
+        };
+    }
+
     void giveItems(Player p, Run r) {
         PlayerInventory inv = p.getInventory();
         inv.clear();
+        inv.setBoots(teamBoots(p));
         inv.setItem(0, medalItem(Material.STONE_BUTTON, r.stone, "§fStone Medals", "stone", "§7Main challenges completed"));
         inv.setItem(1, medalItem(Material.COPPER_INGOT, r.bronze, "§6Bronze Medals", "bronze", "§7First bonus challenge of a stage"));
         inv.setItem(2, medalItem(Material.IRON_INGOT, r.silver, "§7Silver Medals", "silver", "§7Second bonus challenge of a stage"));
@@ -746,8 +783,8 @@ public final class ParkourWarriorGame implements McmGame {
         int left = phase == Phase.COUNTDOWN ? s.time : secondsLeft();
         boolean ot = phase == Phase.OVERTIME;
         int show = ot ? Math.max(0, s.overtime + left) : Math.max(0, left);
-        String title = ot ? ChatColor.RED + "" + ChatColor.BOLD + "OVERTIME " + ChatColor.WHITE + mmss(show)
-                : ChatColor.WHITE + "" + ChatColor.BOLD + "TIME LEFT " + ChatColor.YELLOW + mmss(show);
+        // owner: "time left ... it's duplicated" - the core's bar already shows TIME LEFT, so ours only says OVERTIME
+        String title = ot ? ChatColor.RED + "" + ChatColor.BOLD + "OVERTIME " + ChatColor.WHITE + mmss(show) : "";
         double progress = ot ? show / (double) Math.max(1, s.overtime) : show / (double) Math.max(1, s.time);
         int mainTotal = prog == null ? 15 : prog.mainCount;
         long now = System.currentTimeMillis();
@@ -756,7 +793,7 @@ public final class ParkourWarriorGame implements McmGame {
             if (p == null || !r.online) continue;
             BossBar b = bars.computeIfAbsent(r.id, k -> Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SEGMENTED_10));
             if (!b.getPlayers().contains(p)) b.addPlayer(p);
-            b.setTitle(title + ChatColor.DARK_GRAY + "  |  " + medalRow(r));
+            b.setTitle(title.isEmpty() ? medalRow(r) : title + ChatColor.DARK_GRAY + "  |  " + medalRow(r));
             b.setColor(ot ? BarColor.RED : BarColor.WHITE);
             b.setProgress(Math.max(0, Math.min(1, progress)));
             if (r.status == Run.Status.ACTIVE && inPlay() && now - r.lastMessageMs > 2500) {
@@ -956,7 +993,7 @@ public final class ParkourWarriorGame implements McmGame {
             for (Map.Entry<UUID, Integer> x : sh.entrySet()) {
                 if (x.getValue() > 0) { ctx.addPoints(x.getKey(), x.getValue(), "team multiplier share x" + fmt2(mult)); extra += x.getValue(); }
             }
-            summary.add(McmFx.sideLabel(ctx, e.getKey()) + ChatColor.GRAY + ": " + ChatColor.WHITE + sum + ChatColor.GRAY + " medal pts x"
+            summary.add(McmFx.sideLabel(ctx, e.getKey()) + ChatColor.GRAY + ": " + ChatColor.WHITE + sum + ChatColor.GRAY + " medal coins x"
                     + ChatColor.AQUA + fmt2(mult) + ChatColor.GRAY + " = " + ChatColor.YELLOW + (sum + extra));
         }
         ctx.broadcast(ChatColor.GOLD + "" + ChatColor.BOLD + "Parkour Warrior results");

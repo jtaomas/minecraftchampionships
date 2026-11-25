@@ -1,0 +1,21 @@
+{
+  "id": "heart",
+  "name": "Heart",
+  "debut": "MCC 8",
+  "stars": 2,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Heart.png",
+  "floor": ["qqqqqqq","qqqqqqq","qqqqqqq","qqqqqqq","qqqqqqq","qqqqqqq","qqqqqqq"],
+  "palette": {
+    "q": "minecraft:quartz_block",
+    "c": "minecraft:light_blue_concrete",
+    "g": "minecraft:light_blue_glazed_terracotta[facing=south]"
+  },
+  "layers": [
+    [".cg.gc.", "cgggggc", "cgggggc", "cgggggc", ".cgggc.", "..cgc..", "...c..."]
+  ],
+  "guessed": [
+    "outline in light_blue_concrete, interior in light_blue_glazed_terracotta as seen from the top faces",
+    "glazed terracotta rotation not readable; all set facing=south",
+    "left/right edge columns (rows 1-3) partly hidden; mirrored for symmetry"
+  ]
+}

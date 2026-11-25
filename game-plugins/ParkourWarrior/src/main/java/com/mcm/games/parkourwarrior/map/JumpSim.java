@@ -306,7 +306,7 @@ final class JumpSim {
 
     /** Horizontal rect {x0, z0, x1, z1} of the highest collision box of a cell (the surface stood on). */
     static double[] topRect(Phys.World wd, int[] c) {
-        double best = -1; double[] r = null;
+        double best = Double.NEGATIVE_INFINITY; double[] r = null;   // (not -1: section-local tops can be at y = -1)
         for (double[] b : wd.boxes(c[0], c[1], c[2])) {
             if (b[4] > best + 1e-9) { best = b[4]; r = new double[]{b[0], b[2], b[3], b[5]}; }
             else if (Math.abs(b[4] - best) < 1e-9) r = new double[]{Math.min(r[0], b[0]), Math.min(r[1], b[2]), Math.max(r[2], b[3]), Math.max(r[3], b[5])};

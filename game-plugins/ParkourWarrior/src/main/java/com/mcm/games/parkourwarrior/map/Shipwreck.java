@@ -24,13 +24,20 @@ final class Shipwreck {
         // a deck plank, then three broken masts standing beside the route with vine rigging on their inner face:
         // catch the first rope on the run, let go and drift forward onto the next (longer, lower) rope twice, then
         // let go of the last one and drop onto the crow's nest
-        for (int x = -1; x <= 1; x++) { o.set(x, 0, 5, "spruce_planks"); o.set(x, -1, 5, "dark_oak_planks"); }
+        // owner playtest: first jump slightly easier (the deck plank is two deep, so the rope catch is a 2-gap),
+        // second rope three vines wide (a mast plank face either side of the mast carries the extra vines)
+        for (int x = -1; x <= 1; x++) for (int z = 5; z <= 6; z++) { o.set(x, 0, z, "spruce_planks"); o.set(x, -1, z, "dark_oak_planks"); }
         for (int y = -7; y <= -2; y++) o.set(0, y, 5, "stripped_spruce_log[axis=y]");
-        o.area(-1, 0, 5, 1, 5);
+        o.area(-1, 0, 5, 1, 6);
         mast(o, 1, 9, -10, 7, 0);
         o.vine(0, 1, 4, 9, "east");
         mast(o, -1, 13, -10, 6, 0);
-        o.vine(0, -3, 4, 13, "west");
+        for (int y = -3; y <= 4; y++) for (int z = 12; z <= 14; z += 2) o.set(-1, y, z, "stripped_spruce_wood[axis=y]");
+        Ob.Node rope2 = o.vine(0, -3, 4, 13, "west");
+        for (int z = 12; z <= 14; z += 2) {
+            String st = Bs.withProp("vine[east=false,north=false,south=false,up=false,west=false]", "west", "true");
+            for (int y = -3; y <= 4; y++) { o.set(0, y, z, st); rope2.cells.add(new int[]{o.wx(0, z), o.wy(y), o.wz(0, z)}); }
+        }
         mast(o, 1, 17, -10, 5, 0);
         o.vine(0, -6, 2, 17, "east");
         for (int x = -1; x <= 1; x++) for (int z = 20; z <= 22; z++) { o.set(x, -3, z, "spruce_planks"); o.set(x, -4, z, "dark_oak_planks"); }

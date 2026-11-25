@@ -74,6 +74,14 @@ final class CourseWorld {
 
     World ensureWorld() {
         World w = Bukkit.getWorld(WORLD_NAME);
+        if (w != null && (w.getGenerator() == null || !w.getGenerator().getClass().getSimpleName().contains("Void"))) {
+            // owner: oceans either side of the course - Multiverse loads the world with the vanilla generator first
+            plugin.getLogger().warning("Parkour Warrior: " + WORLD_NAME + " was loaded with generator "
+                    + (w.getGenerator() == null ? "vanilla" : w.getGenerator().getClass().getName()) + "; re-creating it as a void world.");
+            for (org.bukkit.entity.Player p : w.getPlayers()) p.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
+            if (Bukkit.unloadWorld(w, false)) w = null;
+            else plugin.getLogger().severe("Parkour Warrior: could not unload " + WORLD_NAME + "; vanilla terrain may show.");
+        }
         if (w == null) {
             File folder = new File(Bukkit.getWorldContainer(), WORLD_NAME);
             if (folder.exists()) deleteFolder(folder.toPath());
@@ -118,12 +126,26 @@ final class CourseWorld {
 
     /** Generate (pure Java; safe off the main thread). mode: auto | coursemap | stub. */
     static CourseModel generate(String mode, long seed, java.util.logging.Logger log, String[] used) {
+        return generate(mode, seed, null, log, used);
+    }
+
+    /**
+     * importDir: the data folder's {@code imported/} (course sections cut from community maps, loaded at runtime
+     * only); null or absent = the built-in course.
+     */
+    static CourseModel generate(String mode, long seed, java.io.File importDir, java.util.logging.Logger log, String[] used) {
         CourseModel m = null;
         if (!"stub".equals(mode)) {
             try {
                 Class<?> c = Class.forName(MAP_CLASS, true, CourseWorld.class.getClassLoader());
-                Method g = c.getMethod("generate", long.class);
-                Object o = g.invoke(null, seed);
+                Object o;
+                Method g2 = null;
+                try { g2 = c.getMethod("generate", long.class, java.io.File.class); } catch (NoSuchMethodException ignored) {}
+                if (g2 != null && importDir != null && new java.io.File(importDir, "course.txt").isFile()) o = g2.invoke(null, seed, importDir);
+                else o = c.getMethod("generate", long.class).invoke(null, seed);
+                if (o instanceof CourseModel cm && cm.notes.containsKey("imported"))
+                    log.info("Parkour Warrior: imported sections " + cm.notes.get("imported")
+                            + (cm.notes.containsKey("import problems") ? " (problems: " + cm.notes.get("import problems") + ")" : ""));
                 if (o instanceof CourseModel cm) { m = cm; used[0] = "CourseMap"; }
                 else log.warning("Parkour Warrior: CourseMap.generate returned " + o + "; using the stub course");
             } catch (ClassNotFoundException | NoSuchMethodException e) {
@@ -189,7 +211,7 @@ final class CourseWorld {
             String[] used = {"?"};
             CourseModel m;
             try {
-                m = generate(mode, seed, plugin.getLogger(), used);
+                m = generate(mode, seed, new java.io.File(plugin.getDataFolder(), "imported"), plugin.getLogger(), used);
             } catch (Throwable t) {
                 plugin.getLogger().log(Level.SEVERE, "Parkour Warrior: course generation crashed", t);
                 m = null;
@@ -339,7 +361,8 @@ final class CourseWorld {
                 case BONUS -> o.index() == 1 ? "§6Bronze medal" : o.index() == 2 ? "§7Silver medal" : "§eGold medal";
                 case ENDING -> "§8" + cap(o.ending().name()) + " ending " + o.index() + "/2";
             };
-            label(o.label(), color + "§l" + o.name() + "\n" + sub);
+            String code = o.kind() == CourseModel.Kind.ENDING ? o.ending().name().charAt(0) + "-" + o.index() : o.id();
+            label(o.label(), "§7[" + code + "] " + color + "§l" + o.name() + "\n" + sub);
         }
         for (CourseModel.Label l : model.labels) label(l.pos(), ChatColor.translateAlternateColorCodes('&', l.text()));
     }

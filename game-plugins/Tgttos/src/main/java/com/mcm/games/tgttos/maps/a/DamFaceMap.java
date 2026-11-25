@@ -39,6 +39,8 @@ public final class DamFaceMap extends AMap {
     private final Pal copper = new Pal("oxidized_copper", 50, "weathered_copper", 25, "oxidized_cut_copper", 25);
 
     static final int TOE = -3, CREST = 36;
+    /** Lowest canyon rim from z 8 on (out of reach from the build box top, y 42). */
+    static final int RIM = 46;
     static final int[] LADDER_L = {-15, -13}, LADDER_R = {12, 14};
 
     /** Face z of tier 0 at column x (concave: the middle is further away). */
@@ -52,13 +54,18 @@ public final class DamFaceMap extends AMap {
         apronAndBasin(d);
         dam(de);
         crest(d, de);
+        fillCore();
         canyon();
         reservoir();
         sealSides();
         startStrip(d);
+        sideFill();
+        curtain();
 
         d.voidY = -12;
-        d.playBounds = Region.of(-19, -14, -8, 18, 48, 62);
+        // feedback 3: the play box used to end at x -19 / 18 while the training walls, apron and side lids run out to
+        // x -21 / 20 and beyond - stepping onto the outer two columns was an instant "death" (respawn) on both sides
+        d.playBounds = Region.of(-27, -14, -10, 26, 52, 108);
         d.buildBounds = Region.of(-18, -6, 8, 17, 42, 60);
         d.overviewPoints.add(new Spawn(0.5, 30, -16, 0f, 22f));
         d.overviewPoints.add(new Spawn(-16, 44, 30, -120f, 35f));
@@ -221,32 +228,21 @@ public final class DamFaceMap extends AMap {
         }
         // centre stair cut through tier 4 (choke, 4 wide)
         Stairs.flight(g, "centre crest stair", "stone", "smooth_stone", -2, zf(0) + 9, 32, 0, 1, 4, 4);
-        // pen: low bamboo-walled yard in the middle of the crest
-        int x1 = -6, x2 = 6, z1 = 43, z2 = 55;
-        for (int x = x1; x <= x2; x++) for (int z = z1; z <= z2; z++) {
-            boolean edge = x == x1 || x == x2 || z == z1 || z == z2;
-            if (edge) g.set(x, CREST + 1, z, ((x + z) & 1) == 0 ? "stripped_bamboo_block[axis=y]" : "bamboo_block[axis=y]");
-            else g.set(x, CREST, z, g.rnd(x, 0, z) < 0.75 ? "moss_block" : "grass_block[snowy=false]");
-        }
-        g.set(-4, CREST + 1, 52, "hay_block[axis=y]");
-        g.set(4, CREST + 1, 46, "hay_block[axis=x]");
-        d.pen = Region.of(x1 + 1, CREST + 1, z1 + 1, x2 - 1, CREST + 3, z2 - 1);
-        for (int i = 0; i < 10; i++) d.chickenSpawns.add(new Spawn(-3.5 + (i % 5) * 1.8, CREST + 1, 46.5 + (i / 5) * 5, 180f));
-        // orange/white striped finish arch over the pen front
-        for (int y = CREST + 1; y <= CREST + 8; y++) { g.set(-7, y, 43, (y & 1) == 0 ? "orange_terracotta" : "white_terracotta"); g.set(7, y, 43, (y & 1) == 0 ? "orange_terracotta" : "white_terracotta"); }
-        for (int x = -7; x <= 7; x++) g.set(x, CREST + 9, 43, (x & 1) == 0 ? "orange_terracotta" : "white_terracotta");
         // gate-machinery houses on the crest sides
         machineHouse(-17, 40, -11, 47);
         machineHouse(10, 40, 16, 47);
         // footbridge to the intake tower
         for (int z = 61; z <= 67; z++) for (int x = -1; x <= 1; x++) g.set(x, CREST, z, x == 0 ? "bamboo_mosaic" : "smooth_stone_slab[type=bottom]");
-        for (int z = 61; z <= 67; z++) { g.set(-2, CREST + 1, z, "bamboo_fence"); g.set(2, CREST + 1, z, "bamboo_fence"); }
+        // feedback 3: a gap in each rail at z 63 / 65 so anyone who lands in the reservoir can climb back onto the footbridge
+        for (int z = 61; z <= 67; z++) if (z != 63 && z != 65) { g.set(-2, CREST + 1, z, "bamboo_fence"); g.set(2, CREST + 1, z, "bamboo_fence"); }
         g.set(0, CREST + 1, 60, null);
         g.set(-1, CREST + 1, 60, null);
         g.set(1, CREST + 1, 60, null);
         // crest lamps & bollards break the long runs (outside the pen)
-        g.breakRuns(-19, 18, 37, 59, CREST + 1, 9, java.util.List.of(Region.of(-6, CREST, 43, 6, CREST + 3, 55), Region.of(-1, CREST, 59, 1, CREST + 2, 67)),
+        g.breakRuns(-19, 18, 37, 59, CREST + 1, 9, java.util.List.of(Region.of(-17, CREST, 50, 16, CREST + 3, 57), Region.of(-1, CREST, 59, 1, CREST + 2, 67)),
                 "andesite_wall", "barrel[facing=up,open=false]", "lightning_rod[facing=up,powered=false,waterlogged=false]", "yellow_terracotta");
+        // feedback 3: the finish is a row of goal chickens across the whole crest road (was a bamboo pen in the middle)
+        com.mcm.games.tgttos.model.FinishRow.build(d, -16, 15, CREST, 55, 1, "stone_bricks");
         // the intake / control tower (landmark), standing in the reservoir
         double cx = 0.5, cz = 72.5;
         g.cyl(cx, cz, 5.5, 20, 64, new Pal("smooth_stone", 50, "calcite", 30, "polished_andesite", 20));
@@ -285,6 +281,30 @@ public final class DamFaceMap extends AMap {
         g.set((x1 + x2) / 2, CREST + 4, z1 + 2, "shroomlight");
     }
 
+    /**
+     * Feedback 3 ("there are still gaps in the map here", world 603,87,35 = local 3,23,35, inside the dam): the dam was a
+     * 2-thick shell with a hollow inside open to the void at the bottom, a 1-high slot under every tier's face at catwalk
+     * level and the open space under the crest. Fill the whole core solid (behind each tier's face, under each catwalk
+     * and the crest road, and under the face foot at the toe), keeping the catwalk layer and the grating pits as they are.
+     */
+    private void fillCore() {
+        for (int x = -19; x <= 18; x++) {
+            int z0 = zf(x);
+            for (int z = z0; z <= 60; z++)
+                for (int y = -9; y <= CREST - 1; y++) {
+                    if (!g.air(x, y, z)) continue;
+                    int k = y <= 8 ? 0 : Math.min(4, (y - 1) / 8);
+                    int front = z0 + 3 * k;
+                    boolean core;
+                    if (y <= TOE) core = true;                                              // under the face foot
+                    else if (k == 4) core = z >= front + 2;                                  // under the crest road
+                    else if (y == 8 * k + 8) core = z > front + 2;                           // catwalk layer: behind the catwalk only
+                    else core = z >= front + 2;                                              // behind the face
+                    if (core) g.set(x, y, z, y < 6 ? "deepslate" : "stone");
+                }
+        }
+    }
+
     // ------------------------------------------------------------------ canyon and reservoir
 
     private void canyon() {
@@ -293,6 +313,9 @@ public final class DamFaceMap extends AMap {
             for (int z = -14; z <= 112; z++) {
                 double n = Noise.fbm2(z * 0.07, side * 3.1, g.seed + 21);
                 int h = Math.min(40 + (int) Math.round(10 * n) - (z > 70 ? (z - 70) / 4 : 0), 4 + (int) Math.round((z + 14) * 1.15 + 6 * n));
+                // feedback 3: the canyon rim stays out of reach (build box top 42 + a jump or a knock-up) from the apron to
+                // the far shore, so nobody walks out on the canyon tops and off into the void behind them
+                if (z >= -2) h = Math.max(h, Math.min(RIM, 26 + (z + 2) * 2));
                 for (int y = -18; y <= h; y++) {
                     double m = Noise.fbm2(z * 0.12, y * 0.12, g.seed + 33 + side);
                     int inner = (side < 0 ? -20 : 19) + side * (int) Math.round(4 * m + (y < -6 ? (-6 - y) * 0.6 : 0) + (z < 8 && z > -14 ? 2 : 0));
@@ -335,11 +358,60 @@ public final class DamFaceMap extends AMap {
                     for (int t = 1; t <= 6; t++) {
                         int x = ex + side * t;
                         boolean rockHere = !g.air(x, top, z);
-                        for (int y = top - 2; y <= top; y++) if (g.air(x, y, z)) g.set(x, y, z, y < 6 ? rockDeep.at(x, y, z, g.seed) : rock.at(x, y, z, g.seed));
+                        // feedback 3: down to solid ground, not a 3-deep lid (the slit under the lid opened into the dam)
+                        for (int y = top; y >= -14 && g.air(x, y, z); y--) g.set(x, y, z, y < 6 ? rockDeep.at(x, y, z, g.seed) : rock.at(x, y, z, g.seed));
                         if (rockHere) break;
                     }
                 }
             }
+    }
+
+    /**
+     * Feedback 3: the canyon rock wanders with noise in x per height, so beside the apron, the training walls, the dam
+     * sides and under overhangs there were air gaps between the playfield edge and the rock, open down to the void
+     * (knockback or a slip off the edge = gone). Outside the course (x < -19 / x > 18), at every height fill the air
+     * between a solid playfield block and the rock band when the rock is at most 8 blocks out. The start strip's side
+     * walls are made as wide as the apron (no corridor round the back of the start).
+     */
+    private void sideFill() {
+        for (int z = -8; z <= 7; z++) for (int y = 1; y <= 3; y++) {
+            for (int x = -21; x <= -20; x++) g.set(x, y, z, apron.at(x, y, z, g.seed));
+            for (int x = 19; x <= 20; x++) g.set(x, y, z, apron.at(x, y, z, g.seed));
+        }
+        for (int z = -10; z <= 106; z++)
+            for (int y = -14; y <= CREST + 2; y++)
+                for (int side = -1; side <= 1; side += 2) {
+                    int ex = side < 0 ? -19 : 18;
+                    // last solid cell walking outward from the course edge
+                    int x = ex;
+                    while (Math.abs(x - ex) < 10 && !g.air(x + side, y, z)) x += side;
+                    if (g.air(x, y, z)) continue;
+                    int far = 0;
+                    for (int t = 1; t <= 8; t++) if (!g.air(x + side * t, y, z)) { far = t; break; }
+                    if (far <= 1) continue;
+                    for (int t = 1; t < far; t++) g.set(x + side * t, y, z, y < 6 ? rockDeep.at(x + side * t, y, z, g.seed) : rock.at(x + side * t, y, z, g.seed));
+                }
+    }
+
+    /**
+     * Feedback 3: an invisible barrier curtain round the whole map (x -22 / 21, z -10 / 108, y -14..52, air cells only),
+     * so the ledges the noisy canyon walls form, the canyon rim and the outside of the canyon can never lead out of the
+     * map or into the void; the rock itself stays as it was.
+     */
+    private void curtain() {
+        // the apron used to end in an open edge behind the start (z -8): a punch or snowball from behind the start line
+        // knocked racers into the void. A 4-high striped parapet closes the back of the apron out to the canyon rock.
+        for (int x = -27; x <= 26; x++) {
+            boolean inner = x >= -21 && x <= 20;
+            for (int y = 4; y >= (inner ? -5 : -14); y--) {
+                if (!inner && !g.air(x, y, -9)) break;
+                g.set(x, y, -9, y == 4 ? "polished_andesite" : y >= 1 && y <= 3 ? ((x + y) & 1) == 0 ? "yellow_terracotta" : "black_terracotta" : apron.at(x, y, -9, g.seed));
+            }
+        }
+        for (int y = -14; y <= 52; y++) {
+            for (int z = -10; z <= 108; z++) for (int x : new int[]{-22, 21}) if (g.air(x, y, z)) g.set(x, y, z, "barrier");
+            for (int x = -22; x <= 21; x++) for (int z : new int[]{-10, 108}) if (g.air(x, y, z)) g.set(x, y, z, "barrier");
+        }
     }
 
     private void pine(int x, int y, int z, int h) {
@@ -361,6 +433,8 @@ public final class DamFaceMap extends AMap {
         }
         for (int x = -19; x <= 18; x++) for (int z = 61; z <= 104; z++) if (g.air(x, 36, z) && z > 103) g.set(x, 36, z, "short_grass");
         g.underside(-19, 61, 18, 104, 33, 8, rockDeep, 9);
+        // feedback 3: a rock bank closes the far shore (the reservoir used to end in a drop to the void at z 105)
+        for (int x = -27; x <= 26; x++) for (int z = 105; z <= 107; z++) for (int y = 20; y <= RIM; y++) g.set(x, y, z, rock.at(x, y, z, g.seed));
         // buoy line across the reservoir
         for (int x = -18; x <= 17; x += 3) g.set(x, 36, 80, (x / 3) % 2 == 0 ? "red_terracotta" : "white_terracotta");
     }

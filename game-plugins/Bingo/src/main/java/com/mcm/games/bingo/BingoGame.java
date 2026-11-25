@@ -3,7 +3,9 @@ package com.mcm.games.bingo;
 import com.mcm.api.McmGame;
 import com.mcm.api.McmGameContext;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
@@ -702,7 +704,7 @@ public final class BingoGame implements McmGame, Listener {
         awardSide(ctx, side, pts, "Bingo: " + item.name);
         for (Player m : members(side)) {
             m.sendMessage(txt("§a✔ " + (m.equals(finder) ? "You" : finder.getName()) + " got " + BingoItem.TIER_COLORS[item.tier]
-                    + item.name + " §7(" + ordinal(place) + ", +" + pts + ")"));
+                    + item.name + " §7(" + ordinal(place) + ", +" + pts + " team coins)"));
             m.playSound(m.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.4f);
         }
         if (place == 1) ctx.broadcast("§7[Bingo] " + ctx.sideLabel(side) + " §7was first to get "
@@ -713,7 +715,7 @@ public final class BingoGame implements McmGame, Listener {
             awardSide(ctx, side, cfg.bingoFullCard, "Bingo: full card");
             ctx.broadcast("§6§lFULL CARD! " + ctx.sideLabel(side) + " §6completed the entire card!");
             for (Player m : members(side)) {
-                m.showTitle(Title.title(txt("§6§lFULL CARD!"), txt("§f+" + cfg.bingoFullCard + " points"),
+                m.showTitle(Title.title(txt("§6§lFULL CARD!"), txt("§f+" + cfg.bingoFullCard + " team coins"),
                         Title.Times.times(Duration.ofMillis(100), Duration.ofMillis(2500), Duration.ofMillis(500))));
                 m.playSound(m.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
             }
@@ -777,11 +779,13 @@ public final class BingoGame implements McmGame, Listener {
 
     // ================================================================ scoring / HUD helpers
 
+    /** MCC team pool ("1st team to complete: 50"): each online member gets the MCC per-member share. */
     private void awardSide(McmGameContext c, String side, int pts, String reason) {
         if (c == null || pts <= 0) return;
-        for (Player p : new ArrayList<>(c.participants())) {
-            if (side.equals(sideOf.get(p.getUniqueId()))) c.addPoints(p.getUniqueId(), pts, reason);
-        }
+        List<Player> on = new ArrayList<>();
+        for (Player p : new ArrayList<>(c.participants())) if (side.equals(sideOf.get(p.getUniqueId()))) on.add(p);
+        double each = c.teamShare(pts, on.size());
+        for (Player p : on) c.addCoins(p.getUniqueId(), each, reason);
     }
 
     private List<Player> members(String side) {
@@ -995,9 +999,30 @@ public final class BingoGame implements McmGame, Listener {
     private void openCard(Player p) {
         if (!isPlayer(p) || card.isEmpty()) return;
         CardMenu m = new CardMenu(this, p.getUniqueId());
-        m.inv = Bukkit.createInventory(m, 54, txt("§8" + displayName() + " card"));
+        m.inv = Bukkit.createInventory(m, 54, cardTitle(p));
         render(m, p);
         p.openInventory(m.inv);
+    }
+
+    /**
+     * With the server pack the title also draws a difficulty-coloured square behind every card cell (font mcc:card,
+     * see build_pack.py); items render above title text, so the tint sits behind each item. Without it: plain title.
+     */
+    private Component cardTitle(Player p) {
+        Component title = txt("§8" + displayName() + " card");
+        if (!com.mcm.api.McmFx.hasPack(p) || card.size() < 25) return title;
+        StringBuilder sb = new StringBuilder();
+        for (int r = 0; r < 5; r++) {
+            sb.append('');
+            for (int c = 0; c < 5; c++) {
+                int tier = BingoItem.clampTier(card.get(r * 5 + c).tier);
+                sb.append((char) (0xE100 + (tier - 1) * 5 + r)).append('');
+            }
+            sb.append('');
+        }
+        return Component.empty()
+                .append(Component.text(sb.toString(), NamedTextColor.WHITE).font(Key.key("mcc", "card")))
+                .append(title);
     }
 
     private void refreshMenus() {
@@ -1057,7 +1082,7 @@ public final class BingoGame implements McmGame, Listener {
         }
         int[] tp = lockout ? cfg.lockoutTierPoints : cfg.bingoTierPoints;
         List<String> scoring = new ArrayList<>();
-        scoring.add("§7Square value by difficulty:");
+        scoring.add("§7Team coins per square (shared):");
         for (int t = 1; t <= 4; t++) scoring.add("  " + BingoItem.TIER_COLORS[t] + BingoItem.TIER_NAMES[t] + "§7: §f+" + tp[t]);
         if (lockout) {
             scoring.add("§7Own a full line: §f+" + cfg.lockoutLine);
@@ -1065,17 +1090,17 @@ public final class BingoGame implements McmGame, Listener {
         } else {
             scoring.add("§7Later finders get " + join(cfg.placementPercent, "% / ") + "%");
             scoring.add("§7Line (first 4): §f+" + cfg.bingoLineFirst4 + "§7, later §f+" + cfg.bingoLineLater);
-            scoring.add("§7Full card: §f+" + cfg.bingoFullCard);
+            if (cfg.bingoFullCard > 0) scoring.add("§7Full card: §f+" + cfg.bingoFullCard);
         }
         scoring.add("§7Items count while in your inventory.");
         inv.setItem(9, simple(Material.OAK_HANGING_SIGN, "§eScoring", scoring));
-        // Structures: one entry each in the second column (slots 1, 10, 19, 28, 37), nearest to the viewer first.
+        // Structures: one entry each in the far right column (slots 8, 17, 26, 35, 44), away from the card, nearest first.
         // Buried treasure is never listed (finding it is the point).
         Location here = viewer.getLocation();
         List<AreaLayout.Site> shown = new ArrayList<>();
         for (AreaLayout.Site s : placed) if (!s.kind().equals("buried_treasure")) shown.add(s);
         shown.sort(Comparator.comparingDouble(s -> Math.hypot(s.x() + 0.5 - here.getX(), s.z() + 0.5 - here.getZ())));
-        int[] structSlots = {1, 10, 19, 28, 37};
+        int[] structSlots = {8, 17, 26, 35, 44};
         for (int i = 0; i < shown.size() && i < structSlots.length; i++) {
             AreaLayout.Site s = shown.get(i);
             double dx = s.x() + 0.5 - here.getX(), dz = s.z() + 0.5 - here.getZ();
@@ -1087,7 +1112,7 @@ public final class BingoGame implements McmGame, Listener {
                     "§8x " + s.x() + ",  z " + s.z())));
         }
         List<String> sHead = new ArrayList<>();
-        sHead.add(shown.isEmpty() ? "§7None placed in this area." : "§7Listed to the right, nearest first.");
+        sHead.add(shown.isEmpty() ? "§7None placed in this area." : "§7Listed on the far right, nearest first.");
         sHead.add("§7Arrows: from the way you faced");
         sHead.add("§7when you opened this menu.");
         sHead.add("§7Mineshafts: underground everywhere.");
@@ -1385,7 +1410,7 @@ public final class BingoGame implements McmGame, Listener {
         e.setKeepLevel(true);
         e.setDroppedExp(0);
         Player killer = p.getKiller();
-        if (killer != null && cfg.killPoints > 0 && phase == Phase.PLAYING && ctx != null) {
+        if (killer != null && cfg.killPoints > 0 && phase == Phase.PLAYING && ctx != null) {   // OURS, 0 = off
             String ks = sideOf.get(killer.getUniqueId());
             if (ks != null && !ks.equals(sideOf.get(p.getUniqueId()))) ctx.addPoints(killer.getUniqueId(), cfg.killPoints, "Bingo kill");
         }

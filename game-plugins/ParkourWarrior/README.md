@@ -13,9 +13,10 @@ Design: `SPEC_v2.md` (owner-approved). The old three-lane design is gone.
 - No damage, hunger, drops, item moves, block edits, door/trapdoor/button use in the world. Daylight goes morning -> sunset.
 - Rejoining players resume at their checkpoint with their medals; new late joiners spectate.
 
-## Scoring (points scale = research ÷ 5)
-- Stone medal 1 each. Metal medals by count held (1..5): bronze 1/3/5/8/12, silver 2/5/9/14/20, gold 3/6/11/18/28 (totals; each new medal adds the difference). Perfect run 75. Medal points are awarded live with `ctx.addPoints`.
-- At the end, per side: extra = sum(members' medal points) x (multiplier - 1), split by ending weight 0.40 / 0.45 / 0.65 / 1.10 (none / Easy / Medium / Hard), largest-remainder rounding, awarded per player. Quitters still count. Solo players are their own side.
+## Scoring (real MCC coins, Parkour Warrior Dojo; config `scoring.*`, see `../COINS.md`)
+- Stone medal 2 each. Metal medals by count held (1..5): bronze 5/15/25/40/60, silver 10/25/45/70/100, gold 15/30/55/90/140 (totals; each new medal adds the difference). Medal coins are awarded live with `ctx.addPoints`.
+- At the end, per side: extra = sum(members' medal coins) x (team multiplier - 1), split by ending weight 0.40 / 0.45 / 0.65 / 1.10 (none / Easy / Medium / Hard), largest-remainder rounding, awarded per player. Quitters still count. Solo players are their own side.
+- The core then applies the event multiplier (x1.0 ... x3.0) to every award.
 
 ## HUD
 - Own per-player boss bar "TIME LEFT m:ss" (red "OVERTIME" in overtime) + medal row; the core boss bar also gets `setTimer`.

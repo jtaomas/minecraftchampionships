@@ -42,6 +42,9 @@ final class Paster {
     private final List<Job> jobs = new ArrayList<>();
     private BukkitTask task;
     long budgetNanos = 15_000_000L;
+    /** First-paste clear: margin round the map's blocks, and the largest box (cells) worth clearing. */
+    static final int CLEAR_MARGIN = 16;
+    static final long CLEAR_MAX = 6_000_000L;
     int maxInFlight = 12;
     boolean debugTiming;
 
@@ -135,9 +138,23 @@ final class Paster {
             a[n * 4] = wx; a[n * 4 + 1] = wy; a[n * 4 + 2] = wz; a[n * 4 + 3] = si;
             cnt.put(ck, n + 1);
         };
-        if (j.old != null)
+        if (j.old != null) {
             for (long k : j.old)
                 if (!now.contains(k)) acc.put(ox + SparseBlocks.kx(k), oy + SparseBlocks.ky(k), oz + SparseBlocks.kz(k), null);
+        } else {
+            // First paste of this slot since the server started: we don't know what an older version of the map left
+            // there (owner, playtest 4: the old Ticket Gates' rails and posts were still standing inside the new one), so
+            // clear the map's box plus a margin (imported maps too: a map moved into a slot another map used to hold
+            // left both maps' blocks there). Air cells cost almost nothing to clear.
+            TgMapData.Region bb = d.blockBounds();
+            int m = CLEAR_MARGIN;
+            long vol = (long) (bb.maxX() - bb.minX() + 1 + 2 * m) * (bb.maxY() - bb.minY() + 1 + m + 8) * (bb.maxZ() - bb.minZ() + 1 + 2 * m);
+            if (vol <= CLEAR_MAX)
+                for (int x = bb.minX() - m; x <= bb.maxX() + m; x++)
+                    for (int z = bb.minZ() - m; z <= bb.maxZ() + m; z++)
+                        for (int y = bb.minY() - m; y <= bb.maxY() + 8; y++)
+                            if (!now.contains(SparseBlocks.key(x, y, z))) acc.put(ox + x, oy + y, oz + z, null);
+        }
         d.blocks.forEach((x, y, z, b) -> acc.put(ox + x, oy + y, oz + z, b));
         for (TgMapData.VariantGroup g : d.variants) {
             String opt = j.choice.get(g.name);
@@ -258,7 +275,8 @@ final class Paster {
             Chunk ch = j.curChunkObj;
             while (j.curOp < cnt) {
                 int b = j.curOp * 4;
-                ch.getBlock(a[b] & 15, a[b + 1], a[b + 2] & 15).setBlockData(j.datas[a[b + 3]], false);
+                org.bukkit.block.Block blk = ch.getBlock(a[b] & 15, a[b + 1], a[b + 2] & 15);
+                if (a[b + 3] != 0 || !blk.getType().isAir()) blk.setBlockData(j.datas[a[b + 3]], false);   // clearing air is free
                 j.curOp++; j.blocks++; placedThisTick++;
                 if ((++n & 255) == 0 && System.nanoTime() > deadline) break outer;
             }

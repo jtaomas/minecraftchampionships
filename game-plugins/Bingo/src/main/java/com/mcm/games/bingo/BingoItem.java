@@ -24,7 +24,7 @@ import static org.bukkit.block.Biome.*;
  */
 public final class BingoItem {
     public static final String[] TIER_NAMES = {"", "Easy", "Medium", "Hard", "Very hard"};
-    public static final String[] TIER_COLORS = {"", "§a", "§e", "§6", "§c"};
+    public static final String[] TIER_COLORS = {"", "§a", "§e", "§c", "§5"};
 
     public final Material icon;
     public Set<Material> accepted;

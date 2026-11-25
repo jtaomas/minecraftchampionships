@@ -110,9 +110,19 @@ final class DomeSession {
         List<String> ids = VoteEngine.normaliseIds(request.gameIds());
         if (ids.size() > settings.maxGames) ids = new ArrayList<>(ids.subList(0, settings.maxGames));
         int blankSlots = blankSlots(capacity, request.eventIndex(), ids.size(), settings.refillVote);
-        dial = new Dial(ids, capacity, blankSlots, venue.geometry());
-        int refilledNow = request.eventIndex() == settings.refillVote
-                ? Math.min(dial.size(), Math.max(0, settings.refillVote - 1)) : 0;
+        venue.configure(capacity);
+        List<String> board = testMode ? null : controller.rememberedBoard(request.eventIndex(), capacity);
+        List<String> added = new ArrayList<>();
+        if (board != null) {
+            // same board as the last vote: the game just played leaves a blank wedge where it was
+            dial = Dial.fromLayout(board, ids, capacity, request.eventIndex() >= settings.refillVote,
+                    venue.geometry(), added);
+        } else {
+            // No board from an earlier vote (Game 1 was not a dome vote, or the server restarted): there is no
+            // "where the played game was", so every wedge gets a game (owner: "one of the wedges doesn't have a
+            // game in it"). A blank only appears when there are not enough games left.
+            dial = new Dial(ids, capacity, testMode ? blankSlots : Math.max(0, capacity - Math.min(capacity, ids.size())), venue.geometry());
+        }
 
         boolean powerUpsAllowed = testMode
                 ? settings.powerUps && !request.audienceVote()
@@ -158,7 +168,7 @@ final class DomeSession {
             domeSay("Confirmation Dome: §e" + McmApi.displayName(only) + " §fis the only game left. No vote.");
         } else {
             domeSay("§e30 seconds §fto vote. One egg each; the chicken's wedge at tally is the vote.");
-            if (refilledNow > 0) announceNewGames(refilledNow);
+            if (!added.isEmpty()) announceNewGames(added);
             for (TeamPod pod : pods) {
                 if (pod.members().isEmpty()) continue;
                 for (UUID uuid : pod.members()) {
@@ -186,14 +196,12 @@ final class DomeSession {
         return all;
     }
 
-    private void announceNewGames(int count) {
+    private void announceNewGames(List<String> ids) {
         StringBuilder names = new StringBuilder();
-        int from = Math.max(0, dial.size() - count);
-        for (int i = from; i < dial.size(); i++) {
-            Wedge w = dial.wedge(i);
-            if (w == null || w.gameId() == null) continue;
+        for (String id : ids) {
+            if (id == null) continue;
             if (names.length() > 0) names.append("§7, §f");
-            names.append(McmApi.displayName(w.gameId()));
+            names.append(McmApi.displayName(id));
         }
         if (names.length() > 0) domeSay("§6New Game Added! §f" + names + " §7topped up the dial.");
     }
@@ -217,24 +225,46 @@ final class DomeSession {
             keys = merged;
             keys.add("Mixed");
         }
-        int color = 0;
+        // Each named team gets the cage of its own colour (the venue's pods are built in team order
+        // red .. pink); any other group takes the next free cage.
+        String[] slotKey = new String[max];
+        List<String> unplaced = new ArrayList<>();
         for (String key : keys) {
-            TeamPod pod = new TeamPod(pods.size(), key, color++);
-            for (UUID uuid : groups.getOrDefault(key, List.of())) {
-                pod.addMember(uuid);
-                podOf.put(uuid, pod);
-            }
-            pods.add(pod);
+            int slot = teamSlot(key);
+            if (slot >= 0 && slot < max && slotKey[slot] == null) slotKey[slot] = key;
+            else unplaced.add(key);
+        }
+        for (String key : unplaced) {
+            for (int i = 0; i < max; i++) if (slotKey[i] == null) { slotKey[i] = key; break; }
         }
         // Keep ten visual pods even with fewer teams, so the dial ring matches the venue.
-        while (pods.size() < max) {
-            pods.add(new TeamPod(pods.size(), "Empty", color++));
+        for (int i = 0; i < max; i++) {
+            String key = slotKey[i] == null ? "Empty" : slotKey[i];
+            TeamPod pod = new TeamPod(i, key, i);
+            if (slotKey[i] != null) {
+                for (UUID uuid : groups.getOrDefault(key, List.of())) {
+                    pod.addMember(uuid);
+                    podOf.put(uuid, pod);
+                }
+            }
+            pods.add(pod);
         }
         for (TeamPod pod : pods) {
             venue.setPodColor(pod.index(), pod.colorIndex());
             venue.setPodGate(pod.index(), true);
             venue.setPodState(pod.index(), "normal");
         }
+    }
+
+    /** Venue pod index of a core team name (Red .. Pink, matching the hub's cage colours), or -1. */
+    static int teamSlot(String team) {
+        if (team == null) return -1;
+        return switch (team.trim().toLowerCase(Locale.ROOT)) {
+            case "red" -> 0; case "orange" -> 1; case "yellow" -> 2; case "lime" -> 3; case "green" -> 4;
+            case "cyan" -> 5; case "aqua", "light_blue", "light blue" -> 6; case "blue" -> 7;
+            case "purple" -> 8; case "pink" -> 9;
+            default -> -1;
+        };
     }
 
     private void teleportAndPrepare() {
@@ -458,6 +488,12 @@ final class DomeSession {
     // ---------------------------------------------------------------------------------------------
 
     boolean tryThrowEgg(Player player, ItemStack item) {
+        if (settings.debug) {
+            plugin.getLogger().info("[dome-debug] tryThrow " + player.getName()
+                    + " running=" + running + " phase=" + (engine == null ? "null" : engine.phase())
+                    + " isEgg=" + (eggs != null && eggs.isEgg(item))
+                    + " pod=" + podOf.containsKey(player.getUniqueId()));
+        }
         if (!running || engine == null || !eggs.isEgg(item)) return false;
         if (engine.phase() != Phase.VOTING) {
             tell(player, "§7Voting is closed.");
@@ -476,7 +512,11 @@ final class DomeSession {
             tell(player, "§bYour pod is frozen.");
             return true;
         }
-        if (!inPod(player, pod)) {
+        boolean inPod = inPod(player, pod);
+        if (settings.debug) plugin.getLogger().info("[dome-debug] podCheck " + player.getName()
+                + " pod=" + pod.index() + " inPod=" + inPod + " pos=" + player.getLocation().toVector()
+                + " spawn=" + (venue.podSpawn(pod.index()) == null ? "null" : venue.podSpawn(pod.index()).toVector()));
+        if (!inPod) {
             tell(player, "§7Return to your pod to throw.");
             return true;
         }
@@ -527,8 +567,19 @@ final class DomeSession {
         Location c = venue.center();
         double lx = hit.getX() - (c == null ? 0 : c.getX());
         double lz = hit.getZ() - (c == null ? 0 : c.getZ());
-        if (hit.getY() < venue.geometry().floorY() - 6) {
+        DialGeometry g = venue.geometry();
+        // only an egg that lands on the dial or its rim wall hatches (the chicken is pulled onto the wedge):
+        // not on a cage roof, the crown or the terrace
+        double hr = Math.hypot(lx, lz);
+        if (hit.getY() < g.floorY() - 1.5 || hit.getY() > g.floorY() + 4.0 || hr > g.outerRadius() + 2.3) {
             engine.loseEgg(logical.id());
+            try { log.event("miss", String.format(Locale.ROOT, "x=%.2f y=%.2f z=%.2f r=%.2f block=%s", lx, hit.getY(), lz, hr,
+                    event == null || event.getHitBlock() == null ? "entity/none" : event.getHitBlock().getType() + "@" + event.getHitBlock().getY())); } catch (Throwable ignored) { }
+            Player thrower = Bukkit.getPlayer(logical.owner());
+            if (thrower != null && thrower.isOnline() && engine.phase() == Phase.VOTING && !hasDomeEgg(thrower)) {
+                thrower.sendMessage(c("§7Your egg missed the dial. §eHere's another one, aim for the wedges."));
+                giveEgg(thrower, logical.kind(), false);
+            }
             return true;
         }
         Chicken chicken = engine.landEgg(logical.id(), lx, lz);
@@ -658,6 +709,13 @@ final class DomeSession {
         if (!delivered.compareAndSet(false, true)) return;
         winner = id;
         running = false;
+        if (!testMode && dial != null) {
+            try {
+                List<String> layout = dial.layout();
+                for (int i = 0; i < layout.size(); i++) if (id != null && id.equalsIgnoreCase(layout.get(i))) layout.set(i, null);
+                controller.rememberBoard(layout, request.eventIndex());
+            } catch (Throwable ignored) { }
+        }
         try { log.winner(id, engine == null ? null : engine.tally()); } catch (Throwable ignored) { }
         try { cleanup(); } catch (Throwable t) { plugin.getLogger().log(Level.WARNING, "Dome cleanup failed", t); }
         controller.sessionFinished(this);

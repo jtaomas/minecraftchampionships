@@ -41,6 +41,10 @@ final class Ob {
     final Set<Long> safe = new HashSet<>();
     final Map<Long, String> timedPreview = new HashMap<>();
     final List<CourseModel.Timed> timed = new ArrayList<>();
+    /** Moving hazards, dropping ledges and belts of this obstacle (world coordinates). */
+    final List<CourseModel.Mover> movers = new ArrayList<>();
+    final List<CourseModel.Crumble> crumbles = new ArrayList<>();
+    final List<CourseModel.Belt> belts = new ArrayList<>();
     /** Must pass the easy jump table. */
     boolean easy;
     int killDepth = 5;
@@ -65,6 +69,10 @@ final class Ob {
     Ob(W w, Slot s, String name, String idea) {
         this(w, s.id(), name, idea, s.kind(), s.stage(), s.index(), s.end(), s.x(), s.y(), s.z(), s.q());
     }
+
+    /** Section cut from a community map ({@link ImportedCourse}); its credit line is shown to players. */
+    boolean imported;
+    String credit = "";
 
     // ------------------------------------------------------------------ frame
 

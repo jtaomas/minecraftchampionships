@@ -17,13 +17,15 @@ This is the classic 18-minute version (see `SPEC.md`). The mechanics (this READM
 - **End:** the game ends when only one side has living players (or when nobody does), or at 18:00. At a time-out, surviving sides are ranked by `timeout-tiebreak`. Sides equal on every criterion are a draw. After `end-delay-seconds` of celebration, `ctx.finish` is called exactly once and the core returns everyone to the lobby.
 - **Cleanup:** every chunk the map or a player touched is tracked. This includes placements, fluids, cobble forming, trees, falling blocks, explosions, pistons, dispensers and players' own chunks. Those chunks are wiped after `finish`/`stop` and again before the next build. Each game therefore places a completely fresh map, with a new seed unless `map.seed` is set. Non-player entities (dropped items, arrows, XP) are removed.
 
-## Scoring (classic 70 / 10 / 150 scaled)
-| Event | Points |
+## Scoring (real MCC coins, classic 70 / 10 / 150; see `../COINS.md`)
+| Event | Coins |
 |---|---|
-| Kill (enemy) | 14 to the killer (`points.kill`) |
-| Any player dies | +2 to every other living player (`points.survive-death`) |
-| Alive at the end (last side or time-out) | +30 each (`points.alive-at-end`) |
-| Team kill | 0 (`points.team-kill`) |
+| Kill (enemy) | 70 to the killer (`coins.kill`) |
+| Any player dies | +10 to every other living player (`coins.survive-death`) |
+| Alive at the end (last side or time-out) | +150 each (`coins.alive-at-end`) |
+| Team kill | 0 (`coins.team-kill`) |
+
+The core multiplies every award by the event multiplier.
 
 ## HUD
 - Boss-bar timer (`ctx.setTimer`).

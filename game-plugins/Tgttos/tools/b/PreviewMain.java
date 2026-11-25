@@ -1,6 +1,3 @@
-import com.mcm.games.tgttos.maps.b.FrozenCanal;
-import com.mcm.games.tgttos.maps.b.KiteFestival;
-import com.mcm.games.tgttos.maps.b.QuarrySteps;
 import com.mcm.games.tgttos.maps.b.TicketGates;
 import com.mcm.games.tgttos.maps.b.util.G;
 import com.mcm.games.tgttos.model.TgMapData;
@@ -26,25 +23,21 @@ public final class PreviewMain {
     public static void main(String[] args) throws Exception {
         File out = new File(args.length > 0 ? args[0] : "tools/b/out");
         out.mkdirs();
-        long seed = 20261124L;
+        long seed = Long.MIN_VALUE;   // default: each map's in-game seed (Seeds.fixed)
         List<String> only = new ArrayList<>();
         for (int i = 1; i < args.length; i++) {
             if (args[i].equals("--seed")) seed = Long.parseLong(args[++i]);
             else only.add(args[i]);
         }
-        StringBuilder all = new StringBuilder("TGTTOS maps, builder B - validation report (seed " + seed + ")\n\n");
+        StringBuilder all = new StringBuilder("TGTTOS maps, builder B - validation report (" + (seed == Long.MIN_VALUE ? "in-game seed of each map" : "seed " + seed) + ")\n\n");
         int errors = 0;
-        Object[][] maps = {{new KiteFestival(), "kite_festival"}, {new FrozenCanal(), "frozen_canal"},
-                {new TicketGates(), "ticket_gates"}, {new QuarrySteps(), "quarry_steps"}};
+        Object[][] maps = {{new TicketGates(), "ticket_gates"}};   // Quarry Steps removed (owner); Kite / Canal: Race plugin
         for (Object[] m : maps) {
             String id = (String) m[1];
             if (!only.isEmpty() && !only.contains(id)) continue;
             long t0 = System.nanoTime();
             G g = switch (id) {
-                case "kite_festival" -> ((KiteFestival) m[0]).generate(seed);
-                case "frozen_canal" -> ((FrozenCanal) m[0]).generate(seed);
-                case "ticket_gates" -> ((TicketGates) m[0]).generate(seed);
-                default -> ((QuarrySteps) m[0]).generate(seed);
+                default -> ((TicketGates) m[0]).generate(seed == Long.MIN_VALUE ? com.mcm.games.tgttos.model.Seeds.fixed(id) : seed);
             };
             long ms = (System.nanoTime() - t0) / 1_000_000;
             Validators.Out r = Validators.run(id, g, ms);

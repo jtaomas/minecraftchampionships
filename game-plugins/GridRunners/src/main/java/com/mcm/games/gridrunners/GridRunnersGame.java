@@ -41,7 +41,10 @@ public final class GridRunnersGame implements McmGame {
     public static final int GAME_SECONDS = 600;
     public static final int HINT_AT = 60;
     public static final int SKIP_AT = 180;
-    private static final int[] FINISH_POINTS = {40, 32, 26, 21, 17, 14, 12, 10, 8, 6};
+    // MCC coins (base x1.0, config coins.*; the core applies the event multiplier). Team pools, shared amongst the
+    // team (each member gets the MCC per-member share). See game-plugins/COINS.md.
+    private int roomFirst = 175, roomStep = 17, roomMin = 0;
+    private int[] coursePlacement = {500, 400, 320, 255, 200, 155, 120, 95, 75, 55};
 
     private enum Phase { IDLE, BUILDING, COUNTDOWN, RUNNING, ENDING }
 
@@ -98,6 +101,12 @@ public final class GridRunnersGame implements McmGame {
         cancelArenaClear();
         if (guard == null) guard = new SpectatorGuard(plugin, this::spectatorZone);
         this.ctx = context;
+        plugin.saveDefaultConfig();
+        var cfg = plugin.getConfig();
+        roomFirst = Math.max(0, cfg.getInt("coins.room-first", 175));
+        roomStep = Math.max(0, cfg.getInt("coins.room-step", 17));
+        roomMin = Math.max(0, cfg.getInt("coins.room-minimum", 0));
+        coursePlacement = com.mcm.api.McmCoins.toIntArray(cfg.getList("coins.course-placement"), coursePlacement);
         this.world = Arena.ensureWorld();
         if (world == null) {
             plugin.getLogger().severe("Could not create world " + WORLD);
@@ -545,16 +554,17 @@ public final class GridRunnersGame implements McmGame {
         if (!skipped) {
             lane.cleared++;
             int place = ++roomClears[room.index];
-            int pts = Math.max(4, 12 - (place - 1));
+            int pts = (int) com.mcm.api.McmCoins.linear(roomFirst, roomStep, place, roomMin);   // MCC 175, 158, 141, ...
+            double each = ctx.teamShare(pts, on.size());
             for (Player p : on) {
-                ctx.addPoints(p.getUniqueId(), pts, "Grid Runners: " + room.name() + " (" + Msg.ordinal(place) + ")");
-                Msg.title(p, "§aRoom Cleared!", "§e+" + pts + " §7- " + Msg.ordinal(place) + " team to clear " + room.name(), 3, 35, 10);
+                if (each > 0) ctx.addCoins(p.getUniqueId(), each, "Grid Runners: " + room.name() + " (" + Msg.ordinal(place) + ")");
+                Msg.title(p, "§aRoom Cleared!", "§6+" + pts + " team coins §7- " + Msg.ordinal(place) + " team to clear " + room.name(), 3, 35, 10);
                 p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.4f);
             }
         } else {
             lane.skipped++;
             for (Player p : on) {
-                Msg.send(p, "§7" + room.title() + " was auto-skipped after 3 minutes §8(no points)§7. The doors are open.");
+                Msg.send(p, "§7" + room.title() + " was auto-skipped after 3 minutes §8(no coins)§7. The doors are open.");
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1f, 0.6f);
             }
         }
@@ -586,11 +596,13 @@ public final class GridRunnersGame implements McmGame {
         lane.finished = true;
         lane.place = ++finishedCount;
         lane.finishSeconds = GAME_SECONDS - timeLeft;
-        int pts = lane.place <= FINISH_POINTS.length ? FINISH_POINTS[lane.place - 1] : 5;
+        int pts = com.mcm.api.McmCoins.placementOrLast(coursePlacement, lane.place);   // MCC 500, 400, 320, ...
         lane.rooms[8].state = Room.State.DONE;
-        for (Player p : online(lane)) {
-            ctx.addPoints(p.getUniqueId(), pts, "Grid Runners: finished " + Msg.ordinal(lane.place));
-            Msg.title(p, "§6§lCourse Complete!", "§e" + Msg.ordinal(lane.place) + " place §7- §e+" + pts, 5, 60, 15);
+        List<Player> fin = online(lane);
+        double each = ctx.teamShare(pts, fin.size());
+        for (Player p : fin) {
+            if (each > 0) ctx.addCoins(p.getUniqueId(), each, "Grid Runners: finished " + Msg.ordinal(lane.place));
+            Msg.title(p, "§6§lCourse Complete!", "§e" + Msg.ordinal(lane.place) + " place §7- §6+" + pts + " team coins", 5, 60, 15);
             p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
             SpectatorGuard.makeSpectator(p, lane.overview(world));
         }

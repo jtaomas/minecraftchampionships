@@ -1,0 +1,26 @@
+{
+  "id": "present",
+  "name": "Present",
+  "debut": "MCC 13",
+  "stars": 3,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Present.png",
+  "floor": ["ppppppp","ppppppp","ppppppp","ppppppp","ppppppp","ppppppp","ppppppp"],
+  "palette": {
+    "p": "minecraft:spruce_planks",
+    "r": "minecraft:red_concrete",
+    "y": "minecraft:yellow_stained_glass",
+    "q": "minecraft:quartz_block",
+    "a": "minecraft:quartz_stairs[facing=east,half=top]",
+    "b": "minecraft:quartz_stairs[facing=west,half=top]"
+  },
+  "layers": [
+    [".......", ".......", "..ryr..", "..yyy..", "..ryr..", ".......", "......."],
+    [".......", ".......", "..yyy..", "..yyy..", "..yyy..", ".......", "......."],
+    [".......", ".......", "..ryr..", "..yyy..", "..ryr..", ".......", "......."],
+    [".......", ".......", ".......", "..aqb..", ".......", ".......", "......."]
+  ],
+  "guessed": [
+    "box assumed 3x3x3 with the yellow-glass ribbon cross on every face; centre filled with yellow glass",
+    "bow: two upside-down quartz stairs (tall side toward the centre) around a quartz block, all on the middle row"
+  ]
+}

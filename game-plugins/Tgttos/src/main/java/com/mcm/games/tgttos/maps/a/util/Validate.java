@@ -142,8 +142,9 @@ public final class Validate {
         if (safeR != null && fastR != null && safeR.ok && fastR.ok) {
             double save = 100 * (1 - fastR.time / safeR.time);
             double saveM = (safeM != null && fastM != null && safeM.ok && fastM.ok) ? 100 * (1 - fastM.time / safeM.time) : -1;
-            ok(save >= 20, String.format("FAST saves >= 20%% vs SAFE (expert %.0f%%, median %.0f%%)", save, saveM));
-            ok(fastR.time <= 35.5, String.format("best line by an expert <= 35 s (%.1f s)", fastR.time));
+            double need = 100 * g.design.minFastSave;
+            ok(save >= need - 1e-9, String.format("FAST saves >= %.0f%% vs SAFE (expert %.0f%%, median %.0f%%)", need, save, saveM));
+            ok(fastR.time <= g.design.maxExpert, String.format("best line by an expert <= %.0f s (%.1f s)", g.design.maxExpert, fastR.time));
         }
 
         // ---- lazy straight line

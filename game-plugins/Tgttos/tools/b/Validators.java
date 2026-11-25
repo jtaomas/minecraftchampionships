@@ -41,8 +41,6 @@ final class Validators {
         r.check(bb.minX() >= -250 && bb.maxX() <= 250 && bb.minZ() >= -250 && bb.maxZ() <= 250 && bb.minY() >= -60 && bb.maxY() <= 180, "inside the contract box (x/z -250..250, y -60..180)");
         r.check(types.size() >= 25, "material richness: " + types.size() + " block types (>= 25)");
         Kit kit = switch (id) {
-            case "kite_festival" -> Kit.ELYTRA_FIREWORKS;
-            case "frozen_canal" -> Kit.BOAT;
             case "ticket_gates" -> Kit.SNOWBALLS_ONLY;
             default -> Kit.CONCRETE_PICKAXE_SNOWBALLS;
         };
@@ -52,6 +50,7 @@ final class Validators {
         Check.stairs(g, r);
         r.check(d.chickenSpawns.size() >= 8 && d.chickenSpawns.stream().allMatch(c -> d.pen.contains(c.x(), c.y(), c.z())),
                 d.chickenSpawns.size() + " chicken spawns inside the pen " + (d.pen.maxX() - d.pen.minX() + 1) + " x " + (d.pen.maxZ() - d.pen.minZ() + 1));
+        { var fr = com.mcm.games.tgttos.model.FinishRow.check(d); r.check(fr.ok(), fr.text() + " (owner, feedback 3: the ending is a whole row of chickens)"); }
         Spawn mid = d.startSpawns.get(d.startSpawns.size() / 2);
         if (!g.landmark.isEmpty()) {
             Check.landmark(d, Check.afterGo(d, d.blocks), g.landmark, r);
@@ -62,10 +61,7 @@ final class Validators {
             o.cam = new double[]{mid.x(), mid.y() + 1.62, mid.z(), mid.x(), mid.y() + 1.62, mid.z() + 40};
         }
         switch (id) {
-            case "quarry_steps" -> QuarryV.run(g, com.mcm.games.tgttos.model.DecoySpots.effective(new com.mcm.games.tgttos.maps.b.QuarrySteps(), g.d), r);
             case "ticket_gates" -> TicketV.run(g, r, o);
-            case "frozen_canal" -> CanalV.run(g, r);
-            case "kite_festival" -> KiteV.run(g, r);
             default -> { }
         }
         r.line(r.errors == 0 ? "  RESULT: all checks passed" : "  RESULT: " + r.errors + " problem(s)");

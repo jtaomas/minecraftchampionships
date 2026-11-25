@@ -16,11 +16,11 @@ Paper 1.21.1, core API `com.mcm:MinecraftMondayCore:3.2.0`. World `mcc_findthebu
   every other block right-click is denied (no chests, doors, trapdoors, beds, pots...). No damage, hunger, block
   breaking/placing, item drops/pickups. Rooms are fully enclosed; falling out of the map returns you to the start.
 
-## Scoring
-- 1st finder **20**, each later finder 2 less, minimum **6** (20, 18, 16, ... 6, 6). Non-finders 0.
-- **Team bonus +5** to each member of a side when every online member of that side found it (sides with 2+ online
+## Scoring (MCC-style coins, OURS - MCC never had this game; `coins.*`, see `../COINS.md`)
+- 1st finder **80** coins, each later finder 4 less, minimum **20** (80, 76, 72, ... 20). Non-finders 0.
+- **Team bonus +15** to each member of a side when every online member of that side found it (sides with 2+ online
   players only, once per side per round).
-- With 5 rounds a top player gets about 100–125 points. All values in `config.yml`.
+- The core multiplies every award by the event multiplier. All values in `config.yml` under `coins:`.
 
 ## HUD
 Boss-bar timer (`ctx.setTimer`), sidebar (round x/5, map, found n/m, top 3 finders this round), action bar

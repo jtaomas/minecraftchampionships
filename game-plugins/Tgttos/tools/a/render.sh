@@ -1,15 +1,15 @@
 #!/bin/sh
 # Builder-A offline loop: compile the contract (model) + maps.a (pure Java, no Paper), run all validators
 # (report: tools/a/out/validation.txt, exit 2 on problems), dump, and render previews into previews/.
-# Usage: sh tools/a/render.sh [mapId ...]      (NORENDER=1 skips the PNGs; default: all four maps)
+# Usage: sh tools/a/render.sh [mapId ...]      (NORENDER=1 skips the PNGs; default: all three maps)
 cd "$(dirname "$0")/../.."
 OUT=tools/a/out
 J=/c/Users/USER/Desktop/java/bin
-SEED=${SEED:-20261124}
+SEED=${SEED:-live}   # each map's in-game seed (MapRegistry fixedSeed); feedback 3
 rm -rf "$OUT/classes"; mkdir -p "$OUT/classes" previews
 "$J/javac" -encoding UTF-8 -d "$OUT/classes" src/main/java/com/mcm/games/tgttos/model/*.java \
   src/main/java/com/mcm/games/tgttos/maps/a/util/*.java src/main/java/com/mcm/games/tgttos/maps/a/*.java tools/a/PreviewMain.java || exit 1
-ALL="laundry_line:LaundryLineMap dam_face:DamFaceMap bookshelf_run:BookshelfRunMap orchard_drop:OrchardDropMap"
+ALL="laundry_line:LaundryLineMap dam_face:DamFaceMap bookshelf_run:BookshelfRunMap"
 SEL=""
 for e in $ALL; do
   id=${e%%:*}; cls=${e##*:}

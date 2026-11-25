@@ -29,8 +29,15 @@ public final class PreviewMain {
         dd.mkdirs();
         long seed = args.length > 1 ? Long.parseLong(args[1]) : 20261124L;
         long t0 = System.currentTimeMillis();
-        W w = CourseMap.build(seed);
+        // optional 3rd argument: an imported-sections folder (course.txt); keep `out` outside the repo then
+        ImportedCourse ic = args.length > 2 ? ImportedCourse.load(new File(args[2])) : null;
+        W w = CourseMap.build(seed, ic);
         Validate.Report r = Validate.run(w);
+        if (ic != null) {
+            String imp = "imported: " + w.model.notes.getOrDefault("imported", "none") + "\n";
+            for (String p : ic.problems) imp += "IMPORT PROBLEM " + p + "\n";
+            r.text.insert(0, imp);
+        }
         String txt = r.text + "\n(generated + validated in " + (System.currentTimeMillis() - t0) + " ms)\n";
         Files.write(new File(out, "validation.txt").toPath(), txt.getBytes(StandardCharsets.UTF_8));
         System.out.print(txt);

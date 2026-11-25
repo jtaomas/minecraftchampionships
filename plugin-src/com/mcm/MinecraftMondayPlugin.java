@@ -101,6 +101,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     );
 
     private final TeamScoring scoring = new TeamScoring();
+    private final McmHud hud = new McmHud(scoring);
     private final Random rng = new Random();
 
     private World world;
@@ -130,6 +131,11 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     private final Set<UUID> externalParticipants = new LinkedHashSet<>();
     private static final String EXTRA_GUI_TITLE = ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "More MCC Games";
     private int playlistIndex = 0;
+    /** MCC coin multiplier of the external game running now (set in startExternal). */
+    private double coinMultiplier = 1.0;
+    /** Side key declared event winner by a game (Dodgebolt), or null. Reset when a championship starts. */
+    private String declaredChampionSide;
+    private String podiumChampionSide;
 
     // Event & multi-round state
     private int roundNumber = 1;
@@ -215,12 +221,14 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     private HubManager hub;
     /** True while the current/last event context is MCC (MCC championship or a single MCC game). */
     private boolean mccContext = false;
+    private static final String MAP_GUI_TITLE = ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Pick a map";
+    /** Map picker: which game each admin is choosing a map for, and the map ids in slot order. */
+    private final Map<UUID, String> mapPickGame = new HashMap<>();
+    private final Map<UUID, List<String>> mapPickIds = new HashMap<>();
     private static final String MCC_GUI_TITLE = ChatColor.GOLD + "" + ChatColor.BOLD + "MCC Hub " + ChatColor.DARK_GRAY + "- Games";
     private static final String SELECTOR_GUI_TITLE = ChatColor.AQUA + "" + ChatColor.BOLD + "Lobby Selector";
 
     private static final int[] TEAM_GUI_SLOTS = {2, 3, 4, 5, 6, 11, 12, 13, 14, 15};
-    private static final int[] MM_EXT_ADMIN_SLOTS = {9, 0, 1, 2, 3, 5, 6, 7, 8};
-    private static final int[] MM_EXT_SELECTOR_SLOTS = {19, 20, 21, 23, 24, 25};
     private static final String ADMIN_GUI_TITLE = ChatColor.GOLD + "" + ChatColor.BOLD + "MCM Tournament Controller";
     private static final String TEAM_GUI_TITLE = ChatColor.AQUA + "" + ChatColor.BOLD + "Select Your Team";
     private static final String KIT_GUI_TITLE = ChatColor.DARK_RED + "" + ChatColor.BOLD + "Choose Your PvP Kit";
@@ -307,9 +315,22 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
 
     boolean feedbackChampionship() { return championshipMode; }
 
+    private PackServer packServer;
+
     @Override
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, this);
+        getServer().getPluginManager().registerEvents(new CommandBlockGuard(), this);
+        getServer().getPluginManager().registerEvents(new Listener() {
+            @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+            public void onHudChat(io.papermc.paper.event.player.AsyncChatEvent e) {
+                e.renderer((source, name, message, viewer) -> hud.chat(source, message, viewer instanceof Player vp && McmFx.hasPack(vp)));
+            }
+            @EventHandler
+            public void onHudQuit(PlayerQuitEvent e) { hud.forget(e.getPlayer()); }
+        }, this);
+        packServer = new PackServer(this);
+        packServer.start();
         world = Bukkit.getWorlds().get(0);
         setupWorldRules(world);
 
@@ -357,11 +378,26 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         getConfig().addDefault("admin-tools-item", true);
         getConfig().addDefault("admin-tools-hidden-in-games", new ArrayList<>(List.of("bingo", "skyblockle")));
         getConfig().addDefault("minecraft-monday-external-games", new ArrayList<>(List.of("findthebutton")));
+        getConfig().addDefault("hidden-games", new ArrayList<>(List.of("footrace", "decisiondome")));
+        getConfig().addDefault("default-lobby", "mcc");
+        getConfig().addDefault("hud.event-name", "BLOCK SHOWDOWN");
         getConfig().addDefault("dropper.stage-count", 5);
         getConfig().addDefault("dropper.imported-stages", "always");
+        getConfig().addDefault("coins.event-multiplier.enabled", true);
+        getConfig().addDefault("coins.event-multiplier.eight-games", Arrays.asList(1.0, 1.5, 1.5, 2.0, 2.0, 2.5, 2.5, 3.0));
+        getConfig().addDefault("coins.event-multiplier.six-games", Arrays.asList(1.0, 1.5, 2.0, 2.0, 2.5, 3.0));
+        getConfig().addDefault("coins.event-multiplier.no-coin-games", new ArrayList<>(List.of("dodgebolt", "decisiondome")));
+        getConfig().addDefault("coins.event-multiplier.outside-championship", 1.0);
+        getConfig().addDefault("coins.mcc-team-size", 4);
+        getConfig().addDefault("coins.team-pool-split", "mcc");
         getConfig().options().copyDefaults(true);
         getConfig().setInlineComments("mcc-hub.enabled", List.of(
-                "Build/load the MCC hub island (world mcc_lobby) as the lobby for MCC games. The MM lobby stays the default spawn."));
+                "Build/load the MCC hub island (world mcc_lobby) as the lobby for MCC games."));
+        getConfig().setInlineComments("hidden-games", List.of(
+                "Installed games kept out of the menus, map picker and championship playlists (still startable with /mcm play <id>)."));
+        getConfig().setInlineComments("default-lobby", List.of(
+                "Where players spawn: mcc = the Block Showdown MCC hub (when built), mm = the Minecraft Monday lobby. The other one is reached from the compass."));
+        getConfig().setInlineComments("hud.event-name", List.of("Event name at the top of the MCC-style sidebar and tab list."));
         getConfig().setInlineComments("mcc-hub.ambient-fireworks-per-minute", List.of(
                 "Average ambient fireworks per minute over the MCC hub between games (0 = none). Game wins, the podium and the vote reveal still fire."));
         getConfig().setInlineComments("mcc-championship-playlist", List.of(
@@ -378,6 +414,19 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         getConfig().setInlineComments("minecraft-monday-external-games", List.of(
                 "Ids of installed external games that belong to Minecraft Monday (with the 7 built-ins, MM lobby, /mcm start),",
                 "not MCC (excluded from the MCC hub list, /mcm start mcc and the Decision Dome vote)."));
+        getConfig().setInlineComments("coins.event-multiplier.enabled", List.of(
+                "MCC coin multiplier per game slot of a championship (game-plugins/COINS.md). Games award base (x1.0) MCC coins."));
+        getConfig().setInlineComments("coins.event-multiplier.eight-games", List.of(
+                "MCC regular event: game 1 x1.0, 2-3 x1.5, 4-5 x2.0, 6-7 x2.5, 8 x3.0. Other playlist lengths (except 6) map proportionally onto this list."));
+        getConfig().setInlineComments("coins.event-multiplier.six-games", List.of("MCC 6-game event: x1.0, x1.5, x2.0, x2.0, x2.5, x3.0."));
+        getConfig().setInlineComments("coins.event-multiplier.no-coin-games", List.of(
+                "Playlist games that award no coins (Dodgebolt, the dome): skipped when counting game slots, always x1.0."));
+        getConfig().setInlineComments("coins.event-multiplier.outside-championship", List.of(
+                "Multiplier for a single game started with /mcm play (not part of a championship). Staging tests can set e.g. 2.5."));
+        getConfig().setInlineComments("coins.mcc-team-size", List.of(
+                "MCC team size. A team pool ('160 coins shared amongst the team') pays pool / this to each member, the MCC per-member share."));
+        getConfig().setInlineComments("coins.team-pool-split", List.of(
+                "mcc = each member gets pool / coins.mcc-team-size (default); team = the pool is split across the side's online members."));
         getConfig().setInlineComments("dropper.stage-count", List.of(
                 "Stages per Multi-Stage Dropper round (1-12, capped by the stages available)."));
         getConfig().setInlineComments("dropper.imported-stages", List.of(
@@ -448,6 +497,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
+        if (packServer != null) packServer.stop();
         if (adminTools != null) { try { adminTools.disable(); } catch (Throwable ignored) {} }
         if (importedDroppers != null) { try { importedDroppers.disable(); } catch (Throwable ignored) {} }
         removePodium(false);
@@ -641,56 +691,119 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         refreshLobbyItems();
     }
 
-    private void openAdminGui(Player p) {
-        Inventory inv = Bukkit.createInventory(null, 27, ADMIN_GUI_TITLE);
-        inv.setItem(4, makeItem(Material.NETHER_STAR, ChatColor.GOLD + "" + ChatColor.BOLD + "★ START FULL CHAMPIONSHIP ★",
-                ChatColor.GRAY + "Plays all " + buildPlaylist().size() + " events back-to-back!", ChatColor.YELLOW + "Click to start"));
+    // ==================== COMPASS MENUS (spaced layout, click actions by slot) ====================
 
-        inv.setItem(10, makeItem(Material.IRON_SWORD, ChatColor.RED + "1. Survival Games (Blitz SG)", ChatColor.GRAY + "4m • SG4 & Kalas, Blitz Star, Refill, DM"));
-        inv.setItem(11, makeItem(Material.FEATHER, ChatColor.GREEN + "2. Parkour Spiral", ChatColor.GRAY + "4m • Real Hielke Parkour Spiral tower"));
-        inv.setItem(12, makeItem(Material.WATER_BUCKET, ChatColor.BLUE + "3. Multi-Stage Dropper", ChatColor.GRAY + "3.5m • 5 shafts in Delightful Dropper 2"));
-        inv.setItem(13, makeItem(Material.TNT, ChatColor.GOLD + "4. TNT Run (Best of 3)", ChatColor.GRAY + "3 rounds • Jungle, Castle, Pyramid + Double Jump"));
-        inv.setItem(14, makeItem(Material.GOLDEN_SHOVEL, ChatColor.AQUA + "5. Spleef / Splegg (Best of 3)", ChatColor.GRAY + "3 rounds • Golden Shovel Instamine + Snowball KB"));
-        inv.setItem(15, makeItem(Material.DIAMOND_CHESTPLATE, ChatColor.DARK_RED + "6. Battle Arena (Best of 2)", ChatColor.GRAY + "2 quick rounds • Overcast Harb + 4 PvP Kits"));
-        inv.setItem(16, makeItem(Material.GOLDEN_APPLE, ChatColor.DARK_GREEN + "7. Speed Survival (15m)", ChatColor.GRAY + "15m • Fresh biome, CutClean, Timber, Supply Drops, DM"));
-        inv.setItem(17, makeItem(Material.BOW, ChatColor.LIGHT_PURPLE + "Optional: Pink Valley (One Shot)", ChatColor.GRAY + "Not in Championship • Cleaned 70x70 arena"));
+    /** What each slot of the open compass menu does, per viewer; filled when the menu is built. */
+    private final Map<UUID, Map<Integer, Runnable>> menuActions = new HashMap<>();
 
-        // Minecraft Monday external games (config minecraft-monday-external-games, e.g. Find the Button)
-        List<McmGame> mmExt = mmExternalGames();
-        for (int i = 0; i < mmExt.size() && i < MM_EXT_ADMIN_SLOTS.length; i++) {
-            McmGame g = mmExt.get(i);
-            inv.setItem(MM_EXT_ADMIN_SLOTS[i], makeItem(g.icon(), ChatColor.GREEN + g.displayName(),
-                    ChatColor.GRAY + (g.description().isEmpty() ? "Minecraft Monday game" : g.description()), ChatColor.DARK_GRAY + "/mcm play " + g.id()));
+    /** One menu entry: an item and what clicking it does (null = display only). */
+    private record MenuEntry(ItemStack item, Runnable action) { }
+
+    /** Columns for k entries in one row, a gap between each and centred: 1 -> 4, 2 -> 3 5, 3 -> 2 4 6, 4 -> 1 3 5 7. */
+    private static int[] spacedColumns(int k) {
+        return switch (k) {
+            case 1 -> new int[]{4};
+            case 2 -> new int[]{3, 5};
+            case 3 -> new int[]{2, 4, 6};
+            case 4 -> new int[]{1, 3, 5, 7};
+            default -> java.util.Arrays.copyOf(new int[]{1, 2, 3, 4, 5, 6, 7}, Math.min(k, 7));
+        };
+    }
+
+    /**
+     * Header row (slot 4 = {@code header}), the games in spaced rows of four, then the control bar ({@code controls}
+     * indexed by column, null = filler). Everything else is a dark pane, so the games read as a clean grid.
+     */
+    private void openMenu(Player p, String title, MenuEntry header, List<MenuEntry> games, MenuEntry[] controls) {
+        int perRow = games.size() > 16 ? 7 : 4;
+        int rows = Math.max(1, (games.size() + perRow - 1) / perRow);
+        if (rows > 4) { rows = 4; games = games.subList(0, 4 * perRow); }
+        int size = 9 * (rows + 2);
+        Inventory inv = Bukkit.createInventory(null, size, title);
+        Map<Integer, Runnable> acts = new HashMap<>();
+        ItemStack dark = makeItem(Material.BLACK_STAINED_GLASS_PANE, " ");
+        ItemStack light = makeItem(Material.GRAY_STAINED_GLASS_PANE, " ");
+        for (int s = 0; s < size; s++) inv.setItem(s, s < 9 || s >= size - 9 ? dark : light);
+        if (header != null) { inv.setItem(4, header.item()); if (header.action() != null) acts.put(4, header.action()); }
+        for (int r = 0; r < rows; r++) {
+            int from = r * perRow, to = Math.min(games.size(), from + perRow);
+            int[] cols = spacedColumns(to - from);
+            for (int i = from; i < to; i++) {
+                int slot = 9 * (r + 1) + cols[i - from];
+                inv.setItem(slot, games.get(i).item());
+                if (games.get(i).action() != null) acts.put(slot, games.get(i).action());
+            }
         }
-        inv.setItem(19, makeItem(Material.REPEATER, ChatColor.AQUA + "" + ChatColor.BOLD + "Team Size: " + ChatColor.YELLOW + scoring.getTeamSizeLabel(),
-                ChatColor.GRAY + "Click to cycle: 1 -> 2 -> 3 -> 4 -> 5"));
-        inv.setItem(20, makeItem(Material.RED_WOOL, ChatColor.GREEN + "Auto-Balance / Randomize Teams",
-                ChatColor.GRAY + "Splits online players into teams of " + scoring.getMaxTeamSize()));
-        inv.setItem(21, makeItem(Material.ARROW, ChatColor.GOLD + "" + ChatColor.BOLD + "Skip Whole Event (/mcm next)",
-                ChatColor.GRAY + "Ends the whole current event & advances to next", ChatColor.DARK_GRAY + "(/mcm skip only skips one round)"));
-        inv.setItem(22, makeItem(Material.BARRIER, ChatColor.RED + "" + ChatColor.BOLD + "STOP / RETURN TO LOBBY",
-                ChatColor.GRAY + "Emergency stop tournament & return"));
-        // Admin testing hooks (same code paths as /mcm fast, /mcm skipwait, /mcm skip)
-        boolean fastOn = McmApi.isFastTest();
-        inv.setItem(18, makeItem(fastOn ? Material.LIME_DYE : Material.GRAY_DYE,
-                ChatColor.AQUA + "" + ChatColor.BOLD + "Fast test: " + (fastOn ? ChatColor.GREEN + "ON" : ChatColor.RED + "OFF"),
-                ChatColor.GRAY + "Cuts every lobby/intermission/vote/reveal", ChatColor.GRAY + "and countdown wait to 1 s (/mcm fast)", ChatColor.YELLOW + "Click to toggle"));
-        inv.setItem(23, makeItem(Material.CLOCK, ChatColor.GREEN + "" + ChatColor.BOLD + "Skip wait (/mcm skipwait)",
-                ChatColor.GRAY + "Finish the countdown / vote / intermission / reveal now"));
-        inv.setItem(26, makeItem(Material.SPECTRAL_ARROW, ChatColor.GOLD + "" + ChatColor.BOLD + "Skip round (/mcm skip)",
-                ChatColor.GRAY + "Skip just the current round/map (no points)"));
-        inv.setItem(24, makeItem(Material.CLOCK, ChatColor.YELLOW + "Reset All Scores",
-                ChatColor.GRAY + "Set everyone's points back to 0"));
-        if (hub != null) {
-            inv.setItem(25, makeItem(Material.ENDER_EYE, ChatColor.GOLD + "" + ChatColor.BOLD + "MCC Lobby",
-                    ChatColor.GRAY + "Travel to the MCC hub island", ChatColor.GRAY + "(MCC games are run from there)",
-                    hubReady() ? ChatColor.YELLOW + "Click to teleport" : ChatColor.RED + "Hub is " + hub.status()));
-        } else {
-            inv.setItem(25, makeItem(Material.COMMAND_BLOCK, ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "More MCC Games (" + mccGames().size() + ")",
-                    ChatColor.GRAY + "Play an installed MCC game on its own"));
+        for (int c = 0; c < 9 && c < controls.length; c++) {
+            if (controls[c] == null) continue;
+            int slot = size - 9 + c;
+            inv.setItem(slot, controls[c].item());
+            if (controls[c].action() != null) acts.put(slot, controls[c].action());
         }
+        menuActions.put(p.getUniqueId(), acts);
         p.openInventory(inv);
     }
+
+    private MenuEntry builtIn(Player p, Material icon, String name, String line, GameType type) {
+        return new MenuEntry(makeItem(icon, ChatColor.YELLOW + "" + ChatColor.BOLD + name, ChatColor.GRAY + line, "",
+                ChatColor.GREEN + "▶ Click to play"), () -> { p.closeInventory(); championshipMode = false; startEvent(type); });
+    }
+
+    private MenuEntry hubTravelEntry(Player p) {
+        if (hub == null) return new MenuEntry(makeItem(Material.COMMAND_BLOCK, ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "More MCC Games (" + mccGames().size() + ")",
+                ChatColor.GRAY + "Play an installed MCC game on its own"), () -> openExtraGamesGui(p));
+        return new MenuEntry(makeItem(Material.ENDER_EYE, ChatColor.GOLD + "" + ChatColor.BOLD + "MCC Lobby",
+                ChatColor.GRAY + "Travel to the Block Showdown hub", hubReady() ? ChatColor.YELLOW + "Click to teleport" : ChatColor.RED + "Hub is " + hub.status()),
+                () -> travelToHub(p));
+    }
+
+    private void openAdminGui(Player p) {
+        List<MenuEntry> games = new ArrayList<>();
+        games.add(builtIn(p, Material.IRON_SWORD, "Survival Games", "Blitz SG • SG4 & Kalas, refill, deathmatch", GameType.SURVIVAL_GAMES));
+        games.add(builtIn(p, Material.FEATHER, "Parkour Spiral", "Hielke's parkour spiral tower", GameType.PARKOUR));
+        games.add(builtIn(p, Material.WATER_BUCKET, "Multi-Stage Dropper", "5 shafts in Delightful Dropper 2", GameType.DROPPER));
+        games.add(builtIn(p, Material.TNT, "TNT Run", "Best of 3 • double jump", GameType.TNT_RUN));
+        games.add(builtIn(p, Material.GOLDEN_SHOVEL, "Spleef / Splegg", "Best of 3 • instamine + snowballs", GameType.SPLEEF));
+        games.add(builtIn(p, Material.DIAMOND_CHESTPLATE, "Battle Arena", "Best of 2 • four PvP kits", GameType.KIT_PVP));
+        games.add(builtIn(p, Material.GOLDEN_APPLE, "Speed Survival", "15 min • CutClean, Timber, supply drops", GameType.SURVIVAL));
+        games.add(builtIn(p, Material.BOW, "One Shot", "Pink Valley • not in the championship", GameType.ONE_SHOT));
+        for (McmGame g : mmExternalGames()) {
+            games.add(new MenuEntry(makeItem(g.icon(), ChatColor.YELLOW + "" + ChatColor.BOLD + g.displayName(),
+                    ChatColor.GRAY + (g.description().isEmpty() ? "Minecraft Monday game" : g.description()), "",
+                    ChatColor.GREEN + "▶ Click to play"), () -> pickMapThenStart(p, g.id())));
+        }
+        MenuEntry header = new MenuEntry(makeItem(Material.NETHER_STAR, ChatColor.GOLD + "" + ChatColor.BOLD + "★ START FULL CHAMPIONSHIP ★",
+                ChatColor.GRAY + "Plays all " + buildPlaylist().size() + " events back-to-back", ChatColor.YELLOW + "Click to start"),
+                () -> { p.closeInventory(); startChampionship(false); });
+        boolean fastOn = McmApi.isFastTest();
+        MenuEntry[] controls = {
+                hubTravelEntry(p),
+                new MenuEntry(makeItem(Material.REPEATER, ChatColor.AQUA + "" + ChatColor.BOLD + "Team Size: " + ChatColor.YELLOW + scoring.getTeamSizeLabel(),
+                        ChatColor.GRAY + "Click to cycle: 1 → 5"), () -> { setTeamSize((scoring.getMaxTeamSize() % 5) + 1); openAdminGui(p); }),
+                new MenuEntry(makeItem(Material.RED_WOOL, ChatColor.GREEN + "" + ChatColor.BOLD + "Auto-Balance Teams",
+                        ChatColor.GRAY + "Teams of " + scoring.getMaxTeamSize()), () -> { p.closeInventory(); randomizeTeams(); }),
+                null,
+                new MenuEntry(makeItem(Material.BARRIER, ChatColor.RED + "" + ChatColor.BOLD + "STOP / RETURN TO LOBBY", ChatColor.GRAY + "/mcm stop"),
+                        () -> { p.closeInventory(); championshipMode = false; returnToLobby(ChatColor.YELLOW + "Returned to lobby."); }),
+                null,
+                new MenuEntry(makeItem(fastOn ? Material.LIME_DYE : Material.GRAY_DYE,
+                        ChatColor.AQUA + "" + ChatColor.BOLD + "Testing: " + (fastOn ? ChatColor.GREEN + "FAST" : ChatColor.RED + "OFF"),
+                        ChatColor.GRAY + "Fast test cuts every wait to 1 s (/mcm fast)", "",
+                        ChatColor.YELLOW + "Left-click: toggle fast test", ChatColor.YELLOW + "Right-click: skip wait  " + ChatColor.DARK_GRAY + "/mcm skipwait"),
+                        () -> { if (lastMenuClickRight.contains(p.getUniqueId())) { p.closeInventory(); cmdSkipWait(p); } else { cmdFast(p, null); openAdminGui(p); } }),
+                new MenuEntry(makeItem(Material.ARROW, ChatColor.GOLD + "" + ChatColor.BOLD + "Skip",
+                        ChatColor.YELLOW + "Left-click: skip whole event " + ChatColor.DARK_GRAY + "/mcm next",
+                        ChatColor.YELLOW + "Right-click: skip one round " + ChatColor.DARK_GRAY + "/mcm skip"),
+                        () -> { p.closeInventory(); if (lastMenuClickRight.contains(p.getUniqueId())) cmdSkipRound(p); else skipCurrentEvent(p); }),
+                new MenuEntry(makeItem(Material.CLOCK, ChatColor.YELLOW + "Reset All Scores", ChatColor.GRAY + "Everyone back to 0", ChatColor.RED + "Shift-click to confirm"),
+                        () -> { if (!lastMenuClickShift.contains(p.getUniqueId())) return;
+                            p.closeInventory(); scoring.resetScores(); broadcast(ChatColor.RED + "Tournament scores reset!"); }),
+        };
+        openMenu(p, ADMIN_GUI_TITLE, header, games, controls);
+    }
+
+    /** Click kind of the menu click being handled (set just before the slot's action runs). */
+    private final java.util.Set<UUID> lastMenuClickRight = new java.util.HashSet<>(), lastMenuClickShift = new java.util.HashSet<>();
 
     private void openTeamGui(Player p) {
         Inventory inv = Bukkit.createInventory(null, 27, TEAM_GUI_TITLE);
@@ -700,7 +813,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             List<String> members = scoring.getOnlineMembers(tName);
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.GRAY + "Slots: " + ChatColor.WHITE + members.size() + " / " + max
-                    + ChatColor.GRAY + " | Team Pts: " + ChatColor.GREEN + scoring.getTeamPoints(tName));
+                    + ChatColor.GRAY + " | Team Coins: " + ChatColor.GREEN + scoring.getTeamPoints(tName));
             if (members.isEmpty()) {
                 lore.add(ChatColor.DARK_GRAY + "No players yet");
             } else {
@@ -733,9 +846,22 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         if (!(e.getWhoClicked() instanceof Player p)) return;
         String title = e.getView().getTitle();
 
-        if (title.equals(MCC_GUI_TITLE) || title.equals(SELECTOR_GUI_TITLE)) {
+        if (title.equals(MAP_GUI_TITLE)) {
             e.setCancelled(true);
-            if (e.getCurrentItem() != null) onSelectorClick(p, title, e.getRawSlot());
+            if (e.getCurrentItem() != null && p.isOp()) onMapPickClick(p, e.getRawSlot());
+            return;
+        }
+        if (title.equals(MCC_GUI_TITLE) || title.equals(SELECTOR_GUI_TITLE) || title.equals(ADMIN_GUI_TITLE)) {
+            e.setCancelled(true);
+            Map<Integer, Runnable> acts = menuActions.get(p.getUniqueId());
+            Runnable a = acts == null ? null : acts.get(e.getRawSlot());
+            if (a == null) return;
+            if (title.equals(ADMIN_GUI_TITLE) && !p.isOp()) return;
+            UUID id = p.getUniqueId();
+            if (e.isRightClick()) lastMenuClickRight.add(id); else lastMenuClickRight.remove(id);
+            if (e.isShiftClick()) lastMenuClickShift.add(id); else lastMenuClickShift.remove(id);
+            p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 0.6f, 1.2f);
+            a.run();
             return;
         }
         if (!title.equals(ADMIN_GUI_TITLE) && !title.equals(TEAM_GUI_TITLE) && !title.equals(KIT_GUI_TITLE) && !title.equals(EXTRA_GUI_TITLE)) {
@@ -799,51 +925,11 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             List<McmGame> list = mccGames();
             int slot = e.getRawSlot();
             if (slot >= 0 && slot < list.size()) {
-                p.closeInventory();
-                championshipMode = false;
-                startById(list.get(slot).id());
+                pickMapThenStart(p, list.get(slot).id());
             }
             return;
         }
 
-        // Admin GUI
-        if (!p.isOp()) return;
-        int slot = e.getRawSlot();
-        for (int i = 0; i < MM_EXT_ADMIN_SLOTS.length; i++) {
-            if (slot != MM_EXT_ADMIN_SLOTS[i]) continue;
-            List<McmGame> mmExt = mmExternalGames();
-            if (i < mmExt.size()) { p.closeInventory(); championshipMode = false; startById(mmExt.get(i).id()); }
-            return;
-        }
-        if (slot == 18) {
-            cmdFast(p, null);
-            openAdminGui(p);
-            return;
-        }
-        if (slot == 19) {
-            setTeamSize((scoring.getMaxTeamSize() % 5) + 1);
-            openAdminGui(p);
-            return;
-        }
-        p.closeInventory();
-        switch (slot) {
-            case 4 -> startChampionship(false);
-            case 10 -> { championshipMode = false; startEvent(GameType.SURVIVAL_GAMES); }
-            case 11 -> { championshipMode = false; startEvent(GameType.PARKOUR); }
-            case 12 -> { championshipMode = false; startEvent(GameType.DROPPER); }
-            case 13 -> { championshipMode = false; startEvent(GameType.TNT_RUN); }
-            case 14 -> { championshipMode = false; startEvent(GameType.SPLEEF); }
-            case 15 -> { championshipMode = false; startEvent(GameType.KIT_PVP); }
-            case 16 -> { championshipMode = false; startEvent(GameType.SURVIVAL); }
-            case 17 -> { championshipMode = false; startEvent(GameType.ONE_SHOT); }
-            case 20 -> randomizeTeams();
-            case 21 -> skipCurrentEvent(p);
-            case 23 -> cmdSkipWait(p);
-            case 26 -> cmdSkipRound(p);
-            case 22 -> { championshipMode = false; returnToLobby(ChatColor.YELLOW + "Returned to lobby."); }
-            case 24 -> { scoring.resetScores(); broadcast(ChatColor.RED + "Tournament scores reset!"); }
-            case 25 -> { if (hub != null) travelToHub(p); else openExtraGamesGui(p); }
-        }
     }
 
     // ==================== ADMIN TESTING HOOKS (/mcm fast|skipwait|skip|next|map|tools|help) ====================
@@ -901,7 +987,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         s.sendMessage(y + "/mcm start [mcc]" + g + " - start the MM (or MCC) championship   " + y + "/mcm play <game>" + g + " - play one game");
         s.sendMessage(y + "/mcm fast [on|off]" + g + " - fast-test mode: every lobby/intermission/vote/reveal/countdown wait <= 1 s (saved)");
         s.sendMessage(y + "/mcm skipwait" + g + " - finish the wait that is running now (countdown, vote, intermission, reveal)");
-        s.sendMessage(y + "/mcm skip" + g + " - skip the current ROUND/MAP only (no points); the game continues with the next round");
+        s.sendMessage(y + "/mcm skip" + g + " - skip the current ROUND/MAP only (no coins); the game continues with the next round");
         s.sendMessage(y + "/mcm next" + g + " - skip the WHOLE current game/event and advance the championship");
         s.sendMessage(y + "/mcm map [id]" + g + " - list the running game's maps / force the next map; " + y + "/mcm map <game> [id]" + g + " before starting");
         s.sendMessage(y + "/mcm stop" + g + " - stop & return to lobby   " + y + "/mcm reset" + g + " - reset scores   " + y + "/mcm games" + g + " - list games");
@@ -983,7 +1069,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         }
         if (maxRounds > 1 && pendingTransitionTask == null) {
             broadcast(ChatColor.GOLD + who + " skipped round " + roundNumber + "/" + maxRounds + " of " + currentDisplay() + ".");
-            sender.sendMessage(ChatColor.GREEN + "Skipped round " + roundNumber + "/" + maxRounds + " (no points for it).");
+            sender.sendMessage(ChatColor.GREEN + "Skipped round " + roundNumber + "/" + maxRounds + " (no coins for it).");
             skipRoundNoAwards = true;
             endSubRound("Round skipped by admin");
             return;
@@ -1158,6 +1244,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         championshipMode = true;
         mccContext = mcc;
         playlistIndex = 0;
+        declaredChampionSide = null;
         scoring.resetScores();
         broadcast(ChatColor.GOLD + "" + ChatColor.BOLD + (mcc ? "=== BLOCK SHOWDOWN (MCC) CHAMPIONSHIP STARTING! ===" : "=== MINECRAFT MONDAY CHAMPIONSHIP STARTING! ==="));
         broadcast(ChatColor.YELLOW + "" + playlist.size() + " Events | Holistic Team Split Scoring | Highest Team Total Wins!");
@@ -1573,19 +1660,34 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
 
         broadcast(ChatColor.GOLD + "" + ChatColor.BOLD + "==================================");
         broadcast(ChatColor.YELLOW + "" + ChatColor.BOLD + "   ★ CHAMPIONSHIP COMPLETE! ★");
-        if (!teamStandings.isEmpty()) {
-            String winName = teamStandings.get(0).getKey();
-            int winPts = teamStandings.get(0).getValue();
-            broadcast(ChatColor.GREEN + "" + ChatColor.BOLD + "   CHAMPIONS: " + winName + ChatColor.GREEN + " (" + winPts + " pts)");
+        if (!teamStandings.isEmpty() || declaredChampionSide != null) {
+            String winName = teamStandings.isEmpty() ? "?" : teamStandings.get(0).getKey();
+            int winPts = teamStandings.isEmpty() ? 0 : teamStandings.get(0).getValue();
+            String dk = declaredChampionSide;
+            declaredChampionSide = null;
+            podiumChampionSide = dk;
+            if (dk != null && dk.startsWith("TEAM:")) {          // MCC: the Dodgebolt winner wins the event
+                String t = dk.substring(5);
+                winName = scoring.teamColor(t) + t + " Team";
+                winPts = scoring.getTeamPoints(t);
+            } else if (dk != null && dk.startsWith("SOLO:")) {
+                try {
+                    UUID u = UUID.fromString(dk.substring(5));
+                    winName = ChatColor.WHITE + scoring.playerName(u);
+                    winPts = scoring.getPlayerPoints(u);
+                } catch (IllegalArgumentException ignored) { }
+            }
+            if (dk != null) broadcast(ChatColor.YELLOW + "   Dodgebolt decides the event winner.");
+            broadcast(ChatColor.GREEN + "" + ChatColor.BOLD + "   CHAMPIONS: " + winName + ChatColor.GREEN + " (" + winPts + " coins)");
             for (Player p : Bukkit.getOnlinePlayers()) {
                 p.sendTitle(winName + ChatColor.GOLD + " WINS!",
-                        ChatColor.YELLOW + "Champions with " + winPts + " total points!", 10, 80, 20);
-                p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
+                        ChatColor.YELLOW + "Champions with " + winPts + " total coins!", 10, 80, 20);
+                p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.4f, 1f);   // owner: end sound too loud
             }
         }
         if (!indStandings.isEmpty()) {
             String mvp = scoring.playerName(indStandings.get(0).getKey());
-            broadcast(ChatColor.AQUA + "   Individual MVP: " + ChatColor.WHITE + mvp + ChatColor.GRAY + " (" + indStandings.get(0).getValue() + " pts)");
+            broadcast(ChatColor.AQUA + "   Individual MVP: " + ChatColor.WHITE + mvp + ChatColor.GRAY + " (" + indStandings.get(0).getValue() + " coins)");
         }
         broadcast(ChatColor.GOLD + "" + ChatColor.BOLD + "==================================");
 
@@ -1797,7 +1899,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             p.teleport(start);
         }
         timeLeft = 240;
-        broadcast(ChatColor.GREEN + "Climb Hielke's Parkour Spiral to the summit (Y=230)! Checkpoints give +3 pts!");
+        broadcast(ChatColor.GREEN + "Climb Hielke's Parkour Spiral to the summit (Y=230)! Checkpoints give +3 coins!");
     }
 
     // 3. MULTI-STAGE DROPPER (Real Delightful Dropper 2 — 5 Stages!)
@@ -2255,7 +2357,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         survivalSupplyChests.add(x + "," + sy + "," + z);
         w.strikeLightningEffect(b.getLocation());
         String label = tier2 ? ChatColor.GOLD + "" + ChatColor.BOLD + "★ BLITZ WAR CRATE" : ChatColor.AQUA + "" + ChatColor.BOLD + "★ ENCHANTING CRATE";
-        broadcast(label + ChatColor.YELLOW + " dropped at (" + x + ", " + sy + ", " + z + ")! Right-click for +10 bonus pts!");
+        broadcast(label + ChatColor.YELLOW + " dropped at (" + x + ", " + sy + ", " + z + ")! Right-click for +10 bonus coins!");
     }
 
     private void triggerSurvivalDeathmatch() {
@@ -2297,7 +2399,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         scoring.ensurePlayer(p.getUniqueId());
         if (currentGame == GameType.LOBBY) {
             resetPlayer(p, GameMode.ADVENTURE);
-            p.teleport(world.getSpawnLocation().clone().add(0.5, 1.0, 0.5));
+            p.teleport(defaultLobby());
             giveLobbyItems(p);
         } else {
             boolean handled = false;
@@ -2359,7 +2461,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             if (survivalSupplyChests.remove(cKey)) {
                 scoring.addIndividualPoints(p.getUniqueId(), 10, "Supply Drop Claim!");
                 p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.4f);
-                broadcast(ChatColor.GOLD + p.getName() + ChatColor.YELLOW + " reached a Supply Crate first! (+10 pts)");
+                broadcast(ChatColor.GOLD + p.getName() + ChatColor.YELLOW + " reached a Supply Crate first! (+10 coins)");
             }
         }
 
@@ -2585,7 +2687,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                 int pts = place == 1 ? 35 : place == 2 ? 25 : place == 3 ? 15 : 10;
                 scoring.addIndividualPoints(p.getUniqueId(), pts, "Summit Finish #" + place + "!");
                 spectateInBuiltIn(p);
-                broadcast(ChatColor.GREEN + p.getName() + " reached the Parkour Summit #" + place + "! (+" + pts + " pts)");
+                broadcast(ChatColor.GREEN + p.getName() + " reached the Parkour Summit #" + place + "! (+" + pts + " coins)");
                 if (finishOrder.size() >= alivePlayers.size()) endSubRound("All players finished!");
             }
         }
@@ -2869,7 +2971,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                 killer.getInventory().addItem(new ItemStack(Material.ARROW, 1));
                 killer.setHealth(20.0);
                 killer.playSound(killer.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1f, 1.5f);
-                broadcast(ChatColor.LIGHT_PURPLE + killer.getName() + ChatColor.GRAY + " sniped " + ChatColor.WHITE + victim.getName() + ChatColor.GOLD + " (+5 pts)");
+                broadcast(ChatColor.LIGHT_PURPLE + killer.getName() + ChatColor.GRAY + " sniped " + ChatColor.WHITE + victim.getName() + ChatColor.GOLD + " (+5 coins)");
                 if (streak == 3) {
                     scoring.addIndividualPoints(killer.getUniqueId(), 5, "3-Kill Streak!");
                     killer.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 15, 1, false, false));
@@ -2919,7 +3021,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                 killer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 1, false, false));
                 killer.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 300, 0, false, false));
             }
-            broadcast(ChatColor.RED + victim.getName() + ChatColor.GRAY + " was eliminated by " + ChatColor.GOLD + killer.getName() + ChatColor.YELLOW + " (+" + killPts + " pts)");
+            broadcast(ChatColor.RED + victim.getName() + ChatColor.GRAY + " was eliminated by " + ChatColor.GOLD + killer.getName() + ChatColor.YELLOW + " (+" + killPts + " coins)");
         } else {
             broadcast(ChatColor.RED + victim.getName() + ChatColor.GRAY + " was eliminated!");
         }
@@ -3287,7 +3389,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         broadcast(ChatColor.YELLOW + "--- Holistic Standings ---");
         List<Map.Entry<String, Integer>> top = scoring.getStandings();
         for (int i = 0; i < Math.min(5, top.size()); i++) {
-            broadcast(ChatColor.GOLD + "#" + (i + 1) + " " + top.get(i).getKey() + ChatColor.GRAY + " - " + ChatColor.GREEN + top.get(i).getValue() + " pts");
+            broadcast(ChatColor.GOLD + "#" + (i + 1) + " " + top.get(i).getKey() + ChatColor.GRAY + " - " + ChatColor.GREEN + top.get(i).getValue() + " coins");
         }
     }
 
@@ -3303,53 +3405,77 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     private void updateAllScoreboards() {
         ScoreboardManager sm = Bukkit.getScoreboardManager();
         if (sm == null) return;
-        List<Map.Entry<String, Integer>> top = scoring.getStandings();
-        String roundSuffix = maxRounds > 1 ? ChatColor.GRAY + " (R" + roundNumber + "/" + maxRounds + ")" : "";
+        boolean lobby = currentGame == GameType.LOBBY;
         if (bossBar != null) {
-            String title = currentGame == GameType.LOBBY
-                    ? ChatColor.GOLD + "" + ChatColor.BOLD + "★ MINECRAFT MONDAY ★ " + ChatColor.GRAY + "┃ " + ChatColor.YELLOW + "Lobby"
-                    : ChatColor.GOLD + "" + ChatColor.BOLD + "⚔ " + currentDisplay().toUpperCase() + roundSuffix + " " + ChatColor.GRAY + "┃ " + ChatColor.AQUA + formatTime(timeLeft);
+            String ev = getConfig().getString("hud.event-name", "BLOCK SHOWDOWN").toUpperCase(Locale.ROOT);
+            String title = lobby
+                    ? ChatColor.YELLOW + "" + ChatColor.BOLD + ev
+                    : ChatColor.YELLOW + "TIME LEFT: " + ChatColor.WHITE + String.format(Locale.ROOT, "%02d:%02d", Math.max(0, timeLeft) / 60, Math.max(0, timeLeft) % 60);
             bossBar.setTitle(title);
-            bossBar.setProgress(currentGame == GameType.LOBBY ? 1.0 : Math.max(0.0, Math.min(1.0, (double) timeLeft / Math.max(1, totalDuration))));
+            bossBar.setProgress(lobby ? 1.0 : Math.max(0.0, Math.min(1.0, (double) timeLeft / Math.max(1, totalDuration))));
         }
         boolean externalOwnBoard = currentGame == GameType.EXTERNAL && activeExternal != null && !activeExternal.useCoreScoreboard();
         if (externalOwnBoard && bossBar != null) bossBar.removeAll();
+        McmHud.State state = hudState();
+        float progress = lobby ? 1f : (float) Math.max(0.0, Math.min(1.0, (double) timeLeft / Math.max(1, totalDuration)));
+        boolean tabNames = (++hudTicks % 5) == 1;
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (externalOwnBoard) continue;
-            if (bossBar != null && !bossBar.getPlayers().contains(p)) bossBar.addPlayer(p);
-            Scoreboard sb = sm.getNewScoreboard();
-            Objective obj = sb.registerNewObjective("mcm", Criteria.DUMMY, ChatColor.GOLD + "" + ChatColor.BOLD + "★ MINECRAFT MONDAY ★");
-            obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-            int line = 13;
-            obj.getScore(ChatColor.DARK_GRAY + "━━━━━━━━━━━━━━━━━━").setScore(line--);
-            obj.getScore(ChatColor.YELLOW + "» " + ChatColor.WHITE + currentDisplay() + roundSuffix).setScore(line--);
-            if (currentGame != GameType.LOBBY) {
-                obj.getScore(ChatColor.AQUA + "⏱ " + ChatColor.WHITE + "Time: " + ChatColor.YELLOW + formatTime(timeLeft)).setScore(line--);
-                if (currentGame == GameType.EXTERNAL) {
-                    for (int i = 0; i < Math.min(6, externalSidebar.size()); i++) {
-                        String ln = externalSidebar.get(i);
-                        obj.getScore(ln.isEmpty() ? ChatColor.values()[i % 16] + "" : ln).setScore(line--);
-                    }
-                }
-                if (currentGame == GameType.SURVIVAL) {
-                    String phaseStr = gracePeriod
-                            ? ChatColor.GREEN + "Grace (" + formatTime(Math.max(0, timeLeft - 600)) + ")"
-                            : (survivalDeathmatch ? ChatColor.DARK_RED + "DEATHMATCH" : ChatColor.RED + "Hunt");
-                    obj.getScore(ChatColor.GRAY + "Phase: " + phaseStr).setScore(line--);
-                    int halfB = survivalWorld != null ? (int) Math.round(survivalWorld.getWorldBorder().getSize() / 2.0) : 160;
-                    obj.getScore(ChatColor.GRAY + "Border: " + ChatColor.WHITE + "±" + halfB + "m " + ChatColor.DARK_GRAY + "| " + ChatColor.AQUA + "Alive: " + alivePlayers.size()).setScore(line--);
-                }
-            } else {
-                String t = scoring.getTeam(p.getUniqueId());
-                obj.getScore(ChatColor.GRAY + "Team: " + (t == null ? ChatColor.WHITE + "Solo" : scoring.teamColor(t) + t) + ChatColor.DARK_GRAY + " (" + scoring.getMaxTeamSize() + "/team)").setScore(line--);
+            hud.tab(p, state);
+            if (tabNames) hud.tabName(p);
+            if (externalOwnBoard) { hud.bossBar(p, false, "", 0, 0f); continue; }
+            boolean pack = McmFx.hasPack(p);
+            if (bossBar != null) {
+                if (pack) bossBar.removePlayer(p);
+                else if (!bossBar.getPlayers().contains(p)) bossBar.addPlayer(p);
             }
-            obj.getScore(" ").setScore(line--);
-            obj.getScore(ChatColor.GOLD + "" + ChatColor.BOLD + "✦ STANDINGS").setScore(line--);
-            for (int i = 0; i < Math.min(5, top.size()); i++) {
-                obj.getScore(ChatColor.GOLD + "#" + (i + 1) + " " + top.get(i).getKey() + ChatColor.GRAY + " ┃ " + ChatColor.GREEN + top.get(i).getValue()).setScore(line--);
-            }
-            p.setScoreboard(sb);
+            hud.bossBar(p, true, lobby ? state.event() : "TIME LEFT", lobby ? -1 : Math.max(0, timeLeft), progress);
+            hud.sidebar(p, state);
         }
+    }
+
+    private int hudTicks;
+
+    /** Snapshot of the event for the MCC-style HUD (sidebar, tab, boss bar). */
+    private McmHud.State hudState() {
+        boolean lobby = currentGame == GameType.LOBBY;
+        String event = getConfig().getString("hud.event-name", "BLOCK SHOWDOWN");
+        String map = null;
+        List<String> lines = new ArrayList<>();
+        if (!lobby) {
+            if (currentGame == GameType.EXTERNAL && activeExternal != null) {
+                map = activeExternal.currentMap();
+                lines.addAll(externalSidebar);
+            } else {
+                map = feedbackMapId();
+            }
+            if (currentGame == GameType.SURVIVAL) {
+                lines.add(ChatColor.GRAY + "Phase: " + (gracePeriod ? "Grace " + formatTime(Math.max(0, timeLeft - 600))
+                        : survivalDeathmatch ? "Deathmatch" : "Hunt"));
+                int halfB = survivalWorld != null ? (int) Math.round(survivalWorld.getWorldBorder().getSize() / 2.0) : 160;
+                lines.add(ChatColor.GRAY + "Border: " + ChatColor.WHITE + "±" + halfB);
+                lines.add(ChatColor.GRAY + "Players remaining: " + ChatColor.WHITE + alivePlayers.size());
+            }
+        }
+        if (map != null) map = map.replace('_', ' ').replace('-', ' ');
+        if ("default".equalsIgnoreCase(map)) map = null;
+        LinkedHashMap<String, Integer> totals = overallSideTotals();
+        for (Player p : Bukkit.getOnlinePlayers()) totals.putIfAbsent(scoring.getSideKey(p.getUniqueId()), 0);
+        Map<String, Integer> coins = new HashMap<>();
+        if (lobby) {
+            coins.putAll(totals);
+        } else {
+            for (String k : totals.keySet()) coins.put(k, 0);
+            for (Map.Entry<UUID, Integer> e : scoring.getIndividualStandings()) {
+                int d = e.getValue() - gameStartPoints.getOrDefault(e.getKey(), 0);
+                if (d != 0) coins.merge(scoring.getSideKey(e.getKey()), d, Integer::sum);
+            }
+        }
+        LinkedHashMap<String, Integer> ranked = new LinkedHashMap<>();
+        coins.entrySet().stream().sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()))
+                .forEach(e -> ranked.put(e.getKey(), e.getValue()));
+        int gameNo = championshipMode ? Math.min(playlist.size(), playlistIndex + 1) : 0;
+        return new McmHud.State(event, lobby ? null : currentDisplay(), gameNo, championshipMode ? playlist.size() : 0, map,
+                roundNumber, maxRounds, lines, ranked, !lobby, Bukkit.getOnlinePlayers().size(), lobby ? 1.0 : currentCoinMultiplier());
     }
 
     private void resetPlayer(Player p, GameMode gm) {
@@ -3450,8 +3576,21 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
 
     private List<String> allGameIds() {
         List<String> ids = new ArrayList<>(List.of("sg", "parkour", "dropper", "tntrun", "spleef", "kitpvp", "survival", "oneshot"));
-        for (McmGame g : McmApi.games()) ids.add(g.id());
+        for (McmGame g : McmApi.games()) if (!hiddenGame(g.id())) ids.add(g.id());
         return ids;
+    }
+
+    /** Games installed but kept out of the menus, the map picker and championship playlists (config hidden-games). */
+    private boolean hiddenGame(String id) {
+        if (id == null) return false;
+        for (String h : getConfig().getStringList("hidden-games")) if (h.equalsIgnoreCase(id)) return true;
+        return false;
+    }
+
+    /** Lobby new players spawn in: the MCC hub (Block Showdown) unless default-lobby is "mm" or the hub is not built. */
+    private Location defaultLobby() {
+        if (!"mm".equalsIgnoreCase(getConfig().getString("default-lobby", "mcc")) && hubReady()) return hub.spawn();
+        return world.getSpawnLocation().clone().add(0.5, 1.0, 0.5);
     }
 
     private List<String> buildPlaylist() {
@@ -3497,14 +3636,14 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     /** Registered external games that are Minecraft Monday games (shown/run with the 7 built-ins, MM lobby). */
     private List<McmGame> mmExternalGames() {
         List<McmGame> out = new ArrayList<>();
-        for (McmGame g : McmApi.games()) if (isMmExternal(g.id())) out.add(g);
+        for (McmGame g : McmApi.games()) if (isMmExternal(g.id()) && !hiddenGame(g.id())) out.add(g);
         return out;
     }
 
     /** Registered external games that are MCC games (MCC hub, MCC championship, Decision Dome). */
     private List<McmGame> mccGames() {
         List<McmGame> out = new ArrayList<>();
-        for (McmGame g : McmApi.games()) if (!isMmExternal(g.id())) out.add(g);
+        for (McmGame g : McmApi.games()) if (!isMmExternal(g.id()) && !hiddenGame(g.id())) out.add(g);
         return out;
     }
 
@@ -3528,6 +3667,38 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         if (gt == null) return false;
         startEvent(gt);
         return true;
+    }
+
+    /**
+     * MCC event multiplier for an external game: its slot among the championship's coin games (games in
+     * coins.event-multiplier.no-coin-games do not count), x1.0 when disabled, and
+     * coins.event-multiplier.outside-championship for a single /mcm play game.
+     */
+    double computeCoinMultiplier(String gameId) {
+        if (!getConfig().getBoolean("coins.event-multiplier.enabled", true)) return 1.0;
+        Set<String> noCoin = new HashSet<>();
+        for (String s : getConfig().getStringList("coins.event-multiplier.no-coin-games")) noCoin.add(s.toLowerCase(Locale.ROOT));
+        String id = gameId == null ? "" : gameId.toLowerCase(Locale.ROOT);
+        if (noCoin.contains(id)) return 1.0;
+        if (!championshipMode || playlist.isEmpty()) {
+            double m = getConfig().getDouble("coins.event-multiplier.outside-championship", 1.0);
+            return m > 0 ? m : 1.0;
+        }
+        int games = 0, index = -1;
+        for (int i = 0; i < playlist.size(); i++) {
+            if (noCoin.contains(playlist.get(i).toLowerCase(Locale.ROOT))) continue;
+            if (i == playlistIndex) index = games;
+            games++;
+        }
+        if (index < 0) return 1.0;
+        double[] eight = McmCoins.toArray(getConfig().getList("coins.event-multiplier.eight-games"), McmCoins.MCC_EIGHT);
+        double[] six = McmCoins.toArray(getConfig().getList("coins.event-multiplier.six-games"), McmCoins.MCC_SIX);
+        return McmCoins.multiplier(index, games, eight, six);
+    }
+
+    /** Current game's coin multiplier (x1.0 in the lobby and in built-in games). */
+    double currentCoinMultiplier() {
+        return currentGame == GameType.EXTERNAL ? coinMultiplier : 1.0;
     }
 
     private void startExternal(McmGame g) {
@@ -3561,6 +3732,9 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         McmFx.sound(Bukkit.getOnlinePlayers(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.4f, 1.3f);
         McmFx.sound(Bukkit.getOnlinePlayers(), Sound.BLOCK_BELL_USE, 0.9f, 0.8f);
         broadcast(ChatColor.GOLD + "" + ChatColor.BOLD + ">>> " + ChatColor.WHITE + g.displayName() + ChatColor.GOLD + " <<<");
+        coinMultiplier = computeCoinMultiplier(g.id());
+        if (coinMultiplier != 1.0) broadcast(ChatColor.AQUA + "Game Coins: " + ChatColor.YELLOW + "(" + McmCoins.formatMultiplier(coinMultiplier) + ")"
+                + ChatColor.GRAY + " - every coin in this game is multiplied.");
         ExternalContext ctx = new ExternalContext(g);
         activeCtx = ctx;
         try {
@@ -3649,16 +3823,50 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         }
 
         @Override public void addPoints(UUID player, int points, String reason) {
-            if (!done) scoring.addIndividualPoints(player, points, reason);
+            if (points != 0) addCoins(player, points, reason);   // negative = take back (e.g. a skipped round)
         }
 
         @Override public void addSidePoints(String sideKey, int points, String reason) {
-            if (done) return;
-            Set<UUID> members = new LinkedHashSet<>();
+            if (done || points == 0) return;
+            List<UUID> members = sideMembers(sideKey);
+            if (members.isEmpty()) return;
+            double each = points / (double) members.size();
+            for (UUID u : members) addCoins(u, each, reason);
+        }
+
+        @Override public void addCoins(UUID player, double coins, String reason) {
+            if (done || player == null || coins == 0) return;
+            scoring.addCoins(player, coins * coinMultiplier, reason);
+        }
+
+        @Override public void addTeamCoins(String sideKey, double pool, String reason) {
+            if (done || pool == 0) return;
+            List<UUID> members = sideMembers(sideKey);
+            if (members.isEmpty()) return;
+            double each = teamShare(pool, members.size());
+            for (UUID u : members) addCoins(u, each, reason);
+        }
+
+        @Override public double teamShare(double pool, int members) {
+            if (members <= 0) return 0;
+            boolean teamSplit = "team".equalsIgnoreCase(getConfig().getString("coins.team-pool-split", "mcc"));
+            int mccSize = Math.max(1, getConfig().getInt("coins.mcc-team-size", 4));
+            return pool / (teamSplit ? members : mccSize);
+        }
+
+        @Override public double coinMultiplier() { return coinMultiplier; }
+
+        @Override public void setEventWinner(String sideKey) {
+            if (!done && sideKey != null && championshipMode) declaredChampionSide = sideKey;
+        }
+
+        private List<UUID> sideMembers(String sideKey) {
+            List<UUID> members = new ArrayList<>();
+            if (sideKey == null) return members;
             for (Player p : participants()) {
                 if (scoring.getSideKey(p.getUniqueId()).equals(sideKey)) members.add(p.getUniqueId());
             }
-            if (!members.isEmpty()) scoring.awardSplitTeamBonus(members, points, reason);
+            return members;
         }
 
         @Override public void broadcast(String message) { MinecraftMondayPlugin.this.broadcast(message); }
@@ -3697,7 +3905,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
 
     // ==================== 3.2.0 PRESENTATION: PLACEMENTS, PODIUM, PREVIEW, FX ====================
 
-    /** Remember everyone's points at the start of an event so the end-of-event reveal can rank this event only. */
+    /** Remember everyone's coins at the start of an event so the end-of-event reveal can rank this event only. */
     private void snapshotGamePoints() {
         gameStartPoints.clear();
         for (Map.Entry<UUID, Integer> e : scoring.getIndividualStandings()) gameStartPoints.put(e.getKey(), e.getValue());
@@ -3728,7 +3936,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         if (!ranked.isEmpty()) {
             for (int i = 0; i < Math.min(3, ranked.size()); i++) {
                 keys.add(ranked.get(i).getKey());
-                details.add(ChatColor.GREEN + "+" + ranked.get(i).getValue() + " pts");
+                details.add(ChatColor.GREEN + "+" + ranked.get(i).getValue() + " coins");
             }
             return;
         }
@@ -3736,7 +3944,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         for (Map.Entry<String, Integer> e : overallSideTotals().entrySet()) {
             if (i++ >= 3 || e.getValue() <= 0) break;
             keys.add(e.getKey());
-            details.add(ChatColor.GREEN + "" + e.getValue() + " pts total");
+            details.add(ChatColor.GREEN + "" + e.getValue() + " coins total");
         }
     }
 
@@ -3763,9 +3971,12 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         if (world == null) return;
         CoreView view = new CoreView();
         List<String> top = new ArrayList<>();
+        String champ = podiumChampionSide;
+        podiumChampionSide = null;
+        if (champ != null) top.add(champ);                 // Dodgebolt winner stands on top
         for (Map.Entry<String, Integer> e : overallSideTotals().entrySet()) {
             if (top.size() >= 3) break;
-            top.add(e.getKey());
+            if (!e.getKey().equals(champ)) top.add(e.getKey());
         }
         if (top.isEmpty()) return;
         // MCC championship with the hub built: the ceremony happens on the reveal podium inside the dome
@@ -4033,7 +4244,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             if (i >= 10) break;
             i++;
             out.add(ChatColor.GRAY + "" + i + ". " + scoring.teamColor(e.getKey()) + ChatColor.BOLD + e.getKey()
-                    + ChatColor.WHITE + "  " + e.getValue() + ChatColor.GRAY + " pts");
+                    + ChatColor.WHITE + "  " + e.getValue() + ChatColor.GRAY + " coins");
         }
         if (teams.isEmpty()) out.add(ChatColor.DARK_GRAY + "No teams yet - step on a team pad!");
         out.add("");
@@ -4074,67 +4285,100 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     private void openSelector(Player p) {
         if (hub != null && hub.isHubWorld(p.getWorld())) { openMccGui(p); return; }
         if (p.isOp()) { openAdminGui(p); return; }
-        Inventory inv = Bukkit.createInventory(null, 27, SELECTOR_GUI_TITLE);
         Object[][] mm = {{Material.IRON_SWORD, "Survival Games"}, {Material.FEATHER, "Parkour Spiral"}, {Material.WATER_BUCKET, "Multi-Stage Dropper"},
                 {Material.TNT, "TNT Run"}, {Material.GOLDEN_SHOVEL, "Spleef / Splegg"}, {Material.DIAMOND_CHESTPLATE, "Battle Arena"},
                 {Material.GOLDEN_APPLE, "Speed Survival"}, {Material.BOW, "One Shot"}};
-        for (int i = 0; i < mm.length; i++)
-            inv.setItem(i < 4 ? 1 + i * 2 : 1 + (i - 4) * 2 + 9, makeItem((Material) mm[i][0], ChatColor.YELLOW + (String) mm[i][1], ChatColor.GRAY + "Minecraft Monday game"));
-        List<McmGame> mmExt = mmExternalGames();
-        for (int i = 0; i < mmExt.size() && i < MM_EXT_SELECTOR_SLOTS.length; i++)
-            inv.setItem(MM_EXT_SELECTOR_SLOTS[i], makeItem(mmExt.get(i).icon(), ChatColor.YELLOW + mmExt.get(i).displayName(), ChatColor.GRAY + "Minecraft Monday game"));
-        inv.setItem(22, makeItem(Material.ENDER_EYE, ChatColor.GOLD + "" + ChatColor.BOLD + "MCC Lobby",
-                ChatColor.GRAY + "Travel to the MCC hub island", hubReady() ? ChatColor.YELLOW + "Click to teleport" : ChatColor.RED + "Hub is " + hub.status()));
+        List<MenuEntry> games = new ArrayList<>();
+        for (Object[] g : mm) games.add(new MenuEntry(makeItem((Material) g[0], ChatColor.YELLOW + "" + ChatColor.BOLD + g[1],
+                ChatColor.GRAY + "Minecraft Monday game"), null));
+        for (McmGame g : mmExternalGames()) games.add(new MenuEntry(makeItem(g.icon(), ChatColor.YELLOW + "" + ChatColor.BOLD + g.displayName(),
+                ChatColor.GRAY + "Minecraft Monday game"), null));
+        MenuEntry header = new MenuEntry(makeItem(Material.CLOCK, ChatColor.AQUA + "" + ChatColor.BOLD + "Minecraft Monday",
+                ChatColor.GRAY + "An op runs these games from here"), null);
+        MenuEntry[] controls = new MenuEntry[9];
+        controls[4] = hubTravelEntry(p);
+        openMenu(p, SELECTOR_GUI_TITLE, header, games, controls);
+    }
+
+    /** Clicking a game in a menu: games with more than one map show a map picker first; the rest start at once. */
+    private void pickMapThenStart(Player p, String gameId) {
+        List<String> maps = mapsOf(gameId);
+        if (maps.size() < 2) {
+            p.closeInventory();
+            championshipMode = false;
+            startById(gameId);
+            return;
+        }
+        if (maps.size() > 44) maps = new ArrayList<>(maps.subList(0, 44));
+        Inventory inv = Bukkit.createInventory(null, 54, MAP_GUI_TITLE);
+        inv.setItem(0, makeItem(Material.ENDER_PEARL, ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Random map",
+                ChatColor.GRAY + McmApi.displayName(gameId), ChatColor.YELLOW + "Click to play the normal rotation"));
+        Material[] icons = {Material.MAP, Material.FILLED_MAP, Material.PAPER};
+        for (int i = 0; i < maps.size(); i++) {
+            String id = maps.get(i);
+            String nice = id.replace('_', ' ');
+            inv.setItem(i + 1, makeItem(icons[i % icons.length], ChatColor.AQUA + "" + ChatColor.BOLD + nice,
+                    ChatColor.GRAY + McmApi.displayName(gameId), ChatColor.DARK_GRAY + "/mcm map " + id, ChatColor.YELLOW + "Click to play this map"));
+        }
+        inv.setItem(53, makeItem(Material.BARRIER, ChatColor.RED + "Cancel"));
+        mapPickGame.put(p.getUniqueId(), gameId);
+        mapPickIds.put(p.getUniqueId(), maps);
         p.openInventory(inv);
+    }
+
+    private void onMapPickClick(Player p, int slot) {
+        String gameId = mapPickGame.get(p.getUniqueId());
+        List<String> maps = mapPickIds.get(p.getUniqueId());
+        if (gameId == null || maps == null) { p.closeInventory(); return; }
+        if (slot == 53) { p.closeInventory(); return; }
+        if (slot < 0 || slot > maps.size()) return;
+        p.closeInventory();
+        mapPickGame.remove(p.getUniqueId());
+        mapPickIds.remove(p.getUniqueId());
+        if (currentGame != GameType.LOBBY) { p.sendMessage(ChatColor.RED + "A game is already running. Stop it first."); return; }
+        if (slot > 0) forceMap(p, gameId, maps.get(slot - 1));
+        championshipMode = false;
+        startById(gameId);
     }
 
     private void openMccGui(Player p) {
-        Inventory inv = Bukkit.createInventory(null, 54, MCC_GUI_TITLE);
-        int i = 0;
+        boolean op = p.isOp();
+        List<MenuEntry> games = new ArrayList<>();
         for (McmGame g : mccGames()) {
-            if (i >= 45) break;
-            inv.setItem(i++, makeItem(g.icon(), ChatColor.AQUA + "" + ChatColor.BOLD + g.displayName(),
-                    ChatColor.GRAY + g.description(), ChatColor.DARK_GRAY + "/mcm play " + g.id(),
-                    p.isOp() ? ChatColor.YELLOW + "Click to play" : ChatColor.DARK_GRAY + "MCC game"));
+            int maps = mapsOf(g.id()).size();
+            List<String> lore = new ArrayList<>();
+            if (!g.description().isEmpty()) lore.add(ChatColor.GRAY + g.description());
+            if (maps > 1) lore.add(ChatColor.DARK_AQUA + "" + maps + " maps");
+            lore.add("");
+            lore.add(op ? ChatColor.GREEN + "▶ Click to play" : ChatColor.DARK_GRAY + "Block Showdown game");
+            games.add(new MenuEntry(makeItem(g.icon(), ChatColor.AQUA + "" + ChatColor.BOLD + g.displayName(), lore.toArray(new String[0])),
+                    op ? () -> pickMapThenStart(p, g.id()) : null));
         }
-        inv.setItem(45, makeItem(Material.GRASS_BLOCK, ChatColor.GREEN + "" + ChatColor.BOLD + "Back to the MM Lobby",
-                ChatColor.GRAY + "Minecraft Monday games are run from there", ChatColor.YELLOW + "Click to teleport"));
-        if (p.isOp()) {
-            inv.setItem(47, makeItem(Material.NETHER_STAR, ChatColor.GOLD + "" + ChatColor.BOLD + "★ START MCC CHAMPIONSHIP ★",
-                    ChatColor.GRAY + "" + buildMccPlaylist().size() + " MCC games, votes in the Decision Dome", ChatColor.DARK_GRAY + "/mcm start mcc"));
-            inv.setItem(48, makeItem(Material.REPEATER, ChatColor.AQUA + "Team Size: " + ChatColor.YELLOW + scoring.getTeamSizeLabel(), ChatColor.GRAY + "Click to cycle"));
-            inv.setItem(49, makeItem(Material.RED_WOOL, ChatColor.GREEN + "Auto-Balance Teams", ChatColor.GRAY + "Teams of " + scoring.getMaxTeamSize()));
-            inv.setItem(50, makeItem(Material.ARROW, ChatColor.GOLD + "" + ChatColor.BOLD + "Skip Whole Event", ChatColor.GRAY + "/mcm next  (/mcm skip = one round)"));
-            inv.setItem(51, makeItem(Material.BARRIER, ChatColor.RED + "" + ChatColor.BOLD + "STOP / RETURN TO LOBBY", ChatColor.GRAY + "/mcm stop"));
-            inv.setItem(53, makeItem(Material.CLOCK, ChatColor.YELLOW + "Reset All Scores", ChatColor.GRAY + "Everyone back to 0"));
+        MenuEntry header = op
+                ? new MenuEntry(makeItem(Material.NETHER_STAR, ChatColor.GOLD + "" + ChatColor.BOLD + "★ START MCC CHAMPIONSHIP ★",
+                        ChatColor.GRAY + "" + buildMccPlaylist().size() + " MCC games, votes in the Decision Dome", ChatColor.DARK_GRAY + "/mcm start mcc",
+                        ChatColor.YELLOW + "Click to start"), () -> { p.closeInventory(); startChampionship(true); })
+                : new MenuEntry(makeItem(Material.NETHER_STAR, ChatColor.GOLD + "" + ChatColor.BOLD + getConfig().getString("hud.event-name", "BLOCK SHOWDOWN"),
+                        ChatColor.GRAY + "Your coins: " + ChatColor.GOLD + scoring.getPlayerPoints(p.getUniqueId())), null);
+        MenuEntry[] controls = new MenuEntry[9];
+        controls[0] = new MenuEntry(makeItem(Material.GRASS_BLOCK, ChatColor.GREEN + "" + ChatColor.BOLD + "Minecraft Monday Lobby",
+                ChatColor.GRAY + "Switch to the Minecraft Monday games", ChatColor.YELLOW + "Click to teleport"), () -> travelToMm(p));
+        if (op) {
+            controls[2] = new MenuEntry(makeItem(Material.REPEATER, ChatColor.AQUA + "" + ChatColor.BOLD + "Team Size: " + ChatColor.YELLOW + scoring.getTeamSizeLabel(),
+                    ChatColor.GRAY + "Click to cycle: 1 → 5"), () -> { setTeamSize((scoring.getMaxTeamSize() % 5) + 1); openMccGui(p); });
+            controls[3] = new MenuEntry(makeItem(Material.RED_WOOL, ChatColor.GREEN + "" + ChatColor.BOLD + "Auto-Balance Teams",
+                    ChatColor.GRAY + "Teams of " + scoring.getMaxTeamSize()), () -> { p.closeInventory(); randomizeTeams(); });
+            controls[5] = new MenuEntry(makeItem(Material.BARRIER, ChatColor.RED + "" + ChatColor.BOLD + "STOP / RETURN TO LOBBY", ChatColor.GRAY + "/mcm stop"),
+                    () -> { p.closeInventory(); championshipMode = false; returnToLobby(ChatColor.YELLOW + "Returned to lobby."); });
+            controls[6] = new MenuEntry(makeItem(Material.ARROW, ChatColor.GOLD + "" + ChatColor.BOLD + "Skip",
+                    ChatColor.YELLOW + "Left-click: skip whole event " + ChatColor.DARK_GRAY + "/mcm next",
+                    ChatColor.YELLOW + "Right-click: skip one round " + ChatColor.DARK_GRAY + "/mcm skip"),
+                    () -> { p.closeInventory(); if (lastMenuClickRight.contains(p.getUniqueId())) cmdSkipRound(p); else skipCurrentEvent(p); });
+            controls[8] = new MenuEntry(makeItem(Material.CLOCK, ChatColor.YELLOW + "Reset All Scores", ChatColor.GRAY + "Everyone back to 0", ChatColor.RED + "Shift-click to confirm"),
+                    () -> { if (!lastMenuClickShift.contains(p.getUniqueId())) return;
+                        p.closeInventory(); scoring.resetScores(); broadcast(ChatColor.RED + "Tournament scores reset!"); });
         }
-        p.openInventory(inv);
-    }
-
-    private void onSelectorClick(Player p, String title, int slot) {
-        if (title.equals(SELECTOR_GUI_TITLE)) {
-            if (slot == 22) travelToHub(p);
-            return;
-        }
-        // MCC GUI
-        List<McmGame> list = mccGames();
-        if (slot == 45) { travelToMm(p); return; }
-        if (!p.isOp()) return;
-        if (slot >= 0 && slot < Math.min(45, list.size())) {
-            p.closeInventory();
-            championshipMode = false;
-            startById(list.get(slot).id());
-            return;
-        }
-        switch (slot) {
-            case 47 -> { p.closeInventory(); startChampionship(true); }
-            case 48 -> { setTeamSize((scoring.getMaxTeamSize() % 5) + 1); openMccGui(p); }
-            case 49 -> { p.closeInventory(); randomizeTeams(); }
-            case 50 -> { p.closeInventory(); skipCurrentEvent(p); }
-            case 51 -> { p.closeInventory(); championshipMode = false; returnToLobby(ChatColor.YELLOW + "Returned to lobby."); }
-            case 53 -> { p.closeInventory(); scoring.resetScores(); broadcast(ChatColor.RED + "Tournament scores reset!"); }
-            default -> { }
-        }
+        openMenu(p, MCC_GUI_TITLE, header, games, controls);
     }
 
     /** /mcm lobby [tp|mm|rebuild|status] */

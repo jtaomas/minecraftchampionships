@@ -36,6 +36,12 @@ public final class Route {
         public boolean noJumps = false;
         public double maxGap = 4.0;
         public int fallRadius = 17;
+        /**
+         * Feedback 3 (escape scan): long falls and dropping jumps must clear the whole flight path (body cells sampled
+         * along a fall parabola: full horizontal speed, vertical drop growing with t squared), not just the landing
+         * column and the mid point - the coarse test let the model fall straight through a 3-thick canyon wall.
+         */
+        public boolean strictFalls = false;
         /** Map rule lethalFallHeight (0 = off): a jump/fall whose drop (+1.25 jump peak) reaches it must land in water. */
         public int lethal = 0;
         /** With {@link #lethal}: no lethal-height drop at all, not even into water (dry-descent check). */
@@ -262,6 +268,7 @@ public final class Route {
                         boolean ok = rise > 0 ? g <= 4.0 - rise + 1e-6 : g <= gapForDrop(-rise) + 1e-6;
                         if (!ok) break;
                         if (!clear(x, fy, z, x + dx, fy2, z + dz)) break;
+                        if (p.strictFalls && fy2 < fy && !arcClear(x, fy, z, x + dx, fy2, z + dz)) break;
                         if (lethalLanding(-rise, vt)) break;
                         double hd = Math.sqrt(dx * dx + dz * dz);
                         double air = (rise >= 0 ? 11 + rise * 3 : airTicks(-rise)) / 20.0;
@@ -287,6 +294,7 @@ public final class Route {
                         double vh = hOf(vi), drop = uh - vh;
                         if (g > gapForDrop(drop) - 0.25) break;
                         if (!fallClear(x, fy, z, x + dx, fy2, z + dz)) break;
+                        if (p.strictFalls && !arcClear(x, fy, z, x + dx, fy2, z + dz)) break;
                         if (lethalLanding(drop, type(vi))) break;
                         double c = airTicks(drop) / 20.0 + p.jumpExtra;
                         out.add(new Edge(x + dx, fy2, z + dz, How.FALL, c, 0, g, -drop));
@@ -340,6 +348,20 @@ public final class Route {
         int mx = (int) Math.floor((x1 + x2) / 2.0 + 0.5), mz = (int) Math.floor((z1 + z2) / 2.0 + 0.5);
         int my = (y1 + y2) / 2;
         for (int y = my; y <= y1 + 1; y++) if (!pass(mx, y, mz)) return false;
+        return true;
+    }
+
+    /** Strict fall path: the 2-cell body along x = x1 + dx t, feet = y1 - drop t^2 (t 0..1), centre to centre. */
+    private boolean arcClear(int x1, int y1, int z1, int x2, int y2, int z2) {
+        double len = Math.sqrt((x2 - x1) * (x2 - x1) + (z2 - z1) * (z2 - z1) + (y1 - y2) * (y1 - y2));
+        int n = Math.max(4, (int) Math.ceil(len * 4));
+        for (int i = 1; i < n; i++) {
+            double t = i / (double) n;
+            int cx = (int) Math.floor(x1 + 0.5 + (x2 - x1) * t), cz = (int) Math.floor(z1 + 0.5 + (z2 - z1) * t);
+            int fy = (int) Math.floor(y1 + 0.01 - (y1 - y2) * t * t);
+            if ((cx == x1 && cz == z1)) continue;
+            if (!pass(cx, fy, cz) || !pass(cx, fy + 1, cz)) return false;
+        }
         return true;
     }
 

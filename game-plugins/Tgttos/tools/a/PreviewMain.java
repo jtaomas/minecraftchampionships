@@ -25,15 +25,16 @@ public final class PreviewMain {
     public static void main(String[] args) throws Exception {
         File out = new File(args[0]);
         out.mkdirs();
-        long seed = Long.parseLong(args[1]);
-        StringBuilder all = new StringBuilder("Builder-A TGTTOS maps: validation report (seed " + seed + ")\n"
+        String seedArg = args[1];   // "live" = each map's in-game seed (Seeds.fixed)
+        long seed = seedArg.equals("live") ? Long.MIN_VALUE : Long.parseLong(seedArg);
+        StringBuilder all = new StringBuilder("Builder-A TGTTOS maps: validation report (" + (seed == Long.MIN_VALUE ? "in-game seed of each map" : "seed " + seed) + ")\n"
                 + "Movement model: walk/sprint 5.6 b/s (median 4.3), step 0.6 / stairs 1, jumps edge-to-edge gap <= 4 flat, -1 per block of rise,\n"
                 + "drops reach further (vanilla fall time), bridging 0.30 s/block (median 0.55), pillar 0.40 s/block (median 0.55), ladders 2.35 b/s.\n\n");
         int errors = 0;
         for (int i = 2; i < args.length; i++) {
             AMap m = (AMap) Class.forName(args[i]).getDeclaredConstructor().newInstance();
             long t0 = System.currentTimeMillis();
-            Gen g = m.generate(seed);
+            Gen g = m.generate(seed == Long.MIN_VALUE ? com.mcm.games.tgttos.model.Seeds.fixed(m.id()) : seed);
             long gen = System.currentTimeMillis() - t0;
             t0 = System.currentTimeMillis();
             Validate v = Validate.run(m, g);

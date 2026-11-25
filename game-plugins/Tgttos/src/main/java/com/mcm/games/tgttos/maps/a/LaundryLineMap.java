@@ -57,7 +57,7 @@ public final class LaundryLineMap extends AMap {
         pen(d);
         tower(d, de);
         // break up long runs on the goal roof (flower tubs, crates, vents)
-        g.breakRuns(-22, 21, 69, 103, 1, 11, java.util.List.of(Region.of(-6, 0, 76, 6, 9, 88)),
+        g.breakRuns(-22, 21, 69, 103, 1, 11, java.util.List.of(Region.of(-16, 0, 76, 16, 9, 80)),
                 "barrel[facing=up,open=false]", "potted_azalea_bush", "polished_deepslate_wall", "hay_block[axis=y]", "composter[level=5]");
 
         d.voidY = -8;
@@ -285,8 +285,9 @@ public final class LaundryLineMap extends AMap {
         for (int z = 69; z <= 104; z++) for (int x = 23; x <= 25; x++) g.set(x, 1, z, null);
         for (int x = -26; x <= 25; x++) { g.set(x, -1, 69, "stone_bricks"); g.set(x, -2, 69, "polished_deepslate"); }
         // roof garden dressing (breaks long runs beside the pen)
-        bed(-14, 74, -10, 76);
-        bed(9, 74, 13, 76);
+        // (feedback 3: the two flower beds that stood right in front of the finish row moved back to z 70..72)
+        bed(-14, 70, -10, 72);
+        bed(9, 70, 13, 72);
         bed(-20, 84, -17, 90);
         greenhouse(10, 80, 16, 87);
         tank(-17, 77);
@@ -601,37 +602,9 @@ public final class LaundryLineMap extends AMap {
             for (int i = 0; i < 20; i++) d.startSpawns.add(new Spawn(-17.5 + i * 1.8 + (row % 2) * 0.6, 1, 1.5 + row * 2, 0f));
     }
 
+    /** Feedback 3: the finish is a row of goal chickens across roof C (was a 13 x 13 planter pen in the middle). */
     private void pen(TgMapData d) {
-        int x1 = -6, x2 = 6, z1 = 76, z2 = 88;
-        for (int x = x1; x <= x2; x++) for (int z = z1; z <= z2; z++) {
-            boolean edge = x == x1 || x == x2 || z == z1 || z == z2;
-            if (edge) {
-                g.set(x, 1, z, ((x + z) & 1) == 0 ? "stripped_spruce_log[axis=y]" : "spruce_planks");
-                g.set(x, 2, z, ((x + z) % 3 == 0) ? "potted_red_tulip" : ((x + z) % 3 == 1) ? "potted_cornflower" : "air");
-            } else {
-                g.set(x, 0, z, g.rnd(x, 0, z, 3) < 0.7 ? "moss_block" : "grass_block[snowy=false]");
-                if (g.rnd(x, 1, z, 4) < 0.08) g.set(x, 1, z, "short_grass");
-            }
-        }
-        g.set(-4, 1, 85, "hay_block[axis=y]");
-        g.set(4, 1, 79, "hay_block[axis=x]");
-        g.set(-4, 1, 79, "composter[level=3]");
-        d.pen = Region.of(x1 + 1, 1, z1 + 1, x2 - 1, 3, z2 - 1);
-        for (int i = 0; i < 10; i++) d.chickenSpawns.add(new Spawn(-3.5 + (i % 5) * 1.8, 1, 79.5 + (i / 5) * 5, 180f));
-        // striped finish arch over the pen entrance (red/white)
-        for (int y = 1; y <= 7; y++) {
-            g.set(-7, y, 76, (y & 1) == 0 ? "red_terracotta" : "white_terracotta");
-            g.set(7, y, 76, (y & 1) == 0 ? "red_terracotta" : "white_terracotta");
-        }
-        for (int x = -7; x <= 7; x++) g.set(x, 8, 76, ((x & 1) == 0) ? "red_terracotta" : "white_terracotta");
-        for (int x = -6; x <= 6; x += 3) { g.set(x, 7, 76, "chain[axis=y]"); g.set(x, 6, 76, "lantern[hanging=true,waterlogged=false]"); }
-        // bunting from the arch to the tower
-        for (int z = 77; z <= 91; z++) {
-            int y = 8 + (int) Math.round(3 * Math.sin((z - 77) / 14.0 * Math.PI) * -0.3) + (z - 77) / 4;
-            g.set(-7, y, z, "chain[axis=z]");
-            g.set(7, y, z, "chain[axis=z]");
-            if ((z & 1) == 0) { g.set(-7, y - 1, z, pastel.at(-7, y, z, g.seed)); g.set(7, y - 1, z, pastel.at(7, y, z, g.seed)); }
-        }
+        com.mcm.games.tgttos.model.FinishRow.build(d, -15, 15, 0, 78, 1, "polished_deepslate");
     }
 
     private void tower(TgMapData d, Design de) {

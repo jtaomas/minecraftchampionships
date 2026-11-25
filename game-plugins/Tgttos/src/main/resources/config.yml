@@ -5,27 +5,24 @@ maps:
   - com.mcm.games.tgttos.maps.a.LaundryLineMap
   - com.mcm.games.tgttos.maps.a.DamFaceMap
   - com.mcm.games.tgttos.maps.a.BookshelfRunMap
-  - com.mcm.games.tgttos.maps.a.OrchardDropMap
-  - com.mcm.games.tgttos.maps.b.KiteFestival
-  - com.mcm.games.tgttos.maps.b.FrozenCanal
   - com.mcm.games.tgttos.maps.b.TicketGates
-  - com.mcm.games.tgttos.maps.b.QuarrySteps
+# (feedback 3: Kite Festival, Frozen Canal and imported elytra / boat / drop maps moved to the Race plugin; Orchard Drop deleted)
 # Also load any other TgMap class found in com.mcm.games.tgttos.maps.* inside the jar.
 auto-discover: true
 # Development stub map (com.mcm.games.tgttos.stub.StubBridgeMap): always | auto (only if fewer real maps than rounds) | never
-stub-map: auto
+stub-map: off 
 # false = every map uses a fixed seed (validated layout); true = new seed each game (variants are re-rolled anyway).
 random-seeds: false
 
 debug-timing: true           # log ms per map-paste tick (chunks loaded async, <= 15 ms of block writes per tick)
 
-rounds: 6
-round-seconds: 100
+rounds: 5                    # five TGTTOS maps since the Race split (feedback 3)
+round-seconds: 300
 pre-round-seconds: 15        # in the start strip with the kit in hand; the last 3 s are the 3-2-1 title
 intermission-seconds: 6      # round results before the next map
 time-skip:
   enabled: true              # (default, MCC Island rule)
-  finished-fraction: 0.8
+  finished-fraction: 0.5
   seconds-left: 20
 
 world:
@@ -35,6 +32,7 @@ world:
 kit:
   concrete: 64
   snowballs: 25              # owner (playtest 2): 25 per attempt, refilled on every respawn
+  snowball-regen-seconds: 3  # owner (2026-11-25): one snowball comes back every 3 s, up to kit.snowballs (0 = off)
   fireworks: 2               # elytra maps (default)
   pickaxe: IRON_PICKAXE      # (default) no enchantments
 
@@ -55,6 +53,14 @@ bridging:                    # owner decision (playtest 1): the concrete stack n
 elytra:
   floor-drop-delay-seconds: 3  # (default) elytra maps: at GO the barrier opens but the gantry floor stays this long,
                                # so racers can shove each other off before it drops. 0 = drop at GO.
+  # owner (feedback 3): crashing kills on maps that opt in (Kite Festival) - no real damage, the racer goes back to
+  # the last checkpoint. Measured every tick from the racer's movement, not vanilla's fly-into-wall threshold.
+  crash-kills: true
+  crash-min-speed: 0.25        # blocks/tick (5 b/s): a glide at least this fast that stops at a wall = crash
+  crash-keep: 0.4              # ... "stops" = less than this share of the horizontal speed is left in one tick
+  hard-landing-speed: 0.75     # blocks/tick downwards (15 b/s) while gliding, then on the ground = crash
+  hard-fall-blocks: 8          # a fall of this many blocks (not into water) = crash
+  floor-kills: false           # discussed, NOT decided: touching the canyon floor = crash (landing field is exempt)
 
 karma:                       # (default) thresholds; karma decays every second
   enabled: false             # owner (playtest 2): karma off - no karma gain, glow, slowness, punch lock, extra or reduced knockback
@@ -75,26 +81,30 @@ karma:                       # (default) thresholds; karma decays every second
   hit-protection-max: 0.45
   hit-protection-decay: 0.5
 
-points:                      # scaled /5 from the researched MCC table
-  placement-first: 8
-  placement-step-every: 5    # 1 point less every 5 places
-  placement-min: 1
-  top10-bonus: [16, 15, 14, 13, 12, 11, 10, 9, 8, 7]
-  team-bonus: [20, 15, 10, 5]   # first 4 sides (2+ members) with every online member finished, split evenly
+# MCC coins, TGTTOSAWAF (base x1.0; the core applies the event multiplier). Source: MCC wiki, TGTTOSAWAF "Coin Rewards"
+# (https://mcchampionship.fandom.com/wiki/TGTTOSAWAF; research/mcc_archive/tgttos). See game-plugins/COINS.md.
+coins:
+  finish-first: 40           # MCC: the 1st player to finish (punch the chicken)
+  finish-step: 1             # MCC: 1 less per lower placement (40, 39, 38, ...)
+  finish-minimum: 0
+  top10-bonus: [80, 75, 70, 65, 60, 55, 50, 45, 40, 35]   # MCC: extra for the first ten finishers
+  team-bonus: [100, 75, 50, 25]   # MCC: first four teams with every member finished; shared (MCC share = pool / 4 each)
+  line-bonus-tier: [5, 15]   # OURS (owner feedback 3; MCC has no line bonus): per gate group the best tier flown pays once: medium (orange) 5, hard (red) 15
+  line-bonus-cap: 75         # OURS: max per racer per round; paid only on finishing
 
-bonus:                       # line bonus (maps with colour-coded gates: Kite Festival, Frozen Canal)
+bonus:                       # line bonus (maps with colour-coded gates: Kite Festival, Frozen Canal); coins under coins.line-bonus-*
   enabled: true
-  tier-points: [1, 2, 3]     # per gate group, the best tier flown/driven pays once: orange 1, red 2, brutal (1x1 / 1-wide) 3
-  cap: 8                     # max line bonus per racer per round; paid only on finishing (1st = 24 placement pts)
 
 chickens:
-  count: 10
-  wander: true               # AI on, but put back into the pen if they leave it
+  count: 10                  # minimum; a map's finish row gets one chicken on every spot (owner, feedback 3)
+  wander: false              # owner (feedback 3): the chickens stand in a row along the finish line (AI off; put back if pushed)
 
 goal:
   chicken-name: "&e&lPunch me!"  # always-visible name tag of real goal chickens (& colour codes); decoys have none
+  decoys: false                  # owner (feedback 3): no fake chickens - "everyone knows where the ending is". true = the
+                                 # playtest-2 wandering decoys come back (code kept)
   decoy-penalty-seconds: 0       # reserved for later: punching a decoy currently does nothing
-  decoy-message: "haha lol"      # owner (playtest 2): what a punched decoy answers (to the puncher)
+  decoy-message: "haha lol"      # (decoys only) what a punched decoy answers (to the puncher)
   decoy-leash-radius: 4          # wandering decoys are put back when they stray further than this from home
   log-punches: true              # log every chicken punch and why it was accepted / rejected
 

@@ -1,0 +1,83 @@
+TGTTOS Kite Festival v2 - validation report (seed -2672200582948235544)
+=== kite_festival ===
+  360942 blocks, 64 block types, generated in 375 ms, bounds x -234..234 y -47..180 z -235..234, scenery share 7%; paste >= 10 ticks at the BuildQueue cap of 40k blocks/tick (more if the 25 ms/tick budget binds)
+  ok    inside the contract box (x/z -250..250, y -60..180)
+  ok    generation under a second (375 ms)
+  ok    material richness: 64 block types (>= 25)
+  ok    contract check (TgMapData.check): clean
+  ok    no concrete of any colour in blocks or variants (0); reserved team colours: white,orange,magenta,light_blue,yellow,lime,pink,cyan,purple,blue,green,red
+  ok    start holds 45 players (45 inside the strip, 45 on solid floor with headroom, closest pair 2.33 apart)
+        start strip 37 x 7 (x -183..-147, z 0..6), barrier 111 blocks, drop floor 259 blocks
+  ok    every barrier / drop-floor position holds a real block (0 missing)
+  ok    connection post-pass: 537 fence/pane/wall/bar states set, 1110 leaves, 0 unsupported carpets dropped; re-run changes 0
+  ok    staircase helper: 0 flights (0 columns) walked bottom to top
+  ok    18 chicken spawns inside the pen 35 x 1
+  ok    finish row: 18 chickens in one row 35 wide (pen 35 x 1), spacing 2.0..2.0, 18/18 with a standing cell in front, 17/18 in sight from 11 blocks out (owner, feedback 3: the ending is a whole row of chickens)
+  ok    landmark visible from the start: 12 of 12 sampled spawn eyes see it (ray-cast)
+        (offline ray only: the goal kite is ~330 blocks from the gantry, beyond a normal client view distance)
+  kit: elytra + kit.fireworks (2) + [minecraft:firework_rocket:4] from extraItems = 6 rockets up front; +2 per gold refill opening (11 openings)
+  course: centre line 1426 blocks (4 legs, 3 hairpins r 55), 25 gates + 2 tubes, gantry floor y 173 -> landing meadow y -45, 76 hazard boxes outside the canyon
+  ok    gantry floor (259 blocks) drops 3 s after GO into the canyon: 259 removed, 0 blocks between it and the meadow 35 below
+  ok    25 gates seal the canyon wall to wall, floor to crest, except their openings (+ a 1x2 walk-through door at the floor):
+        Drop Gate Run: drop 1 (s 38, floor 132 crest 171: safe 37x7 y160 dx+0) drop 2 (s 63, floor 128 crest 178: safe 37x7 y151 dx+0) drop 3 (s 88, floor 124 crest 174: safe 9x9 y146 dx-10, fast 6x6 y147 dx+4, needle 3x3 y148 dx+14)
+        Canyon Slalom: slalom 1 (s 116, floor 120 crest 171: safe 9x9 y141 dx-10, fast 6x6 y143 dx+4, needle 3x3 y144 dx+14) slalom 2 (s 146, floor 118 crest 166: safe 9x9 y136 dx+11, fast 6x6 y138 dx-3, needle 3x3 y140 dx-13)
+        Tunnel Split: tunnel mouth (s 369, floor 84 crest 131: safe 11x11 y103 dx+8, fast 5x5 y110 dx-10) tunnel exit (s 439, floor 73 crest 124: safe 11x11 y93 dx+8, fast 5x5 y102 dx-9)
+        Lift Hill: lift 1 (s 465, floor 70 crest 124: safe 9x9 y90 dx+11, fast 6x6 y100 dx-3, needle 3x3 y102 dx-13) lift 2 (s 491, floor 66 crest 126: safe 9x9 y86 dx-10, fast 6x6 y102 dx+4, needle 3x3 y104 dx+14) lift 3 (s 517, floor 63 crest 126: safe 9x9 y83 dx+11, fast 6x6 y104 dx-3, needle 3x3 y106 dx-13)
+        Ring Stack: ring stack (s 543, floor 61 crest 126: safe 9x9 y79 dx+11, fast 6x6 y101 dx-3, needle 3x3 y103 dx-13)
+        Tether Forest: masts 1 (s 569, floor 58 crest 123: safe 9-wide slot dx+11, fast 5-wide slot dx-3, brutal 1-wide slot dx-13) masts 2 (s 599, floor 53 crest 116: safe 9-wide slot dx-10, fast 5-wide slot dx+3, brutal 1-wide slot dx+14) masts 3 (s 629, floor 49 crest 110: safe 9-wide slot dx+11, fast 5-wide slot dx-3, brutal 1-wide slot dx-13)
+        Dive & Pull-up: low arch (s 858, floor 11 crest 69: safe 9x9 y31 dx+11, fast 6x6 y40 dx-3, needle 3x3 y42 dx-13) pull-up 1 (s 884, floor 6 crest 64: safe 9x9 y28 dx+11, fast 6x6 y39 dx-3, needle 3x3 y41 dx-13) pull-up 2 (s 910, floor 3 crest 64: safe 9x9 y24 dx-10, fast 6x6 y42 dx+4, needle 3x3 y44 dx+14)
+        Needle: needle 1 (s 936, floor 0 crest 64: safe 9x9 y19 dx+0, fast 6x6 y41 dx+1, needle 3x3 y33 dx+0) needle 2 (s 964, floor -4 crest 63: safe 9x9 y16 dx-10, fast 6x6 y39 dx+4, needle 3x3 y41 dx+14) needle 3 (s 992, floor -7 crest 61: safe 9x9 y12 dx+0, fast 6x6 y37 dx+1, needle 3x3 y29 dx+0)
+        S-Canyon: swing 1 (s 1018, floor -11 crest 59: safe 9x9 y9 dx+11, fast 6x6 y33 dx-3, needle 3x3 y35 dx-13) swing 2 (s 1048, floor -15 crest 55: safe 9x9 y5 dx+0, fast 6x6 y30 dx+1, needle 3x3 y22 dx+0) swing 3 (s 1078, floor -18 crest 52: safe 9x9 y1 dx-10, fast 6x6 y27 dx+4, needle 3x3 y28 dx+14) swing 4 (s 1108, floor -19 crest 49: safe 9x9 y-2 dx+0, fast 6x6 y23 dx+1, needle 3x3 y15 dx+0)
+        Finish & Field: last wall (s 1362, floor -45 crest -8: finish 1x12 y-44 dx+0)
+  ok    three lines (easy lime / medium orange / hard red) on 20 gates: 16 side by side, 4 stacked; openings of a gate at least 5 apart (closest 5)
+  ok    the last wall (last wall, z 124): one 1-wide slit, 12 tall from the meadow (y -44..-33, 12/12 open, walls either side closed) - every line threads it
+  ok    safe tube: 11x11, 69 long, interior clear (0 blocked), shell closed (0 gaps), drops 10 over its length
+  ok    fast tube: 5x5, 69 long, interior clear (0 blocked), shell closed (0 gaps), drops 8 over its length
+  ok    canyon sealed below the crest: flood fill of 2841585 air cells from the gantry reaches 0 outside cells and 0 cells under the floor
+  ok    the pen is connected to the gantry through the canyon air (flood fill)
+  glide model: vanilla elytra tick (gravity 0.08, lift/drag as in LivingEntity.travel); steady glide (pitch: ratio, speed): -10°: 1:6.9 10.2 b/s; 0°: 1:10.1 30.3 b/s; 10°: 1:9.7 32.9 b/s; 20°: 1:8.8 40.1 b/s; 30°: 1:7.4 50.4 b/s; 40°: 1:5.7 61.2 b/s; rocket (flight 1, ~1.3 s) holds 33.7 b/s level
+  lines (start: 1 s to walk off the gantry edge, 0.4 s free fall; end: safe lands at z 104 and runs 5.0 s through the choke into the pen, fast glides over the hedges into the pen, +0.5 s punch):
+  info  SAFE  lime openings, outside of the hairpins, 11x11 tube, low stack ring, needle detour; NO rockets: 1552 blocks flown, total 80.6 s (flight 74.1 s, avg 21 b/s), speed 17..30 b/s, 0 rockets, gates 27/27, closest clearance 0.15, lowest 5.6 above the floor
+  ok    SAFE' same line with two boosts per hairpin + rescue rockets when slow and low (6 available): 1552 blocks flown, total 65.5 s (flight 59.0 s, avg 26 b/s), speed 17..35 b/s, 5 rockets, gates 27/27, closest clearance 0.09, lowest 6.1 above the floor
+  ok    FAST  MEDIUM line: orange openings, insides of the hairpins, 5x5 tube; a rocket whenever slower than 28 b/s: 1332 blocks flown, total 43.3 s (flight 41.8 s, avg 32 b/s), speed 17..43 b/s, 8 rockets, gates 29/29, closest clearance 0.20, lowest 3.8 above the floor
+  info  FAST' same openings without rockets: 1330 blocks flown, total 58.7 s (flight 57.2 s, avg 23 b/s), speed 17..42 b/s, 0 rockets, gates 20/29, closest clearance 0.00, lowest 3.6 above the floor; lift 2 MISSED at y 98.0 (window 102.1..107.4); lift 3 MISSED at y 94.8 (window 104.1..109.4); ring stack MISSED at y 92.0 (window 101.1..106.4); needle 2 MISSED at y 38.0 (window 39.1..44.4); needle 3 MISSED at y 34.9 (window 37.1..42.4); swing 1 MISSED at y 32.1 (window 33.1..38.4); swing 2 MISSED at y 28.8 (window 30.1..35.4); swing 3 MISSED at y 25.5 (window 27.1..32.4); swing 4 MISSED at y 22.2 (window 23.1..28.4); first contact at (-51.1, 98.1, 11.1); 15 ticks inside blocks  (informational: the course is built to be flown with rockets)
+  info  HARD  HARD line: red 3x3 rings (fire from the ring stack on), 1-wide mast slits, orange tube; same rocket habit as FAST: 1430 blocks flown, total 51.1 s (flight 49.6 s, avg 29 b/s), speed 17..40 b/s, 10 rockets, gates 23/29, closest clearance 0.00, lowest 3.2 above the floor; low arch MISSED at y 44.4 (window 42.1..44.4); needle 1 MISSED at y 36.4 (window 33.1..35.4); needle 2 MISSED at y 33.2 (window 41.1..43.4); swing 2 MISSED at y 31.2 (window 22.1..24.4); swing 3 MISSED at y 22.9 (window 28.1..30.4); swing 4 MISSED at y 19.1 (window 15.1..17.4); first contact at (-41.0, 93.8, -96.9); 9 ticks inside blocks  (informational: the course is built to be flown with rockets)
+        HARD line tightest clearance against the 0.6 gliding box: 0.00 flown (3x3: 1.2 per side; the 1-wide slits 0.20 sideways) (informational, see above)
+  ok    crash kills: the easy (SAFE') and medium (FAST) lines never touch a block (closest 0.09 / 0.20); the hard line 0.00 (would crash - informational)
+  ok    21 moving obstacles (block displays, hit = back to the last checkpoint), each closing its line for >= 20% of the time and leaving it open >= 35% (easy 50%); no faster than the playtest-2 movers
+        medium portcullis (drop 3) (slider, period 4.5 s, reach 19.3, aimed at the medium line): easy open 100%; medium open 59%; hard open 100%; probe through its medium opening: open 58%; closes its line 42%
+        easy portcullis (slalom 1) (slider, period 5.4 s, reach 26.6, aimed at the easy line): easy open 65%; medium open 100%; hard open 100%; probe through its easy opening: open 66%; closes its line 35%
+        hard portcullis (slalom 2) (slider, period 4.2 s, reach 12.1, aimed at the hard line): easy never near; medium never near; hard open 100%; probe through its hard opening: open 60%; closes its line 40%
+        medium portcullis (lift 1) (slider, period 4.5 s, reach 19.3, aimed at the medium line): easy open 100%; medium open 59%; hard open 100%; probe through its medium opening: open 58%; closes its line 42%
+        hard portcullis (lift 2) (slider, period 4.2 s, reach 12.1, aimed at the hard line): easy never near; medium open 100%; hard open 100%; probe through its hard opening: open 60%; closes its line 40%
+        easy portcullis (lift 3) (slider, period 5.4 s, reach 26.6, aimed at the easy line): easy open 67%; medium open 100%; hard open 100%; probe through its easy opening: open 66%; closes its line 34%
+        medium portcullis (ring stack) (slider, period 4.5 s, reach 19.3, aimed at the medium line): easy never near; medium open 59%; hard open 100%; probe through its medium opening: open 58%; closes its line 42%
+        medium pendulum (masts 2) (pendulum, period 4.5 s, reach 15.6, aimed at the medium line): easy never near; medium open 67%; hard open 52%; probe through its medium opening: open 69%; closes its line 33%
+        easy portcullis (low arch) (slider, period 5.4 s, reach 26.6, aimed at the easy line): easy open 67%; medium open 100%; hard open 100%; probe through its easy opening: open 66%; closes its line 34%
+        medium portcullis (pull-up 1) (slider, period 4.5 s, reach 19.3, aimed at the medium line): easy never near; medium open 61%; hard open 100%; probe through its medium opening: open 58%; closes its line 42%
+        hard portcullis (pull-up 2) (slider, period 4.2 s, reach 12.1, aimed at the hard line): easy never near; medium open 100%; hard open 100%; probe through its hard opening: open 60%; closes its line 40%
+        medium pendulum (needle 1) (pendulum, period 4.5 s, reach 16.3, aimed at the medium line): easy never near; medium open 66%; hard open 100%; probe through its medium opening: open 64%; closes its line 36%
+        medium portcullis (needle 2) (slider, period 4.5 s, reach 19.3, aimed at the medium line): easy never near; medium open 59%; hard open 100%; probe through its medium opening: open 58%; closes its line 42%
+        medium pendulum (needle 3) (pendulum, period 4.5 s, reach 16.3, aimed at the medium line): easy never near; medium open 64%; hard never near; probe through its medium opening: open 64%; closes its line 36%
+        hard portcullis (swing 1) (slider, period 4.2 s, reach 12.1, aimed at the hard line): easy never near; medium open 100%; hard open 63%; probe through its hard opening: open 60%; closes its line 40%
+        hard windmill (swing 2) (rotor, period 12.5 s, reach 15.1, aimed at the hard line): easy never near; medium open 100%; hard open 100%; probe through its hard opening: open 74%; closes its line 26%
+        easy portcullis (swing 3) (slider, period 5.4 s, reach 26.6, aimed at the easy line): easy open 66%; medium open 100%; hard never near; probe through its easy opening: open 66%; closes its line 34%
+        medium pendulum (swing 4) (pendulum, period 4.5 s, reach 16.3, aimed at the medium line): easy never near; medium open 62%; hard open 71%; probe through its medium opening: open 64%; closes its line 38%
+        turn 1 wrecking ball (pendulum, period 6.5 s, reach 18.9, aimed at the every line): easy open 74%; medium open 69%; hard open 69%; closes its line 31%
+        turn 2 wrecking ball (pendulum, period 6.5 s, reach 18.9, aimed at the every line): easy never near; medium open 68%; hard open 68%; closes its line 32%
+        turn 3 wrecking ball (pendulum, period 6.5 s, reach 18.9, aimed at the every line): easy never near; medium open 72%; hard open 71%; closes its line 29%
+  ok    42 bonus openings in 5 sections (best tier per section pays once, only on finishing; config default medium 1 / hard 3, cap 15): opening: 3 medium, 3 hard; tunnel & lift: 5 medium, 3 hard; stack & masts: 4 medium, 4 hard; dive & needle: 6 medium, 6 hard; S-canyon: 4 medium, 4 hard; medium line earns 5, hard line 15
+  ok    11 gold refill openings (+2 rockets each, once per opening per attempt): [tunnel exit, ring stack, low arch, swing 2]; SAFE' refilled 8, FAST 8 on the way (6 up front)
+  ok    5 ledge checkpoints (crossing the canyon at a ledge saves it; void / hazard / mover respawns go there with a fresh kit): 0 Turn 1 ledge (3/3 spawns on the platform); 1 Tether Forest ledge (3/3 spawns on the platform); 2 Turn 2 ledge (3/3 spawns on the platform); 3 Needle ledge (3/3 spawns on the platform); 4 Turn 3 ledge (3/3 spawns on the platform);
+  ok    fast line saves 34% vs the safe line with the same rocket habit (>= 20%)
+  time profile: expert FAST 43 s (not flyable without rockets); safe line flown perfectly: 81 s without rockets, 65 s with boosts; median (safe line, 20% slower flying than the model pilot, 1-2 landings at ~8 s) ~91 s; weak (35% slower, 3-5 landings) ~120 s -> cut off by the time skip (half finished -> 20 s left; round 300 s). Targets: expert 35-42, median 70-85.
+  ok    expert time 43 s within 33-45 s
+  ok    5 wall ledges (ladder from the meadow, open 5x5 platform = shoving spot), each relaunches onto the safe line with at most 3 rockets (one to take off):
+        ledge at (-110, 231): platform y 122, 19 above the floor (ladder 19 rungs, ~8 s climb); relaunch glide to the next 3 gates OK
+        ledge at (0, -232): platform y 51, 21 above the floor (ladder 21 rungs, ~9 s climb); relaunch glide to the next 3 gates OK
+        ledge at (110, 231): platform y -20, 20 above the floor (ladder 20 rungs, ~9 s climb); relaunch glide to the next 2 gates OK
+        ledge at (-39, -49): platform y 80, 20 above the floor (ladder 20 rungs, ~9 s climb); relaunch glide to the next 3 gates OK
+        ledge at (39, -20): platform y 17, 23 above the floor (ladder 23 rungs, ~10 s climb); relaunch glide to the next 3 gates OK
+  ok    76 hazard boxes cover everything outside the canyon walls (leaving the canyon = back to checkpoint); none touches a spawn, the finish row or a ledge; 0 decoys (off by default since feedback 3)
+        largest gap between gates: 255 blocks after s 1108 (S-Canyon; hairpins have no gates, the turn itself is the obstacle)
+  RESULT: all checks passed

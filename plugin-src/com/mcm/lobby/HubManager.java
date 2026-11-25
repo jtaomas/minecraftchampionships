@@ -55,6 +55,8 @@ public final class HubManager implements Listener, McmLobby.Venue {
     private final List<BukkitTask> tasks = new ArrayList<>();
     private TextDisplay board;
     private final List<Entity> entities = new ArrayList<>();
+    private final List<Entity> voteEntities = new ArrayList<>();
+    private final String[] podState = new String[10];
     private final Map<UUID, Long> padCooldown = new HashMap<>();
     private final Map<String, BlockData> dataCache = new HashMap<>();
 
@@ -63,6 +65,7 @@ public final class HubManager implements Listener, McmLobby.Venue {
         this.leaderboardLines = leaderboardLines;
         this.teamJoin = teamJoin;
         this.intermission = intermission;
+        java.util.Arrays.fill(podState, "normal");
     }
 
     public boolean isReady() { return ready && world != null; }
@@ -248,6 +251,8 @@ public final class HubManager implements Listener, McmLobby.Venue {
         for (int cx = -5; cx <= 4; cx++) for (int cz = -9; cz <= 8; cz++) world.addPluginChunkTicket(cx, cz, plugin);
         ready = true;
         showCountdown(-1);
+        setDial(layout.dialCapacity);
+        for (int i = 0; i < 10; i++) setPodState(i, "normal");
         resetPads();
         spawnDisplays();
         startAmbience();
@@ -371,6 +376,7 @@ public final class HubManager implements Listener, McmLobby.Venue {
         if (e.getFrom().getBlockX() == e.getTo().getBlockX() && e.getFrom().getBlockZ() == e.getTo().getBlockZ()
                 && e.getFrom().getBlockY() == e.getTo().getBlockY()) return;
         Location to = e.getTo();
+        if (rescueFromPit(e.getPlayer(), to)) return;
         for (int i = 0; i < layout.teamPads.size(); i++) {
             double[] p = layout.teamPads.get(i);
             if (Math.abs(to.getX() - p[0]) <= 1.5 && Math.abs(to.getZ() - p[2]) <= 1.5 && Math.abs(to.getY() - p[1]) < 1.2) {
@@ -384,6 +390,17 @@ public final class HubManager implements Listener, McmLobby.Venue {
         }
     }
 
+    /** v6: anyone who drops into the recreation's 42-deep pit is put back on the terrace instead of stranded. */
+    private boolean rescueFromPit(Player p, Location to) {
+        if (layout.dialBandY == Integer.MIN_VALUE || to.getY() >= layout.stageY - 6) return false;
+        GameMode gm = p.getGameMode();
+        if (gm == GameMode.SPECTATOR || gm == GameMode.CREATIVE) return false;
+        if (Math.hypot(to.getX() - (layout.domeX + 0.5), to.getZ() - (layout.domeZ + 0.5)) > 27.0) return false;
+        Location back = interiorSpawn();
+        plugin.getServer().getScheduler().runTask(plugin, () -> { p.setFallDistance(0f); p.teleport(back); });
+        return true;
+    }
+
     // =====================================================================================================
     // McmLobby.Venue
     // =====================================================================================================
@@ -394,9 +411,9 @@ public final class HubManager implements Listener, McmLobby.Venue {
     @Override public Location entrance() { double[] e = layout.entrance; return loc(e[0], e[1], e[2], (float) e[3]); }
     @Override public Location interiorSpawn() { double[] e = layout.interiorSpawn; return loc(e[0], e[1], e[2], (float) e[3]); }
     @Override public Location domeCenter() { return loc(layout.domeX + 0.5, layout.stageY + 1, layout.domeZ + 0.5, 0f); }
-    @Override public int padCount() { return HubLayout.PAD_COUNT; }
-    @Override public Location padCenter(int i) { double[] p = layout.pads[i]; return loc(p[0], p[1], p[2], 0f); }
-    @Override public double padRadius() { return layout.padRadius; }
+    @Override public int padCount() { return dialCapacity(); }
+    @Override public Location padCenter(int i) { return wedgeCenter(i); }
+    @Override public double padRadius() { return 2.0; }
     @Override public Location revealPodium() { return loc(layout.podium[0], layout.podium[1], layout.podium[2], 0f); }
     @Override public Location interiorTimer() { return loc(layout.timer[0], layout.timer[1], layout.timer[2], 0f); }
     @Override public Location countdownOrigin() { return new Location(world, layout.clockX0, layout.clockY0, layout.clockZ); }
@@ -407,27 +424,260 @@ public final class HubManager implements Listener, McmLobby.Venue {
         return out;
     }
 
-    @Override public void setPad(int i, DyeColor color, boolean lit) {
-        if (!ready || i < 0 || i >= HubLayout.PAD_COUNT) return;
-        String dye = color == null ? null : color.name().toLowerCase(Locale.ROOT);
-        for (int[] a : layout.padAccents[i]) {
-            String b = switch (a[3]) {
-                case HubLayout.K_CONCRETE -> a[1] == layout.stageY ? (dye == null ? "light_gray_concrete" : dye + "_concrete") : (dye == null ? "gray_concrete" : dye + "_concrete");
-                case HubLayout.K_GLASS -> dye == null ? "gray_stained_glass" : dye + "_stained_glass";
-                case HubLayout.K_WOOL -> dye == null ? "gray_wool" : dye + "_wool";
-                case HubLayout.K_LIGHT -> lit ? (dye == null ? "sea_lantern" : "ochre_froglight") : "black_concrete";
-                default -> null;
-            };
-            if (b != null) world.getBlockAt(a[0], a[1], a[2]).setBlockData(data("minecraft:" + b), false);
+    // =====================================================================================================
+    // Venue v2 — dial, pods, dividers, reveal
+    // =====================================================================================================
+
+    private int dialN() { return layout == null ? 8 : (layout.dialCapacity == 6 ? 6 : 8); }
+    private String[] dialDyes(int n) { return n == 6 ? HubVenue.WEDGE_DYES6 : HubVenue.WEDGE_DYES8; }
+
+    /** Y of the repaintable wedge band (v6: the dial's rim course; older layouts: the stage floor). */
+    private int bandY() { return layout.dialBandY != Integer.MIN_VALUE ? layout.dialBandY : layout.stageY; }
+
+    private void setBlock(int x, int y, int z, String id) {
+        if (world == null || layout == null) return;
+        if (x < layout.minX - 2 || x > layout.maxX + 2 || z < layout.minZ - 2 || z > layout.maxZ + 2) return;
+        world.getBlockAt(x, y, z).setBlockData(data("minecraft:" + id), false);
+    }
+
+    private void putAccent(int[] a, String dye, boolean lit, boolean force) {
+        int kind = a[3];
+        if (kind == HubLayout.K_KEEP && !force) return;
+        setBlock(a[0], a[1], a[2], HubVenue.accentBlock(kind, dye, lit));
+    }
+
+    private void clearAccent(int[] a) { setBlock(a[0], a[1], a[2], "air"); }
+
+    private void paintBand(int n, String[] dyes, boolean restore) {
+        for (int[] c : layout.dialBand) {
+            int idx = HubVenue.wedgeIndex(HubVenue.angDeg(c[0], c[1]), n);
+            putAccent(new int[]{c[0], bandY(), c[1], c[2]}, dyes[idx % dyes.length], true, restore);
+        }
+        paintSeams(n);
+    }
+
+    /** Keep the active divider seam as a dark inlay over the colour field. */
+    private void paintSeams(int n) {
+        for (int[] c : (n == 6 ? layout.dividerSeam6 : layout.dividerSeam8)) {
+            setBlock(c[0], bandY(), c[1], "deepslate_tiles");
         }
     }
 
+    /** Show the active wedge set, hide the other, and repaint the shared colour field. */
+    private void applyDialMode() {
+        if (!ready || layout == null) return;
+        int n = dialN();
+        String[] dyes = dialDyes(n);
+        // hide the inactive set first (the 8 and 6 totems overlap at the cardinal axes)
+        if (n == 8) {
+            for (List<int[]> l : layout.wedgeAccents6) for (int[] a : l) clearAccent(a);
+        } else {
+            for (List<int[]> l : layout.wedgeAccents8) for (int[] a : l) clearAccent(a);
+        }
+        // then place the active set
+        if (n == 8) {
+            for (int i = 0; i < 8; i++) for (int[] a : layout.wedgeAccents8[i]) putAccent(a, dyes[i], true, true);
+        } else {
+            for (int i = 0; i < 6; i++) for (int[] a : layout.wedgeAccents6[i]) putAccent(a, dyes[i], true, true);
+        }
+        paintBand(n, dyes, true);
+    }
+
+    /** Restore every active wedge to its built jewel colour without touching dividers or pods. */
+    private void restoreWedges() {
+        if (!ready || layout == null) return;
+        int n = dialN();
+        String[] dyes = dialDyes(n);
+        if (n == 8) {
+            for (int i = 0; i < 8; i++) for (int[] a : layout.wedgeAccents8[i]) putAccent(a, dyes[i], true, false);
+        } else {
+            for (int i = 0; i < 6; i++) for (int[] a : layout.wedgeAccents6[i]) putAccent(a, dyes[i], true, false);
+        }
+        paintBand(n, dyes, false);
+    }
+
+    @Override public int apiVersion() { return 2; }
+
+    @Override public int dialCapacity() { return layout == null ? 8 : dialN(); }
+
+    @Override public void setDial(int games) {
+        if (layout == null) return;
+        layout.dialCapacity = games <= 6 ? 6 : 8;
+        if (!ready) return;
+        applyDialMode();
+        setDividers(0);
+    }
+
+    @Override public Location wedgeCenter(int i) {
+        int n = dialCapacity();
+        if (i < 0) i = 0;
+        if (i >= n) i = n - 1;
+        double[] w = n == 6 ? layout.wedge6[i] : layout.wedge8[i];
+        if (w[0] != 0 || w[2] != 0) return loc(w[0], w[1], w[2], (float) w[3]);
+        double a = Math.toRadians(90.0 + i * (360.0 / n));
+        return loc(HubVenue.CX + 0.5 + Math.cos(a) * 8.5, layout.stageY + 1, HubVenue.CZ + 0.5 + Math.sin(a) * 8.5, 0f);
+    }
+
+    @Override public double wedgeRadius() { return layout == null ? 12.0 : layout.dialRadius; }
+
+    @Override public double wedgeInnerRadius() { return layout == null ? wedgeRadius() * 0.62 : layout.dialInner; }
+
+    @Override public void setWedge(int i, DyeColor color, boolean lit) {
+        if (!ready || layout == null) return;
+        int n = dialN();
+        if (i < 0 || i >= n) return;
+        String dye = color == null ? null : color.name().toLowerCase(Locale.ROOT);
+        List<int[]> acc = n == 8 ? layout.wedgeAccents8[i] : layout.wedgeAccents6[i];
+        for (int[] a : acc) putAccent(a, dye, lit, false);
+        for (int[] c : layout.dialBand) {
+            if (HubVenue.wedgeIndex(HubVenue.angDeg(c[0], c[1]), n) != i) continue;
+            putAccent(new int[]{c[0], bandY(), c[1], c[2]}, dye, lit, true);
+        }
+        paintSeams(n);
+    }
+
+    @Override public int podCount() { return 10; }
+
+    @Override public Location podSpawn(int i) {
+        if (i < 0) i = 0;
+        if (i > 9) i = 9;
+        double[] p = layout.pods[i];
+        return loc(p[0], p[1], p[2], (float) p[3]);
+    }
+
+    @Override public void setPodGate(int i, boolean open) {
+        if (!ready || i < 0 || i >= 10) return;
+        for (int[] a : layout.podGates[i]) {
+            if (open) setBlock(a[0], a[1], a[2], "air");
+            else setBlock(a[0], a[1], a[2], a[1] == layout.stageY + 2 ? "cut_copper" : "black_concrete");
+        }
+    }
+
+    @Override public void setPodState(int i, String state) {
+        if (!ready || i < 0 || i >= 10) return;
+        String st = state == null ? "normal" : state.toLowerCase(Locale.ROOT);
+        if (!st.equals("normal") && !st.equals("caged") && !st.equals("dunked") && !st.equals("frozen") && !st.equals("invaded")) st = "normal";
+        podState[i] = st;
+        String team = Draw.TEAM_DYES[i];
+        String dye;
+        boolean lit;
+        switch (st) {
+            case "caged" -> { dye = "gray"; lit = false; }
+            case "dunked" -> { dye = "cyan"; lit = false; }
+            case "frozen" -> { dye = "light_blue"; lit = true; }
+            case "invaded" -> { dye = "magenta"; lit = true; }
+            default -> { dye = team; lit = true; }
+        }
+        java.util.Set<Long> podKeys = new java.util.HashSet<>();
+        for (int[] a : layout.podAccents[i]) if (a[3] == HubLayout.K_KEEP) podKeys.add(podKey(a[0], a[1], a[2]));
+        for (int[] a : layout.podAccents[i]) {
+            int kind = a[3];
+            if (kind == HubLayout.K_KEEP) continue;
+            if (podKeys.contains(podKey(a[0], a[1], a[2]))) continue;
+            setBlock(a[0], a[1], a[2], HubVenue.accentBlock(kind, dye, lit));
+        }
+        for (int[] a : layout.podBars[i]) setBlock(a[0], a[1], a[2], "caged".equals(st) ? "iron_bars" : "air");
+        setPodGate(i, !st.equals("caged") && !st.equals("frozen"));
+    }
+
+    private static long podKey(int x, int y, int z) {
+        return ((long) x << 40) ^ ((long) (y & 0xFFFF) << 20) ^ (z & 0xFFFFFL);
+    }
+
+    @Override public void setDividers(double progress) {
+        if (!ready || layout == null) return;
+        double p = Math.max(0.0, Math.min(1.0, progress));
+        int n = dialN();
+        for (int set = 0; set < 2; set++) {
+            boolean active = (set == 0) == (n == 8);
+            List<int[]>[] lists = set == 0 ? layout.divider8 : layout.divider6;
+            for (List<int[]> l : lists) for (int[] a : l) {
+                int h = a[1] - layout.stageY;
+                if (active && p * 3.0 + 1e-6 >= h) {
+                    String b = h == 3 && ((a[0] + a[2]) & 1) == 0 ? "chiseled_polished_blackstone" : "polished_blackstone";
+                    setBlock(a[0], a[1], a[2], b);
+                } else setBlock(a[0], a[1], a[2], "air");
+            }
+        }
+    }
+
+    @Override public void clearRuntime() {
+        if (!ready) return;
+        clearVoteTexts();
+        setDividers(0);
+        for (int i = 0; i < 10; i++) {
+            setPodGate(i, true);
+            setPodState(i, "normal");
+        }
+        applyDialMode();
+    }
+
+    @Override public void revealWedge(int i, String gameId) {
+        if (!ready || layout == null) return;
+        int n = dialN();
+        if (i < 0 || i >= n) return;
+        setDividers(1.0);
+        for (int j = 0; j < n; j++) setWedge(j, null, false);
+        setWedge(i, DyeColor.YELLOW, true);
+        List<int[]> acc = n == 8 ? layout.wedgeAccents8[i] : layout.wedgeAccents6[i];
+        for (int[] a : acc) {
+            int kind = a[3];
+            if (kind == HubLayout.K_CONCRETE || kind == HubLayout.K_WOOL || kind == HubLayout.K_GLASS) setBlock(a[0], a[1], a[2], "gold_block");
+            else if (kind == HubLayout.K_LIGHT) setBlock(a[0], a[1], a[2], "ochre_froglight");
+        }
+        for (int[] c : layout.dialBand) {
+            if (HubVenue.wedgeIndex(HubVenue.angDeg(c[0], c[1]), n) != i) continue;
+            setBlock(c[0], bandY(), c[1], c[2] == HubLayout.K_LIGHT ? "ochre_froglight" : "gold_block");
+        }
+        paintSeams(n);
+        revealText(gameId);
+    }
+
+    @Override public int dialGeneration() { return layout == null ? 0 : layout.dialGeneration; }
+
+    @Override public Location revealSurface(int face) {
+        if (face < 0) face = 0;
+        if (face > 3) face = 3;
+        double[] f = layout.revealSurfaces[face];
+        return loc(f[0], f[1], f[2], (float) f[3]);
+    }
+
+    @Override public Location interiorClock() {
+        double[] c = layout.clock[0] == 0 && layout.clock[2] == 0 ? layout.timer : layout.clock;
+        return loc(c[0], c[1], c[2], 0f);
+    }
+
+    @Override public void setPad(int i, DyeColor color, boolean lit) { setWedge(i, color, lit); }
+
     @Override public void resetPads() {
         if (!ready) return;
-        for (int i = 0; i < HubLayout.PAD_COUNT; i++) {
-            DyeColor c;
-            try { c = DyeColor.valueOf(Draw.PAD_DYES[i].toUpperCase(Locale.ROOT)); } catch (Throwable t) { c = DyeColor.WHITE; }
-            setPad(i, c, true);
+        restoreWedges();
+    }
+
+    private void clearVoteTexts() {
+        for (Entity e : voteEntities) if (e != null && e.isValid()) e.remove();
+        voteEntities.clear();
+    }
+
+    /** Four-sided reveal title on the orrery cube faces. */
+    private void revealText(String gameId) {
+        clearVoteTexts();
+        if (world == null || layout == null) return;
+        String name = gameId == null || gameId.isBlank() ? "CHOSEN" : gameId.replace('_', ' ').toUpperCase(Locale.ROOT);
+        for (double[] f : layout.revealSurfaces) {
+            Location at = new Location(world, f[0], f[1], f[2], (float) f[3], 0f);
+            TextDisplay td = world.spawn(at, TextDisplay.class, d -> {
+                d.setPersistent(false);
+                d.addScoreboardTag(TAG);
+                d.setBillboard(Display.Billboard.CENTER);
+                d.setAlignment(TextDisplay.TextAlignment.CENTER);
+                d.setShadowed(true);
+                d.setBackgroundColor(Color.fromARGB(150, 8, 10, 26));
+                d.setViewRange(7.0f);
+                d.setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(1.5f, 1.5f, 1.5f), new AxisAngle4f()));
+                d.text(McmFx.text("§6§l" + name));
+            });
+            if (td != null) voteEntities.add(td);
         }
     }
 

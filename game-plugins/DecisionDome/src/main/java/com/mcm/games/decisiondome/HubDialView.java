@@ -55,6 +55,12 @@ final class HubDialView implements DomeVenue {
     @Override public World world() { return venue == null ? null : venue.world(); }
     @Override public boolean available() { return venue != null && venue.world() != null; }
 
+    @Override public void configure(int n) {
+        if (venue == null) return;
+        try { venue.setDial(n); } catch (Throwable ignored) { }
+        geometry = computeGeometry();
+    }
+
     @Override public DialGeometry geometry() {
         if (geometry == null) geometry = computeGeometry();
         return geometry;
@@ -132,7 +138,9 @@ final class HubDialView implements DomeVenue {
         Location c = venue.domeCenter();
         Location w0 = venue.wedgeCenter(0);
         double outer = Math.max(3.0, venue.wedgeRadius());
-        double inner = Math.max(1.0, Math.min(outer * 0.62, outer - 1.0));
+        double inner;
+        try { inner = venue.wedgeInnerRadius(); } catch (Throwable old) { inner = outer * 0.62; }   // older core
+        inner = Math.max(0.5, Math.min(inner, outer - 1.0));
         double base = Math.atan2(w0.getZ() - c.getZ(), w0.getX() - c.getX());
         if (Double.isNaN(base) || (Math.abs(w0.getX() - c.getX()) < 1.0e-6 && Math.abs(w0.getZ() - c.getZ()) < 1.0e-6)) {
             base = Math.PI / 2.0;

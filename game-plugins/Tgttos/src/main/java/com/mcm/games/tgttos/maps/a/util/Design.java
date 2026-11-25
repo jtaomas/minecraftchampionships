@@ -58,6 +58,10 @@ public final class Design {
      * stand next to a column that is empty down to the void, unless that column lies in one of {@link #voidByDesign}.
      */
     public boolean holeScan;
+    /** FAST must beat SAFE by at least this share (expert). Feedback 3: a wall-to-wall finish row lets a side line finish at its own end. */
+    public double minFastSave = 0.20;
+    /** Longest allowed expert time of the best line (s); Bookshelf Run is longer on purpose (owner: "if not longer"). */
+    public double maxExpert = 35.5;
     /** Columns where an open drop to the void is intended (map edges, deliberate gaps). */
     public final List<Region> voidByDesign = new ArrayList<>();
 

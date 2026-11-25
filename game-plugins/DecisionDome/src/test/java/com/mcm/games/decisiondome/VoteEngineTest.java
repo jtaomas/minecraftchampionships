@@ -35,6 +35,7 @@ public final class VoteEngineTest {
         determinism();
         removalDropsWinnerChickens();
         simulator();
+        hubDialV6();
 
         System.out.println();
         System.out.println("RESULT: " + passed + " passed, " + failed + " failed");
@@ -288,6 +289,43 @@ public final class VoteEngineTest {
         System.out.println("   simulate: " + s.describe());
         check("simulator runs 100 votes", s.votes() == 100, s.describe());
         check("simulator sees a tie or a negative winner", s.ties() > 0 || s.negativeWinners() > 0, s.describe());
+    }
+
+    /** v6 hub dial (r 1 .. 8.3, wedge 0 at 67.5 deg): chickens never walk off the band; eggs hatch once; slots persist. */
+    private static void hubDialV6() {
+        DialGeometry g = DialGeometry.of(66.5, 1.0, 8.3, Math.toRadians(67.5));
+        VoteEngine e = new VoteEngine(games(8), Map.of(), 8, 77L, false, false, 2, false, g);
+        e.start();
+        e.forcePhase(Phase.VOTING);
+        List<Egg> thrown = new ArrayList<>();
+        for (int i = 0; i < 40; i++) {
+            Egg egg = e.throwEgg(UUID.randomUUID(), "Red", Egg.Kind.CHICKEN, 0, 0);
+            double a = i * 0.7, r = 7.9 + (i % 4) * 0.6;   // some land on the rim, past the band
+            e.landEgg(egg.id(), Math.cos(a) * r, Math.sin(a) * r);
+            thrown.add(egg);
+        }
+        check("v6 egg hatches only once", e.landEgg(thrown.get(0).id(), 1, 1) == null, "second hatch");
+        for (int t = 0; t < 600; t++) e.tick();
+        int off = 0;
+        for (Chicken c : e.chickens()) if (c.alive() && e.dial().wedgeAt(c.x(), c.z()) < 0) off++;
+        check("v6 chickens stay on the wedge band", off == 0, off + " chickens off the dial");
+        int counted = 0;
+        VoteTally tally = e.forceTally();
+        for (Wedge w : e.dial().wedges()) counted += w.chickens();
+        check("v6 every chicken is counted", counted == 40, "counted=" + counted + " " + tally);
+
+        List<String> board = new ArrayList<>(games(8));
+        board.set(3, null);                      // game 3 was played last time
+        List<String> remaining = new ArrayList<>(games(10));
+        remaining.remove(games(8).get(3));
+        List<String> added = new ArrayList<>();
+        Dial keep = Dial.fromLayout(board, remaining, 8, false, g, added);
+        check("v6 board keeps slots", games(8).get(5).equals(keep.wedge(5).gameId()) && keep.wedge(3).gameId() == null
+                && added.isEmpty(), keep.layout().toString());
+        Dial refill = Dial.fromLayout(board, remaining, 8, true, g, added);
+        check("v6 refill fills the played slot", refill.wedge(3).gameId() != null && added.size() == 1
+                && added.get(0).equals(refill.wedge(3).gameId()) && games(8).get(7).equals(refill.wedge(7).gameId()),
+                refill.layout() + " added=" + added);
     }
 
     // ---------------------------------------------------------------------------------------------

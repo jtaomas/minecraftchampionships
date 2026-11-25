@@ -40,11 +40,12 @@ public final class MeltdownGame implements McmGame {
     static final int ABSOLUTE_ZERO_AFTER = 60;
     static final long WARMER_MILLIS = 8000;
 
-    static final int PTS_CRATE = 2;
-    static final int PTS_FREEZE = 3;
-    static final int PTS_FREEZE_ELIM = 5;
-    static final int PTS_SURVIVAL = 1;
-    static final int[] PLACEMENT_PER_MEMBER = {25, 18, 14, 10, 7, 5, 4, 3, 2};
+    // MCC coins (base x1.0, config coins.*; the core applies the event multiplier). See game-plugins/COINS.md.
+    int PTS_CRATE = 10;          // MCC: team pool per coin crate, shared amongst the team
+    int PTS_FREEZE = 25;         // MCC: freezing a player; taken away again if that player is thawed out
+    int PTS_FREEZE_ELIM = 0;     // MCC: nothing extra when the frozen player is eliminated (the 25 simply stays)
+    int PTS_SURVIVAL = 0;        // MCC: no coins for outliving players
+    int[] PLACEMENT_TEAM = {210, 190, 170, 150, 125, 100, 80, 60, 45, 30};   // MCC: team pool by survival placement
 
     private final MeltdownPlugin plugin;
     final NamespacedKey itemKey;
@@ -117,6 +118,13 @@ public final class MeltdownGame implements McmGame {
         if (phase != Phase.IDLE) stop();
         this.ctx = ctx;
         this.finished = false;
+        plugin.saveDefaultConfig();
+        var cfg = plugin.getConfig();
+        PTS_CRATE = Math.max(0, cfg.getInt("coins.crate", 10));
+        PTS_FREEZE = Math.max(0, cfg.getInt("coins.freeze", 25));
+        PTS_FREEZE_ELIM = Math.max(0, cfg.getInt("coins.final-freeze-bonus", 0));
+        PTS_SURVIVAL = Math.max(0, cfg.getInt("coins.outlive", 0));
+        PLACEMENT_TEAM = com.mcm.api.McmCoins.toIntArray(cfg.getList("coins.placement"), PLACEMENT_TEAM);
         resetState();
         rng = new Random();
 
@@ -723,7 +731,7 @@ public final class MeltdownGame implements McmGame {
         victim.playSound(victim.getLocation(), Sound.BLOCK_GLASS_BREAK, 1f, 1.5f);
         shooter.playSound(shooter.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.6f);
         world.spawnParticle(Particle.SNOWFLAKE, victim.getLocation().add(0, 1, 0), 40, 0.4, 0.8, 0.4, 0.05);
-        ctx.addPoints(s, PTS_FREEZE, "Froze " + victim.getName());
+        if (PTS_FREEZE > 0) ctx.addCoins(s, PTS_FREEZE, "Froze " + victim.getName());
         ctx.broadcast("§b❄ " + coloredName(v) + " §7was frozen by " + coloredName(s));
         for (UUID mate : sideMembers.getOrDefault(side, List.of())) {
             Player m = Bukkit.getPlayer(mate);
@@ -735,7 +743,10 @@ public final class MeltdownGame implements McmGame {
     }
 
     private void thaw(Player p) {
-        frozen.remove(p.getUniqueId());
+        Frozen fz = frozen.remove(p.getUniqueId());
+        // MCC: the freeze coins are taken away again when the frozen player is thawed out
+        if (fz != null && fz.by != null && PTS_FREEZE > 0 && phase == Phase.RUNNING)
+            ctx.addCoins(fz.by, -PTS_FREEZE, p.getName() + " was unfrozen by their team");
         ItemStack helm = p.getInventory().getHelmet();
         if (helm != null && helm.getType() == Material.ICE) p.getInventory().setHelmet(null);
         p.setGlowing(false);
@@ -766,7 +777,7 @@ public final class MeltdownGame implements McmGame {
         Player p = Bukkit.getPlayer(id);
 
         if (fz != null && fz.by != null && phase == Phase.RUNNING && Bukkit.getPlayer(fz.by) != null) {
-            ctx.addPoints(fz.by, PTS_FREEZE_ELIM, "Eliminated " + names.getOrDefault(id, "a player"));
+            if (PTS_FREEZE_ELIM > 0) ctx.addCoins(fz.by, PTS_FREEZE_ELIM, "Eliminated " + names.getOrDefault(id, "a player"));
         }
         if (p != null && p.isOnline()) {
             if (quit) {
@@ -786,7 +797,7 @@ public final class MeltdownGame implements McmGame {
 
         if (!quit && phase == Phase.RUNNING) {
             for (UUID other : new ArrayList<>(alive)) {
-                if (Bukkit.getPlayer(other) != null) ctx.addPoints(other, PTS_SURVIVAL, "Outlived " + names.getOrDefault(id, "a player"));
+                if (PTS_SURVIVAL > 0 && Bukkit.getPlayer(other) != null) ctx.addCoins(other, PTS_SURVIVAL, "Outlived " + names.getOrDefault(id, "a player"));
             }
         }
         String side = sideOf.get(id);
@@ -801,10 +812,11 @@ public final class MeltdownGame implements McmGame {
     }
 
     private void awardPlacement(String side, int place) {
-        int per = PLACEMENT_PER_MEMBER[Math.min(place - 1, PLACEMENT_PER_MEMBER.length - 1)];
-        int online = 0;
-        for (UUID m : sideMembers.getOrDefault(side, List.of())) if (Bukkit.getPlayer(m) != null) online++;
-        if (online > 0) ctx.addSidePoints(side, per * online, "Placed #" + place);
+        int pool = com.mcm.api.McmCoins.placementOrLast(PLACEMENT_TEAM, place);
+        List<UUID> on = new ArrayList<>();
+        for (UUID m : sideMembers.getOrDefault(side, List.of())) if (Bukkit.getPlayer(m) != null) on.add(m);
+        double each = ctx.teamShare(pool, on.size());
+        for (UUID m : on) if (each > 0) ctx.addCoins(m, each, "Placed #" + place);
     }
 
     private void endGame(String reason) {
@@ -859,7 +871,13 @@ public final class MeltdownGame implements McmGame {
     void onCrateBroken(Player p, Block b) {
         arena.removeCrate(b);
         cratesLeft = Math.max(0, cratesLeft - 1);
-        ctx.addPoints(p.getUniqueId(), PTS_CRATE, "Coin crate");
+        // MCC: a crate's coins are shared amongst the team
+        String cs = sideOf.get(p.getUniqueId());
+        List<UUID> mates = new ArrayList<>();
+        for (UUID m : sideMembers.getOrDefault(cs, List.of(p.getUniqueId()))) if (Bukkit.getPlayer(m) != null) mates.add(m);
+        if (mates.isEmpty()) mates.add(p.getUniqueId());
+        double share = ctx.teamShare(PTS_CRATE, mates.size());
+        for (UUID m : mates) if (share > 0) ctx.addCoins(m, share, "Coin crate");
         p.playSound(b.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.2f);
         world.spawnParticle(Particle.WAX_OFF, b.getLocation().add(0.5, 0.5, 0.5), 15, 0.4, 0.4, 0.4, 0.1);
         if (rng.nextDouble() < 0.35) {

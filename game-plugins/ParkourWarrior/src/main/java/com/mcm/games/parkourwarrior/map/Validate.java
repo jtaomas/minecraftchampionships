@@ -53,6 +53,8 @@ final class Validate {
         final Map<String, String> tableRow = new LinkedHashMap<>();
         void err(String s) { errors++; text.append("  ERROR ").append(s).append('\n'); }
         void warn(String s) { warnings++; text.append("  warn  ").append(s).append('\n'); }
+        /** Imported sections keep their map's own scenery: object-size and decoy findings are warnings there. */
+        void errUnless(boolean imported, String s) { if (imported) warn(s); else err(s); }
         void line(String s) { text.append(s).append('\n'); }
     }
 
@@ -144,6 +146,9 @@ final class Validate {
             // ---- timed phase windows
             double ph = phaseCheck(r, o, stepRes, stepIdx, tier);
             if (ph < 1) pass *= Math.max(0.3, ph);
+            pass *= moverCheck(r, wd, o, stepRes, stepIdx, tier);
+            crumbleCheck(r, o, stepRes, stepIdx, tier);
+            for (CourseModel.Belt bt : o.belts) if (Math.hypot(bt.vx(), bt.vz()) > 0.12) r.err(o.id + ": belt faster than 0.12 b/t");
             double att = 1.0 / Math.max(1e-6, pass);
             r.attempts.put(o.id, att);
             String hd = hardW == 99 ? "none (walk)" : hardDesc;
@@ -155,7 +160,7 @@ final class Validate {
                 if (n.t == Ob.T.LADDER || n.t == Ob.T.TIMED) continue;
                 footholds++;
                 int obj = objectSize(w, n.cells, 400);
-                if (obj < Math.max(8, n.cells.size() * 1.5 + 4)) { tiny++; r.err(o.id + ": foothold at " + c(n.cells.get(0)) + " belongs to an object of only " + obj + " blocks (plain cube?)"); }
+                if (obj < Math.max(8, n.cells.size() * 1.5 + 4)) { tiny++; r.errUnless(o.imported, o.id + ": foothold at " + c(n.cells.get(0)) + " belongs to an object of only " + obj + " blocks (plain cube?)"); }
             }
             // ---- decoys near the route at foothold height
             Set<Long> legit = new HashSet<>(o.safe);
@@ -184,10 +189,10 @@ final class Validate {
                     if (feet < sg[4] - 0.01 || feet > sg[5] + 0.01) continue;
                     if (segDist(x + .5, z + .5, sg) <= 2.0) { dec = true; break; }
                 }
-                if (dec) { od++; if (od <= 4) r.err(o.id + ": decoy standable block at foothold height near the route: " + x + "," + y + "," + z + " " + Bs.id(s)); }
+                if (dec) { od++; if (od <= 4) r.errUnless(o.imported, o.id + ": decoy standable block at foothold height near the route: " + x + "," + y + "," + z + " " + Bs.id(s)); }
                 else ol++;
             }
-            if (od > 4) r.err(o.id + ": ... " + (od - 4) + " more decoys");
+            if (od > 4) r.errUnless(o.imported, o.id + ": ... " + (od - 4) + " more decoys");
             decoys += od; ledges += ol;
             // ---- bypass search
             for (String b : Bypass.check(wd, o, o.killY)) { bypasses++; r.err(o.id + ": " + b); }
@@ -197,7 +202,7 @@ final class Validate {
             // ---- length
             int sx = o.wx(0, 0), sz = o.wz(0, 0), ex = o.wx(o.endX, o.endZ), ez = o.wz(o.endX, o.endZ);
             double span = o.kind == CourseModel.Kind.ENDING ? Math.hypot(Math.hypot(ex - sx, ez - sz), o.endY) - 3 : Math.hypot(ex - sx, ez - sz) - 3;
-            if (o.kind != CourseModel.Kind.ENDING && (span < 15 || span > 35)) r.err(o.id + ": length " + f(span) + " outside 15..35");
+            if (o.kind != CourseModel.Kind.ENDING && (span < 15 || span > (o.imported ? 60 : 35))) r.err(o.id + ": length " + f(span) + " outside 15..35");
             if (o.kind == CourseModel.Kind.ENDING && (span < 8 || span > 35)) r.err(o.id + ": ending length " + f(span) + " outside 8..35");
             r.line(String.format(Locale.ROOT, "%-10s %-24s %-7s %-6s len %4.1f  steps %2d  tightest %s window %s  est. attempts %.1f  killY %d",
                     o.id, o.name, o.idea, tier, span, stepRes.size(), hardDesc, hardW == 99 ? "-" : hardW + "/" + hardB, att, o.killY));
@@ -319,6 +324,9 @@ final class Validate {
         w.b.forEach((x, y, z, s) -> mats.add(Bs.id(s)));
         r.line("distinct block types: " + mats.size());
         if (w.model.spawns.isEmpty()) r.err("no spawns");
+        List<String> lo = labelOverlaps(w);
+        r.line("label overlaps: " + lo.size());
+        for (String x : lo) r.err("labels: " + x);
         if (w.model.hubs.size() != 5) r.err("expected 5 hubs");
         if (w.model.finishes.size() != 3) r.err("expected 3 finishes");
         if (w.model.fork == null) r.err("no fork");
@@ -403,6 +411,138 @@ final class Validate {
             worstFrac = Math.min(worstFrac, Math.min(1, win / 20.0));
         }
         return worstFrac;
+    }
+
+
+    // ------------------------------------------------------------------ moving parts (PLAN_v3 4.2)
+
+    /** Safe consecutive start ticks a hazard step needs per tier (rule 2). */
+    static int moverNeed(Tier t) {
+        return switch (t) { case GOLD, HARD -> 6; case BRONZE, SILVER -> 10; default -> 15; };
+    }
+
+    /** Fail chance of picking the right moment out of a W-tick safe window (telegraphed, waiting allowed). */
+    static double moverFail(double win) { return Math.min(0.6, 2.5 / Math.max(1, win)); }
+
+    /**
+     * Hazard sweep: every route foothold needs a safe waiting cell (no hazard touches a runner standing on it during
+     * the whole period); every step's flight (straight line from the departure edge to the landing cell, vertical
+     * profile from the jump physics, airtime = the simulation's longest, 6 ticks of run-up and 6 of landing) is tested
+     * against every mover for every start tick of the common period, with the runtime's display lag (t - 1 .. t + 1)
+     * and the runtime's body test. The longest run of consecutive safe start ticks must reach {@link #moverNeed}.
+     * Returns the pass factor for the attempts estimate.
+     */
+    static double moverCheck(Report r, Phys.World wd, Ob o, List<JumpSim.Res> res, List<int[]> idx, Tier tier) {
+        if (o.movers.isEmpty()) return 1;
+        int P = 1;
+        for (CourseModel.Mover mv : o.movers) P = lcm(P, Math.max(1, mv.periodTicks()));
+        P = Math.min(P, 2400);
+        for (int i = 0; i < o.route.size(); i++) {
+            Ob.Node n = o.route.get(i);
+            boolean any = false;
+            for (int[] c : n.cells) {
+                double fy = feetCell(wd, c, n);
+                boolean hit = false;
+                for (int t = 0; t < P && !hit; t++) for (CourseModel.Mover mv : o.movers)
+                    if (mv.hitsPlayer(t, c[0] + 0.5, fy, c[2] + 0.5)) { hit = true; break; }
+                if (!hit) { any = true; break; }
+            }
+            if (!any) r.err(o.id + ": route foothold " + i + " at " + c(n.cells.get(0)) + " has no safe waiting cell (a mover reaches every cell)");
+        }
+        double factor = 1;
+        for (int s = 0; s < res.size(); s++) {
+            JumpSim.Res jr = res.get(s);
+            Ob.Node a = o.route.get(idx.get(s)[0]), b = o.route.get(idx.get(s)[1]);
+            int[][] pr = JumpSim.nearest(a.cells, b.cells);
+            double ax = pr[0][0] + 0.5, az = pr[0][2] + 0.5, bxx = pr[1][0] + 0.5, bzz = pr[1][2] + 0.5;
+            double ay = feetCell(wd, pr[0], a), by = feetCell(wd, pr[1], b);
+            int air = Math.max(4, jr.airMax == 0 ? 12 : jr.airMax);
+            List<double[]> path = new ArrayList<>();
+            double dx = bxx - ax, dz = bzz - az, dl = Math.max(1e-6, Math.hypot(dx, dz));
+            for (int k = 0; k < 6; k++) path.add(new double[]{ax - dx / dl * (0.45 - 0.08 * k), ay, az - dz / dl * (0.45 - 0.08 * k)});
+            double vy = 0.42, y = ay;
+            double[] ys = new double[air + 1];
+            for (int k = 0; k <= air; k++) { ys[k] = y; y += vy; vy = (vy - 0.08) * 0.98; }
+            double err = by - ys[air];
+            for (int k = 0; k <= air; k++) {
+                double u = k / (double) air;
+                path.add(new double[]{ax + dx * u, Math.max(Math.min(ay, by), ys[k] + err * u), az + dz * u});
+            }
+            for (int k = 0; k < 6; k++) path.add(new double[]{bxx, by, bzz});
+            boolean[] good = new boolean[P];
+            boolean touched = false;
+            for (int tau = 0; tau < P; tau++) {
+                boolean ok = true;
+                for (int k = 0; k < path.size() && ok; k++) {
+                    double[] q = path.get(k);
+                    double t = tau + k - 6;
+                    for (CourseModel.Mover mv : o.movers) {
+                        if (mv.hitsPlayer(t - 1, q[0], q[1], q[2]) || mv.hitsPlayer(t, q[0], q[1], q[2]) || mv.hitsPlayer(t + 1, q[0], q[1], q[2])) { ok = false; break; }
+                    }
+                }
+                good[tau] = ok;
+                if (!ok) touched = true;
+            }
+            if (!touched) continue;
+            int best = 0, run = 0;
+            for (int k = 0; k < 2 * P; k++) { if (good[k % P]) { run++; best = Math.max(best, Math.min(run, P)); } else run = 0; }
+            int need = moverNeed(tier);
+            r.line(String.format(Locale.ROOT, "  %s mover step %d: %d consecutive safe start ticks per %d-tick cycle (need %d)", o.id, s + 1, best, P, need));
+            if (best < need) r.err(o.id + ": mover step " + (s + 1) + " has only " + best + " consecutive safe start ticks < " + need);
+            factor *= 1 - moverFail(best);
+        }
+        return factor;
+    }
+
+    /** Dropping ledges: a runner landing on one must be able to jump off within its delay; it must come back. */
+    static void crumbleCheck(Report r, Ob o, List<JumpSim.Res> res, List<int[]> idx, Tier tier) {
+        if (o.crumbles.isEmpty()) return;
+        int minDelay = (tier == Tier.GOLD || tier == Tier.HARD) ? 12 : 20;
+        Map<Integer, Integer> stepFrom = new HashMap<>();
+        for (int s = 0; s < idx.size(); s++) stepFrom.put(idx.get(s)[0], s);
+        for (CourseModel.Crumble cr : o.crumbles) {
+            if (cr.delayTicks() < minDelay) r.err(o.id + ": dropping ledge delay " + cr.delayTicks() + " < " + minDelay);
+            if (cr.restoreTicks() < 20) r.err(o.id + ": dropping ledge restore " + cr.restoreTicks() + " < 20 ticks");
+            Set<Long> cells = new HashSet<>();
+            for (CourseModel.BlockPos p : cr.cells()) cells.add(W.key(p.x(), p.y(), p.z()));
+            for (int i = 0; i < o.route.size(); i++) {
+                boolean on = false;
+                for (int[] c : o.route.get(i).cells) if (cells.contains(W.key(c[0], c[1], c[2]))) on = true;
+                if (!on) continue;
+                if (i == 0) { r.err(o.id + ": a dropping ledge is the start area"); continue; }
+                Integer s = stepFrom.get(i);
+                if (s == null) { r.err(o.id + ": dropping ledge is the last foothold"); continue; }
+                int stay = Math.max(2, (res.get(s).firstJump >= 99 ? 4 : res.get(s).firstJump) + 2);
+                if (stay > cr.delayTicks()) r.err(o.id + ": dropping ledge at foothold " + i + " needs " + stay + " ticks to leave > delay " + cr.delayTicks());
+            }
+        }
+    }
+
+    /**
+     * Floating labels too close to each other (the owner's "overlapping checkpoint text"). Text displays grow upwards
+     * from their position; obstacle name labels are two lines (name + medal).
+     */
+    static List<String> labelOverlaps(W w) {
+        List<double[]> pts = new ArrayList<>();
+        List<String> who = new ArrayList<>();
+        for (Ob o : w.obs) if (o.built != null && o.built.label() != null) {
+            CourseModel.Pos p = o.built.label();
+            pts.add(new double[]{p.x(), p.y(), p.z(), 0.6}); who.add(o.id + " name");
+        }
+        for (CourseModel.Label l : w.model.labels) {
+            int lines = 1;
+            for (char ch : l.text().toCharArray()) if (ch == '\n') lines++;
+            pts.add(new double[]{l.pos().x(), l.pos().y(), l.pos().z(), 0.3 * lines});
+            who.add("label '" + l.text().replace('\n', '|') + "'");
+        }
+        List<String> out = new ArrayList<>();
+        for (int i = 0; i < pts.size(); i++) for (int j = i + 1; j < pts.size(); j++) {
+            double[] a = pts.get(i), b = pts.get(j);
+            double h = Math.hypot(a[0] - b[0], a[2] - b[2]);
+            boolean vy = a[1] < b[1] + b[3] + 0.15 && b[1] < a[1] + a[3] + 0.15;
+            if (h < 2.5 && vy) out.add(who.get(i) + " and " + who.get(j) + " overlap (" + f(h) + " blocks apart)");
+        }
+        return out;
     }
 
     private static int lcm(int a, int b) { int x = a, y = b; while (y != 0) { int t = x % y; x = y; y = t; } return a / x * b; }

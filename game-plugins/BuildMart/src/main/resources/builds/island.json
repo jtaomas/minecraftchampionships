@@ -1,0 +1,28 @@
+{
+  "id": "island",
+  "name": "Island",
+  "debut": "MCC 3",
+  "stars": 2,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Island.png",
+  "floor": ["wwwwwww","wwwwwww","wssssww","wssssbw","wwssssw","wwwwwww","wwwwwww"],
+  "palette": {
+    "w": "minecraft:water",
+    "s": "minecraft:sand",
+    "b": "minecraft:sand",
+    "c": "minecraft:cobblestone",
+    "l": "minecraft:oak_log[axis=y]",
+    "e": "minecraft:oak_leaves[persistent=true]"
+  },
+  "layers": [
+    [".......", ".......", ".cs....", "...ss..", ".......", ".......", "......."],
+    [".......", ".......", ".......", "....l..", ".......", ".......", "......."],
+    [".......", ".......", ".......", "....l..", ".......", ".......", "......."],
+    [".......", ".......", ".......", "...el..", ".......", ".......", "......."],
+    [".......", ".......", ".......", "....e..", ".......", ".......", "......."]
+  ],
+  "guessed": [
+    "floor: water around a flat sand island; exact island outline estimated",
+    "grey block behind-left read as cobblestone (could be stone)",
+    "palm top: one leaf at the log top and one to the left one layer lower; back side of the island hidden"
+  ]
+}

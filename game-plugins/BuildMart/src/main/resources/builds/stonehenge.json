@@ -1,0 +1,26 @@
+{
+  "id": "stonehenge",
+  "name": "Stonehenge",
+  "debut": "MCC 3",
+  "stars": 2,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Stonehenge.png",
+  "floor": ["ggggggg","ggggggg","ggggggg","ggggggg","ggggggg","ggggggg","ggggggg"],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "s": "minecraft:stone",
+    "h": "minecraft:stone_slab[type=bottom]",
+    "l": "minecraft:lily_of_the_valley",
+    "t": "minecraft:orange_tulip"
+  },
+  "layers": [
+    [".......", "..ss...", ".......", ".s...s.", "..s.s..", "l....t.", "......."],
+    [".......", ".......", ".......", ".......", "..s.s..", ".......", "......."],
+    [".......", ".......", ".......", ".......", "..hhh..", ".......", "......."]
+  ],
+  "guessed": [
+    "lintel drawn as stone slabs (its front face is about half a block tall in the render)",
+    "back stones: one centred stone seen through the arch and a sliver left of the left pillar, both placed in row 1 as single stone blocks; exact depth unclear",
+    "side stones (left and right of the arch) placed at row 3, 1 block tall",
+    "back half of the plot (rows 0-2) mostly hidden; nothing else assumed there"
+  ]
+}

@@ -59,6 +59,38 @@ public final class Dial {
         for (int i = assign; i < all.size(); i++) pool.add(all.get(i));
     }
 
+    /**
+     * Rebuild the board of the previous vote: every game keeps its slot (wedge colour and position), the
+     * slots of games already played are blank, and games not yet on the board wait in the pool. With
+     * {@code fill} the blank slots are topped up from the pool; the games added are appended to {@code added}.
+     */
+    public static Dial fromLayout(List<String> slots, List<String> remaining, int capacity, boolean fill,
+                                  DialGeometry geometry, List<String> added) {
+        Dial d = new Dial(List.of(), capacity, capacity, geometry);
+        LinkedHashSet<String> rem = new LinkedHashSet<>();
+        if (remaining != null) for (String id : remaining) {
+            if (id == null || id.isBlank() || rem.size() >= GAME_CEILING) continue;
+            rem.add(id.toLowerCase(Locale.ROOT));
+        }
+        d.allGames.addAll(rem);
+        LinkedHashSet<String> placed = new LinkedHashSet<>();
+        for (int i = 0; i < d.capacity && slots != null && i < slots.size(); i++) {
+            String id = slots.get(i) == null ? null : slots.get(i).toLowerCase(Locale.ROOT);
+            if (id != null && rem.contains(id) && placed.add(id)) d.wedges.get(i).refill(id);
+        }
+        for (String id : rem) if (!placed.contains(id)) d.pool.add(id);
+        List<String> got = fill ? d.refill() : List.of();
+        if (added != null) added.addAll(got);
+        return d;
+    }
+
+    /** Slot layout (game id per slot, null = blank) to carry into the next vote. */
+    public List<String> layout() {
+        List<String> out = new ArrayList<>();
+        for (Wedge w : wedges) out.add(w.live() ? w.gameId() : null);
+        return out;
+    }
+
     public int capacity() { return capacity; }
 
     public int size() { return wedges.size(); }

@@ -3,81 +3,101 @@ package com.mcm.games.rocketspleef;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.List;
-
 /**
- * Configuration values for Rocket Spleef Rush, loaded from config.yml with sensible defaults.
+ * Old MCC Rocket Spleef settings (config.yml). Every value carries its source and confidence in config.yml and in
+ * research/mcc_archive/rocket_spleef_old/notes.md. Reloadable with /rs reload.
  */
 public final class RocketConfig {
-    public final int rounds;
-    public final boolean preferImportedMaps;
-    public final int countdownSeconds;
-    public final int activeSeconds;
-    public final int overtimeSeconds;
-    public final int intermissionSeconds;
-    public final int elimY;
-    public final int clearRadius;
+    public final int rounds, countdownSeconds, roundSeconds, tntTimeAtSeconds, intermissionSeconds;
+    public final int mapAnchorY, elimDepth;
 
-    public final int rocketCooldownTicks;
-    public final double rocketSpeed;
-    public final int rocketLifeTicks;
-    public final double blastRadius;
-    public final double knockbackRadius;
-    public final double knockbackStrength;
-    public final double knockbackVertical;
+    public final int clip, startAmmo, reloadTicks, shotGapTicks, rocketLifeTicks, dropInTitleSeconds, tntWarningSeconds;
+    public final boolean reloadResetsOnFire, tntNight;
+    public final double meleeKnockback;
+    public final int dropRoomHeight;
+    public final double rocketSpeed, blastRadius, knockbackRadius, knockbackHorizontal, rocketJumpHeight;
 
-    public final int updraftCharges;
-    public final long updraftCooldownMs;
-    public final double updraftVelocity;
-    public final boolean allowDoubleJump;
+    public final int fireworks, fireworkFlight;
 
-    public final long koCreditMs;
+    public final double tntPerSecond, tntBlastRadius, tntKnockbackRadius;
+    public final int tntDropMin, tntDropMax, tntFuseTicks;
 
-    public final double survivalPool;
-    public final int koPoints;
-    public final int lastSideBonus;
-    public final int sharedSurvivorBonus;
-    public final int[] placementBonus;
+    public final boolean punching;
+    public final long killCreditMs;
+
+    public final double ptsOutlive;
+    public final int ptsElimination, ptsSoleTeamSurvival;
+
+    /** Launch speed (blocks/tick) that peaks at {@link #rocketJumpHeight} blocks under vanilla player gravity. */
+    public final double rocketJumpVelocity;
 
     public RocketConfig(JavaPlugin plugin) {
         plugin.saveDefaultConfig();
         plugin.reloadConfig();
         FileConfiguration c = plugin.getConfig();
+        rounds = c.getInt("rounds", 3);
+        countdownSeconds = c.getInt("countdown-seconds", 15);
+        dropInTitleSeconds = c.getInt("drop-in-title-seconds", 10);
+        dropRoomHeight = c.getInt("drop-room-height", 12);
+        roundSeconds = c.getInt("round-seconds", 240);
+        tntTimeAtSeconds = c.getInt("tnt-time-at-seconds", 120);
+        intermissionSeconds = c.getInt("intermission-seconds", 10);
+        mapAnchorY = c.getInt("map-anchor-y", 80);
+        elimDepth = c.getInt("elimination-depth", 10);
 
-        this.rounds = Math.max(1, c.getInt("rounds", 3));
-        this.preferImportedMaps = c.getBoolean("prefer-imported-maps", true);
-        this.countdownSeconds = Math.max(1, c.getInt("countdown-seconds", 5));
-        this.activeSeconds = Math.max(15, c.getInt("active-seconds", 120));
-        this.overtimeSeconds = Math.max(10, c.getInt("overtime-seconds", 45));
-        this.intermissionSeconds = Math.max(1, c.getInt("intermission-seconds", 7));
-        this.elimY = c.getInt("elim-y", 64);
-        this.clearRadius = Math.max(30, c.getInt("clear-radius", 46));
+        clip = c.getInt("launcher.clip", 3);
+        startAmmo = c.getInt("launcher.start-ammo", 0);
+        reloadTicks = c.getInt("launcher.reload-ticks", 42);
+        reloadResetsOnFire = c.getBoolean("launcher.reload-resets-on-fire", true);
+        meleeKnockback = c.getDouble("launcher.melee-knockback", 0.9);
+        shotGapTicks = c.getInt("launcher.shot-gap-ticks", 8);
+        rocketSpeed = c.getDouble("launcher.rocket-speed", 2.0);
+        rocketLifeTicks = c.getInt("launcher.rocket-life-ticks", 60);
+        blastRadius = c.getDouble("launcher.blast-radius", 2.5);
+        knockbackRadius = c.getDouble("launcher.knockback-radius", 4.0);
+        knockbackHorizontal = c.getDouble("launcher.knockback-horizontal", 1.1);
+        rocketJumpHeight = c.getDouble("launcher.rocket-jump-height", 9.0);
 
-        this.rocketCooldownTicks = Math.max(4, c.getInt("rocket.cooldown-ticks", 18));
-        this.rocketSpeed = Math.max(0.5, c.getDouble("rocket.speed", 1.8));
-        this.rocketLifeTicks = Math.max(10, c.getInt("rocket.life-ticks", 70));
-        this.blastRadius = Math.max(1.0, c.getDouble("rocket.blast-radius", 2.7));
-        this.knockbackRadius = Math.max(1.5, c.getDouble("rocket.knockback-radius", 4.5));
-        this.knockbackStrength = Math.max(0.2, c.getDouble("rocket.knockback-strength", 1.25));
-        this.knockbackVertical = Math.max(0.1, c.getDouble("rocket.knockback-vertical", 0.65));
+        fireworks = c.getInt("firework.count", 1);
+        fireworkFlight = c.getInt("firework.flight-duration", 1);
 
-        this.updraftCharges = Math.max(0, c.getInt("updraft.charges-per-round", 2));
-        this.updraftCooldownMs = Math.max(200, c.getLong("updraft.cooldown-ms", 1200));
-        this.updraftVelocity = Math.max(0.5, c.getDouble("updraft.vertical-velocity", 1.35));
-        this.allowDoubleJump = c.getBoolean("updraft.allow-double-jump", false);
+        tntPerSecond = c.getDouble("tnt.per-second", 4.0);
+        tntWarningSeconds = c.getInt("tnt.warning-seconds", 10);
+        tntNight = c.getBoolean("tnt.night-sky", true);
+        tntDropMin = c.getInt("tnt.drop-height-min", 15);
+        tntDropMax = c.getInt("tnt.drop-height-max", 25);
+        tntFuseTicks = c.getInt("tnt.fuse-ticks", 80);
+        tntBlastRadius = c.getDouble("tnt.blast-radius", 3.0);
+        tntKnockbackRadius = c.getDouble("tnt.knockback-radius", 4.5);
 
-        this.koCreditMs = Math.max(1000, c.getLong("ko-credit-ms", 10_000));
+        punching = c.getBoolean("punching", true);
+        killCreditMs = c.getLong("kill-credit-ms", 10000L);
 
-        this.survivalPool = Math.max(0.0, c.getDouble("scoring.survival-pool", 18.0));
-        this.koPoints = Math.max(0, c.getInt("scoring.ko-points", 5));
-        this.lastSideBonus = Math.max(0, c.getInt("scoring.last-side-bonus", 12));
-        this.sharedSurvivorBonus = Math.max(0, c.getInt("scoring.shared-survivor-bonus", 6));
+        // MCC coins, old Rocket Spleef (final values MCC 12-13; base x1.0, the core applies the event multiplier). COINS.md
+        ptsOutlive = c.getDouble("coins.outlive", 3);                   // MCC 8+: another player dies while you are alive
+        ptsElimination = c.getInt("coins.elimination", 10);             // MCC 12+: personal elimination (last hit)
+        ptsSoleTeamSurvival = c.getInt("coins.sole-team-survival", 100); // MCC 3+: lasting the round, only if one team is left
 
-        List<Integer> pb = c.getIntegerList("scoring.placement-bonus");
-        if (pb.isEmpty()) {
-            this.placementBonus = new int[]{5, 3, 2};
-        } else {
-            this.placementBonus = pb.stream().mapToInt(Integer::intValue).toArray();
+        rocketJumpVelocity = velocityForHeight(rocketJumpHeight);
+    }
+
+    /** Vanilla player motion per tick: y += v; v = (v - 0.08) * 0.98. Binary-searches v for a given peak height. */
+    public static double velocityForHeight(double h) {
+        double lo = 0, hi = 5;
+        for (int i = 0; i < 60; i++) {
+            double mid = (lo + hi) / 2;
+            if (peak(mid) < h) lo = mid; else hi = mid;
         }
+        return (lo + hi) / 2;
+    }
+
+    public static double peak(double v) {
+        double y = 0, best = 0;
+        for (int t = 0; t < 400 && v > 0; t++) {
+            y += v;
+            v = (v - 0.08) * 0.98;
+            best = Math.max(best, y);
+        }
+        return best;
     }
 }

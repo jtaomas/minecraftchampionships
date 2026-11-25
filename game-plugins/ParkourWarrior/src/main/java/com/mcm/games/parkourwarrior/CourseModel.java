@@ -200,6 +200,174 @@ public final class CourseModel {
     public final Map<Difficulty, Pos> finishStands = new EnumMap<>(Difficulty.class);
     public final List<Timed> timed = new ArrayList<>();
     public final List<Label> labels = new ArrayList<>();
+    /** Moving hazards (block displays): a touch sends the runner back like a fall. See {@link Mover}. */
+    public final List<Mover> movers = new ArrayList<>();
+    /** Dropping ledges: standing on a group drops it after {@code delayTicks}; it comes back later. */
+    public final List<Crumble> crumbles = new ArrayList<>();
+    /** Conveyor belts: standing on a belt cell adds a fixed horizontal velocity every tick. */
+    public final List<Belt> belts = new ArrayList<>();
+    /** Course credit shown on the start island and in /pw info (imported maps), may be empty. */
+    public String credit = "";
+    /** Map id this course was built for (classic, mcc6, mcc10, ...). */
+    public String mapId = "classic";
+
+    // ================================================================== moving parts
+    // Pose maths ported from TGTTOS (model/MapFeatures.Mover, read-only copy): the runtime and the offline
+    // validator use exactly this code, so every moving trap is checked against the same model players see.
+
+    public enum Motion { PENDULUM, ROTOR, SLIDER }
+
+    /** Axis-aligned box of a mover in its own frame (pivot = origin); {@code hazard} = part of the hit test. */
+    public record MBox(double x0, double y0, double z0, double x1, double y1, double z1, String block, boolean hazard) {}
+
+    /**
+     * One moving hazard. Pivot (px, py, pz) in course coordinates. PENDULUM: swings {@code amplitude} degrees either
+     * side about {@code axis} ('x' or 'z'), angle = amplitude * sin(2 pi u). ROTOR: turns 360 degrees per period about
+     * {@code axis}, starting at {@code amplitude} degrees. SLIDER: moves by (dx, dy, dz) and back: rest (open)
+     * {@code openTicks}, move {@code moveTicks}, extended (closed) {@code closedTicks}, move back {@code moveTicks}.
+     * u = ((t + phaseTicks) mod period) / period, t = game ticks (the same clock as {@link Timed}).
+     */
+    public record Mover(String obstacleId, String name, double px, double py, double pz, Motion motion, char axis, double amplitude,
+                        double dx, double dy, double dz, int periodTicks, int openTicks, int moveTicks, int closedTicks,
+                        int phaseTicks, List<MBox> boxes, String sound) {
+        public Mover { boxes = List.copyOf(boxes); }
+
+        public static Mover pendulum(String ob, String name, double px, double py, double pz, char axis, double ampDeg, int period, int phase, List<MBox> boxes) {
+            return new Mover(ob, name, px, py, pz, Motion.PENDULUM, axis, ampDeg, 0, 0, 0, period, 0, 0, 0, phase, boxes, "entity.player.attack.sweep");
+        }
+
+        public static Mover rotor(String ob, String name, double px, double py, double pz, char axis, double startDeg, int period, int phase, List<MBox> boxes) {
+            return new Mover(ob, name, px, py, pz, Motion.ROTOR, axis, startDeg, 0, 0, 0, period, 0, 0, 0, phase, boxes, "block.grindstone.use");
+        }
+
+        public static Mover slider(String ob, String name, double px, double py, double pz, double dx, double dy, double dz,
+                                   int open, int move, int closed, int phase, List<MBox> boxes) {
+            return new Mover(ob, name, px, py, pz, Motion.SLIDER, 'y', 0, dx, dy, dz, open + 2 * move + closed, open, move, closed, phase, boxes, "block.piston.extend");
+        }
+
+        /** Rotation angle (degrees) at tick t. */
+        public double angle(double t) {
+            double u = frac(t);
+            return switch (motion) {
+                case PENDULUM -> amplitude * Math.sin(2 * Math.PI * u);
+                case ROTOR -> amplitude + 360 * u;
+                case SLIDER -> 0;
+            };
+        }
+
+        /** Slider extension 0 (rest) .. 1 (extended) at tick t. */
+        public double extension(double t) {
+            if (motion != Motion.SLIDER) return 0;
+            double k = frac(t) * periodTicks;
+            if (k < openTicks) return 0;
+            k -= openTicks;
+            if (k < moveTicks) return smooth(k / moveTicks);
+            k -= moveTicks;
+            if (k < closedTicks) return 1;
+            k -= closedTicks;
+            return 1 - smooth(Math.min(1, k / moveTicks));
+        }
+
+        /** Ticks until the slider next starts to extend (0 while moving / extended). */
+        public double ticksToClose(double t) {
+            double k = frac(t) * periodTicks;
+            return k < openTicks ? openTicks - k : 0;
+        }
+
+        private double frac(double t) {
+            double p = Math.max(1, periodTicks);
+            double u = ((t + phaseTicks) % p + p) % p;
+            return u / p;
+        }
+
+        private static double smooth(double x) { return x * x * (3 - 2 * x); }
+
+        /** Mover frame -> course: rotation (about axis) then slide. Returns {x, y, z}. */
+        public double[] toMap(double t, double lx, double ly, double lz) {
+            double[] r = rot(angle(t), lx, ly, lz, false);
+            double e = extension(t);
+            return new double[]{px + r[0] + dx * e, py + r[1] + dy * e, pz + r[2] + dz * e};
+        }
+
+        /** Course -> mover frame. */
+        public double[] toLocal(double t, double x, double y, double z) {
+            double e = extension(t);
+            return rot(angle(t), x - px - dx * e, y - py - dy * e, z - pz - dz * e, true);
+        }
+
+        private double[] rot(double deg, double x, double y, double z, boolean inverse) {
+            if (deg == 0) return new double[]{x, y, z};
+            double a = Math.toRadians(inverse ? -deg : deg), c = Math.cos(a), s = Math.sin(a);
+            return switch (axis) {
+                case 'x' -> new double[]{x, y * c - z * s, y * s + z * c};
+                case 'y' -> new double[]{x * c + z * s, y, -x * s + z * c};
+                default -> new double[]{x * c - y * s, x * s + y * c, z};
+            };
+        }
+
+        /** Unit quaternion {x, y, z, w} of the rotation at tick t (display transformations). */
+        public float[] quaternion(double t) {
+            double a = Math.toRadians(angle(t)) / 2, s = Math.sin(a);
+            return switch (axis) {
+                case 'x' -> new float[]{(float) s, 0, 0, (float) Math.cos(a)};
+                case 'y' -> new float[]{0, (float) s, 0, (float) Math.cos(a)};
+                default -> new float[]{0, 0, (float) s, (float) Math.cos(a)};
+            };
+        }
+
+        /** Largest distance from the pivot any box corner reaches (plus the slide), for a cheap distance pre-check. */
+        public double reach() {
+            double m = 0;
+            for (MBox b : boxes)
+                for (double x : new double[]{b.x0(), b.x1()}) for (double y : new double[]{b.y0(), b.y1()}) for (double z : new double[]{b.z0(), b.z1()})
+                    m = Math.max(m, Math.sqrt(x * x + y * y + z * z));
+            return m + Math.sqrt(dx * dx + dy * dy + dz * dz);
+        }
+
+        /** Does a sphere (centre x,y,z in course coordinates, radius r) touch a hazard box at tick t? */
+        public boolean hits(double t, double x, double y, double z, double r) {
+            double[] l = toLocal(t, x, y, z);
+            for (MBox b : boxes) {
+                if (!b.hazard()) continue;
+                double cx = Math.max(b.x0(), Math.min(b.x1(), l[0])), cy = Math.max(b.y0(), Math.min(b.y1(), l[1])), cz = Math.max(b.z0(), Math.min(b.z1(), l[2]));
+                double ddx = l[0] - cx, ddy = l[1] - cy, ddz = l[2] - cz;
+                if (ddx * ddx + ddy * ddy + ddz * ddz <= r * r) return true;
+            }
+            return false;
+        }
+
+        /** Does a standing/jumping player (feet x,y,z; three spheres up the body, radius 0.35) touch it at tick t? */
+        public boolean hitsPlayer(double t, double x, double y, double z) {
+            return hits(t, x, y + 0.35, z, 0.35) || hits(t, x, y + 0.9, z, 0.35) || hits(t, x, y + 1.45, z, 0.35);
+        }
+
+        /** Every box drawn as cells at tick t (preview renders only). */
+        public Map<BlockPos, String> render(double t) {
+            Map<BlockPos, String> out = new LinkedHashMap<>();
+            for (MBox b : boxes)
+                for (double x = b.x0() + 0.25; x < b.x1(); x += 0.5)
+                    for (double y = b.y0() + 0.25; y < b.y1(); y += 0.5)
+                        for (double z = b.z0() + 0.25; z < b.z1(); z += 0.5) {
+                            double[] m = toMap(t, x, y, z);
+                            out.put(new BlockPos((int) Math.floor(m[0]), (int) Math.floor(m[1]), (int) Math.floor(m[2])), b.block());
+                        }
+            return out;
+        }
+    }
+
+    /**
+     * Dropping ledge group: when a runner stands on any of {@code cells} it creaks (particles + sound) and
+     * {@code delayTicks} later every cell turns to air; {@code restoreTicks} after dropping the blocks come back once
+     * nobody stands in them. {@code state} = the block placed (the static store has air there).
+     */
+    public record Crumble(String obstacleId, List<BlockPos> cells, String state, int delayTicks, int restoreTicks) {
+        public Crumble { cells = List.copyOf(cells); }
+    }
+
+    /** Conveyor belt: feet supported by one of {@code cells} = (vx, vz) blocks/tick added every tick. */
+    public record Belt(String obstacleId, List<BlockPos> cells, double vx, double vz) {
+        public Belt { cells = List.copyOf(cells); }
+    }
     /** Spectator overview points, e.g. "Spine (top-down)", "Fork". At least one. */
     public final List<Overview> overviews = new ArrayList<>();
     /** Bounds of every block (inclusive). Call {@link #recomputeBounds()} after generating. */

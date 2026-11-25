@@ -1,0 +1,62 @@
+# Yeti Set Go, played in the imported world. Rules are the map's own command blocks, per player.
+name: "Yeti Set Go"
+world: mcc_yetisetgo
+laps: 1
+time-limit: 600
+start: [21.5, -1.0, 4.5, 0.0]
+pen: [16, -1, 1, 26, -1, 5]
+gate: [16, -1, 7, 26, 1, 7]
+finish: [15, -2, 6, 27, 6, 8]
+# Ordered checkpoints: station (elytra), the north island landing (you must land there - flying past high
+# does not count), the north chain, then the finish. Entering a later one first sends the racer back.
+waypoints:
+  - [-176, 28, 22, -158, 48, 40]
+  - [0, -35, -145, 60, -12, -95]
+  - [42, -25, -70, 62, 0, -52]
+# Yellow speed pads become green arrows (purple glazed in the pack) pointing along the racing line.
+arrow-pads: {from: yellow_glazed_terracotta, to: purple_glazed_terracotta, facing: keep, area: [-185, -30, -145, 70, 45, 75]}
+route:
+  - [21, 3]
+  - [19.8, 14]
+  - [26.9, 31.8]
+  - [10.8, 62.8]
+  - [-17, 49.8]
+  - [-31, 36.8]
+  - [-60.7, 27.8]
+  - [-95.7, 29.8]
+  - [-120.4, 36.8]
+  - [-127.4, 28.8]
+  - [-150.3, 30.8]
+  - [-165.4, 30.8]
+  - [14, -132.3]
+  - [46.8, -104.3]
+  - [34.4, -92]
+  - [56.8, -82]
+  - [51, -62]
+  - [19.8, -48.3]
+  - [19.8, -25.2]
+  - [19.8, -12.2]
+  - [19.8, 5.8]
+void-y: -64
+trident: {give: true, riptide: 1, unbreaking: 3}
+bank-range: 160
+banks:
+  START: [22, 0]
+  STATION: [-155, 28]
+rules:
+  - "* | 0 -1 0 | yellow_glazed_terracotta | checkpoint ; effect speed 2 3"
+  - "STATION | 0 -1 0 | yellow_glazed_terracotta | item armor.chest air"
+  - "START | 0 -1 0 | lime_wool | launch 1.12 0.4"
+  - "STATION | 0 -1 0 | lime_wool | launch 1.22 0.4"
+  - "* | 0 -1 0 | magenta_glazed_terracotta | effect jump_boost 1 4"
+  - "START | 0 -1 0 | magenta_glazed_terracotta | effect speed 1 8"
+  - "STATION | 0 -1 0 | magenta_glazed_terracotta | effect speed 1 7"
+  - "* | 0 -1 0 | pink_glazed_terracotta | effect jump_boost 1 4"
+  - "START | 0 -1 0 | pink_glazed_terracotta | effect speed 1 8"
+  - "STATION | 0 -1 0 | pink_glazed_terracotta | effect speed 1 7"
+  - "* | 0 -1 0 | red_glazed_terracotta | effect jump_boost 1 4"
+  - "START | 0 -1 0 | red_glazed_terracotta | effect speed 1 8"
+  - "STATION | 0 -1 0 | red_glazed_terracotta | effect speed 1 7"
+  - "* | 0 -1 0 | yellow_carpet | effect speed 2 3"
+  - "STATION | 0 -1 0 | stone | item armor.chest air"
+  - "STATION | 0 -1 0 | lodestone | item armor.chest elytra"

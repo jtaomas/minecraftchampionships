@@ -1,0 +1,28 @@
+{
+  "id": "cheeseboard",
+  "name": "Cheeseboard",
+  "debut": "MCC 4",
+  "stars": 2,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Cheeseboard.png",
+  "floor": ["qqqqqqq","qqqqqqq","qqqqqqq","qqqqqqq","qqqqqqq","qqqqqqq","cqqqqqc"],
+  "palette": {
+    "q": "minecraft:quartz_block",
+    "c": "minecraft:chiseled_quartz_block",
+    "w": "minecraft:spruce_planks",
+    "b": "minecraft:birch_planks",
+    "y": "minecraft:light_weighted_pressure_plate",
+    "o": "minecraft:orange_terracotta",
+    "r": "minecraft:nether_wart_block",
+    "n": "minecraft:orange_concrete"
+  },
+  "layers": [
+    [".......", ".wwwww.", ".wwwww.", ".wwwww.", "..bbb..", ".......", "......."],
+    [".......", ".......", ".yo.n..", "..yr...", ".......", ".......", "......."]
+  ],
+  "guessed": [
+    "board depth (rows 1-3) estimated from the visible top surface; back row of the board hidden by the cheese",
+    "board wood read as spruce_planks; cheeses read as orange_terracotta (left), nether_wart_block (middle), orange_concrete (right)",
+    "yellow slices read as light_weighted_pressure_plate (gold plates)",
+    "floor is plain quartz with chiseled quartz in the two front corners as shown"
+  ]
+}

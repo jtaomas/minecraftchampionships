@@ -1,0 +1,47 @@
+# Space Race, played in the imported world. Rules are the map's own command blocks, per player.
+# hoop: flying through a diamond ring gives the elytra (the map's own ring check only works on two of its four rings).
+name: "Space Race"
+world: mcc_spacerace
+laps: 1
+time-limit: 600
+start: [17.5, 115.0, 27.5, 180.0]
+pen: [7, 115, 25, 27, 115, 29]
+gate: [6, 115, 24, 28, 117, 24]
+finish: [6, 114, 23, 28, 120, 30]
+# Ordered checkpoints along the island chain: west platform, pool island, platform C, elytra islands,
+# right-chain bottom, space station, then back to the start pod. Entering a later one first sends the racer back.
+waypoints:
+  - [-128, 147, -60, -98, 175, -13]
+  - [-160, 145, 80, -125, 190, 131]
+  - [-62, 172, 198, -15, 200, 247]
+  - [-62, 172, 356, 48, 215, 432]
+  - [106, 215, 414, 130, 268, 441]
+  - [96, 185, 257, 150, 235, 337]
+# Elytra by volume around each diamond ring and the station's launch column, so a lift that drifts off the ring,
+# or a respawn near the end, still ends with wings for the glide home.
+elytra-zones:
+  - [-50, 160, -52, -38, 182, -36]
+  - [-132, 195, -3, -116, 214, 9]
+  - [82, 200, -10, 94, 222, 6]
+  - [104, 225, 238, 124, 258, 268]
+void-y: 40
+trident: {give: true, riptide: 2, unbreaking: 0}
+hoop: diamond_block
+always:
+  - "effect dolphins_grace inf 1"
+rules:
+  - "* | 0 0 -1 | diamond_block | item armor.chest elytra"
+  - "* | 0 0 -2 | diamond_block | item armor.chest elytra"
+  - "* | 0 0 -3 | diamond_block | item armor.chest elytra"
+  - "* | 0 0 -4 | diamond_block | item armor.chest elytra"
+  - "* | 0 0 -5 | diamond_block | item armor.chest elytra"
+  - "* | 0 0 -6 | diamond_block | item armor.chest elytra"
+  - "* | 0 0 -7 | diamond_block | item armor.chest elytra"
+  - "* | 0 -0.35 0 | red_sandstone | item armor.chest air"
+  - "* | 0 -0.35 0 | red_concrete | item armor.chest air ; effect levitation 2 23 ; effect speed 2 30"
+  - "* | 0 -0.35 0 | water | item armor.chest air"
+  - "* | 0 -0.35 0 | gray_concrete | item armor.chest air"
+  - "* | 0 -0.35 0 | magenta_glazed_terracotta | effect speed 2 4 ; checkpoint"
+  - "* | 0 -0.35 0 | orange_concrete | effect levitation 1 70 ; effect speed 1 255"
+  - "* | 0 -0.35 0 | bedrock | kill"
+  - "* | 0 -0.35 0 | lime_stained_glass | kill"

@@ -1,0 +1,59 @@
+{
+  "id": "end_flower",
+  "name": "End Flower",
+  "debut": "MCC 8",
+  "stars": 3,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-End_Flower.png",
+  "floor": [
+    "eeeeeee",
+    "eeeeeee",
+    "eeeeeee",
+    "eeeeeee",
+    "eeeeeee",
+    "eeeeeee",
+    "eeeeeee"
+  ],
+  "palette": {
+    "e": "minecraft:end_stone",
+    "p": "minecraft:purpur_pillar[axis=y]",
+    "s": "minecraft:purpur_slab[type=bottom]",
+    "t": "minecraft:purpur_slab[type=top]",
+    "w": "minecraft:end_stone_brick_wall",
+    "d": "minecraft:sandstone"
+  },
+  "layers": [
+    [
+      "..d.d..",
+      "..pwp..",
+      "..ptp..",
+      ".......",
+      ".d...d.",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "..sws..",
+      "..s.s..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "...w...",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "purpur columns assumed 2 deep (rows 1-2); back row mostly hidden",
+    "back sandstone blocks at row 0 mostly hidden behind purpur; mirrored",
+    "centre stem read as end stone brick wall (3 high) behind the purpur top slab",
+    "tan cubes read as sandstone"
+  ]
+}

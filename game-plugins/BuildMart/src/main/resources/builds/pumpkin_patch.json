@@ -1,0 +1,32 @@
+{
+  "id": "pumpkin_patch",
+  "name": "Pumpkin Patch",
+  "debut": "MCC 11",
+  "stars": 3,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Pumpkin_Patch.png",
+  "floor": ["ggggggg","ggggddg","gdddggg","gdddggg","gdddggg","ggdddgg","ggddddg"],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "d": "minecraft:coarse_dirt",
+    "P": "minecraft:pumpkin",
+    "b": "minecraft:iron_bars",
+    "f": "minecraft:spruce_fence",
+    "w": "minecraft:spruce_planks",
+    "l": "minecraft:spruce_log[axis=y]",
+    "h": "minecraft:spruce_slab[type=bottom]",
+    "L": "minecraft:spruce_trapdoor[facing=east,half=bottom,open=false]",
+    "R": "minecraft:spruce_trapdoor[facing=west,half=bottom,open=false]",
+    "t": "minecraft:orange_tulip"
+  },
+  "layers": [
+    [".......", ".....f.", ".P.Pt..", ".......", "..P..t.", "b......", "bb.P..."],
+    [".......", ".....w.", ".......", ".......", ".......", ".......", "......."],
+    [".......", ".....l.", ".......", ".......", ".......", ".......", "......."],
+    [".......", "....LhR", ".......", ".......", ".......", ".......", "......."]
+  ],
+  "guessed": [
+    "dirt patches read as coarse dirt; exact patch outlines in the back half estimated",
+    "scarecrow (spruce fence, planks body, log head, slab hat with trapdoor brim) placed at the back right; small side detail on the body omitted",
+    "pumpkin and tulip rows estimated from perspective; iron bars read as a small 3-cell fence at the front left"
+  ]
+}

@@ -246,11 +246,13 @@ public final class VoteEngine {
      */
     public Chicken landEgg(UUID eggId, double x, double z) {
         Egg egg = eggId == null ? null : eggs.get(eggId);
-        if (egg == null) return null;
+        if (egg == null || !egg.inFlight()) return null;   // never hatch the same egg twice
         if (!phase.acceptsHatch()) {
             egg.lost();
             return null;
         }
+        double[] p = onDial(x, z);
+        x = p[0]; z = p[1];
         egg.land(x, z);
         Chicken chicken = newChicken(egg.owner(), egg.team(), egg.kind(), x, z);
         egg.hatched();
@@ -307,18 +309,25 @@ public final class VoteEngine {
     public void updateChickenPosition(UUID chickenId, double x, double z) {
         Chicken c = chickens.get(chickenId);
         if (c == null || !c.alive()) return;
-        double max = dial.geometry().outerRadius() + 4.0;
+        double[] p = onDial(x, z);
+        c.position(p[0], p[1]);
+    }
+
+    /**
+     * Keep a chicken on the live wedge band [inner, outer] of the dial. A chicken that walked off the band
+     * (over the rim or onto the centre) used to drop out of every wedge and its vote was silently lost.
+     */
+    double[] onDial(double x, double z) {
+        DialGeometry g = dial.geometry();
+        double lo = g.innerRadius() + 0.25, hi = Math.max(lo + 0.1, g.outerRadius() - 0.3);
         double r = Math.hypot(x, z);
-        if (r > max) {
-            double s = max / r;
-            x *= s;
-            z *= s;
-        }
-        c.position(x, z);
+        if (r < 1.0e-9) return new double[]{Math.cos(g.baseAngle()) * lo, Math.sin(g.baseAngle()) * lo};
+        double t = r > hi ? hi : r < lo ? lo : r;
+        if (t == r) return new double[]{x, z};
+        return new double[]{x * t / r, z * t / r};
     }
 
     private void wander() {
-        double max = dial.geometry().outerRadius() + 4.0;
         for (Chicken c : chickens.values()) {
             if (!c.alive() || c.frozen(totalTick) || totalTick < freezeAllUntil) continue;
             int slot = dial.wedgeAt(c.x(), c.z());
@@ -328,12 +337,8 @@ public final class VoteEngine {
             double angle = c.random() * Math.PI * 2.0;
             double nx = c.x() + Math.cos(angle) * step;
             double nz = c.z() + Math.sin(angle) * step;
-            double nr = Math.hypot(nx, nz);
-            if (nr > max && nr > 1.0e-9) {
-                nx *= max / nr;
-                nz *= max / nr;
-            }
-            c.position(nx, nz);
+            double[] p = onDial(nx, nz);
+            c.position(p[0], p[1]);
         }
     }
 
@@ -376,8 +381,8 @@ public final class VoteEngine {
         Chicken c = chickens.get(chickenId);
         if (c == null || !c.alive() || chickenCount() >= 200) return null;
         double a = rng.nextDouble() * Math.PI * 2.0;
-        Chicken copy = newChicken(c.owner(), c.team(), c.kind(),
-                c.x() + Math.cos(a) * 0.45, c.z() + Math.sin(a) * 0.45);
+        double[] p = onDial(c.x() + Math.cos(a) * 0.45, c.z() + Math.sin(a) * 0.45);
+        Chicken copy = newChicken(c.owner(), c.team(), c.kind(), p[0], p[1]);
         copy.scale(c.scalePercent());
         return copy;
     }

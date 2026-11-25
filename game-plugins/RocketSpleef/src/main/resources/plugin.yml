@@ -1,6 +1,14 @@
 name: McmRocketSpleef
-version: 1.0.0
+version: 2.0.0
 main: com.mcm.games.rocketspleef.RocketSpleefPlugin
 api-version: '1.21'
 depend: [MinecraftMondayCore]
-description: Rocket Spleef Rush minigame for MinecraftMondayCore
+description: Original MCC Rocket Spleef (MCC 1-13) for MinecraftMondayCore
+commands:
+  rs:
+    description: Rocket Spleef admin (show/clear a map, reload config, force TNT Time, debug)
+    usage: /rs <show|clear|reload|tnt|debug>
+    permission: mcm.rocketspleef.admin
+permissions:
+  mcm.rocketspleef.admin:
+    default: op

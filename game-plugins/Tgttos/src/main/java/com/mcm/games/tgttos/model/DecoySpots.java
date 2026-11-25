@@ -20,7 +20,8 @@ public final class DecoySpots {
     /** The decoy spots the runtime uses for this map and build: the map's own list, else {@link #pick}. */
     public static List<int[]> effective(TgMap m, TgMapData d) {
         List<int[]> l = m.decoyChickens();
-        return l != null && !l.isEmpty() ? l : pick(d, DEFAULT_COUNT, d.seed);
+        if (l != null && !l.isEmpty()) return l;
+        return m.scatterDecoys() ? pick(d, DEFAULT_COUNT, d.seed) : List.of();
     }
 
     public static List<int[]> pick(TgMapData d, int n, long seed) {

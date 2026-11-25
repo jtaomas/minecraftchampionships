@@ -284,9 +284,13 @@ connection post-pass: ok
 staircases: 0 lanes, problems 0
 bounds: x -90..105  y 86..169  z -10..586
 distinct block types: 186
+label overlaps: 3
+  ERROR labels: E-EASY-1 name and label '&a&lEASY &a? &fMeadow & Beehive' overlap (1.0 blocks apart)
+  ERROR labels: E-MEDIUM-1 name and label '&6&lMEDIUM &6?? &fFrozen Harbour' overlap (1.0 blocks apart)
+  ERROR labels: E-HARD-1 name and label '&c&lHARD &c??? &fLibrary Tower' overlap (1.0 blocks apart)
 
 SUMMARY steps 226, footholds 229 (tiny objects 0), decoys 0, bypasses 0, kill overlaps 0, catch ledges 700 (info)
-RESULT: PASS  errors 0  warnings 0
+RESULT: FAIL  errors 3  warnings 0
 
-(generated + validated in 123213 ms)
-dumps written to tools\out\dumps
+(generated + validated in 141934 ms)
+dumps written to tools\out\dumps  (3 validator problems)

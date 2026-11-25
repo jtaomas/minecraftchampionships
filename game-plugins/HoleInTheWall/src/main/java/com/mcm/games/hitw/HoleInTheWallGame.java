@@ -8,6 +8,9 @@ import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -40,7 +43,9 @@ public final class HoleInTheWallGame implements McmGame, Listener {
     private static final int OVERDRIVE_SECONDS = 60;  // extremely fast walls, then hard end
     private static final int COUNTDOWN_SECONDS = 5;
     private static final int[] INTERVAL_BY_LEVEL = {6, 5, 5, 4, 4, 3, 3, 3, 2, 2}; // ticks per cell, levels 1..10
-    private static final int[] PLACEMENT_BONUS = {20, 12, 6};
+    // MCC coins (base x1.0, config coins.*; the core applies the event multiplier). See game-plugins/COINS.md.
+    private int[] PLACEMENT_BONUS = {100, 70, 30};   // MCC: top 3 (tied players split the sum of the tied places)
+    private int wallCoins = 2;                       // MCC: per wall survived
     private static final int PVP_GRACE_TICKS = 100;
 
     private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacySection();
@@ -63,7 +68,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
     private final Map<UUID, Integer> lastHit = new HashMap<>();
 
     private final List<Wall> walls = new ArrayList<>();
-    private Map<Long, Material> rendered = new HashMap<>();
+    private Map<Long, BlockData> rendered = new HashMap<>();
 
     private int initialCount;
     private int perElimPoints;
@@ -78,6 +83,17 @@ public final class HoleInTheWallGame implements McmGame, Listener {
     /** Config {@code difficulty-head-start-seconds}: the wall ramp starts as if this much time had passed. */
     private int headStartSec = 60;
     private SpectatorGuard guard;
+    /**
+     * MCC: Standard + Sike are always on and the other types join one at a time ("New Wall Type appearing").
+     * This game's order, picked at start; type i joins at UNLOCK_SECONDS[i] on the difficulty clock.
+     */
+    private static final int[] UNLOCK_SECONDS = {0, 30, 100, 140, 190, 240, 290};
+    private final List<WallType> unlockOrder = new ArrayList<>();
+    private int announcedUnlocks;
+    private int lastLevel;
+    private int lastTierBand;
+    /** Config {@code debug-walls} (default off): log every wall's pattern and types to the console. */
+    private boolean debugWalls;
 
     HoleInTheWallGame(HoleInTheWallPlugin plugin) {
         this.plugin = plugin;
@@ -100,9 +116,12 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         try {
             plugin.reloadConfig();
             headStartSec = Math.max(0, Math.min(MAIN_SECONDS, plugin.getConfig().getInt("difficulty-head-start-seconds", 60)));
+            debugWalls = plugin.getConfig().getBoolean("debug-walls", false);
         } catch (Throwable t) {
             headStartSec = 60;
+            debugWalls = false;
         }
+        pickUnlockOrder();
         if (guard == null) guard = new SpectatorGuard(plugin, this::spectatorZone);
 
         World w = arena.ensureWorld();
@@ -166,12 +185,17 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         }
         initialCount = alive.size();
         syncGhosts();
-        perElimPoints = initialCount >= 2 ? Math.max(1, Math.min(6, (int) Math.round(40.0 / (initialCount - 1)))) : 0;
+        perElimPoints = initialCount >= 2 ? Math.max(0, plugin.getConfig().getInt("coins.outlive", 2)) : 0;   // MCC: 2 per player death while alive
+        wallCoins = Math.max(0, plugin.getConfig().getInt("coins.wall", 2));
+        java.util.List<Integer> pb = plugin.getConfig().getIntegerList("coins.placement");
+        PLACEMENT_BONUS = pb.size() >= 1 ? pb.stream().mapToInt(Integer::intValue).toArray() : new int[]{100, 70, 30};
 
         context.broadcast("§a§lHole in the Wall §7— walls with holes sweep across the platform.");
         context.broadcast("§7Slip through the holes (some need a jump!) or get pushed into the void.");
-        context.broadcast("§7Survive eliminations: §e+" + perElimPoints + "§7 each. Waves survived: §e+1§7. Top 3: §e"
-                + PLACEMENT_BONUS[0] + "/" + PLACEMENT_BONUS[1] + "/" + PLACEMENT_BONUS[2] + "§7.");
+        StringBuilder top = new StringBuilder();
+        for (int k = 0; k < PLACEMENT_BONUS.length; k++) top.append(k == 0 ? "" : "/").append(PLACEMENT_BONUS[k]);
+        context.broadcast("§7Coins: §6+" + perElimPoints + "§7 every time a player falls while you stand, §6+" + wallCoins
+                + "§7 per wall survived. Top " + PLACEMENT_BONUS.length + ": §6" + top + "§7.");
         context.broadcast("§7Walls speed up; after 5 min: §cOVERDRIVE§7.");
 
         state = State.COUNTDOWN;
@@ -231,13 +255,14 @@ public final class HoleInTheWallGame implements McmGame, Listener {
                 waveCooldown = 20;
                 titleAll("§a§lGO!", "§7Find the holes!", 0, 20, 10);
                 soundAll(Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.4f);
-                if (headStartSec > 0) {
-                    List<String> already = new ArrayList<>();
-                    for (WallType t : WallType.values())
-                        if (t.unlockSecond > 0 && t.unlockSecond <= headStartSec) already.add(t.color + t.label);
-                    ctx.broadcast("§7Walls start at level §e" + level() + "§7 (a " + headStartSec + " s head start)"
-                            + (already.isEmpty() ? "." : "; already in play: " + String.join("§7, ", already) + "§7."));
-                }
+                List<String> already = new ArrayList<>();
+                for (WallType t : unlockedTypes()) already.add(t.color + t.label);
+                announcedUnlocks = unlockedTypes().size();
+                lastLevel = level();
+                lastTierBand = tierBand(lastLevel);
+                ctx.broadcast("§7Walls start at §e" + difficultyName() + "§7"
+                        + (headStartSec > 0 ? " (a " + headStartSec + " s head start)" : "")
+                        + ". Wall types: §aStandard§7, §aSike§7" + (already.isEmpty() ? "" : ", " + String.join("§7, ", already)) + "§7.");
             }
             return;
         }
@@ -264,7 +289,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
             else if (sec == MAIN_SECONDS) startOverdrive();
             else if (sec >= MAIN_SECONDS + OVERDRIVE_SECONDS) { endGame("Time is up"); return; }
             // wall-type unlocks follow the difficulty clock (head start included), announced when they really happen
-            if (!overdrive && sec > 0) announceUnlock(difficultySec());
+            if (!overdrive && sec > 0) announceProgress();
         }
 
         // waves
@@ -285,7 +310,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
                 if (--wave.remaining <= 0 && wave.crossed && !alive.isEmpty()) {
                     wavesCleared++;
                     for (UUID id : new ArrayList<>(alive)) {
-                        if (Bukkit.getPlayer(id) != null) ctx.addPoints(id, 1, "Survived a wall");
+                        if (Bukkit.getPlayer(id) != null && wallCoins > 0) ctx.addPoints(id, wallCoins, "Survived a wall");
                     }
                 }
             }
@@ -331,26 +356,42 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         else count = 3;
         count = Math.min(count, 6 - walls.size());
         if (count <= 0) return;
-        sidesNow = count;
 
         int interval = currentInterval();
-        int holes = overdrive ? 2 : lvl <= 2 ? 4 : lvl <= 6 ? 3 : 2;
-        int difficulty = overdrive ? 2 : lvl <= 2 ? 0 : lvl <= 6 ? 1 : 2;
 
+        // free sides: {axisX ? 1 : 0, dir}; a Sandwich takes both ends of one axis
         List<int[]> dirs = new ArrayList<>(List.of(new int[]{1, 1}, new int[]{1, -1}, new int[]{0, 1}, new int[]{0, -1}));
         Collections.shuffle(dirs, rnd);
         Wall.Wave wave = new Wall.Wave();
         StringBuilder announce = new StringBuilder();
-        for (int i = 0; i < count; i++) {
-            int[] d = dirs.get(i);
+        int made = 0;
+        for (int i = 0; i < count && !dirs.isEmpty(); i++) {
+            int[] d = dirs.remove(0);
             EnumSet<WallType> types = overdrive ? EnumSet.of(WallType.STANDARD) : rollTypes();
-            int delay = i == 0 ? 0 : rnd.nextInt(Math.max(1, interval * 6)) + interval * 2;
-            Wall wall = new Wall(d[0] == 1, d[1], types, interval, overdrive, holes, difficulty, platformHalf, delay, wave, rnd);
+            int delay = made == 0 ? 0 : rnd.nextInt(Math.max(1, interval * 6)) + interval * 2;
+            int[] partner = null;
+            if (types.contains(WallType.SANDWICH)) {
+                for (int[] o : dirs) if (o[0] == d[0] && o[1] == -d[1]) { partner = o; break; }
+                if (partner == null || walls.size() + made + 2 > 6) types = EnumSet.of(WallType.STANDARD);
+                else dirs.remove(partner);
+            }
+            Wall wall = new Wall(d[0] == 1, d[1], types, interval, overdrive, rollTier(lvl), platformHalf, delay, wave, rnd);
             walls.add(wall);
             wave.remaining++;
+            made++;
+            logWall(wall);
+            if (partner != null) {
+                Wall other = new Wall(partner[0] == 1, partner[1], EnumSet.copyOf(types), interval, overdrive,
+                        wall.tier, platformHalf, delay, wave, rnd);
+                walls.add(other);
+                wave.remaining++;
+                made++;
+                logWall(other);
+            }
             if (announce.length() > 0) announce.append("§7, ");
-            announce.append(wall.label()).append(" §7from the §f").append(wall.fromName());
+            announce.append(wall.label()).append(" §7from the §f").append(partner != null ? "both sides" : wall.fromName());
         }
+        sidesNow = made;
         actionBarAll("§e⚠ " + announce);
         soundAll(Sound.BLOCK_PISTON_EXTEND, 0.8f, 0.7f);
 
@@ -360,15 +401,11 @@ public final class HoleInTheWallGame implements McmGame, Listener {
     }
 
     private EnumSet<WallType> rollTypes() {
-        int sec = difficultySec();
         if (rnd.nextDouble() < 0.10) return EnumSet.of(WallType.SIKE);
-        List<WallType> pool = new ArrayList<>();
-        for (WallType t : WallType.values()) {
-            if (t == WallType.STANDARD || t == WallType.SIKE) continue;
-            if (sec >= t.unlockSecond) pool.add(t);
-        }
+        List<WallType> pool = unlockedTypes();
         if (pool.isEmpty() || rnd.nextDouble() < 0.45) return EnumSet.of(WallType.STANDARD);
-        WallType first = pool.get(rnd.nextInt(pool.size()));
+        // the newest type shows up a bit more often, like MCC's "New Wall Type appearing"
+        WallType first = rnd.nextDouble() < 0.3 ? pool.get(pool.size() - 1) : pool.get(rnd.nextInt(pool.size()));
         EnumSet<WallType> set = EnumSet.of(first);
         Set<WallType> combinable = EnumSet.of(WallType.FROZEN, WallType.WALTZ, WallType.SPRINT, WallType.MORPH);
         if (combinable.contains(first) && rnd.nextDouble() < 0.2) {
@@ -379,10 +416,89 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         return set;
     }
 
+    /** This game's unlock order: early types first, the nastiest ones (Dance, Vengeful) not before the fifth. */
+    private void pickUnlockOrder() {
+        unlockOrder.clear();
+        announcedUnlocks = 0;
+        List<WallType> left = new ArrayList<>(List.of(WallType.specials()));
+        for (int i = 0; i < UNLOCK_SECONDS.length && !left.isEmpty(); i++) {
+            int maxStage = i < 2 ? 0 : i < 4 ? 1 : 2;
+            List<WallType> ok = new ArrayList<>();
+            for (WallType t : left) if (t.stage <= maxStage) ok.add(t);
+            if (ok.isEmpty()) ok = left;
+            WallType pick = ok.get(rnd.nextInt(ok.size()));
+            unlockOrder.add(pick);
+            left.remove(pick);
+        }
+    }
+
+    private List<WallType> unlockedTypes() {
+        int sec = difficultySec();
+        List<WallType> out = new ArrayList<>();
+        for (int i = 0; i < unlockOrder.size() && i < UNLOCK_SECONDS.length; i++)
+            if (sec >= UNLOCK_SECONDS[i]) out.add(unlockOrder.get(i));
+        return out;
+    }
+
+    /**
+     * Pattern tier (MCC diagram sets E / M / D / X) by wall level: easy walls first, extreme walls at the end.
+     * Weights per level 1..10 for {Easy, Medium, Difficult, Extreme}.
+     */
+    private static final int[][] TIER_WEIGHTS = {
+            {100, 0, 0, 0}, {100, 0, 0, 0}, {70, 30, 0, 0}, {40, 50, 10, 0}, {20, 50, 30, 0},
+            {0, 40, 50, 10}, {0, 25, 50, 25}, {0, 10, 50, 40}, {0, 0, 40, 60}, {0, 0, 40, 60}};
+
+    private int rollTier(int lvl) {
+        int[] w = overdrive ? new int[]{0, 0, 30, 70} : TIER_WEIGHTS[Math.max(1, Math.min(10, lvl)) - 1];
+        int r = rnd.nextInt(100);
+        for (int t = 0; t < 4; t++) { r -= w[t]; if (r < 0) return t; }
+        return 3;
+    }
+
+    /** Which tier mix a level uses (for "Wall difficulty increased!"). */
+    private static int tierBand(int lvl) {
+        return lvl <= 2 ? 0 : lvl <= 3 ? 1 : lvl <= 5 ? 2 : lvl <= 8 ? 3 : 4;
+    }
+
+    /** MCC's difficulty names (MCC Island table), one per wall level. */
+    private static final String[] DIFFICULTY_NAMES = {"Very Easy", "Easy", "Normal", "Moderate", "Challenging",
+            "Difficult", "Very Difficult", "Extreme", "Crazy Extreme", "Crazy Extreme"};
+
+    private String difficultyName() {
+        return overdrive ? "Overdrive" : DIFFICULTY_NAMES[level() - 1];
+    }
+
+    private void logWall(Wall wall) {
+        if (!debugWalls) return;
+        StringBuilder t = new StringBuilder();
+        for (WallType x : wall.types) { if (t.length() > 0) t.append('+'); t.append(x.name()); }
+        plugin.getLogger().info("[walls] " + wall.patternName + " (" + WallPatterns.TIER_NAMES[wall.tier] + ") " + t
+                + " from " + wall.fromName() + " axisX=" + wall.axisX + " dir=" + wall.dir + " level=" + level());
+    }
+
+    /** Vengeful walls follow one living player: the one nearest the wall's middle when it first looks. */
+    private final Map<Wall, UUID> vengefulTargets = new IdentityHashMap<>();
+
+    double vengefulTarget(Wall wall) {
+        World w = arena.world();
+        if (w == null || alive.isEmpty()) return Double.NaN;
+        UUID id = vengefulTargets.get(wall);
+        Player p = id == null ? null : Bukkit.getPlayer(id);
+        if (p == null || !alive.contains(id)) {
+            List<UUID> ids = new ArrayList<>(alive);
+            id = ids.get(rnd.nextInt(ids.size()));
+            vengefulTargets.put(wall, id);
+            p = Bukkit.getPlayer(id);
+            if (p == null) return Double.NaN;
+        }
+        Location l = p.getLocation();
+        return wall.axisX ? l.getZ() : l.getX();
+    }
+
     /** Called by a wall after each single-cell step: push anyone it runs into. */
-    void onWallStep(Wall wall) {
+    void onWallStep(Wall wall, int moveDir) {
         int pos = wall.pos();
-        if (wall.dir * pos == Arena.HALF + 1) wall.wave.crossed = true;
+        if (moveDir == wall.dir && wall.dir * pos == Arena.HALF + 1) wall.wave.crossed = true;
         if (Math.abs(pos) > Arena.HALF + 1) return;
         World w = arena.world();
         if (w == null) return;
@@ -406,20 +522,20 @@ public final class HoleInTheWallGame implements McmGame, Listener {
             for (int la = laMin; la <= laMax && !hit; la++) {
                 int idx = la + Arena.HALF;
                 if (idx < 0 || idx >= Wall.LANES) continue;
-                for (int r = rMin; r <= rMax; r++) if (wall.solid[idx][r]) { hit = true; break; }
+                for (int r = rMin; r <= rMax; r++) if (wall.solid(idx, r)) { hit = true; break; }
             }
             if (!hit) continue;
-            push(p, wall, pos, bb);
+            push(p, wall, pos, bb, moveDir);
         }
     }
 
-    private void push(Player p, Wall wall, int pos, BoundingBox bb) {
+    private void push(Player p, Wall wall, int pos, BoundingBox bb, int moveDir) {
         Location l = p.getLocation();
         double halfW = (wall.axisX ? bb.getWidthX() : bb.getWidthZ()) / 2.0;
-        double target = wall.dir > 0 ? pos + 1 + halfW + 0.02 : pos - halfW - 0.02;
+        double target = moveDir > 0 ? pos + 1 + halfW + 0.02 : pos - halfW - 0.02;
         if (wall.axisX) l.setX(target); else l.setZ(target);
         p.teleport(l);
-        Vector v = wall.axisX ? new Vector(wall.dir * 0.45, 0.12, 0) : new Vector(0, 0.12, wall.dir * 0.45);
+        Vector v = wall.axisX ? new Vector(moveDir * 0.45, 0.12, 0) : new Vector(0, 0.12, moveDir * 0.45);
         p.setVelocity(v);
         p.setFallDistance(0);
         p.playSound(p.getLocation(), Sound.ENTITY_SLIME_SQUISH, 0.7f, 0.8f);
@@ -444,7 +560,20 @@ public final class HoleInTheWallGame implements McmGame, Listener {
             }
             case "warp" -> w.playSound(c, Sound.ENTITY_ENDERMAN_TELEPORT, 1.2f, 1.6f);
             case "morph" -> w.playSound(c, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 2f, 0.6f);
-            case "trick" -> w.playSound(c, Sound.ENTITY_CREEPER_PRIMED, 1.5f, 0.8f);
+            case "trick" -> {
+                w.spawnParticle(Particle.BLOCK, c, 160, wall.axisX ? 0.3 : 4, 1.2, wall.axisX ? 4 : 0.3, 0.1,
+                        Material.SLIME_BLOCK.createBlockData());
+                w.playSound(c, Sound.BLOCK_GLASS_BREAK, 1.6f, 0.7f);
+                actionBarAll("§cTrick! §7It broke apart.");
+            }
+            case "sideswipe-from" -> w.spawnParticle(Particle.SWEEP_ATTACK, c, 12, wall.axisX ? 0.3 : 4, 1, wall.axisX ? 4 : 0.3, 0);
+            case "sideswipe" -> {
+                w.spawnParticle(Particle.SWEEP_ATTACK, c, 12, wall.axisX ? 0.3 : 4, 1, wall.axisX ? 4 : 0.3, 0);
+                w.playSound(c, Sound.ENTITY_PLAYER_ATTACK_SWEEP, 2f, 0.6f);
+                actionBarAll("§9Sideswipe! §7It now comes from the §f" + wall.fromName() + "§7!");
+            }
+            case "sandwich" -> w.playSound(c, Sound.BLOCK_PISTON_EXTEND, 1.5f, 1.4f);
+            case "dance" -> w.playSound(c, Sound.BLOCK_NOTE_BLOCK_BELL, 1.5f, 0.8f);
             case "frozen" -> w.playSound(c, Sound.BLOCK_GLASS_BREAK, 1.2f, 1.6f);
             case "returning" -> w.playSound(c, Sound.BLOCK_PISTON_CONTRACT, 1.5f, 0.6f);
             default -> { }
@@ -454,40 +583,60 @@ public final class HoleInTheWallGame implements McmGame, Listener {
     /** Place / remove wall blocks to match the current wall positions (diff against what is in the world). */
     private void renderWalls() {
         World w = arena.world();
-        Map<Long, Material> want = new HashMap<>();
+        Map<Long, BlockData> want = new HashMap<>();
         for (Wall wall : walls) {
             if (wall.removed) continue;
             int pos = wall.pos();
             if (Math.abs(pos) > Arena.START) continue;
+            WallType capType = wall.capType();
+            BlockData cap = capType == null ? PISTON_UP : capType.capMaterial.createBlockData();
             for (int li = 0; li < Wall.LANES; li++) {
                 int lat = li - Arena.HALF;
                 for (int r = 0; r < Arena.WALL_H; r++) {
-                    if (!wall.solid[li][r]) continue;
+                    byte c = wall.cells[li][r];
+                    BlockData bd = switch (c) {
+                        case Wall.SOLID -> SLIME;
+                        case Wall.CAP -> cap;
+                        // a ladder hangs on the side wall of its hole ('<' = the block at the lower lateral index)
+                        case Wall.LADDER_L -> ladder(wall.axisX ? BlockFace.SOUTH : BlockFace.EAST);
+                        case Wall.LADDER_R -> ladder(wall.axisX ? BlockFace.NORTH : BlockFace.WEST);
+                        default -> null;
+                    };
+                    if (bd == null) continue;
                     int x = wall.axisX ? pos : lat, z = wall.axisX ? lat : pos;
-                    want.put(key(x, Arena.WALL_Y + r, z), wall.material);
+                    want.merge(key(x, Arena.WALL_Y + r, z), bd, (a, b) -> a.getMaterial() == Material.LADDER ? b : a);
                 }
             }
         }
         if (w != null) {
-            for (Map.Entry<Long, Material> e : rendered.entrySet()) {
-                if (!want.containsKey(e.getKey())) setBlock(w, e.getKey(), Material.AIR);
+            for (Map.Entry<Long, BlockData> e : rendered.entrySet()) {
+                if (!want.containsKey(e.getKey())) setBlock(w, e.getKey(), AIR_DATA);
             }
-            for (Map.Entry<Long, Material> e : want.entrySet()) {
-                if (rendered.get(e.getKey()) != e.getValue()) setBlock(w, e.getKey(), e.getValue());
+            for (Map.Entry<Long, BlockData> e : want.entrySet()) {
+                if (!e.getValue().equals(rendered.get(e.getKey()))) setBlock(w, e.getKey(), e.getValue());
             }
         }
         rendered = want;
+    }
+
+    private static final BlockData SLIME = Material.SLIME_BLOCK.createBlockData();
+    private static final BlockData AIR_DATA = Material.AIR.createBlockData();
+    private static final BlockData PISTON_UP = Material.PISTON.createBlockData(d -> ((Directional) d).setFacing(BlockFace.UP));
+    private static final Map<BlockFace, BlockData> LADDERS = new EnumMap<>(BlockFace.class);
+
+    private static BlockData ladder(BlockFace facing) {
+        return LADDERS.computeIfAbsent(facing, f -> Material.LADDER.createBlockData(d -> ((Directional) d).setFacing(f)));
     }
 
     private static long key(int x, int y, int z) {
         return ((long) (x + 512) << 32) | ((long) (y & 0xFFF) << 16) | (long) (z + 512);
     }
 
-    private static void setBlock(World w, long k, Material m) {
+    private static void setBlock(World w, long k, BlockData d) {
         int x = (int) (k >>> 32) - 512;
         int y = (int) ((k >>> 16) & 0xFFF);
         int z = (int) (k & 0xFFFF) - 512;
-        w.getBlockAt(x, y, z).setType(m, false);
+        w.getBlockAt(x, y, z).setBlockData(d, false);
     }
 
     // ------------------------------------------------------------------ phases
@@ -512,11 +661,26 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         if (ctx != null) ctx.broadcast("§c§lOVERDRIVE! §7Walls now come from every side at full speed.");
     }
 
-    private void announceUnlock(int sec) {
-        List<String> names = new ArrayList<>();
-        for (WallType t : WallType.values()) if (t.unlockSecond == sec) names.add(t.color + t.label);
-        if (names.isEmpty() || ctx == null) return;
-        ctx.broadcast("§7New walls incoming: " + String.join("§7, ", names));
+    /** MCC's chat/banner cues: new wall type, wall speed up, wall difficulty up. */
+    private void announceProgress() {
+        if (ctx == null) return;
+        List<WallType> now = unlockedTypes();
+        while (announcedUnlocks < now.size()) {
+            WallType t = now.get(announcedUnlocks++);
+            titleAll("", "§7New Wall Type appearing: " + t.color + "§l" + t.label, 0, 40, 10);
+            ctx.broadcast("§7New Wall Type appearing: " + t.color + t.label);
+            soundAll(Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1.6f);
+        }
+        int lvl = level();
+        if (lvl > lastLevel) {
+            lastLevel = lvl;
+            ctx.broadcast("§eWall speed increased! §7(" + difficultyName() + ")");
+            int band = tierBand(lvl);
+            if (band > lastTierBand) {
+                lastTierBand = band;
+                ctx.broadcast("§cWall difficulty increased!");
+            }
+        }
     }
 
     // ------------------------------------------------------------------ players
@@ -672,10 +836,10 @@ public final class HoleInTheWallGame implements McmGame, Listener {
             if (place >= PLACEMENT_BONUS.length) break;
             int sum = 0;
             for (int k = place; k < Math.min(PLACEMENT_BONUS.length, place + g.size()); k++) sum += PLACEMENT_BONUS[k];
-            int each = Math.max(1, (int) Math.round(sum / (double) g.size()));
+            int each = (int) Math.round(sum / (double) g.size());   // MCC: tied players split the sum of the tied places
             StringBuilder sb = new StringBuilder();
             for (UUID id : g) {
-                if (Bukkit.getPlayer(id) != null) ctx.addPoints(id, each, "Placement #" + (place + 1));
+                if (Bukkit.getPlayer(id) != null && each > 0) ctx.addPoints(id, each, "Placement #" + (place + 1));
                 if (sb.length() > 0) sb.append("§7, ");
                 sb.append(names.getOrDefault(id, "?"));
             }
@@ -762,6 +926,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         sidesNow = 1;
         platformHalf = Arena.HALF;
         overdrive = false;
+        vengefulTargets.clear();
     }
 
     private void preparePlayer(Player p) {
@@ -867,7 +1032,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         int interval = currentInterval();
         double speed = 20.0 / interval * (overdrive ? 2 : 1);
         List<String> lines = new ArrayList<>();
-        lines.add("§7Level §e" + level() + (overdrive ? " §c§lOVERDRIVE" : ""));
+        lines.add("§7Difficulty §e" + (overdrive ? "§c§lOVERDRIVE" : difficultyName()));
         lines.add("§7Wall speed §b" + String.format(Locale.ROOT, "%.1f", speed) + " b/s");
         lines.add("§7Walls at once §e" + sidesNow);
         lines.add("§7Alive §a" + alive.size() + "§7/" + initialCount);

@@ -264,7 +264,7 @@ final class AdminTools implements Listener {
                 ChatColor.GRAY + "Finish the countdown / vote / intermission /", ChatColor.GRAY + "results reveal that is running right now.",
                 ChatColor.DARK_GRAY + "/mcm skipwait"));
         inv.setItem(12, button(Material.SPECTRAL_ARROW, ChatColor.GOLD + "" + ChatColor.BOLD + "Skip round / map",
-                ChatColor.GRAY + "End only the current round or map (no points)", ChatColor.GRAY + "and go on to the next one.",
+                ChatColor.GRAY + "End only the current round or map (no coins)", ChatColor.GRAY + "and go on to the next one.",
                 ChatColor.DARK_GRAY + "/mcm skip"));
         inv.setItem(13, button(Material.FILLED_MAP, ChatColor.AQUA + "" + ChatColor.BOLD + "Maps",
                 ChatColor.GRAY + "Pick the map the next round uses.",

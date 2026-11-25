@@ -140,10 +140,11 @@ final class FindTheButtonGame implements McmGame {
         hintInterval = Math.max(1, c.getInt("hints.interval-seconds", 3));
         hintRadius = c.getDouble("hints.radius", 12);
         hintRadiusWide = c.getDouble("hints.wide-radius", 24);
-        firstPoints = c.getInt("points.first", 20);
-        pointStep = c.getInt("points.step", 2);
-        minPoints = c.getInt("points.minimum", 6);
-        teamBonus = c.getInt("points.team-bonus", 5);
+        // OURS (Find the Button is a Minecraft Monday game, not MCC): MCC-style coins modelled on TGTTOS. COINS.md.
+        firstPoints = c.getInt("coins.first", 80);
+        pointStep = c.getInt("coins.step", 4);
+        minPoints = c.getInt("coins.minimum", 20);
+        teamBonus = c.getInt("coins.team-bonus", 15);
     }
 
     // ================================================================== rounds
@@ -332,7 +333,7 @@ final class FindTheButtonGame implements McmGame {
         int pts = Math.max(minPoints, firstPoints - pointStep * (place - 1));
         roundPoints.put(id, pts);
         gamePoints.merge(id, pts, Integer::sum);
-        ctx.addPoints(id, pts, "Find the Button: found it #" + place);
+        ctx.addCoins(id, pts, "Find the Button: found it #" + place);
 
         String side = McmFx.sideKeyOf(ctx, p);
         ChatColor col = McmFx.sideColor(ctx, side);
@@ -375,7 +376,7 @@ final class FindTheButtonGame implements McmGame {
         for (Player m : members) if (!finders.contains(m.getUniqueId())) return;
         bonusSides.add(side);
         for (Player m : members) {
-            ctx.addPoints(m.getUniqueId(), teamBonus, "Find the Button: whole team found it");
+            ctx.addCoins(m.getUniqueId(), teamBonus, "Find the Button: whole team found it");
             gamePoints.merge(m.getUniqueId(), teamBonus, Integer::sum);
             roundPoints.merge(m.getUniqueId(), teamBonus, Integer::sum);
             McmFx.sound(m, Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.8f, 1.2f);

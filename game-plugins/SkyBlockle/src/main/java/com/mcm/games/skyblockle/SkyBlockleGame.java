@@ -89,7 +89,7 @@ public final class SkyBlockleGame implements McmGame {
 
     void award(UUID u, int pts, String reason) {
         if (pts == 0 || ctx == null) return;
-        ctx.addPoints(u, pts, reason);
+        ctx.addCoins(u, pts, reason);
         earned.merge(u, pts, Integer::sum);
     }
 

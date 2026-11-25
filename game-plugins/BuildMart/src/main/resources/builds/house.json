@@ -1,0 +1,28 @@
+{
+  "id": "house",
+  "name": "House",
+  "debut": "MCC 5",
+  "stars": 2,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-House.png",
+  "floor": ["ggggggg","ggggggg","ggggggg","ggggggg","ggggggg","ggggggg","ggggggg"],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "c": "minecraft:cobblestone",
+    "h": "minecraft:cobblestone_slab[type=bottom]",
+    "l": "minecraft:oak_log[axis=y]",
+    "d": "minecraft:oak_door[half=lower,facing=south,hinge=right]",
+    "u": "minecraft:oak_door[half=upper,facing=south,hinge=right]",
+    "p": "minecraft:oak_planks"
+  },
+  "layers": [
+    [".......", ".......", "..ccc..", "..ccc..", "..ccc..", "...h...", "......."],
+    [".......", ".......", "..lll..", "..l.l..", "..ldl..", ".......", "......."],
+    [".......", ".......", "..lll..", "..l.l..", "..lul..", ".......", "......."],
+    [".......", ".......", "..ppp..", "..ppp..", "..ppp..", ".......", "......."]
+  ],
+  "guessed": [
+    "depth of the house (3 rows) and the side/back walls are hidden; assumed a 3x3 oak-log box like the front",
+    "interior left hollow (air) behind the door",
+    "door hinge side taken from the render (hinges on the right); floor shows slightly varied grass shades, all grass_block"
+  ]
+}

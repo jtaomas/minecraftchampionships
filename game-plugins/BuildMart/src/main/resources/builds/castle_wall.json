@@ -1,0 +1,58 @@
+{
+  "id": "castle_wall",
+  "name": "Castle Wall",
+  "debut": "MCC 5",
+  "stars": 2,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Castle_Wall.png",
+  "floor": [
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg"
+  ],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "S": "minecraft:stone_bricks",
+    "T": "minecraft:stone_brick_stairs[facing=north,half=top]",
+    "b": "minecraft:birch_slab[type=bottom]",
+    "f": "minecraft:lily_of_the_valley"
+  },
+  "layers": [
+    [
+      "SSSSSSS",
+      "..f.f..",
+      ".f.....",
+      ".......",
+      "......f",
+      ".......",
+      "......."
+    ],
+    [
+      "TTTTTTT",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "b.b.b.b",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "top course read as upside-down stone brick stairs (lower half recessed); could be plain stone bricks",
+    "merlon slabs read as birch slabs (pale planks)",
+    "wall assumed 1 block thick at the back row; back face hidden",
+    "flower rows estimated from perspective"
+  ]
+}

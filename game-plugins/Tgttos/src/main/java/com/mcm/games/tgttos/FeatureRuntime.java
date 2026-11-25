@@ -89,7 +89,7 @@ final class FeatureRuntime {
                     e.setBlock(bd);
                     e.setViewRange(GLOW_RANGE);
                     e.setInterpolationDelay(0);
-                    e.setInterpolationDuration(EVERY);
+                    e.setInterpolationDuration(every(m));
                     e.setGlowColorOverride(Color.RED);
                 });
                 d.setTransformation(transform(m, b, 0));
@@ -107,11 +107,13 @@ final class FeatureRuntime {
     /** One tick of the running phase; {@code ticks} = ticks since GO; {@code near} = racer locations (sounds). */
     void tick(long ticks, List<Location> near, java.util.function.Predicate<BoundingBox> occupied) {
         t = ticks;
-        if (t % EVERY == 0) {
+        {
             for (int i = 0; i < f.movers.size(); i++) {
                 Mover m = f.movers.get(i);
+                int ev = every(m);
+                if (t % ev != 0) continue;
                 List<BlockDisplay> l = displays.get(i);
-                double tt = t + EVERY;                      // the client interpolates towards the pose EVERY ticks ahead
+                double tt = t + ev;                         // the client interpolates towards the pose ev ticks ahead
                 for (int k = 0; k < l.size(); k++) {
                     BlockDisplay d = l.get(k);
                     if (!d.isValid()) continue;
@@ -137,6 +139,71 @@ final class FeatureRuntime {
             if (warn != warned[i]) { warned[i] = warn; setIndicators(g, warn); }
         }
         traps(near, occupied);
+        crumbles(near, occupied);
+    }
+
+    /** Crumble cells: packed local key -> tick armed / tick dropped. */
+    private final java.util.Map<Long, Long> crumbleArmed = new java.util.HashMap<>(), crumbleDropped = new java.util.HashMap<>();
+    private static long ck(int x, int y, int z) { return TgMapData.SparseBlocks.key(x, y, z); }
+
+    /** TNT-run floors: arm the cells under each racer's feet, drop them after the delay, regrow them after the restore time. */
+    private void crumbles(List<Location> near, java.util.function.Predicate<BoundingBox> occupied) {
+        if (f.crumbles.isEmpty()) return;
+        for (MapFeatures.Crumble c : f.crumbles) {
+            TgMapData.Region a = c.area();
+            int fy = a.minY();
+            for (Location p : near) {
+                if (p.getWorld() != w) continue;
+                double lx = p.getX() - ox, ly = p.getY() - oy, lz = p.getZ() - oz;
+                if (ly < fy + 0.9 || ly > fy + 1.6) continue;                    // standing on (or just above) the floor
+                for (double dx : new double[]{-0.3, 0.3}) for (double dz : new double[]{-0.3, 0.3}) {
+                    int bx = (int) Math.floor(lx + dx), bz = (int) Math.floor(lz + dz);
+                    if (bx < a.minX() || bx > a.maxX() || bz < a.minZ() || bz > a.maxZ()) continue;
+                    long k = ck(bx, fy, bz);
+                    if (crumbleArmed.containsKey(k) || crumbleDropped.containsKey(k)) continue;
+                    if (data.blocks.get(bx, fy, bz) == null) continue;
+                    crumbleArmed.put(k, t);
+                }
+            }
+        }
+        for (var it = crumbleArmed.entrySet().iterator(); it.hasNext(); ) {
+            var e = it.next();
+            MapFeatures.Crumble c = crumbleOf(e.getKey());
+            if (t - e.getValue() < c.delayTicks()) continue;
+            it.remove();
+            long k = e.getKey();
+            int x = TgMapData.SparseBlocks.kx(k), y = TgMapData.SparseBlocks.ky(k), z = TgMapData.SparseBlocks.kz(k);
+            w.getBlockAt(ox + x, oy + y, oz + z).setType(Material.AIR, false);
+            crumbleDropped.put(k, t);
+            if (c.dropSound() != null && Math.floorMod(t + x + z, 3) == 0) sound(x + 0.5, y + 0.5, z + 0.5, c.dropSound(), near, 1.2f);
+        }
+        for (var it = crumbleDropped.entrySet().iterator(); it.hasNext(); ) {
+            var e = it.next();
+            MapFeatures.Crumble c = crumbleOf(e.getKey());
+            if (t - e.getValue() < c.restoreTicks()) continue;
+            long k = e.getKey();
+            int x = TgMapData.SparseBlocks.kx(k), y = TgMapData.SparseBlocks.ky(k), z = TgMapData.SparseBlocks.kz(k);
+            int wx = ox + x, wy = oy + y, wz = oz + z;
+            if (occupied.test(new BoundingBox(wx, wy, wz, wx + 1, wy + 2, wz + 1))) continue;
+            String b = data.blocks.get(x, y, z);
+            w.getBlockAt(wx, wy, wz).setBlockData(placer.data(b == null ? "air" : b), false);
+            it.remove();
+        }
+    }
+
+    private MapFeatures.Crumble crumbleOf(long k) {
+        int x = TgMapData.SparseBlocks.kx(k), y = TgMapData.SparseBlocks.ky(k), z = TgMapData.SparseBlocks.kz(k);
+        for (MapFeatures.Crumble c : f.crumbles) if (c.area().contains(x, y, z)) return c;
+        return f.crumbles.get(0);
+    }
+
+    private void restoreCrumbles() {
+        for (long k : new java.util.HashSet<>(crumbleDropped.keySet())) {
+            int x = TgMapData.SparseBlocks.kx(k), y = TgMapData.SparseBlocks.ky(k), z = TgMapData.SparseBlocks.kz(k);
+            String b = data.blocks.get(x, y, z);
+            w.getBlockAt(ox + x, oy + y, oz + z).setBlockData(placer.data(b == null ? "air" : b), false);
+        }
+        crumbleArmed.clear(); crumbleDropped.clear();
     }
 
     /**
@@ -199,6 +266,26 @@ final class FeatureRuntime {
         }
     }
 
+    /**
+     * Owner bug (Bookshelf Run falling books "really buggy" going up and down): sliders move several blocks in a few
+     * ticks, so a 2-tick update showed them in jumps. Sliders update every tick; swings and rotors every 2.
+     */
+    static int every(Mover m) { return m.motion() == com.mcm.games.tgttos.model.MapFeatures.Motion.SLIDER ? 1 : EVERY; }
+
+    /**
+     * Horizontal push direction {x, z} (unit) for a player at local (x, y, z) hit by m: the way the mover's surface is
+     * moving at that point, or straight away from the pivot when it moves (almost) vertically.
+     */
+    double[] pushDir(Mover m, double x, double y, double z) {
+        double[] l = m.toLocal(t, x, y, z);
+        double[] a = m.toMap(t, l[0], l[1], l[2]), b = m.toMap(t + 1, l[0], l[1], l[2]);
+        double vx = b[0] - a[0], vz = b[2] - a[2];
+        double n = Math.hypot(vx, vz);
+        if (n < 0.05) { vx = x - m.px(); vz = z - m.pz(); n = Math.hypot(vx, vz); }
+        if (n < 1e-6) return new double[]{1, 0};
+        return new double[]{vx / n, vz / n};
+    }
+
     /** Is a mover hit by a sphere moving from (x0,y0,z0) to (x1,y1,z1) (local coordinates) this tick? Returns it or null. */
     Mover hit(double x0, double y0, double z0, double x1, double y1, double z1, double r) {
         double len = Math.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0) + (z1 - z0) * (z1 - z0));
@@ -234,6 +321,7 @@ final class FeatureRuntime {
         for (FallingBlock fb : falling) if (fb.isValid()) fb.remove();
         falling.clear(); fallingAt.clear();
         for (int i = 0; i < f.traps.size(); i++) { restoreTrap(f.traps.get(i)); trapArmed[i] = -1; trapDropped[i] = -1; }
+        restoreCrumbles();
     }
 
     // ------------------------------------------------------------------ internals

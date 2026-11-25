@@ -1,0 +1,27 @@
+{
+  "id": "moon_base",
+  "name": "Moon Base",
+  "debut": "MCC 3",
+  "stars": 3,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Moonbase.png",
+  "floor": ["sasasas","asasasa","sasasas","asasasa","sasasas","asasasa","sasasas"],
+  "palette": {
+    "s": "minecraft:stone",
+    "a": "minecraft:andesite",
+    "S": "minecraft:smooth_quartz",
+    "I": "minecraft:iron_block",
+    "Q": "minecraft:quartz_block",
+    "D": "minecraft:iron_door[half=lower,facing=south]",
+    "E": "minecraft:iron_door[half=upper,facing=south]"
+  },
+  "layers": [
+    [".......", ".......", ".SSSSS.", ".SS.SS.", ".SS.SS.", "..SDS..", "......."],
+    [".......", ".......", ".IIIII.", ".II.II.", ".II.II.", "..IEI..", "......."],
+    [".......", ".......", ".QQQQQ.", ".QQQQQ.", ".QQQQQ.", "..QQQ..", "......."]
+  ],
+  "guessed": [
+    "floor is a grey stone mix in the render; approximated as a stone/andesite checker",
+    "depth hidden: centre block taken as 4 rows deep, side wings 3 rows deep (recessed one block, as seen at the front)",
+    "interior behind the door left as a 1x2 hollow room; back walls mirrored from the front"
+  ]
+}

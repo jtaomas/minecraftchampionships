@@ -2,6 +2,10 @@ package com.mcm.games.parkourtag;
 
 import com.mcm.api.McmGame;
 import com.mcm.api.McmGameContext;
+import com.mcm.games.parkourtag.map.Cage;
+import com.mcm.games.parkourtag.map.MapGrid;
+import com.mcm.games.parkourtag.map.Maps;
+import com.mcm.games.parkourtag.map.PtMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
@@ -19,6 +23,9 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -61,21 +68,26 @@ public final class ParkourTagGame implements McmGame, Listener {
     private static final int PREP_SECONDS = 5;
     private static final int HUNTER_DELAY_SECONDS = 3;
     private static final int INTRO_SECONDS = 8;
-    private static final int INTERMISSION_SECONDS = 5;
+    private static final int INTERMISSION_SECONDS = 8;
+    private static final int SELECT_SECONDS = 8;
+    private static final int MAX_HUNTS = 4;
     private static final int BUILD_TIMEOUT_SECONDS = 30;
 
-    // scoring
-    private static final int PTS_SURVIVE_TICK = 1;      // per 10 s alive
-    private static final int PTS_SURVIVE_FULL = 4;      // alive at the end
-    private static final int PTS_SIDE_SURVIVE = 12;     // shared by a side's runners if any survive
-    private static final int PTS_TAG_BASE = 6;          // -1 per 10 s, min 1
-    private static final int PTS_TAG_ALL_BASE = 20;     // -3 per 10 s, min 2
-    private static final int PTS_FIRST_CLEAR = 24;      // shared by the side whose hunter clears first
+    // MCC coins (base x1.0, config coins.*; the core applies the event multiplier). See game-plugins/COINS.md.
+    private int PTS_SURVIVE_TICK = 2;      // MCC: 2 every 10 s a hunted runner survives
+    private int PTS_SURVIVE_FULL = 0;      // MCC: nothing extra for being alive at the end (OURS if > 0)
+    private int PTS_SIDE_SURVIVE = 60;     // MCC: shared amongst the runners if any runner survives to 0:00
+    private int PTS_TAG_BASE = 6;          // MCC: per tag, 1 less every 10 s (min 1)
+    private int PTS_TAG_ALL_BASE = 42;     // MCC: hunter tags all runners, 7 less every 10 s
+    private int PTS_TAG_ALL_STEP = 7;
+    private int PTS_FIRST_CLEAR = 120;     // MCC: shared amongst the team whose hunter tags all enemy runners first
+    private int mccRunners = 3;            // MCC team of 4 = 1 hunter + 3 runners: runner pool share = pool / 3
+    private int mccTeam = 4;               // team pool share = pool / 4
 
     private static final int VISION_COOLDOWN_TICKS = 200;
     private static final int VISION_DURATION_TICKS = 60;
 
-    private enum Phase { IDLE, BUILDING, INTRO, PREP, LIVE, INTERMISSION }
+    private enum Phase { IDLE, BUILDING, INTRO, SELECT, PREP, LIVE, INTERMISSION }
     private enum Role { HUNTER, RUNNER, OUT, BYE }
 
     private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacySection();
@@ -101,6 +113,10 @@ public final class ParkourTagGame implements McmGame, Listener {
         final int[] tags = new int[2];
         boolean hadHunter;
         boolean firstClearGiven;
+        /** Everyone placed in each cage this round. */
+        final List<List<UUID>> members = List.of(new ArrayList<>(), new ArrayList<>());
+        /** The side picks its hunter at the sign (volunteer, else random). */
+        final boolean[] picksHunter = new boolean[2];
         Match(int arena, Side a, Side b) { this.arena = arena; side[0] = a; side[1] = b; }
 
         int sideIndexOf(UUID id) {
@@ -154,6 +170,12 @@ public final class ParkourTagGame implements McmGame, Listener {
     private final Map<UUID, Integer> survivals = new HashMap<>();
     private final Set<UUID> everyone = new HashSet<>();
 
+    // map: one per game, picked at random among the finished maps
+    private static final Map<String, List<ArenaBuilder.Placement>> PARSED = new HashMap<>();
+    private PtMap map;
+    private int spacing = SPACING;
+    private String forcedMap;
+
     public ParkourTagGame(Plugin plugin) {
         this.plugin = plugin;
         this.builder = new ArenaBuilder(plugin);
@@ -172,6 +194,7 @@ public final class ParkourTagGame implements McmGame, Listener {
         if (running) cleanup();
         if (guard == null) guard = new SpectatorGuard(plugin, this::spectatorZone);
         this.ctx = ctx;
+        loadCoins();
         this.running = true;
         this.finished = false;
         resetState();
@@ -198,10 +221,13 @@ public final class ParkourTagGame implements McmGame, Listener {
             p.teleport(wait);
         }
 
+        map = chooseMap();
+        spacing = Math.max(SPACING, Math.max(map.sizeX(), map.sizeZ()) + 40);
+        List<ArenaBuilder.Placement> placements = placements(map);
         for (int i = 0; i < arenaCount; i++) {
-            int ox = i * SPACING;
-            builder.clear(world, ox, BASE_Y, 0, ox + ArenaBlueprint.W - 1, BASE_Y + ArenaBlueprint.H + 1, ArenaBlueprint.W - 1);
-            builder.build(world, ox, BASE_Y, 0);
+            int ox = i * spacing;
+            builder.clear(world, ox, BASE_Y, 0, ox + map.sizeX() - 1, BASE_Y + map.sizeY(), map.sizeZ() - 1);
+            builder.build(world, ox, BASE_Y, 0, placements);
         }
         phase = Phase.BUILDING;
         buildWaitSeconds = 0;
@@ -210,7 +236,7 @@ public final class ParkourTagGame implements McmGame, Listener {
         });
 
         StringBuilder sb = new StringBuilder("§6§lParkour Tag §7- ");
-        sb.append(sides.size()).append(" side(s), ").append(schedule.size()).append(" round(s).");
+        sb.append(sides.size()).append(" side(s), ").append(schedule.size()).append(" round(s). §7Map: §f").append(map.displayName());
         ctx.broadcast(sb.toString());
         ctx.broadcast("§7Each round your side's §cHunter§7 chases the other side's runners while their hunter chases you. Hit a runner to tag them!");
         updateSidebar();
@@ -258,9 +284,11 @@ public final class ParkourTagGame implements McmGame, Listener {
             } catch (Throwable ignored) { }
         }
         if (world != null && Bukkit.getWorld(world.getUID()) != null && plugin.isEnabled()) {
-            for (int i = 0; i < arenaCount; i++) {
-                int ox = i * SPACING;
-                builder.clear(world, ox, BASE_Y, 0, ox + ArenaBlueprint.W - 1, BASE_Y + ArenaBlueprint.H + 1, ArenaBlueprint.W - 1);
+            if (map != null) {
+                for (int i = 0; i < arenaCount; i++) {
+                    int ox = i * spacing;
+                    builder.clear(world, ox, BASE_Y, 0, ox + map.sizeX() - 1, BASE_Y + map.sizeY(), map.sizeZ() - 1);
+                }
             }
         }
         phase = Phase.IDLE;
@@ -268,7 +296,7 @@ public final class ParkourTagGame implements McmGame, Listener {
         roles.clear();
         matchOf.clear();
         frozen.clear();
-        visionUntil.clear();
+        clearVision();
     }
 
     private void endGame(String reason) {
@@ -334,20 +362,77 @@ public final class ParkourTagGame implements McmGame, Listener {
 
     private Location waitSpot() { return new Location(world, WAIT_X + 0.5, WAIT_Y + 1, WAIT_Z + 0.5); }
 
-    private Location arenaOrigin(int arena) { return new Location(world, arena * SPACING, BASE_Y, 0); }
+    private Location arenaOrigin(int arena) { return new Location(world, arena * spacing, BASE_Y, 0); }
 
     private Location spectatorSpot(int arena) {
-        Location l = arenaOrigin(arena).add(20.5, ArenaBlueprint.H + 5, 20.5);
-        l.setPitch(90f);
+        double[] s = map.spectator();
+        Location l = arenaOrigin(arena).add(s[0], s[1], s[2]);
+        l.setYaw((float) s[3]);
+        l.setPitch((float) s[4]);
         return l;
     }
 
     /** Spectator box of one arena copy (the build plus a margin and room above). */
-    private static org.bukkit.util.BoundingBox arenaBox(int arena) {
-        double x0 = arena * SPACING;
+    private org.bukkit.util.BoundingBox arenaBox(int arena) {
+        double x0 = arena * spacing;
         return new org.bukkit.util.BoundingBox(x0 - 15, BASE_Y - 10, -15,
-                x0 + ArenaBlueprint.W + 15, BASE_Y + ArenaBlueprint.H + 25, ArenaBlueprint.W + 15);
+                x0 + map.sizeX() + 15, BASE_Y + map.sizeY() + 25, map.sizeZ() + 15);
     }
+
+    // ------------------------------------------------------------------ maps
+
+    private PtMap chooseMap() {
+        List<PtMap> all = new ArrayList<>(Maps.all());
+        all.add(new LegacyArenaMap());
+        if (forcedMap != null) {
+            String f = forcedMap;
+            forcedMap = null;
+            for (PtMap m : all) if (m.id().equalsIgnoreCase(f)) return m;
+        }
+        List<PtMap> done = new ArrayList<>();
+        for (PtMap m : all) if (m.finished()) done.add(m);
+        if (done.isEmpty()) return all.get(all.size() - 1);
+        return done.get(random.nextInt(done.size()));
+    }
+
+    private List<ArenaBuilder.Placement> placements(PtMap m) {
+        List<ArenaBuilder.Placement> cached = PARSED.get(m.id());
+        if (cached != null) return cached;
+        Map<String, BlockData> parsed = new HashMap<>();
+        List<ArenaBuilder.Placement> out = new ArrayList<>();
+        for (MapGrid.Block b : MapGrid.of(m).list()) {
+            BlockData d = parsed.get(b.data());
+            if (d == null) {
+                try { d = Bukkit.createBlockData(b.data()); } catch (IllegalArgumentException ex) {
+                    plugin.getLogger().warning("Bad block in map " + m.id() + ": " + b.data());
+                    d = Material.STONE.createBlockData();
+                }
+                parsed.put(b.data(), d);
+            }
+            out.add(new ArenaBuilder.Placement(b.x(), b.y(), b.z(), d));
+        }
+        PARSED.put(m.id(), out);
+        return out;
+    }
+
+    /** Admin {@code /mcm map}: the maps a game can use (finished ones first). */
+    public List<String> maps() {
+        List<String> out = new ArrayList<>();
+        for (PtMap m : Maps.all()) out.add(m.id() + (m.finished() ? "" : " (unfinished)"));
+        out.add("legacy (old practice arena)");
+        return out;
+    }
+
+    /** Admin {@code /mcm map <id>}: the next Parkour Tag game uses that map. */
+    public boolean forceNextMap(String id) {
+        if (id == null) return false;
+        String clean = id.trim().split(" ")[0];
+        if (clean.equalsIgnoreCase("legacy")) { forcedMap = "legacy"; return true; }
+        for (PtMap m : Maps.all()) if (m.id().equalsIgnoreCase(clean)) { forcedMap = m.id(); return true; }
+        return false;
+    }
+
+    public String currentMap() { return running && map != null ? map.displayName() : null; }
 
     /** Tagged runners watch their own match's arena; bye sides and late joiners may watch any arena in use. */
     private SpectatorGuard.Zone spectatorZone(Player p) {
@@ -369,23 +454,62 @@ public final class ParkourTagGame implements McmGame, Listener {
     }
 
     private Location padSpot(Match m, int sideIdx, int slot) {
-        int x = 18 + (slot % 5);
-        int z = sideIdx == 0 ? 2 : ArenaBlueprint.W - 3;
-        Location l = arenaOrigin(m.arena).add(x + 0.5, 1, z + 0.5);
-        l.setYaw(sideIdx == 0 ? 0f : 180f);
+        double[] s = map.cages().get(sideIdx).slot(slot);
+        Location l = arenaOrigin(m.arena).add(s[0], s[1], s[2]);
+        l.setYaw((float) s[3]);
         return l;
     }
 
-    private void paintPads(Match m) {
+    private Block cageBlock(Match m, int[] c) {
         Location o = arenaOrigin(m.arena);
-        Material a = concreteOf(m.side[0] == null ? null : m.side[0].color);
-        Material b = concreteOf(m.side[1] == null ? null : m.side[1].color);
-        for (int x = ArenaBlueprint.PAD_X0; x <= ArenaBlueprint.PAD_X1; x++) {
-            for (int z = ArenaBlueprint.PAD_A_Z0; z <= ArenaBlueprint.PAD_A_Z1; z++)
-                world.getBlockAt(o.getBlockX() + x, BASE_Y, o.getBlockZ() + z).setType(a, false);
-            for (int z = ArenaBlueprint.PAD_B_Z0; z <= ArenaBlueprint.PAD_B_Z1; z++)
-                world.getBlockAt(o.getBlockX() + x, BASE_Y, o.getBlockZ() + z).setType(b, false);
+        return world.getBlockAt(o.getBlockX() + c[0], BASE_Y + c[1], o.getBlockZ() + c[2]);
+    }
+
+    /** Team glass and carpet, a closed black door and the "Select Hunter:" sign in both cages of a match. */
+    private void paintCages(Match m) {
+        for (int i = 0; i < 2; i++) {
+            Cage cage = map.cages().get(i);
+            ChatColor c = m.side[i] == null ? null : m.side[i].color;
+            Material glass = dyed(c, "STAINED_GLASS");
+            Material carpet = dyed(c, "CARPET");
+            for (int[] g : cage.glassCells()) cageBlock(m, g).setType(glass, false);
+            for (int[] g : cage.carpetCells()) cageBlock(m, g).setType(carpet, false);
+            setDoor(m, i, Material.BLACK_STAINED_GLASS);
+            Block sb = cageBlock(m, cage.signPos());
+            if (sb.getState() instanceof Sign sign) {
+                var front = sign.getSide(org.bukkit.block.sign.Side.FRONT);
+                front.line(0, Component.empty());
+                front.line(1, text("§lSelect Hunter:"));
+                front.line(2, text(m.side[1] == null ? "§7(practice)" : "§8(click to hunt)"));
+                front.line(3, Component.empty());
+                sign.setWaxed(true);
+                sign.update(true, false);
+            }
         }
+    }
+
+    private void setDoor(Match m, int sideIdx, Material mat) {
+        for (int[] d : map.cages().get(sideIdx).doorCells()) cageBlock(m, d).setType(mat, false);
+    }
+
+    /** Door glass on "Starting in": black, black, red, yellow, lime, then open (the MG-PT-01 / MCC cage pattern). */
+    private static Material doorFor(int left) {
+        if (left >= 4) return Material.BLACK_STAINED_GLASS;
+        if (left == 3) return Material.RED_STAINED_GLASS;
+        if (left == 2) return Material.YELLOW_STAINED_GLASS;
+        if (left == 1) return Material.LIME_STAINED_GLASS;
+        return Material.AIR;
+    }
+
+    private static Material dyed(ChatColor c, String suffix) {
+        String dye = switch (c == null ? ChatColor.WHITE : c) {
+            case RED -> "RED"; case DARK_RED -> "BROWN"; case GOLD -> "ORANGE"; case YELLOW -> "YELLOW";
+            case GREEN -> "LIME"; case DARK_GREEN -> "GREEN"; case DARK_AQUA -> "CYAN"; case AQUA -> "LIGHT_BLUE";
+            case BLUE, DARK_BLUE -> "BLUE"; case DARK_PURPLE -> "PURPLE"; case LIGHT_PURPLE -> "MAGENTA";
+            case GRAY -> "LIGHT_GRAY"; case DARK_GRAY -> "GRAY"; case BLACK -> "BLACK"; default -> "WHITE";
+        };
+        Material m = Material.matchMaterial(dye + "_" + suffix);
+        return m == null ? Material.WHITE_STAINED_GLASS : m;
     }
 
     // ------------------------------------------------------------------ sides & schedule
@@ -539,15 +663,27 @@ public final class ParkourTagGame implements McmGame, Listener {
                 }
                 if (left <= 0) startRound(0);
             }
+            case SELECT -> {
+                phaseTicks -= 20;
+                int left = Math.max(0, phaseTicks / 20);
+                ctx.setTimer(left, SELECT_SECONDS);
+                if (left <= 0) {
+                    for (Match m : matches) finalizeMatch(m);
+                    phase = Phase.PREP;
+                    phaseTicks = FastTest.secs(PREP_SECONDS) * 20 + 20;
+                }
+            }
             case PREP -> {
                 phaseTicks -= 20;
                 int left = Math.max(0, phaseTicks / 20);
                 ctx.setTimer(left, PREP_SECONDS);
+                Material door = doorFor(left);
+                for (Match m : matches) for (int i = 0; i < 2; i++) if (door != Material.AIR) setDoor(m, i, door);
                 for (Player p : online()) {
                     Role r = roles.get(p.getUniqueId());
                     if (r == Role.HUNTER || r == Role.RUNNER) {
                         if (left > 0) {
-                            p.showTitle(Title.title(text("§e" + left), text(r == Role.HUNTER ? "§cYou are the HUNTER" : "§aYou are a RUNNER"),
+                            p.showTitle(Title.title(text("§fStarting in"), text("§f§l" + left),
                                     Title.Times.times(Duration.ZERO, Duration.ofMillis(1100), Duration.ZERO)));
                             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1f, 1f);
                         }
@@ -559,6 +695,7 @@ public final class ParkourTagGame implements McmGame, Listener {
                 liveElapsed++;
                 ctx.setTimer(Math.max(0, ROUND_SECONDS - liveElapsed), ROUND_SECONDS);
                 if (liveElapsed % 10 == 0 && liveElapsed < ROUND_SECONDS) awardSurvivalTick();
+                if (liveElapsed % 10 == 0 && liveElapsed < ROUND_SECONDS) announceSurvival();
                 if (liveElapsed >= ROUND_SECONDS) { endRound(true); return; }
                 if (allMatchesDone()) { endRound(false); return; }
             }
@@ -591,7 +728,7 @@ public final class ParkourTagGame implements McmGame, Listener {
         roles.clear();
         matchOf.clear();
         frozen.clear();
-        visionUntil.clear();
+        clearVision();
         liveElapsed = 0;
 
         Round round = schedule.get(r);
@@ -634,8 +771,8 @@ public final class ParkourTagGame implements McmGame, Listener {
             }
         }
 
-        phase = Phase.PREP;
-        phaseTicks = FastTest.secs(PREP_SECONDS) * 20 + 20;
+        phase = Phase.SELECT;
+        phaseTicks = FastTest.secs(SELECT_SECONDS) * 20 + 20;
         ctx.broadcast("§6Round " + (r + 1) + "/" + schedule.size() + ": " + matchupSummary());
         if (matches.isEmpty()) {
             // Nobody can play this round; skip quickly.
@@ -656,11 +793,12 @@ public final class ParkourTagGame implements McmGame, Listener {
         return sb.toString();
     }
 
+    /** Puts both sides in their cages for the Select Hunter phase. Lone sides get their hunter decided here. */
     private Match setupMatch(Match m, List<UUID> ma, List<UUID> mb) {
         List<List<UUID>> ms = List.of(ma, mb);
+        m.members.get(0).addAll(ma);
+        m.members.get(1).addAll(mb);
         if (m.side[1] != null) {
-            if (ma.size() >= 2) m.hunter[0] = pickHunter(ma);
-            if (mb.size() >= 2) m.hunter[1] = pickHunter(mb);
             if (ma.size() == 1 && mb.size() == 1) {
                 UUID x = ma.get(0), y = mb.get(0);
                 int hx = hunts.getOrDefault(x, 0), hy = hunts.getOrDefault(y, 0);
@@ -668,7 +806,8 @@ public final class ParkourTagGame implements McmGame, Listener {
             } else {
                 for (int i = 0; i < 2; i++) {
                     List<UUID> mine = ms.get(i);
-                    if (mine.size() == 1) {
+                    if (mine.size() >= 2) m.picksHunter[i] = true;
+                    else if (mine.size() == 1) {
                         UUID lone = mine.get(0);
                         if (hunts.getOrDefault(lone, 0) < runs.getOrDefault(lone, 0)) m.hunter[i] = lone;
                     }
@@ -676,14 +815,70 @@ public final class ParkourTagGame implements McmGame, Listener {
             }
             // A hunter with nobody to chase becomes a runner.
             for (int i = 0; i < 2; i++) {
-                List<UUID> opp = ms.get(1 - i);
-                UUID oppHunter = m.hunter[1 - i];
-                int oppRunners = opp.size() - (oppHunter != null ? 1 : 0);
-                if (m.hunter[i] != null && oppRunners <= 0) m.hunter[i] = null;
+                boolean oppHunts = m.hunter[1 - i] != null || m.picksHunter[1 - i];
+                int oppRunners = ms.get(1 - i).size() - (oppHunts ? 1 : 0);
+                if (oppRunners <= 0) { m.hunter[i] = null; m.picksHunter[i] = false; }
+            }
+        }
+
+        paintCages(m);
+        String card = m.side[1] == null ? m.side[0].label + " §7(practice)" : m.side[0].label + " §fvs " + m.side[1].label;
+        for (int i = 0; i < 2; i++) {
+            List<UUID> list = ms.get(i);
+            for (int slot = 0; slot < list.size(); slot++) {
+                UUID u = list.get(slot);
+                Player p = Bukkit.getPlayer(u);
+                if (p == null) continue;
+                matchOf.put(u, m);
+                roles.put(u, Role.RUNNER);
+                resetPlayer(p, GameMode.ADVENTURE);
+                p.teleport(padSpot(m, i, slot));
+                title(p, "§fRound " + (roundIndex + 1) + ":", card);
+                if (m.picksHunter[i]) {
+                    p.sendMessage("§dSelect Hunter: §7click the §fSelect Hunter:§7 sign in your cage to hunt this round"
+                            + " §8(" + Math.max(0, MAX_HUNTS - hunts.getOrDefault(u, 0)) + " hunt(s) left)§7. Nobody? One of you is picked at random.");
+                }
+            }
+        }
+        return m;
+    }
+
+    /** A player clicked their cage sign during Select Hunter. */
+    private void volunteer(Player p) {
+        UUID u = p.getUniqueId();
+        Match m = matchOf.get(u);
+        if (m == null) return;
+        int i = m.sideIndexOf(u);
+        if (i < 0) return;
+        if (!m.picksHunter[i]) { actionBar(p, "§7Your side's hunter is decided automatically this round."); return; }
+        if (m.hunter[i] != null) {
+            actionBar(p, u.equals(m.hunter[i]) ? "§aYou are hunting this round." : "§7" + nameOf(m.hunter[i]) + " is already hunting.");
+            return;
+        }
+        if (hunts.getOrDefault(u, 0) >= MAX_HUNTS) { actionBar(p, "§cYou have already hunted " + MAX_HUNTS + " times."); return; }
+        m.hunter[i] = u;
+        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1.4f);
+        for (UUID t : m.members.get(i)) {
+            Player tp = Bukkit.getPlayer(t);
+            if (tp != null) tp.sendMessage(m.side[i].color + p.getName() + " §7volunteered to hunt.");
+        }
+    }
+
+    /** End of Select Hunter: random fallback, roles, kit and the MCC hunter announcement. */
+    private void finalizeMatch(Match m) {
+        for (int i = 0; i < 2; i++) {
+            if (!m.picksHunter[i] || m.hunter[i] != null) continue;
+            List<UUID> cands = new ArrayList<>();
+            for (UUID u : m.members.get(i)) if (Bukkit.getPlayer(u) != null && hunts.getOrDefault(u, 0) < MAX_HUNTS) cands.add(u);
+            if (!cands.isEmpty()) m.hunter[i] = cands.get(random.nextInt(cands.size()));
+            else {
+                List<UUID> online = new ArrayList<>();
+                for (UUID u : m.members.get(i)) if (Bukkit.getPlayer(u) != null) online.add(u);
+                if (!online.isEmpty()) m.hunter[i] = pickHunter(online);
             }
         }
         for (int i = 0; i < 2; i++) {
-            for (UUID u : ms.get(i)) {
+            for (UUID u : m.members.get(i)) {
                 if (u.equals(m.hunter[i])) continue;
                 m.runners.get(i).add(u);
                 m.alive.get(i).add(u);
@@ -692,30 +887,26 @@ public final class ParkourTagGame implements McmGame, Listener {
         for (int i = 0; i < 2; i++) m.hunted[i] = m.hunter[1 - i] != null && !m.runners.get(i).isEmpty();
         m.hadHunter = m.hunter[0] != null || m.hunter[1] != null;
 
-        paintPads(m);
         for (int i = 0; i < 2; i++) {
-            List<UUID> list = ms.get(i);
-            for (int slot = 0; slot < list.size(); slot++) {
-                UUID u = list.get(slot);
+            UUID h = m.hunter[i];
+            if (h != null) {
+                hunts.merge(h, 1, Integer::sum);
+                int more = Math.max(0, MAX_HUNTS - hunts.get(h));
+                messageMatch(m, m.side[i].color + nameOf(h) + " §fis going to hunt the opposing team this round. They can hunt "
+                        + more + " more time" + (more == 1 ? "" : "s") + ".");
+            }
+            for (UUID u : m.members.get(i)) {
                 Player p = Bukkit.getPlayer(u);
                 if (p == null) continue;
-                boolean isHunter = u.equals(m.hunter[i]);
-                matchOf.put(u, m);
+                boolean isHunter = u.equals(h);
                 roles.put(u, isHunter ? Role.HUNTER : Role.RUNNER);
-                if (isHunter) hunts.merge(u, 1, Integer::sum); else runs.merge(u, 1, Integer::sum);
-                resetPlayer(p, GameMode.ADVENTURE);
-                p.teleport(padSpot(m, i, slot));
-                frozen.add(u);
+                if (!isHunter) runs.merge(u, 1, Integer::sum);
                 equip(p, m.side[i], isHunter, m.hunted[i]);
-                if (isHunter) {
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (PREP_SECONDS + HUNTER_DELAY_SECONDS + 1) * 20, 0, false, false, false));
-                }
                 String opp = m.side[1 - i] == null ? "§7nobody (practice)" : m.side[1 - i].label;
                 p.sendMessage("§6Round " + (roundIndex + 1) + " §7- you are " + (isHunter ? "the §c§lHUNTER" : "a §a§lRUNNER") + " §7vs " + opp);
                 if (!isHunter && !m.hunted[i]) p.sendMessage("§7No enemy hunter is after you this round - free run.");
             }
         }
-        return m;
     }
 
     private UUID pickHunter(List<UUID> members) {
@@ -734,6 +925,15 @@ public final class ParkourTagGame implements McmGame, Listener {
         liveElapsed = 0;
         hunterReleaseTick = tickCount + HUNTER_DELAY_SECONDS * 20L;
         for (Match m : matches) {
+            for (int i = 0; i < 2; i++) {
+                setDoor(m, i, Material.AIR);
+                UUID hid = m.hunter[i];
+                Player hpl = hid == null ? null : Bukkit.getPlayer(hid);
+                if (hpl != null) {
+                    frozen.add(hid);
+                    hpl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (HUNTER_DELAY_SECONDS + 1) * 20, 0, false, false, false));
+                }
+            }
             for (int i = 0; i < 2; i++) {
                 for (UUID u : m.runners.get(i)) {
                     frozen.remove(u);
@@ -773,7 +973,20 @@ public final class ParkourTagGame implements McmGame, Listener {
                 if (!m.hunted[i]) continue;
                 for (UUID u : new ArrayList<>(m.alive.get(i))) {
                     if (Bukkit.getPlayer(u) == null) continue;
-                    ctx.addPoints(u, PTS_SURVIVE_TICK, "Survived " + liveElapsed + "s");
+                    if (PTS_SURVIVE_TICK > 0) ctx.addPoints(u, PTS_SURVIVE_TICK, "Survived " + liveElapsed + "s");
+                }
+            }
+        }
+    }
+
+    /** MCC chat line every 10 s for each hunted runner still alive. */
+    private void announceSurvival() {
+        for (Match m : matches) {
+            for (int i = 0; i < 2; i++) {
+                if (!m.hunted[i]) continue;
+                for (UUID u : m.alive.get(i)) {
+                    Player p = Bukkit.getPlayer(u);
+                    if (p != null) p.sendMessage("§bYou successfully survived for " + liveElapsed + " seconds.");
                 }
             }
         }
@@ -789,7 +1002,9 @@ public final class ParkourTagGame implements McmGame, Listener {
         phase = Phase.INTERMISSION;
         phaseTicks = FastTest.secs(INTERMISSION_SECONDS) * 20;
         frozen.clear();
-        visionUntil.clear();
+        clearVision();
+        Set<UUID> survivorsShown = new HashSet<>();
+        for (Match m : matches) for (int i = 0; i < 2; i++) if (m.hunted[i]) survivorsShown.addAll(m.alive.get(i));
         for (Match m : matches) {
             List<String> summary = new ArrayList<>();
             for (int i = 0; i < 2; i++) {
@@ -797,16 +1012,16 @@ public final class ParkourTagGame implements McmGame, Listener {
                 List<UUID> survivors = new ArrayList<>();
                 for (UUID u : m.alive.get(i)) if (Bukkit.getPlayer(u) != null) survivors.add(u);
                 for (UUID u : survivors) {
-                    if (timeout) ctx.addPoints(u, PTS_SURVIVE_TICK, "Survived " + ROUND_SECONDS + "s");
-                    ctx.addPoints(u, PTS_SURVIVE_FULL, "Survived the round");
+                    if (timeout && PTS_SURVIVE_TICK > 0) ctx.addPoints(u, PTS_SURVIVE_TICK, "Survived " + ROUND_SECONDS + "s");
+                    if (PTS_SURVIVE_FULL > 0) ctx.addPoints(u, PTS_SURVIVE_FULL, "Survived the round");
                     survivals.merge(u, 1, Integer::sum);
                     Player p = Bukkit.getPlayer(u);
-                    if (p != null) { title(p, "§a§lSURVIVED!", "§7+" + PTS_SURVIVE_FULL + " points"); p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.7f, 1.2f); }
+                    if (p != null) { title(p, "§a§lSurvivor!", "§aWell played!"); p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.7f, 1.2f); }
                 }
                 if (!survivors.isEmpty()) {
                     List<UUID> share = new ArrayList<>();
                     for (UUID u : m.runners.get(i)) if (Bukkit.getPlayer(u) != null) share.add(u);
-                    splitPoints(share, PTS_SIDE_SURVIVE, "Side survived Parkour Tag round");
+                    splitPoints(share, PTS_SIDE_SURVIVE, mccRunners, "Runners survived the round");
                 }
                 summary.add(m.side[i].label + "§7: " + survivors.size() + "/" + m.runners.get(i).size() + " survived");
             }
@@ -824,8 +1039,10 @@ public final class ParkourTagGame implements McmGame, Listener {
         }
         for (Player p : online()) {
             p.removePotionEffect(PotionEffectType.BLINDNESS);
-            if (!timeout && roles.get(p.getUniqueId()) != Role.BYE) actionBar(p, "§7Round over!");
+            if (roles.get(p.getUniqueId()) != Role.BYE && !survivorsShown.contains(p.getUniqueId()) && !huntedShown.contains(p.getUniqueId()))
+                title(p, "§c§lRound Over!", "");
         }
+        huntedShown.clear();
         ctx.setTimer(INTERMISSION_SECONDS, INTERMISSION_SECONDS);
     }
 
@@ -835,7 +1052,7 @@ public final class ParkourTagGame implements McmGame, Listener {
     /** Ends the intro, the pre-round freeze/countdown or the intermission now. */
     public boolean skipWait() {
         if (!running || ctx == null) return false;
-        if (phase != Phase.INTRO && phase != Phase.PREP && phase != Phase.INTERMISSION) return false;
+        if (phase != Phase.INTRO && phase != Phase.SELECT && phase != Phase.PREP && phase != Phase.INTERMISSION) return false;
         phaseTicks = 20;
         second();   // the normal "time ran out" transition of that phase
         return true;
@@ -844,10 +1061,10 @@ public final class ParkourTagGame implements McmGame, Listener {
     /** Ends the current round now with no round-end points, then the next round starts (or the game ends). */
     public boolean skipRound() {
         if (!running || ctx == null) return false;
-        if (phase == Phase.PREP || phase == Phase.LIVE) {
+        if (phase == Phase.SELECT || phase == Phase.PREP || phase == Phase.LIVE) {
             phase = Phase.INTERMISSION;
             frozen.clear();
-            visionUntil.clear();
+            clearVision();
             for (Player p : online()) p.removePotionEffect(PotionEffectType.BLINDNESS);
             ctx.broadcast("§7Round " + (roundIndex + 1) + " was skipped by an admin (no round-end points).");
         } else if (phase != Phase.INTERMISSION) {
@@ -856,6 +1073,31 @@ public final class ParkourTagGame implements McmGame, Listener {
         phaseTicks = 20;
         second();   // INTERMISSION end: next round or endGame
         return true;
+    }
+
+    /** Admin {@code /parkourtag hunts <player> <n>}: sets how many times a player has hunted this game. */
+    String adminSetHunts(String name, int n) {
+        if (!running) return "Parkour Tag is not running.";
+        Player p = Bukkit.getPlayerExact(name);
+        if (p == null || !everyone.contains(p.getUniqueId())) return "No player " + name + " in this game.";
+        hunts.put(p.getUniqueId(), Math.max(0, n));
+        return name + " has now hunted " + Math.max(0, n) + " time(s) (cap " + MAX_HUNTS + ").";
+    }
+
+    /** Admin {@code /parkourtag status}: one line for logs and bot tests. */
+    String adminStatus() {
+        StringBuilder sb = new StringBuilder("[PT] phase=" + phase + " round=" + (roundIndex + 1) + "/" + schedule.size()
+                + " map=" + (map == null ? "-" : map.id()) + " matches=" + matches.size());
+        for (Match m : matches) {
+            for (int i = 0; i < 2; i++) {
+                if (m.side[i] == null) continue;
+                sb.append(" | ").append(stripColor(m.side[i].label)).append(" hunter=").append(m.hunter[i] == null ? "-" : nameOf(m.hunter[i]))
+                        .append(" alive=").append(m.alive.get(i).size()).append("/").append(m.runners.get(i).size());
+            }
+        }
+        sb.append(" | hunts=");
+        for (Map.Entry<UUID, Integer> e : hunts.entrySet()) sb.append(nameOf(e.getKey())).append(":").append(e.getValue()).append(" ");
+        return sb.toString();
     }
 
     // ------------------------------------------------------------------ tagging
@@ -872,12 +1114,12 @@ public final class ParkourTagGame implements McmGame, Listener {
         if (!m.alive.get(vs).remove(v)) return;
 
         roles.put(v, Role.OUT);
-        visionUntil.remove(v);
+        stopVision(v);
         m.tags[hs]++;
         totalTags.merge(h, 1, Integer::sum);
         int bracket = liveElapsed / 10;
-        int pts = Math.max(1, PTS_TAG_BASE - bracket);
-        ctx.addPoints(h, pts, "Tagged " + victim.getName());
+        int pts = PTS_TAG_BASE <= 0 ? 0 : Math.max(1, PTS_TAG_BASE - bracket);
+        if (pts > 0) ctx.addPoints(h, pts, "Tagged " + victim.getName());
 
         Location at = victim.getLocation();
         world.spawnParticle(Particle.FIREWORK, at.clone().add(0, 1, 0), 30, 0.3, 0.5, 0.3, 0.08);
@@ -888,7 +1130,8 @@ public final class ParkourTagGame implements McmGame, Listener {
         clearPlayer(victim);
         victim.setGameMode(GameMode.SPECTATOR);
         victim.teleport(spectatorSpot(m.arena));
-        title(victim, "§c§lTAGGED!", "§7by " + hunter.getName() + " after " + liveElapsed + "s");
+        title(victim, "§e§lTagged!", "§7by " + hunter.getName());
+        victim.sendMessage("§cYou got tagged! You survived for " + liveElapsed + " seconds.");
         victim.playSound(victim.getLocation(), Sound.ENTITY_VILLAGER_HURT, 1f, 1f);
 
         int left = m.alive.get(vs).size();
@@ -896,17 +1139,19 @@ public final class ParkourTagGame implements McmGame, Listener {
         messageMatch(m, msg);
 
         if (left == 0) {
-            int bonus = Math.max(2, PTS_TAG_ALL_BASE - 3 * bracket);
-            ctx.addPoints(h, bonus, "Tagged every runner");
+            int bonus = Math.max(0, PTS_TAG_ALL_BASE - PTS_TAG_ALL_STEP * bracket);
+            if (bonus > 0) ctx.addPoints(h, bonus, "Tagged every runner");
             m.clearedAt[hs] = liveElapsed;
-            title(hunter, "§6§lALL TAGGED!", "§7in " + liveElapsed + "s §6+" + bonus);
+            title(hunter, "§e§lHunted!", "§eWell played!");
+            huntedShown.add(h);
+            for (UUID u : m.side[vs].members) { Player vp = Bukkit.getPlayer(u); if (vp != null) vp.sendMessage("§c[Parkour Tag] You've all been tagged!"); }
             hunter.playSound(hunter.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
             if (!m.firstClearGiven && m.hunted[0] && m.hunted[1] && m.clearedAt[vs] < 0) {
                 m.firstClearGiven = true;
                 List<UUID> share = new ArrayList<>();
                 for (UUID u : m.side[hs].members) if (Bukkit.getPlayer(u) != null) share.add(u);
-                splitPoints(share, PTS_FIRST_CLEAR, "Hunter cleared first");
-                messageMatch(m, m.side[hs].label + " §7cleared first! §6+" + PTS_FIRST_CLEAR + " §7shared by the side.");
+                splitPoints(share, PTS_FIRST_CLEAR, mccTeam, "Tagged all enemies before the enemy hunter");
+                messageMatch(m, m.side[hs].label + " §7cleared first! §6+" + PTS_FIRST_CLEAR + " §7team coins, shared by the side.");
             }
             // The cleared runners' hunter role ends; that hunter keeps going if their targets remain.
             Player hp = hunter;
@@ -917,6 +1162,10 @@ public final class ParkourTagGame implements McmGame, Listener {
 
     // ------------------------------------------------------------------ runner vision
 
+    private final Set<UUID> huntedShown = new HashSet<>();
+    /** Runner -> hunter whose outline that runner currently sees through packets. */
+    private final Map<UUID, UUID> glowTarget = new HashMap<>();
+
     private void useVision(Player p) {
         UUID u = p.getUniqueId();
         if (phase != Phase.LIVE || roles.get(u) != Role.RUNNER) return;
@@ -925,50 +1174,52 @@ public final class ParkourTagGame implements McmGame, Listener {
         int s = m.sideIndexOf(u);
         if (s < 0 || !m.hunted[s]) { actionBar(p, "§7No hunter is after you."); return; }
         if (p.hasCooldown(Material.ENDER_EYE)) {
-            actionBar(p, "§cRunner Vision recharging (" + (p.getCooldown(Material.ENDER_EYE) / 20 + 1) + "s)");
+            p.sendMessage("§cRunner Vision Unavailable!");
             return;
         }
         p.setCooldown(Material.ENDER_EYE, VISION_COOLDOWN_TICKS);
         visionUntil.put(u, tickCount + VISION_DURATION_TICKS);
         p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 0.8f, 1.8f);
+        tickVision();
+    }
+
+    /** Ends one runner's vision and removes the outline from their screen. */
+    private void stopVision(UUID runner) {
+        visionUntil.remove(runner);
+        UUID h = glowTarget.remove(runner);
+        if (h != null) GlowPackets.send(Bukkit.getPlayer(runner), Bukkit.getPlayer(h), false);
+    }
+
+    private void clearVision() {
+        for (UUID u : new ArrayList<>(glowTarget.keySet())) stopVision(u);
+        visionUntil.clear();
     }
 
     private void tickVision() {
         if (visionUntil.isEmpty()) return;
         Particle.DustOptions red = new Particle.DustOptions(Color.fromRGB(255, 40, 40), 1.3f);
-        Particle.DustOptions pink = new Particle.DustOptions(Color.fromRGB(255, 120, 200), 0.9f);
-        Iterator<Map.Entry<UUID, Long>> it = visionUntil.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<UUID, Long> e = it.next();
-            if (tickCount > e.getValue()) { it.remove(); continue; }
-            Player p = Bukkit.getPlayer(e.getKey());
-            Match m = matchOf.get(e.getKey());
-            if (p == null || m == null) { it.remove(); continue; }
-            int s = m.sideIndexOf(e.getKey());
+        for (Map.Entry<UUID, Long> e : new ArrayList<>(visionUntil.entrySet())) {
+            UUID ru = e.getKey();
+            if (tickCount > e.getValue()) { stopVision(ru); continue; }
+            Player p = Bukkit.getPlayer(ru);
+            Match m = matchOf.get(ru);
+            if (p == null || m == null) { stopVision(ru); continue; }
+            int s = m.sideIndexOf(ru);
             UUID hid = s < 0 ? null : m.hunter[1 - s];
             Player h = hid == null ? null : Bukkit.getPlayer(hid);
-            if (h == null || !h.getWorld().equals(p.getWorld())) { it.remove(); continue; }
-            Location hl = h.getLocation();
-            // Outline column on the hunter (only this runner sees it)
-            for (double y = 0; y <= 2.0; y += 0.25) {
-                p.spawnParticle(Particle.DUST, hl.clone().add(0.35, y, 0.35), 1, 0, 0, 0, 0, red);
-                p.spawnParticle(Particle.DUST, hl.clone().add(-0.35, y, -0.35), 1, 0, 0, 0, 0, red);
-                p.spawnParticle(Particle.DUST, hl.clone().add(0.35, y, -0.35), 1, 0, 0, 0, 0, red);
-                p.spawnParticle(Particle.DUST, hl.clone().add(-0.35, y, 0.35), 1, 0, 0, 0, 0, red);
-            }
-            // Pointer beam from the runner towards the hunter
-            Location eye = p.getEyeLocation().subtract(0, 0.4, 0);
-            Vector dir = hl.clone().add(0, 1, 0).toVector().subtract(eye.toVector());
-            double dist = dir.length();
-            if (dist > 0.1) {
-                dir.normalize();
-                double len = Math.min(dist - 0.5, 6);
-                for (double d = 1; d < len; d += 0.5) p.spawnParticle(Particle.DUST, eye.clone().add(dir.clone().multiply(d)), 1, 0, 0, 0, 0, pink);
-            }
-            if (tickCount % 10 == 0) {
-                double dy = hl.getY() - p.getLocation().getY();
-                String vert = dy > 2 ? " §7(above)" : dy < -2 ? " §7(below)" : "";
-                actionBar(p, "§dRunner Vision §7» §c" + h.getName() + " §f" + (int) Math.round(dist) + "m" + vert);
+            if (h == null || !h.getWorld().equals(p.getWorld())) { stopVision(ru); continue; }
+            // A true outline through walls, sent to this runner only. Re-sent every 2 ticks because the server's own
+            // metadata updates (sprint, sneak) would otherwise clear the glow bit on the client.
+            if (GlowPackets.send(p, h, true)) {
+                glowTarget.put(ru, hid);
+            } else {
+                Location hl = h.getLocation();
+                for (double y = 0; y <= 2.0; y += 0.25) {
+                    p.spawnParticle(Particle.DUST, hl.clone().add(0.35, y, 0.35), 1, 0, 0, 0, 0, red);
+                    p.spawnParticle(Particle.DUST, hl.clone().add(-0.35, y, -0.35), 1, 0, 0, 0, 0, red);
+                    p.spawnParticle(Particle.DUST, hl.clone().add(0.35, y, -0.35), 1, 0, 0, 0, 0, red);
+                    p.spawnParticle(Particle.DUST, hl.clone().add(-0.35, y, 0.35), 1, 0, 0, 0, 0, red);
+                }
             }
         }
     }
@@ -977,27 +1228,41 @@ public final class ParkourTagGame implements McmGame, Listener {
 
     private void updateSidebar() {
         List<String> lines = new ArrayList<>();
+        lines.add("§bMap: §f" + (map == null ? "-" : map.displayName()));
         if (phase == Phase.BUILDING || phase == Phase.INTRO) {
-            lines.add("§fRounds: §e" + schedule.size());
-            lines.add("§fSides: §e" + sides.size());
-            lines.add("§fArenas: §e" + arenaCount);
+            int left = phase == Phase.INTRO ? Math.max(0, phaseTicks / 20) : INTRO_SECONDS;
+            lines.add("§bRounds: §f" + schedule.size() + " §7| §bSides: §f" + sides.size());
+            lines.add("§bGame begins: §f" + clock(left));
             ctx.setSidebarLines(lines);
             return;
         }
-        lines.add("§fRound §e" + (roundIndex + 1) + "§7/§e" + schedule.size());
-        int hunted = 0;
-        for (Match m : matches) for (int i = 0; i < 2; i++) if (m.hunted[i]) hunted += m.alive.get(i).size();
-        lines.add("§fRunners left: §a" + hunted);
+        lines.add("§bRound: §f" + (roundIndex + 1) + "/" + schedule.size());
+        switch (phase) {
+            case SELECT -> lines.add("§dSelect Hunter: §f" + clock(Math.max(0, phaseTicks / 20)));
+            case PREP -> lines.add("§dStarting in: §f" + clock(Math.max(0, phaseTicks / 20)));
+            case LIVE -> lines.add("§cTime left: §f" + clock(Math.max(0, ROUND_SECONDS - liveElapsed)));
+            default -> lines.add("§dNext Round: §f" + clock(Math.max(0, phaseTicks / 20)));
+        }
+        lines.add("§bRunners alive:");
         int shown = 0;
         for (Match m : matches) {
-            if (shown == 3 && matches.size() > 4) { lines.add("§7+" + (matches.size() - 3) + " more arenas"); break; }
-            String a = shortLabel(m.side[0]);
-            if (m.side[1] == null) lines.add(a + " §7practice");
-            else lines.add(a + " §f" + m.alive.get(0).size() + "§7-§f" + m.alive.get(1).size() + " " + shortLabel(m.side[1]));
+            if (shown == 2 && matches.size() > 2) { lines.add("§7+" + (matches.size() - 2) + " more arenas"); break; }
+            if (m.side[1] == null) lines.add(shortLabel(m.side[0]) + " §7practice");
+            else lines.add(shortLabel(m.side[0]) + " " + dots(m, 0) + " §8| " + shortLabel(m.side[1]) + " " + dots(m, 1));
             shown++;
         }
-        while (lines.size() > 6) lines.remove(lines.size() - 1);
         ctx.setSidebarLines(lines);
+    }
+
+    private static String clock(int secs) { return String.format("%02d:%02d", secs / 60, secs % 60); }
+
+    /** One dot per runner: yellow = alive, grey = tagged. Before the hunter is picked: one per player. */
+    private String dots(Match m, int i) {
+        if (phase == Phase.SELECT) return "§f" + "●".repeat(Math.max(0, m.members.get(i).size() - (m.picksHunter[i] || m.hunter[i] != null ? 1 : 0)));
+        if (!m.hunted[i]) return "§7-";
+        int alive = m.alive.get(i).size();
+        int out = Math.max(0, m.runners.get(i).size() - alive);
+        return "§e" + "●".repeat(alive) + "§8" + "○".repeat(out);
     }
 
     private static String shortLabel(Side s) {
@@ -1008,8 +1273,15 @@ public final class ParkourTagGame implements McmGame, Listener {
     }
 
     private void updateActionBars() {
-        if (phase != Phase.LIVE && phase != Phase.PREP) return;
+        if (phase != Phase.LIVE && phase != Phase.PREP && phase != Phase.SELECT) return;
         for (Player p : online()) {
+            if (phase == Phase.SELECT) {
+                Match sm = matchOf.get(p.getUniqueId());
+                int si = sm == null ? -1 : sm.sideIndexOf(p.getUniqueId());
+                if (si >= 0 && sm.picksHunter[si]) actionBar(p, sm.hunter[si] == null ? "§dSelect Hunter: §7click the sign to hunt"
+                        : "§d" + nameOf(sm.hunter[si]) + " §7will hunt");
+                continue;
+            }
             UUID u = p.getUniqueId();
             Long vis = visionUntil.get(u);
             if (vis != null && vis >= tickCount) continue;
@@ -1028,11 +1300,14 @@ public final class ParkourTagGame implements McmGame, Listener {
                 case RUNNER -> {
                     int s = m == null ? -1 : m.sideIndexOf(u);
                     if (s < 0) continue;
-                    if (!m.hunted[s]) bar = "§a§lRUNNER §7» free run" + (m.side[1 - s] != null ? " vs " + m.side[1 - s].label : "");
-                    else {
-                        Player hp = Bukkit.getPlayer(m.hunter[1 - s]);
-                        bar = "§a§lRUNNER §7» §f" + m.alive.get(s).size() + "/" + m.runners.get(s).size() + " §7alive §8| §7hunter: "
-                                + m.side[1 - s].color + (hp == null ? "?" : hp.getName()) + " §8| §dEye§7 = Runner Vision";
+                    if (phase == Phase.PREP && m.hunted[s]) bar = "§a§lRUNNER §7» get ready";
+                    else if (!m.hunted[s]) bar = "§a§lRUNNER §7» free run" + (m.side[1 - s] != null ? " vs " + m.side[1 - s].label : "");
+                    else if (p.hasCooldown(Material.ENDER_EYE)) {
+                        int segs = 10 - (int) Math.ceil(p.getCooldown(Material.ENDER_EYE) / (double) (VISION_COOLDOWN_TICKS / 10));
+                        segs = Math.max(0, Math.min(10, segs));
+                        bar = "§eRecharging: §e" + "■".repeat(segs) + "§8" + "■".repeat(10 - segs) + " §8| §6Runner Vision";
+                    } else {
+                        bar = "§6Runner Vision §aready §7(right-click the eye)";
                     }
                 }
                 case OUT -> bar = "§7Tagged - spectating " + (m == null ? "" : "arena " + (m.arena + 1));
@@ -1100,9 +1375,25 @@ public final class ParkourTagGame implements McmGame, Listener {
         p.setCooldown(Material.ENDER_EYE, 0);
     }
 
-    private void splitPoints(List<UUID> members, int total, String reason) {
+    private void loadCoins() {
+        plugin.saveDefaultConfig();
+        var c = plugin.getConfig();
+        PTS_SURVIVE_TICK = Math.max(0, c.getInt("coins.survive-10s", 2));
+        PTS_SURVIVE_FULL = Math.max(0, c.getInt("coins.survive-round", 0));
+        PTS_SIDE_SURVIVE = Math.max(0, c.getInt("coins.runners-survive-pool", 60));
+        PTS_TAG_BASE = Math.max(0, c.getInt("coins.tag", 6));
+        PTS_TAG_ALL_BASE = Math.max(0, c.getInt("coins.tag-all", 42));
+        PTS_TAG_ALL_STEP = Math.max(0, c.getInt("coins.tag-all-step", 7));
+        PTS_FIRST_CLEAR = Math.max(0, c.getInt("coins.first-clear-pool", 120));
+        mccRunners = Math.max(1, c.getInt("coins.mcc-runners", 3));
+        mccTeam = Math.max(1, c.getInt("coins.mcc-team-size", 4));
+    }
+
+    /** MCC "shared amongst" pool: each listed player gets the MCC per-member share {@code total / mccShare}. */
+    private void splitPoints(List<UUID> members, int total, int mccShare, String reason) {
         if (members.isEmpty() || total <= 0) return;
-        int per = Math.max(1, Math.round((float) total / members.size()));
+        int per = Math.round((float) total / Math.max(1, mccShare));
+        if (per <= 0) return;
         for (UUID u : members) ctx.addPoints(u, per, reason);
     }
 
@@ -1228,7 +1519,7 @@ public final class ParkourTagGame implements McmGame, Listener {
             }
             return;
         }
-        if (to.getY() < BASE_Y - 4) {
+        if (map != null && to.getY() < BASE_Y + map.voidY()) {
             Match m = matchOf.get(p.getUniqueId());
             Role r = roles.get(p.getUniqueId());
             if (m != null && (r == Role.HUNTER || r == Role.RUNNER)) {
@@ -1245,6 +1536,13 @@ public final class ParkourTagGame implements McmGame, Listener {
     public void onInteract(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         if (!isOurs(p)) return;
+        Block clicked = e.getClickedBlock();
+        if (clicked != null && phase == Phase.SELECT && clicked.getState() instanceof Sign
+                && (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK)) {
+            e.setCancelled(true);
+            volunteer(p);
+            return;
+        }
         ItemStack item = e.getItem();
         if (item != null && item.getType() == Material.ENDER_EYE) {
             e.setCancelled(true);
@@ -1282,7 +1580,7 @@ public final class ParkourTagGame implements McmGame, Listener {
         UUID u = e.getPlayer().getUniqueId();
         Match m = matchOf.remove(u);
         frozen.remove(u);
-        visionUntil.remove(u);
+        stopVision(u);
         if (m != null) {
             for (int i = 0; i < 2; i++) {
                 m.alive.get(i).remove(u);

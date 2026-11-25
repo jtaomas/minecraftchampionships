@@ -1,32 +1,55 @@
-# Rocket Spleef Rush (McmRocketSpleef)
+# McmRocketSpleef: the original MCC Rocket Spleef (MCC 1–13)
 
-Game id: `rocketspleef` — run with `/mcm play rocketspleef`.
+This is the **old** Rocket Spleef, not Rush. Every number and its source and confidence are in `src/main/resources/config.yml` and in
+`game-plugins/research/mcc_archive/rocket_spleef_old/notes.md`.
 
-## Rules & Mechanics
+## Game
+
+- **3 rounds** of **4:00**, one per map, in this order: **Nanotube**, **Rings**, **Easter Eggs!**. Each map is generated at 1:1 scale for about 40 players.
+- **Round flow (measured from MCC 13 VODs):**
+  - 15 s in a drop room above the map, with "Dropping in 10…1" titles; then the floor opens and everyone drops onto the map;
+  - 2:00 of play, a 10 s chat warning, then TNT Time (night sky) for the last 2:00;
+  - "Round Over!", then 10 s "Next Round".
 - **Kit:**
-  - **Unbreakable Elytra** equipped in the chestplate slot (`allow-double-jump: false` by default so Spacebar always deploys Elytra cleanly).
-  - **Rocket Launcher** (`BLAZE_ROD`, right-click): fires straight-flying rockets with swept raycast hit detection (never clips through 1-block floors). Blasts a 2.7-block sphere out of the arena (no drops) and knocks back players within 4.5 blocks (including the shooter for rocket-jumping).
-  - **Updrafts** (`FEATHER`, 2 charges per round): right-click to launch upward with a forward glide boost.
-- **Imported Arenas (`imported-arenas/<id>/`):**
-  - On startup, `ArenaMaps.loadImported` scans `plugins/McmRocketSpleef/imported-arenas/` for subdirectories containing `map.yml` and `blocks.mcmi.gz` (MCMI v1 format, e.g. `acryme_2`..`acryme_9`).
-  - When `prefer-imported-maps: true` (default) and imported arenas are present, rounds rotate through the imported arenas while keeping all 4 built-in maps as selectable and fallback arenas.
-  - Imported arenas paste via `BlockData` (with safe fallback to base `Material` or `STONE` across version differences), sort blocks outer-to-inner for late-round/overtime crumbling, dynamically adjust `elim-y` (`Math.min(elim-y, base_y - 12)`), and clear cleanly between rounds.
-- **4 Built-in Floating Void Maps** in `mcc_rocketspleef` (created at `onEnable` with void generator), rotating across 3 rounds when `prefer-imported-maps: false` or no imported arenas exist:
-  - `journey_isles` — Floating archipelago of rocky-underside sky-islands, custom trees, bridges, high sky-ring, and mid-round spawning sky-pads.
-  - `sky_temple` — Sandstone & prismarine temple complex with central ziggurat shrine, 4 corner domed pavilions, and stepped aqueduct bridges.
-  - `santorini_cliffs` — Whitewashed quartz & calcite Mediterranean cliffs topped with iconic blue domes and colonnade arches.
-  - `overlode_core` — Dark deepslate sky-foundry with glowing neon conduits, octagonal catwalks, and a central energy core.
-- **Outer-to-Inner Crumbling & Overtime:** In the final 40s of active play and rapidly during overtime, outer arena blocks turn red (`RED_CONCRETE`) for 1 second before vanishing inward.
-- **Elimination:** Falling below `elim-y` (default `64`) eliminates you into spectator mode until the next round.
+  - an iron shovel with the purple enchant glint, the *Rocket Launcher*: right-click fires a fireball rocket, and a melee hit with it has extra knockback;
+  - an **unbreakable elytra**;
+  - **one firework** per round, a vanilla elytra boost that only works while gliding.
+- **Clip:** 3 shots, but you **start each round at 0** and reload one rocket every ~2.1 s. Firing restarts the reload bar. The XP level shows the shots left, and the XP bar shows the reload.
+- **Rockets:**
+  - fly straight and fast;
+  - remove a small sphere of blocks;
+  - knock back **every** player nearby, teammates included.
+  - A point-blank blast under your feet launches you **9 blocks** high (`launcher.rocket-jump-height`).
+- **Punching:** on. A punch does no damage, gives vanilla knockback and counts as the last hit.
+- **TNT Time:** from 2:00 to the end of the round. Fireworks are removed, and TNT falls onto the map's top blocks. TNT gives no kill credit.
+- **Terrain:** lost only to rockets and TNT, with no scripted decay.
+- **Elimination:** falling 10 blocks below the map's lowest block. The last hitter within 10 s gets the credit, but never a teammate.
+- **Round end:** when one team is left, or at 4:00.
+- **Scoring: real MCC coins** (old Rocket Spleef, final MCC 12-13 values; config `coins.*`, see `../COINS.md`):
+  - outlive a player: 3;
+  - elimination (last hit): 10;
+  - surviving the round when only one team is left: 100 to each survivor.
+  - The core multiplies every award by the event multiplier. Every award is logged as `[coins]`.
 
-## Scoring (per round)
-- **Survival:** 18-point round pool shared among survivors each time a player falls.
-- **Knock-off:** +5 to the last enemy whose rocket blast hit the victim within 10 s.
-- **Last side standing:** +12 to each survivor (+6 if multiple sides survive time limit).
-- **Late elimination:** +5 / +3 / +2 for the last three players to fall.
+**Launcher colour:** the owner asked for green "unless old MCC looked different". Old MCC's launcher was a **shovel with the purple enchant glint** (promo art, `frames/wiki/RS-Website.png`), so we follow old MCC.
 
-## Admin Testing (Core 3.2.0)
-- `/mcm fast on|off`: cuts countdown & intermission waits to <= 1 s.
-- `/mcm skipwait`: skips the current countdown or intermission.
-- `/mcm skip`: skips the current round and advances to the next (or finishes after round 3).
-- `/mcm map <id>`: forces the next round to use any imported arena (e.g. `acryme_2`..`acryme_9`) or built-in map (`journey_isles`, `sky_temple`, `santorini_cliffs`, `overlode_core`).
+## Admin
+
+| Command | What it does |
+|---|---|
+| `/mcm play rocketspleef` | Start a game |
+| `/mcm map <nanotube\|rings\|easter_eggs>` | Choose the first map |
+| `/mcm skipwait`, `/mcm skip`, `/mcm fast` | Core controls |
+| `/rs show <map>` / `/rs clear` | Paste a map (no game running) and fly around it, then remove it |
+| `/rs tnt` | Jump to TNT Time now |
+| `/rs reload` | Reload `config.yml` |
+| `/rs debug` | Print the state line |
+
+## Maps (pure Java, no Bukkit)
+
+- `map/NanotubeMap`, `RingsMap` and `EasterEggsMap` write into `map/Canvas` (String block ids).
+- **Offline previews:** `sh tools/render.sh [mapId]` renders to `previews/`.
+- **Reference images:** `research/mcc_archive/rocket_spleef_old/frames/wiki/*.png`.
+- **Comparison sheets:** `research/mcc_archive/rocket_spleef_old/compare/`.
+
+The old invented maps, the imported-arena loader, sky-pads, updrafts and red crumbling were removed.

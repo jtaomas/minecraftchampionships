@@ -1,0 +1,9 @@
+# McmSkyBattle settings.
+# MCC coins (base x1.0; the core applies the event multiplier). Source: MCC wiki, Sky Battle "Coin Rewards"
+# (https://mcchampionship.fandom.com/wiki/Sky_Battle; research/mcc_archive/sky_battle). See game-plugins/COINS.md.
+coins:
+  outlive: 2               # MCC: every time another player dies and you are still alive
+  elimination: 40          # MCC: personal elimination
+  survive-round: 50        # MCC: surviving the entire round, split across the surviving winners
+  # MCC team placement by when the whole team was eliminated: 1st 65 ... 10th 5 (team pool, MCC share = pool / 4)
+  placement: [65, 55, 46, 37, 29, 22, 16, 12, 8, 5]

@@ -57,10 +57,11 @@ public final class BattleBoxGame implements McmGame {
     private static final int PRACTICE_ROUNDS = 3;
     private static final int MIN_ROUNDS = 3;
 
-    static final int KILL_POINTS = 3;
-    static final int WIN_POINTS = 8;
-    static final int DRAW_POINTS = 3;
-    static final int BYE_POINTS = 4;
+    // MCC coins (base x1.0, config coins.*; the core applies the event multiplier). See game-plugins/COINS.md.
+    int killCoins = 15;      // MCC: per personal elimination
+    int winCoins = 160;      // MCC: team pool for capturing / holding the most centre (40 each in a team of 4)
+    int drawCoins = 60;      // MCC: team pool to both teams on a draw (15 each)
+    int byeCoins = 60;       // OURS: MCC has no byes (10 teams, round robin); a bye pays like a draw
     private static final long ASSIST_WINDOW_MS = 10_000;
 
     enum Phase { IDLE, INTRO, BUILDING, KIT, FIGHT, END }
@@ -146,6 +147,10 @@ public final class BattleBoxGame implements McmGame {
         KitMenu.timeLimit = fightSeconds > 0;
         endSeconds = Math.max(3, c.getInt("end-seconds", 5));
         maxRounds = Math.max(1, Math.min(15, c.getInt("max-rounds", 9)));
+        killCoins = Math.max(0, c.getInt("coins.elimination", 15));
+        winCoins = Math.max(0, c.getInt("coins.round-win", 160));
+        drawCoins = Math.max(0, c.getInt("coins.draw", 60));
+        byeCoins = Math.max(0, c.getInt("coins.bye", 60));
         geo = new ArenaGeo();
     }
 
@@ -573,8 +578,8 @@ public final class BattleBoxGame implements McmGame {
         ctx.broadcast(ChatColor.YELLOW + " Fill the " + ChatColor.WHITE + "3x3 centre" + ChatColor.YELLOW
                 + " with your " + (woolMode ? "wool" : "concrete") + " to win"
                 + (fightSeconds > 0 ? " instantly; at time-out the most centre blocks wins." : " - the round lasts until a side does."));
-        ctx.broadcast(ChatColor.GRAY + " Points: " + KILL_POINTS + " per elimination, " + WIN_POINTS + " each for a round win, "
-                + DRAW_POINTS + " for a draw, " + BYE_POINTS + " for a bye.");
+        ctx.broadcast(ChatColor.GRAY + " Coins: " + killCoins + " per elimination, " + winCoins + " shared by the team for a round win, "
+                + drawCoins + " shared for a draw, " + byeCoins + " shared for a bye.");
         if (sides.size() == 1) ctx.broadcast(ChatColor.GRAY + " Only one side: practice rounds against an empty arena.");
         McmFx.titleCard(players(), ChatColor.GOLD + "" + ChatColor.BOLD + "Battle Box", ChatColor.YELLOW + "Fill the centre with your colour!");
     }
@@ -676,7 +681,7 @@ public final class BattleBoxGame implements McmGame {
             } else {
                 prep(p, GameMode.SPECTATOR);
                 p.teleport(overview(0, false, 0));
-                McmFx.title(p, ChatColor.GRAY + "Bye round", ChatColor.WHITE + "Your side sits this one out (+" + BYE_POINTS + ")", 5, 50, 10);
+                McmFx.title(p, ChatColor.GRAY + "Bye round", ChatColor.WHITE + "Your side sits this one out (+" + byeCoins + " team coins)", 5, 50, 10);
             }
         }
         secondsLeft = phaseTotal = FastTest.secs((round == 0) ? firstKitSeconds : kitSeconds);
@@ -716,7 +721,7 @@ public final class BattleBoxGame implements McmGame {
                 }
             }
         }
-        for (Side s : byes) for (UUID u : s.members) if (online.contains(u)) award(u, BYE_POINTS, "bye");
+        for (Side s : byes) awardTeam(s, online, byeCoins, "bye");
         for (Match m : new ArrayList<>(matches)) checkAlive(m);
         updateHud();
     }
@@ -881,9 +886,9 @@ public final class BattleBoxGame implements McmGame {
         if (m.b.dummy) {
             // practice round: no tournament points
         } else if (winner != null) {
-            for (UUID u : winner.members) if (online.contains(u)) award(u, WIN_POINTS, "round win");
+            awardTeam(winner, online, winCoins, "round win");
         } else {
-            for (Side s : new Side[]{m.a, m.b}) for (UUID u : s.members) if (online.contains(u)) award(u, DRAW_POINTS, "draw");
+            for (Side s : new Side[]{m.a, m.b}) awardTeam(s, online, drawCoins, "draw");
         }
         for (Side s : new Side[]{m.a, m.b}) {
             for (UUID u : s.members) {
@@ -924,14 +929,19 @@ public final class BattleBoxGame implements McmGame {
         if (allDone && phase == Phase.FIGHT) startEnd();
     }
 
-    private void award(UUID u, int pts, String reason) {
-        if (ctx == null) return;
-        ctx.addPoints(u, pts, "Battle Box " + reason);
-        Player p = Bukkit.getPlayer(u);
-        if (p != null) {
-            p.sendMessage(ChatColor.GOLD + "+" + pts + " " + ChatColor.GRAY + reason);
-            McmFx.sound(p, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.7f, 1.3f);
-        }
+    /** Personal coins; the core prints "+N coins (Battle Box ...)" with the event multiplier applied. */
+    private void award(UUID u, int coins, String reason) {
+        if (ctx == null || coins <= 0) return;
+        ctx.addCoins(u, coins, "Battle Box " + reason);
+    }
+
+    /** MCC team pool ("160 coins, 40 for each member"): the core pays each online member the MCC per-member share. */
+    private void awardTeam(Side s, Set<UUID> online, int pool, String reason) {
+        if (ctx == null || pool <= 0 || s == null || s.dummy) return;
+        List<UUID> on = new ArrayList<>();
+        for (UUID u : s.members) if (online.contains(u)) on.add(u);
+        double each = ctx.teamShare(pool, on.size());
+        for (UUID u : on) ctx.addCoins(u, each, "Battle Box " + reason);
     }
 
     void markAttack(Player victim, Player attacker) {
@@ -956,7 +966,7 @@ public final class BattleBoxGame implements McmGame {
         McmFx.eliminated(victim, killer, ctx);
         if (killer != null) {
             kills.merge(killer.getUniqueId(), 1, Integer::sum);
-            award(killer.getUniqueId(), KILL_POINTS, "elimination");
+            award(killer.getUniqueId(), killCoins, "elimination");
         }
         if (!dead) toSpectator(victim, m);
         checkAlive(m);

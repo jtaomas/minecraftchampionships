@@ -102,16 +102,23 @@
   15   35   35  h=35.0 WALK    gap=0.0 rise=0.0 t=0.18
   14   36   35  h=36.0 WALK    gap=0.0 rise=0.0 t=0.18
   14   37   36  h=37.0 WALK    gap=0.0 rise=0.0 t=0.33
-  13   37   37  h=37.0 WALK    gap=0.0 rise=0.0 t=0.25
-  12   37   37  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
-  11   37   37  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
-  10   37   38  h=37.0 WALK    gap=0.0 rise=0.0 t=0.25
-   9   37   39  h=37.0 WALK    gap=0.0 rise=0.0 t=0.25
-   9   37   40  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
-   8   37   41  h=37.0 WALK    gap=0.0 rise=0.0 t=0.25
-   7   37   42  h=37.0 WALK    gap=0.0 rise=0.0 t=0.25
-   5   38   43  h=38.0 JUMP    gap=1.0 rise=1.0 t=0.82
-   5   37   44  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+  15   37   37  h=37.0 WALK    gap=0.0 rise=0.0 t=0.25
+  16   37   38  h=37.0 WALK    gap=0.0 rise=0.0 t=0.25
+  17   37   39  h=37.0 WALK    gap=0.0 rise=0.0 t=0.25
+  17   37   40  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+  17   37   41  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+  17   37   42  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+  17   37   43  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+  17   38   46  h=38.0 JUMP    gap=2.0 rise=1.0 t=0.82
+  17   37   47  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+  17   37   48  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+  17   37   49  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+  17   37   50  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+  17   37   51  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+  17   37   52  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+  16   37   53  h=37.0 WALK    gap=0.0 rise=0.0 t=0.25
+  15   37   54  h=37.0 WALK    gap=0.0 rise=0.0 t=0.25
+  15   37   55  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
 == FAST
    7    1    6  h=1.0 START   gap=0.0 rise=0.0 t=0.00
    7    1    7  h=1.0 WALK    gap=0.0 rise=0.0 t=0.18
@@ -168,6 +175,17 @@
    1   37   40  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
    1   37   41  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
    1   37   42  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
-   1   38   42  h=38.0 PILLAR  gap=0.0 rise=1.0 t=0.50
-   1   38   43  h=38.0 WALK    gap=0.0 rise=0.0 t=0.18
-   2   37   44  h=37.0 WALK    gap=0.0 rise=0.0 t=0.25
+   1   37   43  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+   1   37   44  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+   1   37   45  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+   1   37   46  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+   1   38   46  h=38.0 PILLAR  gap=0.0 rise=1.0 t=0.50
+   1   38   47  h=38.0 WALK    gap=0.0 rise=0.0 t=0.18
+   2   37   48  h=37.0 WALK    gap=0.0 rise=0.0 t=0.25
+   2   37   49  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+   2   37   50  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+   2   37   51  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+   2   37   52  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+   2   37   53  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+   2   37   54  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18
+   2   37   55  h=37.0 WALK    gap=0.0 rise=0.0 t=0.18

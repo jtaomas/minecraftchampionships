@@ -44,10 +44,20 @@ public final class CourseMap {
     }
 
     /** Runtime entry point. */
-    public static CourseModel generate(long seed) { return build(seed).model; }
+    public static CourseModel generate(long seed) { return build(seed, null).model; }
 
-    /** Full build (model + generator bookkeeping, used by the offline tools). */
-    static W build(long seed) {
+    /**
+     * Runtime entry point with imported sections: {@code importDir/course.txt} (see {@link ImportedCourse}); slots
+     * without a usable section keep the built-in obstacle. A missing folder gives exactly the built-in course.
+     */
+    public static CourseModel generate(long seed, java.io.File importDir) {
+        return build(seed, ImportedCourse.load(importDir)).model;
+    }
+
+    static W build(long seed) { return build(seed, null); }
+
+    /** Full build (model + generator bookkeeping, used by the offline tools); ic = imported sections or null. */
+    static W build(long seed, ImportedCourse ic) {
         W w = new W(seed);
         CourseModel m = w.model;
         Mk[][] mains = mains(), bon = bonuses(), ends = endings();
@@ -59,7 +69,7 @@ public final class CourseMap {
             // bonus spur along +x (frame q = 3)
             int bx = cx + r - 1, by = cy, bz = cz;
             for (int i = 1; i <= 3; i++) {
-                Ob o = bon[s - 1][i - 1].make(w, new Ob.Slot(CourseModel.bonusId(s, i), CourseModel.Kind.BONUS, s, i, null, bx, by, bz, 3));
+                Ob o = make(w, ic, bon[s - 1][i - 1], new Ob.Slot(CourseModel.bonusId(s, i), CourseModel.Kind.BONUS, s, i, null, bx, by, bz, 3));
                 int nx = o.wx(o.endX, o.endZ), nz = o.wz(o.endX, o.endZ);
                 bx = nx; by = o.wy(o.endY); bz = nz;
             }
@@ -67,7 +77,7 @@ public final class CourseMap {
             // main line along +z
             int mx = cx, my = cy, mz = cz + r - 1;
             for (int i = 1; i <= 3; i++) {
-                Ob o = mains[s - 1][i - 1].make(w, new Ob.Slot(CourseModel.mainId(s, i), CourseModel.Kind.MAIN, s, i, null, mx, my, mz, 0));
+                Ob o = make(w, ic, mains[s - 1][i - 1], new Ob.Slot(CourseModel.mainId(s, i), CourseModel.Kind.MAIN, s, i, null, mx, my, mz, 0));
                 mx = o.wx(o.endX, o.endZ); my = o.wy(o.endY); mz = o.wz(o.endX, o.endZ);
             }
             cx = mx; cy = my; cz = mz + (s < 5 ? HUB_R - 1 : 7);
@@ -84,7 +94,7 @@ public final class CourseMap {
         for (int d = 0; d < 3; d++) {
             int ex = fx + Frame.GATES[d], ey = fy, ez = fz + 7;
             for (int i = 1; i <= 2; i++) {
-                Ob o = ends[d][i - 1].make(w, new Ob.Slot(CourseModel.endingId(D[d], i), CourseModel.Kind.ENDING, 0, i, D[d], ex, ey, ez, 0));
+                Ob o = make(w, ic, ends[d][i - 1], new Ob.Slot(CourseModel.endingId(D[d], i), CourseModel.Kind.ENDING, 0, i, D[d], ex, ey, ez, 0));
                 ex = o.wx(o.endX, o.endZ); ey = o.wy(o.endY); ez = o.wz(o.endX, o.endZ);
             }
             finish[d] = new int[]{ex, ey, ez};
@@ -116,7 +126,7 @@ public final class CourseMap {
             m.finishes.put(D[d], last.padBox);
             m.finishStands.put(D[d], CourseModel.Pos.block(finish[d][0], finish[d][1] + 1, finish[d][2] - 2, 180f));
             String[] txt = {"&a&lEASY &a★ &fMeadow & Beehive", "&6&lMEDIUM &6★★ &fFrozen Harbour", "&c&lHARD &c★★★ &fLibrary Tower"};
-            m.labels.add(new CourseModel.Label(new CourseModel.Pos(fx + Frame.GATES[d] + 0.5, fy + 4.3, fz + 7.5, 0f), txt[d]));
+            m.labels.add(new CourseModel.Label(new CourseModel.Pos(fx + Frame.GATES[d] + 0.5, fy + 10.3, fz + 7.5, 0f), txt[d]));
             m.labels.add(new CourseModel.Label(new CourseModel.Pos(finish[d][0] + 0.5, finish[d][1] + 3.5, finish[d][2] + 0.5, 180f),
                     new String[]{"&a", "&6", "&c"}[d] + "&lFINISH"));
         }
@@ -127,17 +137,25 @@ public final class CourseMap {
             // spines) kill players on the lower one (the "Spine Scramble" instant-death bug).
             int[] bb = Validate.bboxNoStart(o);
             CourseModel.Box area = new CourseModel.Box(bb[0] - 1, o.killY - 20, bb[2] - 1, bb[3] + 1, bb[4] + 6, bb[5] + 1);
-            String prefix = o.kind == CourseModel.Kind.MAIN ? "&f" : o.kind == CourseModel.Kind.BONUS ? "&d" : "&e";
-            String code = o.kind == CourseModel.Kind.ENDING ? (o.ending.name().charAt(0) + "-" + o.index) : o.id;
             o.built = new CourseModel.Obstacle(o.id, o.name, o.kind, o.stage, o.index, o.ending,
                     o.pos(0, 1, 0, 0f), o.padBox, o.killY, o.pos(0, 4, 1, 0f), area);
             m.obstacles.add(o.built);
-            m.labels.add(new CourseModel.Label(o.pos(0, 4, 1, 0f), prefix + "[" + code + "] &f" + o.name));
+            // the name + medal label is spawned by the runtime at o.built.label() (with the id code); here only the
+            // difficulty sign and the credit, in ONE label below it (two labels at one spot was the overlapping text)
+            String sub = "";
             if (!o.difficultyTag.isEmpty()) {
                 String c = o.difficultyTag.equals("EASY") ? "&a" : o.difficultyTag.equals("MEDIUM") ? "&6" : "&c";
-                m.labels.add(new CourseModel.Label(o.pos(0, 3, 1, 0f), c + "&l" + o.difficultyTag));
+                sub = c + "&l" + o.difficultyTag;
+            }
+            if (!o.credit.isEmpty()) sub += (sub.isEmpty() ? "" : "\n") + "&7Section from &f" + o.credit;
+            if (!sub.isEmpty()) {
+                CourseModel.Pos p = o.pos(0, 3, 1, 0f);
+                m.labels.add(new CourseModel.Label(new CourseModel.Pos(p.x(), p.y() - (sub.indexOf('\n') >= 0 ? 0.4 : 0), p.z(), p.yaw()), sub));
             }
             m.timed.addAll(o.timed);
+            m.movers.addAll(o.movers);
+            m.crumbles.addAll(o.crumbles);
+            m.belts.addAll(o.belts);
         }
         int midZ = (hubs.get(0)[2] + fz) / 2;
         m.overviews.add(new CourseModel.Overview("Spine (top-down)", new CourseModel.Pos(20.5, BASE_Y + 70, midZ + 0.5, 0f), 90f));
@@ -148,7 +166,18 @@ public final class CourseMap {
         m.notes.put("generator", "CourseMap v1 (hand-designed obstacles, seed only varies scenery noise)");
         m.notes.put("postpass", "connections " + pr.connections() + ", leaves " + pr.leaves() + ", carpets dropped " + pr.carpetsDropped());
         m.notes.put("pad", W.PAD + " (only used for checkpoint pads)");
+        if (ic != null) {
+            StringBuilder sb = new StringBuilder();
+            for (Ob o : w.obs) if (o.imported) sb.append(sb.length() == 0 ? "" : ", ").append(o.id);
+            m.notes.put("imported", sb.length() == 0 ? "none" : sb.toString());
+            if (!ic.problems.isEmpty()) m.notes.put("import problems", String.join("; ", ic.problems));
+        }
         return w;
+    }
+
+    static Ob make(W w, ImportedCourse ic, Mk builtIn, Ob.Slot s) {
+        Ob o = ic == null ? null : ic.make(w, s);
+        return o != null ? o : builtIn.make(w, s);
     }
 
     static Ob find(W w, String id) {

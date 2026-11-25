@@ -1,0 +1,28 @@
+{
+  "id": "monument",
+  "name": "Monument",
+  "debut": "MCC 6",
+  "stars": 2,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Monument.png",
+  "floor": ["ggggggg","ggggggg","ggggggg","ggggggg","ggggggg","ggggggg","ggggggg"],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "c": "minecraft:cobblestone",
+    "s": "minecraft:stone",
+    "i": "minecraft:iron_block",
+    "o": "minecraft:gold_block",
+    "e": "minecraft:emerald_block",
+    "d": "minecraft:diamond_block",
+    "r": "minecraft:red_tulip",
+    "y": "minecraft:dandelion"
+  },
+  "layers": [
+    [".......", ".......", "r.ccc..", "..ccc.r", ".....y.", ".......", "......."],
+    [".......", ".......", "..s.s..", "..s.s..", ".......", ".......", "......."],
+    [".......", ".......", "..e.d..", "..i.o..", ".......", ".......", "......."]
+  ],
+  "guessed": [
+    "monument depth taken as 2 rows (front iron/gold, back emerald/diamond tops just visible); back faces hidden, filled with the same stone/cobble",
+    "exact rows of the tulips and dandelion estimated from perspective"
+  ]
+}

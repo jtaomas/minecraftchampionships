@@ -1,0 +1,51 @@
+{
+  "id": "art",
+  "name": "Art",
+  "debut": "MCC 4",
+  "stars": 2,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Art.png",
+  "floor": [
+    "wwwwwww",
+    "wwwwwww",
+    "wwwwwww",
+    "wwwwwww",
+    "wwwwwww",
+    "wwwwwww",
+    "wwwwwww"
+  ],
+  "palette": {
+    "w": "minecraft:white_concrete",
+    "y": "minecraft:yellow_concrete",
+    "o": "minecraft:orange_concrete",
+    "b": "minecraft:blue_concrete",
+    "g": "minecraft:lime_concrete",
+    "r": "minecraft:red_concrete"
+  },
+  "layers": [
+    [
+      ".......",
+      ".....w.",
+      ".ggggg.",
+      ".yybbbb",
+      "wyyoooo",
+      ".yy..r.",
+      ".yy..r."
+    ],
+    [
+      ".......",
+      ".....r.",
+      ".....r.",
+      ".yy..r.",
+      ".yy..r.",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "exact row depth of the green/blue/orange stripes estimated from perspective",
+    "yellow under the raised back yellow (rows 3-4, layer 1) hidden; filled solid",
+    "red bar modelled as layer 1 at rows 5-6 rising to layer 2 over rows 1-4 (render shows it lying on top of the stripes)",
+    "back row and parts of green/white stripes hidden behind the raised blocks; left empty / guessed",
+    "floor read as white concrete (could be quartz)"
+  ]
+}

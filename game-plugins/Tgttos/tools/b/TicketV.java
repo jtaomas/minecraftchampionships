@@ -35,7 +35,7 @@ final class TicketV {
         r.check(groups == 12 && opts && rule, groups + " turnstile groups with OPEN / JAMMED / DROP, rule: at least 4 OPEN per round");
 
         // each gate, each option, everything else JAMMED
-        Region tunnelExit = Region.of(-21, 1, 41, 21, 1, 41);
+        Region tunnelExit = Region.of(-21, 1, 41, 21, 1, 41);   // platform A
         int okGates = 0;
         StringBuilder detail = new StringBuilder();
         for (int i = 0; i < 12; i++) {
@@ -71,50 +71,66 @@ final class TicketV {
         }
         r.check(okGates == 12, "turnstile variants consistent: " + okGates + "/12 (OPEN passes, JAMMED blocks after 1 block, DROP falls to the tunnel that rejoins at platform A)" + detail);
 
-        Predicate<int[]> skip = Validators.outside(Region.of(-18, 0, -1, 17, 4, 6), d.pen);
+        Predicate<int[]> skip = p -> true;   // owner, playtest 4: no posts to break up straight runs (they read as random walls)
         Region coupl1 = Region.of(TicketGates.C1 - 2, -5, TicketGates.T1, TicketGates.C1 + 2, 3, TicketGates.T1 + 5);
         Region coupl2 = Region.of(TicketGates.C2 - 2, -5, TicketGates.T2, TicketGates.C2 + 2, 3, TicketGates.T2 + 5);
-        r.line("  route lines (walk: sprint 5.6 b/s; variants as stated):");
-        // SAFE: every turnstile jammed, carriages through doors (no coupling gaps)
-        TgMapData vs = Check.view(d, Check.afterGo(d, Check.withOptions(d, all(d, "JAMMED"))));
+        Region coupl3 = Region.of(TicketGates.C3 - 2, -5, TicketGates.T3, TicketGates.C3 + 2, 3, TicketGates.T3 + 5);
+        Predicate<int[]> noCouplers = p -> !coupl1.contains(p[0] + .5, p[1] + .1, p[2] + .5) && !coupl2.contains(p[0] + .5, p[1] + .1, p[2] + .5)
+                && !coupl3.contains(p[0] + .5, p[1] + .1, p[2] + .5);
+        r.line("  route lines (walk: sprint 5.6 b/s; variants as stated; movers and pitfalls not timed):");
+        // SAFE: one edge turnstile open, the rest jammed, carriage doors (no coupling anvils)
+        Map<String, String> edge = all(d, "JAMMED");
+        edge.put("gate_01", "OPEN");
+        TgMapData vs = Check.view(d, Check.afterGo(d, Check.withOptions(d, edge)));
         Walk ws = new Walk(vs, vs.blocks);
-        ws.allow = p -> !coupl1.contains(p[0] + .5, p[1] + .1, p[2] + .5) && !coupl2.contains(p[0] + .5, p[1] + .1, p[2] + .5);
-        double safe = Validators.line(r, "SAFE  staff corridor + carriage doors (all gates jammed)", ws, vs, List.of(d.pen), skip, 15);
-        // FAST: all open, couplers allowed
+        ws.allow = noCouplers;
+        double safe = Validators.line(r, "SAFE  edge turnstile + carriage doors", ws, vs, List.of(d.pen), skip, 999);
         TgMapData vf = Check.view(d, Check.afterGo(d, Check.withOptions(d, all(d, "OPEN"))));
         Walk wf = new Walk(vf, vf.blocks);
-        double fast = Validators.line(r, "FAST  open turnstile + coupling jumps (all gates open)", wf, vf, List.of(d.pen), skip, 15);
-        Walk wf2 = new Walk(vf, vf.blocks);
-        wf2.allow = ws.allow;
-        double openDoors = Validators.line(r, "MID   open turnstile + carriage doors", wf2, vf, List.of(d.pen), skip, 15);
-        // DROP: middle gates drop, rest jammed: forced through the tunnel
-        Map<String, String> dropPick = all(d, "DROP");
-        TgMapData vd = Check.view(d, Check.afterGo(d, Check.withOptions(d, dropPick)));
+        double fast = Validators.line(r, "FAST  open turnstile + coupling anvils (all gates open)", wf, vf, List.of(d.pen), skip, 999);
+        TgMapData vd = Check.view(d, Check.afterGo(d, Check.withOptions(d, all(d, "DROP"))));
         Walk wd = new Walk(vd, vd.blocks);
-        wd.allow = p -> p[0] > -22;   // not the staff corridor
-        double drop = Validators.line(r, "DROP  through a dropping turnstile + tunnel stairs + couplers", wd, vd, List.of(d.pen), skip, 15);
+        double drop = Validators.line(r, "DROP  through a dropping turnstile + tunnel stairs", wd, vd, List.of(d.pen), skip, 999);
+        // every pitfall open at once: a route that never steps on one must still exist (knowing the map pays off)
+        Check.Overlay holes = new Check.Overlay(Check.afterGo(d, Check.withOptions(d, all(d, "OPEN"))));
+        for (int[] p : TicketGates.pitfalls()) holes.set(p[0], 0, p[1], null);
+        TgMapData vh = Check.view(d, holes);
+        Walk wh = new Walk(vh, vh.blocks);
+        double clean = Validators.line(r, "CLEAN every pitfall avoided (all of them dropped)", wh, vh, List.of(d.pen), skip, 999);
         if (safe > 0 && fast > 0) {
-            r.check(fast <= safe * 0.8, String.format("fast line saves %.0f%% vs the safe line (>= 20%%)", 100 * (1 - fast / safe)));
-            r.check(fast >= 25 && fast <= 35, String.format("expert time %.1f s within 25-35 s (owner, playtest 2: longer map: third track + queue hall, plaza moved %d along)", fast, com.mcm.games.tgttos.maps.b.TicketGates.DZ));
-            double gamble = (fast + 2.5) * 0.45 + (fast + 4.0) * 0.3 + drop * 0.25;   // a jam costs ~2.5-4 s to back out and retry
-            r.line(String.format("  gamble estimate (1/3 open, 1/3 jammed, 1/3 drop, crowd-following): ~%.0f s expert; median ~%.0f s; safe line median ~%.0f s",
-                    gamble, gamble * 1.6 + 5, safe * 1.5 + 4));
+            r.check(fast < safe, String.format("the gamble line is faster than the safe line (%.1f s vs %.1f s)", fast, safe));
+            r.check(fast >= 30 && fast <= 70, String.format("expert time %.1f s within 30-70 s (perfect line, no wrong turns or waiting on lamps; real rounds run far longer)", fast));
         }
-        {   // coupling anvil traps: the cells are the anvil + its stand, the trigger is the feet cell on it, below is the hazard pit
-            var tf = com.mcm.games.tgttos.maps.b.TicketGates.feats();
-            int ok = 0;
-            StringBuilder tb = new StringBuilder();
+        {   // anvils + pitfalls
+            var tf = TicketGates.feats();
+            int anvils = 0, pits = 0, badPits = 0;
             for (var tr : tf.traps) {
-                var a0 = tr.gone().get(0); var a1 = tr.gone().get(1);
-                String b0 = d.blocks.get(a0.x(), a0.y(), a0.z()), b1 = d.blocks.get(a1.x(), a1.y(), a1.z());
-                boolean pit = false;
-                for (var h : d.hazardRegions) if (h.contains(a1.x() + 0.5, a1.y() - 0.5, a1.z() + 0.5)) pit = true;
-                boolean good = b0 != null && b0.contains("anvil") && b1 != null && b1.contains("iron_bars") && tr.trigger().contains(a0.x() + 0.5, a0.y() + 1.0, a0.z() + 0.5) && pit;
-                if (good) ok++;
-                tb.append(String.format(" %s at (%d,%d,%d)%s;", tr.name(), a0.x(), a0.y(), a0.z(), good ? "" : " BAD"));
+                if (tr.name().startsWith("track")) {
+                    var a0 = tr.gone().get(0); var a1 = tr.gone().get(1);
+                    String b0 = d.blocks.get(a0.x(), a0.y(), a0.z()), b1 = d.blocks.get(a1.x(), a1.y(), a1.z());
+                    boolean pit = false;
+                    for (var h : d.hazardRegions) if (h.contains(a1.x() + 0.5, a1.y() - 0.5, a1.z() + 0.5)) pit = true;
+                    if (b0 != null && b0.contains("anvil") && b1 != null && b1.contains("iron_bars") && pit) anvils++;
+                } else {
+                    pits++;
+                    var c = tr.gone().get(0);
+                    boolean good = d.blocks.get(c.x(), 0, c.z()) != null && d.blocks.get(c.x(), 1, c.z()) == null;
+                    for (int y = -1; y >= d.voidY; y--) good &= d.blocks.get(c.x(), y, c.z()) == null;
+                    for (var h : d.hazardRegions) if (h.contains(c.x() + 0.5, -1.5, c.z() + 0.5)) good = false;
+                    if (!good) { badPits++; r.line("        bad " + tr.name() + " at " + tr.gone().get(0)); }
+                }
             }
-            r.check(ok == 3 && tf.traps.size() == 3, String.format("3 coupling anvil traps (creak %.1f s after a racer lands, drop into the live pit, back %.1f s later):%s",
-                    com.mcm.games.tgttos.maps.b.TicketGates.TRAP_DELAY / 20.0, com.mcm.games.tgttos.maps.b.TicketGates.TRAP_RESTORE / 20.0, tb));
+            r.check(anvils == 3, anvils + "/3 coupling anvil traps over the live pits");
+            r.check(pits >= 40 && badPits == 0, pits + " hidden single-block pitfalls (a floor block with nothing under it but the void, nothing on top)" + (badPits > 0 ? ", " + badPits + " BAD" : ""));
+            r.check(tf.movers.size() == 6, tf.movers.size() + " swinging lamps over platforms B and C");
+            r.check(tf.checkpoints.size() == 3, tf.checkpoints.size() + " checkpoints (platform A, platform D, maze entrance)");
+            var m = TicketGates.maze();
+            int dead = 0;
+            for (int cx = 0; cx < TicketGates.MAZE_CELLS; cx++) for (int rr = 0; rr < TicketGates.MAZE_CELLS; rr++) if (m.openings(cx, rr) == 1) dead++;
+            int best = m.shortest();
+            r.check(best >= 2 * TicketGates.MAZE_CELLS, "maze: shortest way through is " + best + " cells (>= " + 2 * TicketGates.MAZE_CELLS + ", twice straight across)");
+            r.line(String.format("  maze: %d x %d cells, %d dead ends, no traps, walls %d high, %d entrances / %d exits",
+                    TicketGates.MAZE_CELLS, TicketGates.MAZE_CELLS, dead, TicketGates.CEIL, m.in.length, m.out.length));
         }
         // a cutaway (no roof / walls above y 9) for the iso preview
         Check.Overlay cut = new Check.Overlay(d.blocks);

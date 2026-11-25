@@ -1,0 +1,78 @@
+{
+  "id": "campfire_song",
+  "name": "Campfire Song",
+  "debut": "MCC 11",
+  "stars": 2,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Campfire_Song.png",
+  "floor": [
+    "zzzzzzz",
+    "zzzzzzz",
+    "zzvvvzz",
+    "zzvvvzz",
+    "zzvvvzz",
+    "zzzzzzz",
+    "zzzzzzz"
+  ],
+  "palette": {
+    "z": "minecraft:podzol",
+    "v": "minecraft:gravel",
+    "l": "minecraft:spruce_log[axis=x]",
+    "c": "minecraft:campfire[facing=south,lit=true]",
+    "L": "minecraft:lime_stained_glass",
+    "O": "minecraft:orange_stained_glass",
+    "P": "minecraft:pink_stained_glass"
+  },
+  "layers": [
+    [
+      ".......",
+      ".l...l.",
+      ".......",
+      "l..c..l",
+      ".......",
+      ".l...l.",
+      "...l..."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "...L...",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "..O....",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "....P..",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "seat ring positions estimated from perspective (7 spruce log seats)",
+    "gravel patch extent (cols 2-4, rows 2-4) estimated; partly hidden by seats",
+    "the three stained-glass 'music note' blocks float in the render; depth (row 3) and exact heights estimated",
+    "seat logs read as spruce logs lying left-right; could be oak/dark oak"
+  ]
+}

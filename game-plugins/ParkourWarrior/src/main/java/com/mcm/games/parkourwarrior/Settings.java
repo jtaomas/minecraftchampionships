@@ -36,10 +36,11 @@ final class Settings {
     // timed blocks
     String warnParticle = "DUST";
     // scoring
-    int stone = 1;
-    int[] bronze = {1, 3, 5, 8, 12};
-    int[] silver = {2, 5, 9, 14, 20};
-    int[] gold = {3, 6, 11, 18, 28};
+    // MCC coins, Parkour Warrior Dojo (current PW; base x1.0, the core applies the event multiplier). COINS.md.
+    int stone = 2;                          // MCC: per stone medal (main challenge)
+    int[] bronze = {5, 15, 25, 40, 60};     // MCC: total for holding 1..5 bronze medals
+    int[] silver = {10, 25, 45, 70, 100};   // MCC: total for holding 1..5 silver medals
+    int[] gold = {15, 30, 55, 90, 140};     // MCC: total for holding 1..5 gold medals
     final Map<Difficulty, Double> multInc = new EnumMap<>(Difficulty.class);
     final Map<Difficulty, Double> weight = new EnumMap<>(Difficulty.class);
     double weightNone = 0.40;

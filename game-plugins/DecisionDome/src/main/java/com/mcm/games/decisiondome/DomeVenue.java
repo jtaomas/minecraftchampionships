@@ -22,6 +22,9 @@ interface DomeVenue {
     /** Local dial geometry (centre = 0,0 for wedge maths; floorY is an absolute world Y). */
     DialGeometry geometry();
 
+    /** Switch the venue to an n-wedge dial before the geometry is read (wedge 0 may sit elsewhere for 6 vs 8). */
+    default void configure(int capacity) { }
+
     /** Absolute centre of the dial at floor level. */
     Location center();
 

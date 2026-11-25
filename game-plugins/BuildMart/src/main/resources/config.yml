@@ -1,0 +1,16 @@
+# Big Sales at Build Mart - Classic Mall (MCC 3-13). Values marked [default] are not researched; adjust after playtesting.
+
+game-seconds: 720            # MCC: 12 minutes
+pregame-seconds: 20          # [default] MCC 13 showed ~75 s of how-to-play; admins can /mcm skipwait
+regrow-seconds: 3            # [default] a mined shelf block grows back after this, if the spot is still empty
+
+# MCC coins (base x1.0; the core applies the event multiplier). Old Build Mart, MCC 3-13 (the version we built):
+# MCC 13 tutorial (research/mcc_archive/build_mart/bm-1/frames/021640): each build is worth 30 coins PER PLAYER to begin
+# with and 2 less every time any team completes it; at the very end each player gets the % of the team's unfinished
+# builds that is filled in, times their current value. See game-plugins/COINS.md.
+coins:
+  per-build: 30              # MCC: coins per player for a build nobody has completed yet
+  decay-per-completion: 2    # MCC: 2 less every time any team completes that build
+  min-per-build: 10          # OURS: floor so a very popular build is never worth nothing (MCC's 10 teams bottom out at 12)
+
+shopping-list-book: true     # [default] NOT in the old game (the book is from MCC P25); set false for a pure MCC 13 feel

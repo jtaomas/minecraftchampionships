@@ -1,0 +1,10 @@
+# McmRailroadRush settings.
+# MCC coins (base x1.0; the core applies the event multiplier). Source: MCC wiki, Railroad Rush "Coin Rewards"
+# (https://mcchampionship.fandom.com/wiki/Railroad_Rush). See game-plugins/COINS.md.
+# MCC: "All of the coins are split equally amongst the team" - each member gets the MCC per-member share (pool / 4).
+coins:
+  per-block: 2             # MCC: per block the track travelled forward (our track reach)
+  # MCC placement by track length: 1st 650 ... 10th 150 (later teams get the last value)
+  placement: [650, 525, 475, 425, 350, 300, 250, 200, 175, 150]
+  checkpoint: 100          # MCC: per checkpoint (door) reached
+  emerald: 25              # MCC: per emerald mined

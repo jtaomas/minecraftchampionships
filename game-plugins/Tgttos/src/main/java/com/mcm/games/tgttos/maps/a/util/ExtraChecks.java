@@ -30,8 +30,10 @@ final class ExtraChecks {
         int lethal = map.lethalFallHeight();
         if (lethal > 0) lethal(v, map, g, strip, gone, lethal);
         if (g.design.voidReport) voids(v, g);
-        decoys(v, map, g, gone);
+        { var fr = com.mcm.games.tgttos.model.FinishRow.check(g.d); v.ok(fr.ok(), fr.text() + " (owner, feedback 3: the ending is a whole row of chickens)"); }
+        // decoys: off by default since feedback 3 (goal.decoys: false) - nothing to check
         if (g.design.holeScan) holes(v, g, strip, gone);
+        if (g.design.holeScan) EscapeScan.run(v, g, strip, gone, map.kit().bridging());
     }
 
     // ------------------------------------------------------------------ unintended holes (walkable surfaces next to the void)
@@ -306,7 +308,7 @@ final class ExtraChecks {
                     && Bs.standTop(d.blocks.get(c[0], c[1] - 1, c[2])) > 0 && !d.pen.contains(c[0], c[1], c[2]);
             if (ok) okc++;
         }
-        v.ok(okc == n && n > 0, n + " wandering decoy chickens (" + (map.decoyChickens().isEmpty() ? "scattered over the later part by DecoySpots" : "map list")
+        v.ok(okc == n, n + " wandering decoy chickens (" + (map.decoyChickens().isEmpty() ? "scattered over the later part by DecoySpots" : "map list")
                 + ") on solid ground, inside playBounds, outside the goal pen (" + okc + "/" + n + ")");
     }
 }

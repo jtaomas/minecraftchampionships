@@ -1,0 +1,27 @@
+{
+  "id": "snowman",
+  "name": "Snowman",
+  "debut": "MCC 8",
+  "stars": 2,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Snowman.png",
+  "floor": ["sssssss","sssssss","sssssss","sssssss","sssssss","sssssss","sssssss"],
+  "palette": {
+    "s": "minecraft:snow_block",
+    "f": "minecraft:oak_fence",
+    "b": "minecraft:stone_button[face=wall,facing=south]",
+    "n": "minecraft:acacia_button[face=wall,facing=south]",
+    "h": "minecraft:dark_oak_trapdoor[facing=south,half=bottom,open=false]"
+  },
+  "layers": [
+    [".......", ".......", ".......", "...s...", "...b...", ".......", "......."],
+    [".......", ".......", ".......", "..fsf..", "...b...", ".......", "......."],
+    [".......", ".......", ".......", "...s...", "...n...", ".......", "......."],
+    [".......", ".......", ".......", "...h...", ".......", ".......", "......."]
+  ],
+  "guessed": [
+    "snowman depth is 1 block (render shows a single column); placed in the centre row 3",
+    "hat read as a dark_oak_trapdoor (thin brown lid with vertical grain); could be a slab or carpet",
+    "orange nose read as an acacia_button, grey dots as stone_buttons on the front face",
+    "arms read as oak_fence posts connecting into the middle snow block"
+  ]
+}

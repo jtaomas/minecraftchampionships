@@ -1,4 +1,4 @@
-# McmBingo settings. Everything here is a default, not a researched value; adjust after playtesting.
+# McmBingo settings. Everything except coins: is a default, not a researched value; adjust after playtesting.
 # Changes apply at the next game start (world.* settings at the next server start).
 
 # Lockout Bingo as a separate game on the games screen. Owner decision: off.
@@ -12,19 +12,22 @@ card:
   max-wood-only-items: 2
   teleport-cooldown-seconds: 45
 
-points:
-  # Bingo: points per square by tier [easy, medium, hard, very hard], times the placement percentage
-  bingo-tier: [3, 5, 8, 12]
-  # 1st side to get the square, 2nd, 3rd, 4th and later
-  bingo-placement-percent: [100, 80, 60, 40]
-  bingo-line-first-4: 12
-  bingo-line-later: 6
-  bingo-full-card: 30
-  # Lockout: points for claiming a square by tier
-  lockout-tier: [5, 8, 12, 16]
-  lockout-line: 15
-  lockout-placement: [20, 12, 6]
-  # Points for killing a player of another side (0 = nothing)
+# MCC coins (base x1.0; the core applies the event multiplier). Source: MCC wiki, Bingo but Fast "Coin Rewards"
+# (https://mcchampionship.fandom.com/wiki/Bingo_but_Fast, current scoring). See game-plugins/COINS.md.
+# Every value is a TEAM pool shared amongst the team: each member gets the MCC per-member share (pool / 4).
+coins:
+  # Bingo: coins per square by tier [easy, medium, hard, very hard]. MCC pays the same for every square: 50.
+  bingo-tier: [50, 50, 50, 50]
+  # % of that for the 1st team to get the square, 2nd, 3rd, ... (MCC 50 / 40 / 30 / 20 / 10, 6th-10th team 5)
+  bingo-placement-percent: [100, 80, 60, 40, 20, 10]
+  bingo-line-first-4: 200    # MCC: each of a team's first four lines (rows, columns, diagonals)
+  bingo-line-later: 100      # MCC: each of the remaining eight lines
+  bingo-full-card: 0         # OURS: MCC has no full-card bonus (0 = off)
+  # Lockout Bingo (OURS: lockout is not in current MCC; old MCC lockout paid per item, see COINS.md)
+  lockout-tier: [100, 100, 100, 100]
+  lockout-line: 200
+  lockout-placement: [0, 0, 0]
+  # Coins for killing a player of another side (OURS; MCC pays nothing, 0 = off)
   pvp-kill: 0
 
 top:

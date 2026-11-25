@@ -44,14 +44,31 @@ public final class MapFeatures {
     public final List<Refill> refills = new ArrayList<>();
     public final List<Depot> depots = new ArrayList<>();
     public final List<Trap> traps = new ArrayList<>();
+    /** TNT-run floors (owner: Ticket Gates ending "purely TNT run but the blocks regenerate quickly"). */
+    public final List<Crumble> crumbles = new ArrayList<>();
+    /** Names of movers that knock a player away (owner: "punch you off the map") instead of sending them back. */
+    public final java.util.Set<String> pushers = new java.util.HashSet<>();
+    /** Knockback of a pusher: horizontal speed and lift (blocks/tick). */
+    public double pushSpeed = 1.5, pushLift = 0.5;
+
+    /**
+     * Elytra maps (owner, feedback 3): a crash - slamming into a wall or screen, a hard landing or a long fall - sends
+     * the racer back to the last checkpoint ("they need to go through the holes, otherwise they die"). Detected by the
+     * game every tick (CrashCheck), config {@code elytra.crash-kills}.
+     */
+    public boolean crashKills;
+    /** Optional floor rule (config {@code elytra.floor-kills}, default off): standing on one of these blocks = a crash. */
+    public final java.util.Set<String> floorBlocks = new java.util.HashSet<>();
+    /** ... except inside these regions (landing field, ledges). */
+    public final List<Region> floorSafe = new ArrayList<>();
 
     public boolean isEmpty() {
-        return movers.isEmpty() && toggles.isEmpty() && gates.isEmpty() && checkpoints.isEmpty() && refills.isEmpty() && depots.isEmpty() && traps.isEmpty();
+        return movers.isEmpty() && toggles.isEmpty() && gates.isEmpty() && checkpoints.isEmpty() && refills.isEmpty() && depots.isEmpty() && traps.isEmpty() && crumbles.isEmpty();
     }
 
     // ================================================================== bonus, checkpoints, refills, depots
 
-    /** Tier: 1 = orange (fast), 2 = red (hard), 3 = brutal (1x1 pinholes, 1-wide slits, 1x1 fire rings). */
+    /** Tier: 1 = orange (medium), 2 = red (hard); 3 = brutal (unused since feedback 3, paid like the last tier in bonus.tier-points). */
     public record BonusGate(String group, String name, int tier, Region box) {}
 
     public record Checkpoint(int order, String name, Region trigger, List<Spawn> spawns, List<Spawn> boats) {}
@@ -67,6 +84,13 @@ public final class MapFeatures {
      * nobody stands in them).
      */
     public record Trap(String name, Region trigger, List<Pos> gone, String falling, int delayTicks, int restoreTicks, String warnSound, String dropSound) {}
+
+    /**
+     * A TNT-run floor: every floor block (y = {@code area.minY}, inside the area's x/z) that a racer stands on drops
+     * {@code delayTicks} later (the blocks under all four corners of the racer's feet, like TNT run), and comes back
+     * {@code restoreTicks} after dropping once nobody stands in the gap. Nothing is under the floor but the void.
+     */
+    public record Crumble(String name, Region area, int delayTicks, int restoreTicks, String dropSound) {}
 
     // ================================================================== movers
 
@@ -101,6 +125,11 @@ public final class MapFeatures {
 
         public Mover withSolid() {
             return new Mover(name, px, py, pz, motion, axis, amplitude, dx, dy, dz, periodTicks, openTicks, moveTicks, closedTicks, phaseTicks, boxes, true, sound, tier);
+        }
+
+        /** Line this mover is aimed at (validators): 0 easy, 1 medium, 2 hard, -1 all lines. */
+        public Mover withTier(int t) {
+            return new Mover(name, px, py, pz, motion, axis, amplitude, dx, dy, dz, periodTicks, openTicks, moveTicks, closedTicks, phaseTicks, boxes, solid, sound, t);
         }
 
         public Mover withSound(String s) {

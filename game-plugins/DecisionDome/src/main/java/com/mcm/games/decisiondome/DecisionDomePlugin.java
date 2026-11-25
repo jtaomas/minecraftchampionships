@@ -206,8 +206,13 @@ public final class DecisionDomePlugin extends JavaPlugin implements Listener {
         return s != null && s.isVenueWorld(world);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onInteract(PlayerInteractEvent e) {
+        if (settings != null && settings.debug) {
+            getLogger().info("[dome-debug] event " + e.getAction() + " hand=" + e.getHand()
+                    + " item=" + (e.getItem() == null ? "null" : e.getItem().getType())
+                    + " cancelled=" + e.isCancelled() + " session=" + (session() != null));
+        }
         if (e.getHand() != EquipmentSlot.HAND) return;
         ItemStack item = e.getItem();
         if (item == null) return;
@@ -293,12 +298,14 @@ public final class DecisionDomePlugin extends JavaPlugin implements Listener {
         if (to == null || !inVenue(to.getWorld())) return;
         DomeSession s = session();
         if (s == null) return;
-        if (to.getY() < s.venue().geometry().floorY() - 8) {
+        // just under the dial (above the hub's own pit rescue at floor - 6) so a voter goes back to their cage
+        if (to.getY() < s.venue().geometry().floorY() - 5) {
             TeamPod pod = null;
             for (TeamPod candidate : s.pods()) {
                 if (candidate.members().contains(e.getPlayer().getUniqueId())) { pod = candidate; break; }
             }
-            Location back = s.venue().podSpawn(pod == null ? 0 : pod.index());
+            if (pod == null) return;   // not a voter: the hub returns them to the terrace
+            Location back = s.venue().podSpawn(pod.index());
             if (back != null) {
                 e.getPlayer().setFallDistance(0f);
                 e.getPlayer().teleport(back);
@@ -324,3 +331,4 @@ public final class DecisionDomePlugin extends JavaPlugin implements Listener {
         if (s != null) s.onRespawn(e.getPlayer());
     }
 }
+

@@ -1,12 +1,15 @@
 package com.mcm.games.dodgebolt;
 
+import com.mcm.api.McmFx;
 import com.mcm.api.McmGame;
 import com.mcm.api.McmGameContext;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,17 +24,25 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
+import org.joml.AxisAngle4f;
+import org.joml.Vector3f;
 
 import java.util.*;
 
 /**
- * Dodgebolt: the championship finale. Two sides, one bow each, a handful of arrows, one hit and you're out.
+ * Dodgebolt, the championship finale, following MCC's rules (research: game-plugins/research/mcc_archive/dodgebolt/db-1):
+ * two sides on either half of a pool arena, one bow each, only two arrows ("bolts") in play, one hit eliminates,
+ * the deck shrinks into the lava as kills happen and shots are fired, first to 3 round wins.
  */
 public final class DodgeboltGame implements McmGame, Listener {
 
     public static final String ID = "dodgebolt";
     public static final String WORLD = "mcc_" + ID;
+    /** custom_model_data values the server pack maps to the Dodgebolt bow and bolt models (build_pack.py, "Dodgebolt" section). */
+    public static final int BOW_MODEL = 7301, BOLT_MODEL = 7302;
+    private static final String TAG = "mcm_dodgebolt";
 
     private enum State { IDLE, COUNTDOWN, LIVE, ROUND_END, CELEBRATE }
 
@@ -61,6 +72,7 @@ public final class DodgeboltGame implements McmGame, Listener {
     private final Set<UUID> alive = new HashSet<>();
     private final Set<UUID> arrowItems = new HashSet<>();
     private final Set<UUID> arrowEntities = new HashSet<>();
+    private final Map<UUID, TextDisplay> indicators = new HashMap<>();
     private final List<BukkitTask> tasks = new ArrayList<>();
     private final int[] score = new int[2];
     private final int[] matchElims = new int[2];
@@ -68,15 +80,21 @@ public final class DodgeboltGame implements McmGame, Listener {
     private boolean testMode;      // one group empty (e.g. an admin testing alone)
     private boolean finished;
     private boolean checkQueued;
-    private int round, roundsPlayed, phaseSeconds, elapsed, roundKills, ringsDropped;
-    private boolean overtimeAnnounced;
+    private int round, roundsPlayed, phaseSeconds, elapsed, roundKills, roundShots, tickCount, seatCounter;
     private long generation;
     private SpectatorGuard guard;
 
+    // shrink controller (MCC: warning, red edge, ring drops into the lava, 1 s between consecutive shrinks)
+    private int pendingShrinks, shrinkWarnTicks, shrinkGapTicks, lastShrinkRequest;
+    private boolean ringMarked;
+
     // config
-    private int roundsToWin, maxRounds, roundSeconds, overtimeAt, ringInterval, countdownSeconds, intermissionSeconds;
-    private int startArrows, extraArrowInterval, maxArrows, ptsElim, ptsRound, ptsMatch;
-    private boolean winByTwo;
+    private int roundsToWin, maxRounds, roundSeconds, countdownSeconds, intermissionSeconds, arrowsInPlay;
+    private int shotsPerShrink, shrinkAfterThird, maxShrink, warnTicks, gapTicks, idleShrinkSeconds;
+    private List<Integer> killShrinks;
+    private int ptsElim, ptsRound, ptsMatch;
+    private boolean declareWinner = true;
+    private boolean winByTwo, crowdInStands, glowingBolts;
 
     public DodgeboltGame(DodgeboltPlugin plugin) {
         this.plugin = plugin;
@@ -86,10 +104,15 @@ public final class DodgeboltGame implements McmGame, Listener {
     @Override public String id() { return ID; }
     @Override public String displayName() { return "Dodgebolt"; }
     @Override public Material icon() { return Material.BOW; }
-    @Override public String description() { return "The finale: top two sides duel with bows. One hit and you're out. First to 3 rounds."; }
+    @Override public String description() { return "The finale: top two sides duel with bows. Only two arrows, one hit and you're out, the arena shrinks. First to 3 rounds."; }
     @Override public boolean useCoreScoreboard() { return true; }
 
     // =================================================================== lifecycle
+
+    /** Called at plugin enable so the world exists at startup (LESSONS: per-world combat settings). */
+    void prepareWorld() {
+        try { ensureWorld(); } catch (RuntimeException ex) { plugin.getLogger().warning("Could not prepare " + WORLD + ": " + ex.getMessage()); }
+    }
 
     @Override
     public void start(McmGameContext context) {
@@ -101,31 +124,34 @@ public final class DodgeboltGame implements McmGame, Listener {
         if (guard == null) guard = new SpectatorGuard(plugin, this::spectatorZone);
 
         world = ensureWorld();
-        arena = new Arena(plugin, world);
+        arena = new Arena(world);
 
         pickGroups();
         arena.setDyes(groups[0].dye, groups[1].dye);
+        long t0 = System.nanoTime();
         arena.buildAll();
+        plugin.getLogger().info("Dodgebolt arena built in " + (System.nanoTime() - t0) / 1_000_000 + " ms");
 
         Arrays.fill(score, 0);
         Arrays.fill(matchElims, 0);
         kills.clear();
         round = 0;
         roundsPlayed = 0;
+        seatCounter = 0;
 
         // Everyone not in the finale watches from the stands.
-        int i = 0;
         for (Player p : new ArrayList<>(ctx.participants())) {
-            if (!groupOf.containsKey(p.getUniqueId())) toStands(p, i++);
+            if (!groupOf.containsKey(p.getUniqueId())) toCrowd(p, null);
         }
         String vs = groups[0].label() + ChatColor.GRAY + "  vs  " + groups[1].label();
-        ctx.broadcast(ChatColor.GOLD + "" + ChatColor.BOLD + "DODGEBOLT FINALE! " + vs);
-        ctx.broadcast(ChatColor.GRAY + "One hit eliminates. Arrows landing on your half are yours. First to "
-                + roundsToWin + " rounds" + (winByTwo ? " (win by 2)" : "") + ".");
+        ctx.broadcast(ChatColor.GOLD + "" + ChatColor.BOLD + "THE FINAL DUEL: DODGEBOLT! " + vs);
+        ctx.broadcast(ChatColor.GRAY + "Eliminate each other with 1-shot-kill arrows. There are only ever " + arrowsInPlay
+                + " arrows in play. The arena shrinks as more arrows are fired, so don't fall. First to " + roundsToWin
+                + " round wins takes the crown.");
         if (testMode) ctx.broadcast(ChatColor.YELLOW + "Only one finalist group: running in test mode (rounds end on the timer).");
 
         repeat(this::secondTick, 20L, 20L);
-        repeat(this::arrowMaintenance, 5L, 5L);
+        repeat(this::tick, 1L, 1L);
         startRound();
     }
 
@@ -140,29 +166,38 @@ public final class DodgeboltGame implements McmGame, Listener {
         roundsToWin = Math.max(1, c.getInt("rounds-to-win", 3));
         winByTwo = c.getBoolean("win-by-two", false);
         maxRounds = Math.max(roundsToWin * 2 - 1, c.getInt("max-rounds", 7));
-        roundSeconds = Math.max(30, c.getInt("round-seconds", 120));
-        overtimeAt = Math.max(5, Math.min(roundSeconds - 10, c.getInt("overtime-at", 60)));
-        ringInterval = Math.max(1, c.getInt("ring-interval", 4));
-        countdownSeconds = Math.max(1, c.getInt("countdown-seconds", 5));
-        intermissionSeconds = Math.max(2, c.getInt("intermission-seconds", 6));
-        startArrows = Math.max(1, c.getInt("start-arrows-per-side", 1));
-        extraArrowInterval = Math.max(5, c.getInt("extra-arrow-interval", 30));
-        maxArrows = Math.max(startArrows * 2, c.getInt("max-arrows", 4));
-        ptsElim = c.getInt("points.elimination", 4);
-        ptsRound = c.getInt("points.round-win", 8);
-        ptsMatch = c.getInt("points.match-win", 25);
+        roundSeconds = Math.max(30, c.getInt("round-seconds", 180));
+        countdownSeconds = Math.max(1, c.getInt("countdown-seconds", 3));
+        intermissionSeconds = Math.max(2, c.getInt("intermission-seconds", 15));
+        arrowsInPlay = Math.max(1, c.getInt("arrows-in-play", 2));
+        killShrinks = c.getIntegerList("shrink.first-kills");
+        if (killShrinks.isEmpty()) killShrinks = List.of(2, 2, 1);
+        shrinkAfterThird = Math.max(0, c.getInt("shrink.per-later-kill", 1));
+        shotsPerShrink = Math.max(0, c.getInt("shrink.shots-per-shrink", 6));
+        maxShrink = Math.max(0, Math.min(Arena.MAX_SHRINK, c.getInt("shrink.max-blocks", 8)));
+        warnTicks = Math.max(1, c.getInt("shrink.warning-ticks", 40));
+        gapTicks = Math.max(0, c.getInt("shrink.gap-ticks", 20));
+        idleShrinkSeconds = Math.max(0, c.getInt("shrink.idle-seconds", 30));
+        crowdInStands = c.getBoolean("crowd-in-stands", true);
+        glowingBolts = c.getBoolean("glowing-bolts", true);
+        // MCC: "No coins are awarded in Dodgebolt. This one's for the win!" - the winner wins the event (COINS.md).
+        ptsElim = c.getInt("coins.elimination", 0);
+        ptsRound = c.getInt("coins.round-win", 0);
+        ptsMatch = c.getInt("coins.match-win", 0);
+        declareWinner = c.getBoolean("coins.winner-wins-event", true);
     }
 
     /** Cancel everything, remove our entities. Safe to call repeatedly. Never calls finish. */
     private void cleanup() {
         for (BukkitTask t : tasks) t.cancel();
         tasks.clear();
-        if (arena != null) arena.cancelTasks();
+        removeIndicators();
         removeGameEntities();
         if (world != null) {
             for (Player p : world.getPlayers()) {
                 p.getInventory().clear();
                 p.setGlowing(false);
+                p.setFireTicks(0);
             }
         }
         state = State.IDLE;
@@ -171,20 +206,15 @@ public final class DodgeboltGame implements McmGame, Listener {
         arrowItems.clear();
         arrowEntities.clear();
         checkQueued = false;
-        // Wipe the arena once the core has moved everyone out (skipped if a new game started meanwhile).
-        final long gen = ++generation;
-        final Arena a = arena;
-        if (a != null && plugin.isEnabled()) {
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if (state == State.IDLE && gen == generation && Bukkit.getWorld(WORLD) != null) a.clearAll();
-            }, 40L);
-        }
+        resetShrink();
+        // The stadium stays standing between games (it is rebuilt in the match colours on the next start).
     }
 
     private void removeGameEntities() {
         if (world == null || Bukkit.getWorld(WORLD) == null) return;
         for (Entity e : world.getEntities()) {
-            if (e instanceof Item || e instanceof AbstractArrow || e instanceof Firework) e.remove();
+            if (e instanceof Item || e instanceof AbstractArrow || e instanceof Firework
+                    || (e instanceof Display && e.getScoreboardTags().contains(TAG))) e.remove();
         }
     }
 
@@ -206,6 +236,7 @@ public final class DodgeboltGame implements McmGame, Listener {
         w.setGameRule(GameRule.DO_MOB_SPAWNING, false);
         w.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         w.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        w.setGameRule(GameRule.DO_FIRE_TICK, false);
         w.setGameRule(GameRule.FALL_DAMAGE, false);
         w.setGameRule(GameRule.KEEP_INVENTORY, true);
         w.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
@@ -214,7 +245,7 @@ public final class DodgeboltGame implements McmGame, Listener {
         w.setTime(6000);
         w.setStorm(false);
         w.setThundering(false);
-        w.setSpawnLocation(0, Arena.FLOOR_Y + 1, 0);
+        w.setSpawnLocation(0, Arena.RIM_Y + 1, -(Arena.WALL_Z + 2));
         return w;
     }
 
@@ -265,10 +296,16 @@ public final class DodgeboltGame implements McmGame, Listener {
 
     private Group makeGroup(String key, String name, ChatColor color, Group other) {
         DyeColor dye = dyeOf(color);
+        if (dye == DyeColor.WHITE || dye == DyeColor.BLACK || dye == DyeColor.LIGHT_GRAY) {
+            // A white/black side would vanish on the white deck: use the classic orange vs blue.
+            dye = other == null ? DyeColor.ORANGE : DyeColor.LIGHT_BLUE;
+        }
         if (other != null && other.dye == dye) {
             boolean bluish = dye == DyeColor.BLUE || dye == DyeColor.LIGHT_BLUE || dye == DyeColor.CYAN;
             dye = bluish ? DyeColor.ORANGE : DyeColor.LIGHT_BLUE;
             color = bluish ? ChatColor.GOLD : ChatColor.AQUA;
+        } else if (color == ChatColor.WHITE || color == ChatColor.BLACK || color == ChatColor.GRAY) {
+            color = dye == DyeColor.ORANGE ? ChatColor.GOLD : ChatColor.AQUA;
         }
         return new Group(key, name, color, dye);
     }
@@ -306,10 +343,12 @@ public final class DodgeboltGame implements McmGame, Listener {
     }
 
     private void startRound() {
+        removeIndicators();
         removeGameEntities();
         arrowItems.clear();
         arrowEntities.clear();
         alive.clear();
+        resetShrink();
         arena.resetFloor();
 
         List<Player> a = onlineMembers(0), b = onlineMembers(1);
@@ -324,33 +363,31 @@ public final class DodgeboltGame implements McmGame, Listener {
         round++;
         clutchShown.clear();
         roundKills = 0;
-        ringsDropped = 0;
+        roundShots = 0;
         elapsed = 0;
-        overtimeAnnounced = false;
         for (int g = 0; g < 2; g++) {
             List<Player> list = g == 0 ? a : b;
             for (int i = 0; i < list.size(); i++) {
                 Player p = list.get(i);
-                Location pad = arena.pad(g, i, list.size());
-                arena.markPad(pad, g);
                 preparePlayer(p, g);
-                p.teleport(pad);
+                p.teleport(arena.spawn(g, i, list.size()));
                 alive.add(p.getUniqueId());
             }
         }
         state = State.COUNTDOWN;
         phaseSeconds = FastTest.secs(countdownSeconds);
-        for (Player p : world.getPlayers()) {
-            p.sendTitle(ChatColor.GOLD + "" + ChatColor.BOLD + "Round " + round, scoreLine(), 5, 40, 10);
-        }
+        McmFx.title(world.getPlayers(), ChatColor.GOLD + "" + ChatColor.BOLD + "Round " + round, scoreLine(), 5, 40, 10);
         updateSidebar();
     }
 
     private void preparePlayer(Player p, int g) {
         p.setGameMode(GameMode.ADVENTURE);
         p.getInventory().clear();
+        p.setItemOnCursor(null);
         p.setFireTicks(0);
         p.setFallDistance(0);
+        p.setAllowFlight(false);
+        p.setFlying(false);
         AttributeInstance max = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
         p.setHealth(max == null ? 20.0 : max.getValue());
         p.setFoodLevel(20);
@@ -358,6 +395,7 @@ public final class DodgeboltGame implements McmGame, Listener {
         p.setGlowing(false);
         for (org.bukkit.potion.PotionEffect e : p.getActivePotionEffects()) p.removePotionEffect(e.getType());
         p.getInventory().setItem(0, bow(g));
+        p.getInventory().setHeldItemSlot(0);
     }
 
     private ItemStack bow(int g) {
@@ -365,36 +403,48 @@ public final class DodgeboltGame implements McmGame, Listener {
         ItemMeta m = bow.getItemMeta();
         m.setDisplayName(groups[g].color + "" + ChatColor.BOLD + "Dodgebolt Bow");
         m.setUnbreakable(true);
+        m.setCustomModelData(BOW_MODEL);
         m.addItemFlags(ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES);
         bow.setItemMeta(m);
         return bow;
     }
 
-    private ItemStack arrowStack(int amount) {
-        ItemStack s = new ItemStack(Material.ARROW, amount);
+    /** A bolt is a spectral-arrow item with the bolt model, so the custom look never touches normal arrows. */
+    private ItemStack boltStack(int amount) {
+        ItemStack s = new ItemStack(Material.SPECTRAL_ARROW, amount);
         ItemMeta m = s.getItemMeta();
-        m.setDisplayName(ChatColor.YELLOW + "" + ChatColor.BOLD + "Bolt");
+        m.setDisplayName(ChatColor.WHITE + "" + ChatColor.BOLD + "Bolt");
+        m.setCustomModelData(BOLT_MODEL);
         m.getPersistentDataContainer().set(arrowKey, PersistentDataType.BYTE, (byte) 1);
         s.setItemMeta(m);
         return s;
     }
 
+    private static boolean isAmmo(ItemStack s) {
+        return s != null && (s.getType() == Material.SPECTRAL_ARROW || s.getType() == Material.ARROW || s.getType() == Material.TIPPED_ARROW);
+    }
+
+    private static int boltsHeld(Player p) {
+        int n = 0;
+        for (ItemStack s : p.getInventory().getContents()) if (isAmmo(s)) n += s.getAmount();
+        if (isAmmo(p.getItemOnCursor())) n += p.getItemOnCursor().getAmount();
+        return n;
+    }
+
     private void goLive() {
         state = State.LIVE;
         elapsed = 0;
-        // MCC rule: the side behind on score gets all the starting arrows; tied = one each (per side setting).
-        int total = startArrows * 2;
+        lastShrinkRequest = 0;
+        // MCC 22+: the side behind on score gets both arrows on their side; tied = one arrow on each side.
         if (score[0] != score[1]) {
             int loser = score[0] < score[1] ? 0 : 1;
-            for (int i = 0; i < total; i++) spawnArrow(loser);
-            ctx.broadcast(groups[loser].label() + ChatColor.GRAY + " is behind and starts with all " + total + " arrows.");
+            for (int i = 0; i < arrowsInPlay; i++) spawnArrow(loser);
+            ctx.broadcast(groups[loser].label() + ChatColor.GRAY + " is behind, so both arrows drop on their side.");
         } else {
-            for (int i = 0; i < startArrows; i++) { spawnArrow(0); spawnArrow(1); }
+            for (int i = 0; i < arrowsInPlay; i++) spawnArrow(i % 2);
         }
-        for (Player p : world.getPlayers()) {
-            p.sendTitle(ChatColor.GREEN + "" + ChatColor.BOLD + "GO!", ChatColor.GRAY + "Grab the arrows!", 0, 20, 10);
-            p.playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.6f, 1.6f);
-        }
+        McmFx.title(world.getPlayers(), ChatColor.GREEN + "" + ChatColor.BOLD + "GO!", ChatColor.GRAY + "Grab the arrows!", 0, 20, 10);
+        playAll("mcc.go", Sound.ENTITY_ENDER_DRAGON_GROWL, 0.8f, 1.6f);
     }
 
     private void secondTick() {
@@ -402,10 +452,9 @@ public final class DodgeboltGame implements McmGame, Listener {
         switch (state) {
             case COUNTDOWN -> {
                 if (phaseSeconds <= 0) { goLive(); break; }
-                for (Player p : world.getPlayers()) {
-                    p.sendTitle(ChatColor.YELLOW + "" + ChatColor.BOLD + phaseSeconds, ChatColor.GRAY + "Round " + round, 0, 22, 0);
-                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
-                }
+                McmFx.title(world.getPlayers(), ChatColor.AQUA + "" + ChatColor.BOLD + phaseSeconds,
+                        ChatColor.GRAY + "Starting in...", 0, 22, 0);
+                playAll("mcc.countdown", Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
                 ctx.setTimer(phaseSeconds, countdownSeconds);
                 phaseSeconds--;
             }
@@ -413,6 +462,10 @@ public final class DodgeboltGame implements McmGame, Listener {
             case ROUND_END -> {
                 if (phaseSeconds > intermissionSeconds) break; // match decided, celebration pending
                 ctx.setTimer(Math.max(0, phaseSeconds), intermissionSeconds);
+                if (phaseSeconds > 0 && phaseSeconds <= intermissionSeconds) {
+                    McmFx.actionBar(world.getPlayers(), ChatColor.WHITE + "NEXT ROUND IN: " + ChatColor.YELLOW
+                            + String.format("00:%02d", phaseSeconds));
+                }
                 if (phaseSeconds-- <= 0) startRound();
             }
             default -> { }
@@ -423,31 +476,9 @@ public final class DodgeboltGame implements McmGame, Listener {
     private void liveSecond() {
         elapsed++;
         ctx.setTimer(Math.max(0, roundSeconds - elapsed), roundSeconds);
-
-        // Extra arrows over time.
-        if (elapsed % extraArrowInterval == 0 && countArrows() + 2 <= maxArrows) {
-            spawnArrow(0);
-            spawnArrow(1);
-            actionBarAll(ChatColor.YELLOW + "Two more arrows have dropped!");
-        }
-        // Safety: never fewer than the starting arrows in play.
-        int have = countArrows();
-        for (int i = have; i < startArrows * 2; i++) spawnArrow(i % 2);
-
-        // Overtime: the floor collapses ring by ring, then crumbles.
-        if (elapsed >= overtimeAt) {
-            if (!overtimeAnnounced) {
-                overtimeAnnounced = true;
-                for (Player p : world.getPlayers()) {
-                    p.sendTitle("", ChatColor.RED + "" + ChatColor.BOLD + "OVERTIME - the floor is collapsing!", 0, 40, 10);
-                    p.playSound(p.getLocation(), Sound.BLOCK_BELL_USE, 1f, 0.6f);
-                }
-            }
-            if ((elapsed - overtimeAt) % ringInterval == 0) {
-                if (ringsDropped < Arena.RINGS) arena.dropRing(ringsDropped++);
-            }
-            if (ringsDropped >= Arena.RINGS && (elapsed - overtimeAt) > Arena.RINGS * ringInterval) arena.shatter(5);
-        }
+        // Not an MCC rule (labelled default): if nothing has shrunk the arena for a while, it shrinks anyway,
+        // so a round where nobody shoots still closes in.
+        if (idleShrinkSeconds > 0 && elapsed - lastShrinkRequest >= idleShrinkSeconds) requestShrink(1);
         if (elapsed >= roundSeconds) endRoundByTime();
     }
 
@@ -495,9 +526,19 @@ public final class DodgeboltGame implements McmGame, Listener {
         if (vs < 2 || !clutchShown.add(k)) return;
         for (UUID u : alive) {
             Player p = Bukkit.getPlayer(u);
-            if (p != null && groupOf.get(u) == g) {
-                p.sendTitle("", ChatColor.GOLD + "Last one standing! 1v" + vs, 0, 30, 10);
-            }
+            if (p != null && groupOf.get(u) == g) McmFx.title(p, "", ChatColor.GOLD + "Last one standing! 1v" + vs, 0, 30, 10);
+        }
+    }
+
+    private void clearRoundObjects() {
+        resetShrink();
+        removeIndicators();
+        removeGameEntities();
+        arrowItems.clear();
+        arrowEntities.clear();
+        for (UUID u : alive) {
+            Player p = Bukkit.getPlayer(u);
+            if (p != null) { p.getInventory().clear(); p.setItemOnCursor(null); }
         }
     }
 
@@ -506,33 +547,25 @@ public final class DodgeboltGame implements McmGame, Listener {
         if (state != State.LIVE && state != State.COUNTDOWN) return;
         state = State.ROUND_END;
         roundsPlayed++;
-        arena.cancelTasks();
-        removeGameEntities();
-        arrowItems.clear();
-        arrowEntities.clear();
-        for (UUID u : alive) {
-            Player p = Bukkit.getPlayer(u);
-            if (p != null) p.getInventory().clear();
-        }
+        clearRoundObjects();
 
-        String title, sub;
+        String sub;
         if (winner >= 0) {
             score[winner]++;
+            arena.setScore(score[0], score[1]);
             awardSide(winner, ptsRound, "Dodgebolt round win");
             boolean flawless = aliveCount(winner) == onlineMembers(winner).size() && !testMode;
-            title = groups[winner].label() + ChatColor.WHITE + " wins round " + round + "!";
-            sub = scoreLine() + (flawless ? ChatColor.GOLD + "  FLAWLESS" : "");
-            ctx.broadcast(ChatColor.GOLD + "» " + title + ChatColor.GRAY + "  (" + ChatColor.stripColor(scoreLine()) + ")"
-                    + (reason != null ? ChatColor.GRAY + " " + reason : ""));
+            sub = groups[winner].label() + ChatColor.WHITE + " win the round!  " + scoreLine() + (flawless ? ChatColor.GOLD + "  FLAWLESS" : "");
+            ctx.broadcast(ChatColor.GOLD + "» " + groups[winner].label() + ChatColor.WHITE + " win round " + round + "!"
+                    + ChatColor.GRAY + "  (" + ChatColor.stripColor(scoreLine()) + ")" + (reason != null ? ChatColor.GRAY + " " + reason : ""));
+            playAll("mcc.crowd.cheer", Sound.ENTITY_PLAYER_LEVELUP, 0.9f, 1f);
         } else {
-            title = ChatColor.GRAY + "" + ChatColor.BOLD + "Round " + round + " drawn";
-            sub = (reason == null ? "" : ChatColor.GRAY + reason + " ") + scoreLine();
+            sub = ChatColor.GRAY + "Draw. " + (reason == null ? "" : reason + " ") + scoreLine();
             ctx.broadcast(ChatColor.GOLD + "» " + ChatColor.GRAY + "Round " + round + " is a draw. " + (reason == null ? "" : reason));
         }
-        for (Player p : world.getPlayers()) {
-            p.sendTitle(title, sub, 5, 50, 10);
-            p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.8f, 1.2f);
-        }
+        // MCC: "Round Over!" in big pink letters, then "NEXT ROUND IN: 00:17".
+        McmFx.title(world.getPlayers(), ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Round Over!", sub, 5, 50, 10);
+        playAll(null, Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.8f, 1.2f);
 
         int champ = matchWinner();
         if (champ >= 0) {
@@ -583,14 +616,7 @@ public final class DodgeboltGame implements McmGame, Listener {
         if (state == State.ROUND_END) return phaseSeconds <= intermissionSeconds && skipWait();
         if (state != State.COUNTDOWN && state != State.LIVE) return false;
         state = State.ROUND_END;
-        arena.cancelTasks();
-        removeGameEntities();
-        arrowItems.clear();
-        arrowEntities.clear();
-        for (UUID u : alive) {
-            Player p = Bukkit.getPlayer(u);
-            if (p != null) p.getInventory().clear();
-        }
+        clearRoundObjects();
         ctx.broadcast(ChatColor.GRAY + "Round " + round + " was skipped by an admin (no score, no points).");
         phaseSeconds = 0;
         secondTick();   // the normal intermission end: startRound()
@@ -618,13 +644,13 @@ public final class DodgeboltGame implements McmGame, Listener {
     private void celebrate(int w) {
         if (state == State.CELEBRATE || finished) return;
         state = State.CELEBRATE;
-        arena.cancelTasks();
-        removeGameEntities();
+        clearRoundObjects();
         awardSide(w, ptsMatch, "Dodgebolt champions");
+        if (declareWinner && groups[w].key != null) ctx.setEventWinner(groups[w].key);
         Group g = groups[w];
         String bar = g.color + "" + ChatColor.BOLD + "==============================";
         ctx.broadcast(bar);
-        ctx.broadcast(ChatColor.GOLD + "" + ChatColor.BOLD + "  CHAMPIONS: " + g.label());
+        ctx.broadcast(ChatColor.GOLD + "" + ChatColor.BOLD + "  ♛ " + g.label() + ChatColor.GOLD + ChatColor.BOLD + " TAKE THE CROWN!");
         ctx.broadcast(ChatColor.GRAY + "  Final score " + ChatColor.stripColor(scoreLine()));
         UUID best = null;
         for (Map.Entry<UUID, Integer> e : kills.entrySet()) if (best == null || e.getValue() > kills.get(best)) best = e.getKey();
@@ -633,12 +659,14 @@ public final class DodgeboltGame implements McmGame, Listener {
             ctx.broadcast(ChatColor.GRAY + "  Sharpest shot: " + ChatColor.WHITE + bp.getName() + ChatColor.GRAY + " (" + kills.get(best) + " eliminations)");
         }
         ctx.broadcast(bar);
+        // MCC: gold crown above the team name in team colour, "TAKE THE CROWN" underneath, over the live arena.
+        McmFx.title(Bukkit.getOnlinePlayers(), ChatColor.GOLD + "♛ " + g.label() + ChatColor.GOLD + " ♛",
+                ChatColor.GOLD + "" + ChatColor.BOLD + "TAKE THE CROWN", 10, 120, 20);
         for (Player p : Bukkit.getOnlinePlayers()) {
-            p.sendTitle(g.label(), ChatColor.GOLD + "" + ChatColor.BOLD + "ARE THE CHAMPIONS!", 10, 120, 20);
-            p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
-            p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 0.8f);
+            if (!McmFx.packSound(p, "mcc.victory.win", 1f, 1f)) p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
+            McmFx.packSound(p, "mcc.crowd.cheer", 0.8f, 1f);
         }
-        // The champions stand on the centre of their half for the fireworks.
+        // The champions stand in the middle of their half for the fireworks; everyone else stays in the stands.
         List<Player> champs = onlineMembers(w);
         arena.resetFloor();
         for (int i = 0; i < champs.size(); i++) {
@@ -646,8 +674,8 @@ public final class DodgeboltGame implements McmGame, Listener {
             p.getInventory().clear();
             p.setGameMode(GameMode.ADVENTURE);
             p.setGlowing(true);
-            Location l = arena.pad(w, i, champs.size()).clone();
-            l.setZ(w == 0 ? -5.5 : 6.5);
+            Location l = arena.spawn(w, i, champs.size()).clone();
+            l.setZ(w == 0 ? -9.5 : 10.5);
             p.teleport(l);
         }
         final Color c1 = g.dye.getFireworkColor();
@@ -655,11 +683,10 @@ public final class DodgeboltGame implements McmGame, Listener {
         repeat(() -> {
             if (n[0]++ >= 16) return;
             for (int k = 0; k < 3; k++) {
-                double x = -9 + random.nextDouble() * 18;
-                double z = (random.nextBoolean() ? -1 : 1) * (3 + random.nextDouble() * 10);
+                double x = -10 + random.nextDouble() * 20;
+                double z = (random.nextBoolean() ? -1 : 1) * (3 + random.nextDouble() * 12);
                 launchFirework(new Location(world, x, Arena.FLOOR_Y + 1, z), c1);
             }
-            for (Player p : champs) if (p.isOnline() && random.nextBoolean()) launchFirework(p.getLocation(), c1);
         }, 5L, 10L);
         celebrateReason = ChatColor.stripColor(g.name) + " won Dodgebolt " + score[w] + "-" + score[1 - w];
         later(() -> finishOnce(celebrateReason), FastTest.ticks(200L));
@@ -667,12 +694,15 @@ public final class DodgeboltGame implements McmGame, Listener {
     }
 
     private void launchFirework(Location l, Color c) {
-        Firework fw = l.getWorld().spawn(l, Firework.class);
-        FireworkMeta m = fw.getFireworkMeta();
-        m.addEffect(FireworkEffect.builder().with(random.nextBoolean() ? FireworkEffect.Type.BALL_LARGE : FireworkEffect.Type.STAR)
-                .withColor(c).withFade(Color.WHITE, Color.YELLOW).flicker(true).trail(true).build());
-        m.setPower(1);
-        fw.setFireworkMeta(m);
+        try {
+            McmFx.teamFirework(l, c, random.nextBoolean());
+        } catch (Throwable t) { // older core
+            Firework fw = l.getWorld().spawn(l, Firework.class);
+            FireworkMeta m = fw.getFireworkMeta();
+            m.addEffect(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE).withColor(c).withFade(Color.WHITE).trail(true).build());
+            m.setPower(1);
+            fw.setFireworkMeta(m);
+        }
     }
 
     private void awardSide(int g, int perPlayer, String reason) {
@@ -697,14 +727,20 @@ public final class DodgeboltGame implements McmGame, Listener {
         Integer g = groupOf.get(v);
         if (g == null) return;
         roundKills++;
-        // Return any arrows the victim was holding to their side.
-        int held = 0;
-        for (ItemStack s : victim.getInventory().getContents()) if (s != null && s.getType() == Material.ARROW) held += s.getAmount();
+        removeIndicator(v);
+        // Arrows the victim was holding drop back into play on their own side.
+        int held = boltsHeld(victim);
         victim.getInventory().clear();
-        for (int i = 0; i < held; i++) spawnArrow(g);
+        victim.setItemOnCursor(null);
+        Location at = victim.getLocation();
+        for (int i = 0; i < held; i++) {
+            if (fell) spawnArrow(g);
+            else dropBolt(at.clone().add(0, 0.3, 0), -1, false);
+        }
 
-        world.spawnParticle(Particle.FIREWORK, victim.getLocation().add(0, 1, 0), 40, 0.3, 0.6, 0.3, 0.05);
-        world.playSound(victim.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1.5f, 1f);
+        world.spawnParticle(Particle.FIREWORK, at.clone().add(0, 1, 0), 40, 0.3, 0.6, 0.3, 0.05);
+        world.spawnParticle(Particle.WAX_OFF, at.clone().add(0, 1, 0), 20, 0.4, 0.6, 0.4, 0.5);
+        world.playSound(at, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1.5f, 1f);
         String vName = groups[g].color + victim.getName();
         if (shooter != null) {
             Integer sg = groupOf.get(shooter.getUniqueId());
@@ -712,65 +748,123 @@ public final class DodgeboltGame implements McmGame, Listener {
             kills.merge(shooter.getUniqueId(), 1, Integer::sum);
             if (ptsElim > 0) ctx.addPoints(shooter.getUniqueId(), ptsElim, "Dodgebolt elimination");
             String sName = (sg == null ? ChatColor.WHITE : groups[sg].color) + shooter.getName();
-            ctx.broadcast(ChatColor.DARK_GRAY + "☠ " + vName + ChatColor.GRAY + " was bolted by " + sName);
-            shooter.sendTitle("", ChatColor.GREEN + "Eliminated " + vName, 0, 25, 5);
+            ctx.broadcast(ChatColor.DARK_GRAY + "☠ " + vName + ChatColor.GRAY + " was tagged by " + sName);
+            McmFx.title(shooter, "", ChatColor.GREEN + "Eliminated " + vName, 0, 25, 5);
             shooter.playSound(shooter.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1f, 1f);
         } else {
             matchElims[1 - g]++;
-            ctx.broadcast(ChatColor.DARK_GRAY + "☠ " + vName + ChatColor.GRAY + (fell ? " fell into the void" : " is out"));
+            ctx.broadcast(ChatColor.DARK_GRAY + "☠ " + vName + ChatColor.GRAY + (fell ? " fell into the lava" : " is out"));
         }
-        victim.sendTitle(ChatColor.RED + "" + ChatColor.BOLD + "ELIMINATED", ChatColor.GRAY + "Spectating until the next round", 0, 40, 10);
-        toStands(victim, random.nextInt(10));
+        if (!McmFx.packSound(victim, "mcc.death", 1f, 1f)) victim.playSound(victim.getLocation(), Sound.ENTITY_PLAYER_HURT, 1f, 0.8f);
+        McmFx.title(victim, ChatColor.RED + "" + ChatColor.BOLD + "ELIMINATED", ChatColor.GRAY + "Watch from the stands until the next round", 0, 40, 10);
+        victim.setFireTicks(0);
+        toCrowd(victim, arena.rimSpot(g, seatCounter++));
 
-        // MCC-style: after the third elimination each further one shrinks the arena (up to 3 rings before overtime).
-        if (state == State.LIVE && roundKills > 3 && ringsDropped < 3) arena.dropRing(ringsDropped++);
+        // MCC: the arena shrinks for kills (2, 2, 1 for the first three, then 1 per kill), capped at 8 blocks.
+        if (state == State.LIVE) {
+            int n = roundKills <= killShrinks.size() ? killShrinks.get(roundKills - 1) : shrinkAfterThird;
+            requestShrink(n);
+        }
         queueCheck();
         updateSidebar();
     }
 
-    /** Out players, non-finalists and late joiners watch in spectator mode from above the court (owner rule). */
-    private void toStands(Player p, int i) {
-        SpectatorGuard.makeSpectator(p, overview(i));
+    /** Out players, non-finalists and late joiners watch from the stands (or in spectator mode if crowd-in-stands is off). */
+    private void toCrowd(Player p, Location at) {
+        if (p == null || !p.isOnline()) return;
+        removeIndicator(p.getUniqueId());
+        Location spot = at != null ? at : arena.seat(seatCounter++);
+        if (!crowdInStands) {
+            SpectatorGuard.makeSpectator(p, overview());
+            return;
+        }
+        p.closeInventory();
+        p.getInventory().clear();
+        p.setItemOnCursor(null);
+        for (org.bukkit.potion.PotionEffect pe : new ArrayList<>(p.getActivePotionEffects())) p.removePotionEffect(pe.getType());
+        p.setFireTicks(0);
+        p.setFallDistance(0f);
+        p.setGlowing(false);
+        if (p.isInsideVehicle()) p.leaveVehicle();
+        p.setVelocity(new Vector());
+        p.setGameMode(GameMode.ADVENTURE);
+        p.setAllowFlight(false);
+        p.teleport(spot);
+        // Spectators can see who carries an arrow.
+        for (TextDisplay d : indicators.values()) p.showEntity(plugin, d);
     }
 
-    /** Spectator area: the court, its walls and the stands around it, with room above. */
-    private static final org.bukkit.util.BoundingBox WATCH_BOX = new org.bukkit.util.BoundingBox(
-            -Arena.WALL_X - 20, Arena.FLOOR_Y - 10, -Arena.WALL_Z - 18,
-            Arena.WALL_X + 21, Arena.FLOOR_Y + 35, Arena.WALL_Z + 19);
-
-    /** High above the east or west stands, looking down at the river in the middle. */
-    private Location overview(int i) {
-        boolean east = (i & 1) == 0;
-        return new Location(world, east ? Arena.WALL_X + 9.5 : -Arena.WALL_X - 8.5, Arena.FLOOR_Y + 13, 0.5,
-                east ? 90f : -90f, 38f);
+    /** Spectator-mode fallback: above the stands opposite the scoreboards. */
+    private Location overview() {
+        return new Location(world, -(Arena.WALK_X + 2) + 0.5, Arena.RIM_Y + 9, 0.5, -90f, 30f);
     }
 
     private SpectatorGuard.Zone spectatorZone(Player p) {
         if (state == State.IDLE || world == null || !p.getWorld().equals(world)) return null;
-        return new SpectatorGuard.Zone(world, WATCH_BOX, overview(p.getUniqueId().hashCode()));
+        org.bukkit.util.BoundingBox box = new org.bukkit.util.BoundingBox(
+                -Arena.WALK_X - Arena.TIERS - 1, Arena.FLOOR_Y - 4, -Arena.WALK_Z - Arena.TIERS - 1,
+                Arena.WALK_X + Arena.TIERS + 2, Arena.OUTER_TOP + 25, Arena.WALK_Z + Arena.TIERS + 2);
+        return new SpectatorGuard.Zone(world, box, overview());
+    }
+
+    // =================================================================== shrinking
+
+    private void resetShrink() {
+        pendingShrinks = 0;
+        shrinkWarnTicks = 0;
+        shrinkGapTicks = 0;
+        ringMarked = false;
+    }
+
+    /** Queue n one-block shrinks (never beyond the cap). */
+    private void requestShrink(int n) {
+        if (state != State.LIVE || n <= 0 || arena == null) return;
+        lastShrinkRequest = elapsed;
+        int queued = arena.shrunk() + (ringMarked ? 1 : 0) + pendingShrinks;
+        pendingShrinks += Math.max(0, Math.min(n, maxShrink - queued));
+    }
+
+    private void shrinkTick() {
+        if (state != State.LIVE) return;
+        if (ringMarked) {
+            if (--shrinkWarnTicks > 0) return;
+            arena.dropRing();
+            ringMarked = false;
+            shrinkGapTicks = gapTicks;
+            world.playSound(new Location(world, 0.5, Arena.FLOOR_Y + 3, 0.5), Sound.BLOCK_LAVA_EXTINGUISH, 2f, 0.7f);
+            world.playSound(new Location(world, 0.5, Arena.FLOOR_Y + 3, 0.5), Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, 0.6f, 1.4f);
+            updateSidebar();
+            return;
+        }
+        if (shrinkGapTicks > 0) { shrinkGapTicks--; return; }
+        if (pendingShrinks <= 0) return;
+        pendingShrinks--;
+        if (arena.shrunk() >= maxShrink || !arena.markNextRing()) { pendingShrinks = 0; return; }
+        ringMarked = true;
+        shrinkWarnTicks = warnTicks;
+        // MCC chat line, sent once per one-block shrink (so twice in a row for a two-block shrink).
+        for (Player p : world.getPlayers()) {
+            p.sendMessage(ChatColor.RED + "⚠ " + ChatColor.RED + "The arena is about to shrink!");
+            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1f, 0.6f);
+        }
     }
 
     // =================================================================== arrows
 
-    private boolean isBolt(ItemStack s) {
-        return s != null && s.getType() == Material.ARROW && s.hasItemMeta()
-                && s.getItemMeta().getPersistentDataContainer().has(arrowKey, PersistentDataType.BYTE);
-    }
-
     private void spawnArrow(int side) {
         if (arena == null || world == null) return;
         Location l = arena.arrowSpot(side);
-        if (l == null) return;
         dropBolt(l, -1, true);
     }
 
     /** Drop a single bolt item. lastSide = side that last fired it (-1 unknown). */
     private Item dropBolt(Location l, int lastSide, boolean effect) {
-        Item it = world.dropItem(l, arrowStack(1));
+        Item it = world.dropItem(l, boltStack(1));
         it.setVelocity(new Vector(0, 0, 0));
-        it.setGlowing(true);
+        it.setGlowing(glowingBolts);
         it.setUnlimitedLifetime(true);
         it.setPickupDelay(5);
+        it.addScoreboardTag(TAG);
         if (lastSide >= 0) it.getPersistentDataContainer().set(arrowKey, PersistentDataType.INTEGER, lastSide);
         arrowItems.add(it.getUniqueId());
         if (effect) {
@@ -782,14 +876,11 @@ public final class DodgeboltGame implements McmGame, Listener {
 
     private int countArrows() {
         int n = 0;
-        for (UUID u : arrowItems) { Entity e = Bukkit.getEntity(u); if (e != null && e.isValid()) n += ((Item) e).getItemStack().getAmount(); }
+        for (UUID u : arrowItems) { Entity e = Bukkit.getEntity(u); if (e instanceof Item i && e.isValid()) n += i.getItemStack().getAmount(); }
         for (UUID u : arrowEntities) { Entity e = Bukkit.getEntity(u); if (e != null && e.isValid()) n++; }
         for (UUID u : alive) {
             Player p = Bukkit.getPlayer(u);
-            if (p == null) continue;
-            for (ItemStack s : p.getInventory().getContents()) if (s != null && s.getType() == Material.ARROW) n += s.getAmount();
-            ItemStack cursor = p.getItemOnCursor();
-            if (cursor != null && cursor.getType() == Material.ARROW) n += cursor.getAmount();
+            if (p != null) n += boltsHeld(p);
         }
         return n;
     }
@@ -800,50 +891,139 @@ public final class DodgeboltGame implements McmGame, Listener {
             Entity e = Bukkit.getEntity(u);
             if (e != null && e.isValid()) c[Arena.sideOfZ(e.getLocation().getZ())]++;
         }
+        for (UUID u : alive) {
+            Player p = Bukkit.getPlayer(u);
+            Integer g = groupOf.get(u);
+            if (p != null && g != null) c[g] += boltsHeld(p);
+        }
         return c[0] <= c[1] ? 0 : 1;
     }
 
-    /** Every 5 ticks: re-home arrows that fell in the river or void, and tidy stray projectiles; also guard players. */
-    private void arrowMaintenance() {
+    /** Side an arrow lost at l goes back to: the half it was lost over, or the side that did not shoot it. */
+    private int homeSide(Location l, Integer lastShooterSide) {
+        if (Math.abs(l.getX() - 0.5) <= Arena.WALL_X + 1 && !Arena.onCentreLine(l.getZ())) return Arena.sideOfZ(l.getZ());
+        return lastShooterSide != null ? 1 - lastShooterSide : fewerArrowsSide();
+    }
+
+    private static boolean inLava(Entity e) {
+        Location l = e.getLocation();
+        return l.getY() < Arena.FLOOR_Y + 0.5 || l.getBlock().getType() == Material.LAVA;
+    }
+
+    /** Every tick: shrink timing, arrow trails, holder indicators; every 5 ticks: arrow and player upkeep. */
+    private void tick() {
         if (ctx == null || world == null || state == State.IDLE) return;
+        tickCount++;
+        shrinkTick();
+        if (state == State.LIVE) {
+            for (UUID u : arrowEntities) {
+                Entity e = Bukkit.getEntity(u);
+                if (e instanceof AbstractArrow a && a.isValid() && !a.isInBlock())
+                    world.spawnParticle(Particle.END_ROD, a.getLocation(), 1, 0, 0, 0, 0);
+            }
+            updateIndicators();
+        }
+        if (tickCount % 5 == 0) upkeep();
+    }
+
+    private void upkeep() {
         if (state == State.LIVE) {
             for (Iterator<UUID> it = arrowItems.iterator(); it.hasNext(); ) {
                 Entity e = Bukkit.getEntity(it.next());
                 if (e == null || !e.isValid()) { it.remove(); continue; }
                 Location l = e.getLocation();
-                boolean lost = l.getY() < Arena.FLOOR_Y - 3 || !Arena.inBox(l)
-                        || (Arena.inRiver(l.getZ()) && l.getY() < Arena.FLOOR_Y + 0.6 && e.isOnGround());
-                if (lost) {
+                if (inLava(e) || !Arena.inPool(l)) {
                     Integer last = e.getPersistentDataContainer().get(arrowKey, PersistentDataType.INTEGER);
                     int amount = ((Item) e).getItemStack().getAmount();
-                    int to = last != null ? 1 - last : fewerArrowsSide();
+                    int to = homeSide(l, last);
                     e.remove();
                     it.remove();
                     for (int i = 0; i < amount; i++) spawnArrow(to);
                 }
             }
-            List<UUID> arrows = new ArrayList<>(arrowEntities);
-            for (UUID u : arrows) {
+            for (UUID u : new ArrayList<>(arrowEntities)) {
                 Entity e = Bukkit.getEntity(u);
                 if (e == null || !e.isValid()) { arrowEntities.remove(u); continue; }
-                if (e.getTicksLived() > 200 || e.getLocation().getY() < Arena.FLOOR_Y - 6 || !Arena.inBox(e.getLocation())) {
+                if (e.getTicksLived() > 200 || inLava(e) || !Arena.inPool(e.getLocation())) {
                     Integer last = e.getPersistentDataContainer().get(arrowKey, PersistentDataType.INTEGER);
                     arrowEntities.remove(u);
+                    Location l = e.getLocation();
                     e.remove();
-                    spawnArrow(last != null ? 1 - last : fewerArrowsSide());
+                    spawnArrow(homeSide(l, last));
                 }
             }
+            // "There are only ever 2 arrows in play": top up if one was lost some other way.
+            if (tickCount % 20 == 0) for (int have = countArrows(); have < arrowsInPlay; have++) spawnArrow(fewerArrowsSide());
         }
-        // Players who left the stands / arena via the void.
         for (Player p : new ArrayList<>(world.getPlayers())) {
-            if (p.getLocation().getY() > Arena.FLOOR_Y - 5) continue;
             UUID u = p.getUniqueId();
-            if (alive.contains(u) && state == State.LIVE) eliminate(p, null, true);
-            else if (alive.contains(u)) {
-                Integer g = groupOf.get(u);
-                if (g != null) p.teleport(arena.pad(g, 0, 1));
-            } else if (p.getGameMode() != GameMode.SPECTATOR) toStands(p, random.nextInt(10));
+            if (alive.contains(u)) {
+                if (state == State.LIVE && p.getLocation().getY() < Arena.FLOOR_Y + 0.8) eliminate(p, null, true);
+                else if (p.getLocation().getY() < Arena.FLOOR_Y - 4) {
+                    Integer g = groupOf.get(u);
+                    if (g != null) p.teleport(arena.spawn(g, 0, 1));
+                }
+                continue;
+            }
+            if (p.getGameMode() == GameMode.SPECTATOR) continue;
+            // Crowd: keep them in the stands (out of the pool, inside the stadium).
+            Location l = p.getLocation();
+            boolean overPool = Math.abs(l.getX() - 0.5) < Arena.WALL_X + 0.5 && Math.abs(l.getZ() - 0.5) < Arena.WALL_Z + 0.5;
+            if (!Arena.inStadium(l) || (overPool && l.getY() < Arena.RIM_Y + 0.5) || l.getY() < Arena.RIM_Y - 1) {
+                toCrowd(p, arena.seat(seatCounter++));
+            }
+            if (p.getFireTicks() > 0) p.setFireTicks(0);
         }
+    }
+
+    // ------------------------------------------------------------------ arrow-holder indicator (spectators only)
+
+    private void updateIndicators() {
+        for (UUID u : alive) {
+            Player p = Bukkit.getPlayer(u);
+            if (p == null) continue;
+            boolean has = boltsHeld(p) > 0;
+            TextDisplay d = indicators.get(u);
+            if (has && (d == null || !d.isValid())) {
+                indicators.put(u, spawnIndicator(p));
+            } else if (!has && d != null) {
+                removeIndicator(u);
+            } else if (d != null) {
+                d.teleport(p.getLocation().add(0, 2.45, 0));
+            }
+        }
+    }
+
+    private TextDisplay spawnIndicator(Player p) {
+        TextDisplay d = world.spawn(p.getLocation().add(0, 2.45, 0), TextDisplay.class, t -> {
+            t.setPersistent(false);
+            t.addScoreboardTag(TAG);
+            t.text(Component.text(" ➚ ", NamedTextColor.WHITE).decorate(TextDecoration.BOLD));
+            t.setBillboard(Display.Billboard.CENTER);
+            t.setDefaultBackground(false);
+            t.setBackgroundColor(Color.fromARGB(230, 134, 64, 200));
+            t.setShadowed(false);
+            t.setSeeThrough(false);
+            t.setTeleportDuration(2);
+            t.setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(1.2f, 1.2f, 1.2f), new AxisAngle4f()));
+            t.setVisibleByDefault(true);
+        });
+        // MCC: only spectators can see it, so hide it from everyone still playing.
+        for (UUID u : alive) {
+            Player q = Bukkit.getPlayer(u);
+            if (q != null) q.hideEntity(plugin, d);
+        }
+        return d;
+    }
+
+    private void removeIndicator(UUID u) {
+        TextDisplay d = indicators.remove(u);
+        if (d != null) d.remove();
+    }
+
+    private void removeIndicators() {
+        for (TextDisplay d : indicators.values()) d.remove();
+        indicators.clear();
     }
 
     // =================================================================== HUD
@@ -852,20 +1032,29 @@ public final class DodgeboltGame implements McmGame, Listener {
         return groups[0].color + "" + ChatColor.BOLD + score[0] + ChatColor.GRAY + " - " + groups[1].color + ChatColor.BOLD + score[1];
     }
 
+    private String pips(int g) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < roundsToWin; i++) sb.append(i < score[g] ? ChatColor.GOLD + "●" : ChatColor.DARK_GRAY + "○");
+        return sb.toString();
+    }
+
+    private String heads(int g) {
+        StringBuilder sb = new StringBuilder();
+        int tot = onlineMembers(g).size();
+        int al = (state == State.LIVE || state == State.COUNTDOWN || state == State.ROUND_END) ? aliveCount(g) : tot;
+        for (int i = 0; i < tot; i++) sb.append(i < al ? groups[g].color + "■" : ChatColor.DARK_GRAY + "☠");
+        return sb.toString();
+    }
+
     private void updateSidebar() {
         if (ctx == null || groups[0] == null) return;
         List<String> lines = new ArrayList<>();
-        lines.add(ChatColor.WHITE + "Round " + Math.max(1, round) + ChatColor.GRAY + "  first to " + roundsToWin + (winByTwo ? " (+2)" : ""));
-        lines.add(groups[0].color + short12(groups[0].name) + " " + ChatColor.WHITE + ChatColor.BOLD + score[0]
-                + ChatColor.GRAY + " - " + ChatColor.WHITE + ChatColor.BOLD + score[1] + " " + groups[1].color + short12(groups[1].name));
-        for (int g = 0; g < 2; g++) {
-            int tot = onlineMembers(g).size();
-            int al = (state == State.LIVE || state == State.COUNTDOWN || state == State.ROUND_END) ? aliveCount(g) : tot;
-            lines.add(groups[g].color + short12(groups[g].name) + ChatColor.GRAY + ": " + ChatColor.WHITE + al + "/" + tot + " left");
-        }
+        lines.add(ChatColor.WHITE + "" + ChatColor.BOLD + "THE FINAL DUEL" + ChatColor.GRAY + "  Round " + Math.max(1, round));
+        lines.add(groups[0].color + short12(groups[0].name) + " " + pips(0) + ChatColor.GOLD + " ♛ " + pips(1) + " " + groups[1].color + short12(groups[1].name));
+        lines.add(heads(0) + ChatColor.GRAY + "  vs  " + heads(1));
         if (state == State.LIVE) {
             lines.add(ChatColor.YELLOW + "Arrows in play: " + ChatColor.WHITE + countArrows());
-            if (elapsed >= overtimeAt) lines.add(ChatColor.RED + "" + ChatColor.BOLD + "OVERTIME");
+            if (arena.shrunk() > 0 || ringMarked) lines.add(ChatColor.RED + "Arena shrunk: " + ChatColor.WHITE + arena.shrunk() + "/" + maxShrink);
         } else if (state == State.CELEBRATE) {
             lines.add(ChatColor.GOLD + "" + ChatColor.BOLD + "CHAMPIONS DECIDED");
         }
@@ -874,8 +1063,12 @@ public final class DodgeboltGame implements McmGame, Listener {
 
     private static String short12(String s) { return s.length() > 12 ? s.substring(0, 12) : s; }
 
-    private void actionBarAll(String msg) {
-        for (Player p : world.getPlayers()) p.sendActionBar(msg);
+    /** Pack sound for players with the server pack, the vanilla sound for everyone else (packKey null = vanilla only). */
+    private void playAll(String packKey, Sound fallback, float vol, float pitch) {
+        for (Player p : world.getPlayers()) {
+            if (packKey != null && McmFx.packSound(p, packKey, vol, pitch)) continue;
+            if (fallback != null) p.playSound(p.getLocation(), fallback, vol, pitch);
+        }
     }
 
     // =================================================================== scheduling
@@ -913,22 +1106,31 @@ public final class DodgeboltGame implements McmGame, Listener {
         }
         Integer g = groupOf.get(p.getUniqueId());
         if (g == null) return;
+        if (state == State.LIVE && to.getY() < Arena.FLOOR_Y + 0.8) {
+            // Fell off the deck into the lava: eliminate next tick (no teleport from inside the move event).
+            Bukkit.getScheduler().runTask(plugin, () -> { if (state == State.LIVE && isAlive(p)) eliminate(p, null, true); });
+            return;
+        }
+        // Players can't cross into the other team's half (the black centre line).
         boolean wrong = g == 0 ? to.getZ() > Arena.A_EDGE : to.getZ() < Arena.B_EDGE;
         if (wrong) {
             Location back = from.clone();
-            // If somehow already past the line, push them back onto their half.
-            if (g == 0 ? back.getZ() > Arena.A_EDGE : back.getZ() < Arena.B_EDGE) back.setZ(g == 0 ? Arena.A_EDGE - 0.5 : Arena.B_EDGE + 0.5);
+            if (g == 0 ? back.getZ() > Arena.A_EDGE : back.getZ() < Arena.B_EDGE) back.setZ(g == 0 ? Arena.A_EDGE - 0.05 : Arena.B_EDGE + 0.05);
             back.setYaw(to.getYaw());
             back.setPitch(to.getPitch());
             e.setTo(back);
-            p.sendActionBar(ChatColor.RED + "Stay on your side of the river!");
         }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onDamage(EntityDamageEvent e) {
         if (!active(e.getEntity().getWorld())) return;
-        if (e.getEntity() instanceof Player || e.getEntity() instanceof Item) e.setCancelled(true);
+        if (e.getEntity() instanceof Player || e.getEntity() instanceof Item || e.getEntity() instanceof Display) e.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onCombust(EntityCombustEvent e) {
+        if (active(e.getEntity().getWorld()) && (e.getEntity() instanceof Player || e.getEntity() instanceof Item)) e.setCancelled(true);
     }
 
     @EventHandler
@@ -957,10 +1159,11 @@ public final class DodgeboltGame implements McmGame, Listener {
         Player p = e.getPlayer();
         if (!active(p.getWorld())) return;
         Item it = e.getItemDrop();
-        if (state == State.LIVE && isAlive(p) && it.getItemStack().getType() == Material.ARROW) {
-            it.setItemStack(arrowStack(it.getItemStack().getAmount()));
-            it.setGlowing(true);
+        if (state == State.LIVE && isAlive(p) && isAmmo(it.getItemStack())) {
+            it.setItemStack(boltStack(it.getItemStack().getAmount()));
+            it.setGlowing(glowingBolts);
             it.setUnlimitedLifetime(true);
+            it.addScoreboardTag(TAG);
             arrowItems.add(it.getUniqueId());
         } else {
             e.setCancelled(true);
@@ -999,13 +1202,17 @@ public final class DodgeboltGame implements McmGame, Listener {
         if (!active(e.getEntity().getWorld())) return;
         if (!(e.getEntity() instanceof Player p) || state != State.LIVE || !isAlive(p)) { e.setCancelled(true); return; }
         Integer g = groupOf.get(p.getUniqueId());
-        if (g == null || !(e.getProjectile() instanceof Arrow arrow)) { e.setCancelled(true); return; }
+        if (g == null || !(e.getProjectile() instanceof AbstractArrow arrow)) { e.setCancelled(true); return; }
         arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
         arrow.setGlowing(true);
-        arrow.setColor(groups[g].dye.getColor());
+        if (arrow instanceof SpectralArrow sa) sa.setGlowingTicks(0);
+        arrow.addScoreboardTag(TAG);
         arrow.getPersistentDataContainer().set(arrowKey, PersistentDataType.INTEGER, g);
         arrowEntities.add(arrow.getUniqueId());
         world.playSound(p.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1f, 0.8f);
+        // MCC 6+: the arena shrinks one block for every 6 shots fired.
+        roundShots++;
+        if (shotsPerShrink > 0 && roundShots % shotsPerShrink == 0) requestShrink(1);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -1029,20 +1236,24 @@ public final class DodgeboltGame implements McmGame, Listener {
                     arrow.remove();
                     Player shooter = arrow.getShooter() instanceof Player sp ? sp : null;
                     Location drop = victim.getLocation().add(0, 0.3, 0);
+                    // Impact: white/gold sparkle burst (032911).
+                    world.spawnParticle(Particle.FIREWORK, drop.clone().add(0, 1, 0), 30, 0.3, 0.5, 0.3, 0.08);
+                    world.spawnParticle(Particle.WAX_ON, drop.clone().add(0, 1, 0), 15, 0.4, 0.5, 0.4, 0.5);
                     eliminate(victim, shooter, false);
-                    dropBolt(drop, side, false);
+                    if (state == State.LIVE) dropBolt(drop, side, false);
                     return;
                 }
             }
-            e.setCancelled(true); // teammates / spectators: the arrow passes through
+            e.setCancelled(true); // teammates / crowd: the arrow passes through
             return;
         }
-        // Hit a block: turn it into a pick-up-able item right here.
+        // Hit a block: it becomes a pick-up-able bolt right here.
         arrowEntities.remove(arrow.getUniqueId());
         Location l = arrow.getLocation();
         Vector v = arrow.getVelocity();
         if (v.lengthSquared() > 1.0E-4) l.subtract(v.clone().normalize().multiply(0.3));
         arrow.remove();
+        world.spawnParticle(Particle.FIREWORK, l, 8, 0.1, 0.1, 0.1, 0.03);
         if (state == State.LIVE) {
             Item it = dropBolt(l, side, false);
             it.setVelocity(new Vector(0, 0, 0));
@@ -1052,11 +1263,11 @@ public final class DodgeboltGame implements McmGame, Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         Player p = e.getPlayer();
+        removeIndicator(p.getUniqueId());
         if (state == State.IDLE || !alive.contains(p.getUniqueId())) return;
         Integer g = groupOf.get(p.getUniqueId());
         alive.remove(p.getUniqueId());
-        int held = 0;
-        for (ItemStack s : p.getInventory().getContents()) if (s != null && s.getType() == Material.ARROW) held += s.getAmount();
+        int held = boltsHeld(p);
         p.getInventory().clear();
         if (g != null && state == State.LIVE) for (int i = 0; i < held; i++) spawnArrow(g);
         if (ctx != null) ctx.broadcast(ChatColor.GRAY + p.getName() + " left the finale.");
@@ -1066,8 +1277,8 @@ public final class DodgeboltGame implements McmGame, Listener {
     @Override
     public boolean onLateJoin(Player player, McmGameContext context) {
         if (state == State.IDLE || arena == null) return false;
-        toStands(player, random.nextInt(10));
-        player.sendMessage(ChatColor.GOLD + "The Dodgebolt finale is in progress - you are spectating.");
+        toCrowd(player, null);
+        player.sendMessage(ChatColor.GOLD + "The Dodgebolt finale is in progress - you are watching from the stands.");
         return true;
     }
 }

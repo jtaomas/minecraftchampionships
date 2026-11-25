@@ -20,14 +20,26 @@ Play with `/mcm play buildmart`. Display name: **Build Mart**. World: `mcc_build
 - Falling into the void sends you back to your platform and you lose the blocks you were carrying.
 - 10 s preview, then 8 minutes of play.
 
-## Scoring (per member of the side, via `addPoints`)
-- Completed build: `4 + 3 x stars` (7–19), stars 1–5 from block count (shop blocks count double).
-- Speed bonus: `+5` minus 1 per 30 s spent on that build (min 0).
-- First / second / third side to finish that build number: `+4 / +2 / +1` (only with 2+ sides).
-- End of game, most builds completed: `+10 / +6 / +3` for 1st/2nd/3rd (ties share the rank; needs 2+ sides and at least one build).
+## Scoring (MCC coins, MCC 3-13 rules; config `coins.*`, see `../COINS.md`)
+- Completed build: **30 coins to each player** of the team, **2 less** every time any team has completed that build (floor 10, ours).
+- End of game: each player gets the % of each unfinished build the team filled in, times that build's current value.
+- The core multiplies every award by the event multiplier (x1.0 ... x3.0).
 
 ## Known limitations
 - No build selection gallery or Gold Builds from the original; one build at a time per side.
 - No dedicated spectator stand (spectators fly around in spectator mode).
 - Block states/orientation are ignored when checking a build.
 - Late joiners are left to the core's default (spectator).
+
+## Classic Mall v12 (owner fix list, Nov 2026)
+- Departments are packed with **server-rack shelving** (MCC 13's warehouse racks, 021810, dressed as a data centre on the
+  owner's request): rows 2 deep, back to back, 4-wide aisles (hazard stripe, 2 white tiles, hazard stripe), cabinets of
+  4 shelves x 2 blocks (3 columns wide, 2 in COLOURS), ladders on the posts, black caps with status lights (redstone lamps
+  blink), wire cable trays on top and across the aisles, black end-of-row panels with green lights and a `RACK L1` label.
+  ~8,950 mineable blocks (was ~1,300): e.g. redstone block 192 (was 4), oak log 144 (was 12), every colour 32-64.
+- Department doors get quartz jambs and a lintel in the department colour; service counters moved beside the doors.
+- The team build zone has a roof (y 80): glazed like the mall (white beams, glass, sea lanterns) with a quartz/red cornice,
+  so builds are lit by daylight.
+- Admin: `/bm stock` prints the stock per material; `/bm fdump x1,y1,z1,x2,y2,z2 <name>` writes a full-state dump.
+- Pack (`_candidates/pack/build_pack.py`, Build Mart section): floor ages retextured, name "Mall Floor", trolley texture.
+  Previews: `previews/compare_departments.png`, `compare_room_roof.png`, `compare_mall_after.png`, `pack_tex.png`.

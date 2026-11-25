@@ -64,8 +64,10 @@ public final class SkyBattleGame implements McmGame, Listener {
     private static final long KILL_CREDIT_MS = 12_000;
 
     // points
-    private static final int KILL_POINTS = 10;
-    private static final int[] PLACEMENT = {60, 48, 38, 30, 23, 17, 12, 8, 5, 3};
+    // MCC coins (base x1.0, config coins.*; the core applies the event multiplier). See game-plugins/COINS.md.
+    private int KILL_POINTS = 40;                                            // MCC: personal elimination
+    private int[] PLACEMENT = {65, 55, 46, 37, 29, 22, 16, 12, 8, 5};       // MCC: team pool by elimination order
+    private int surviveRoundPool = 50;                                       // MCC: survive the round, split across survivors
 
     private static final Map<String, DyeColor> TEAM_DYES = Map.of(
             "Red", DyeColor.RED, "Orange", DyeColor.ORANGE, "Yellow", DyeColor.YELLOW,
@@ -145,7 +147,12 @@ public final class SkyBattleGame implements McmGame, Listener {
         totalSides = sides.size();
         int participantCount = 0;
         for (List<Player> l : sides.values()) participantCount += l.size();
-        survivalPoints = participantCount > 20 ? 1 : 2;
+        plugin.saveDefaultConfig();
+        var cfg = plugin.getConfig();
+        survivalPoints = Math.max(0, cfg.getInt("coins.outlive", 2));                 // MCC: another player dies, you are alive
+        KILL_POINTS = Math.max(0, cfg.getInt("coins.elimination", 40));
+        surviveRoundPool = Math.max(0, cfg.getInt("coins.survive-round", 50));
+        PLACEMENT = com.mcm.api.McmCoins.toIntArray(cfg.getList("coins.placement"), PLACEMENT);
 
         // colours: teams keep their colour, solos get unused colours
         Set<DyeColor> used = new HashSet<>();
@@ -478,7 +485,7 @@ public final class SkyBattleGame implements McmGame, Listener {
             ctx.broadcast(ChatColor.GRAY + "☠ " + coloured(victim) + ChatColor.GRAY + " was eliminated by " + coloured(killer)
                     + ChatColor.GRAY + " (" + cause + ")");
             kills.merge(killer, 1, Integer::sum);
-            ctx.addPoints(killer, KILL_POINTS, "Sky Battle elimination");
+            if (KILL_POINTS > 0) ctx.addCoins(killer, KILL_POINTS, "Sky Battle elimination");
             Player kp = Bukkit.getPlayer(killer);
             if (kp != null) {
                 kp.sendTitle("", ChatColor.RED + "⚔ Eliminated " + names.getOrDefault(victim, "?"), 0, 30, 10);
@@ -491,9 +498,7 @@ public final class SkyBattleGame implements McmGame, Listener {
         // survival points to every player still alive
         if (state == State.LIVE) {
             for (UUID u : new ArrayList<>(alive)) {
-                ctx.addPoints(u, survivalPoints, "Sky Battle survival");
-                Player ap = Bukkit.getPlayer(u);
-                if (ap != null) ap.sendMessage(ChatColor.GREEN + "+" + survivalPoints + " survival points");
+                if (survivalPoints > 0) ctx.addCoins(u, survivalPoints, "Sky Battle survival");
             }
         }
 
@@ -531,10 +536,10 @@ public final class SkyBattleGame implements McmGame, Listener {
 
     private void awardPlacement(String side, int place) {
         if (!placedSides.add(side)) return;
-        int pts = place <= PLACEMENT.length ? PLACEMENT[place - 1] : 1;
+        int pts = com.mcm.api.McmCoins.placementOrLast(PLACEMENT, place);
         ctx.broadcast(ctx.sideLabel(side) + ChatColor.GRAY + " is out! Placed " + ChatColor.YELLOW + "#" + place
-                + ChatColor.GRAY + " (+" + pts + " side points)");
-        ctx.addSidePoints(side, pts, "Sky Battle placement #" + place);
+                + ChatColor.GRAY + " (+" + pts + " team coins)");
+        if (pts > 0) ctx.addTeamCoins(side, pts, "Sky Battle placement #" + place);
     }
 
     private void checkEnd() {
@@ -577,15 +582,22 @@ public final class SkyBattleGame implements McmGame, Listener {
         } else {
             ctx.broadcast(ChatColor.GOLD + "" + ChatColor.BOLD + "Sky Battle over! " + ChatColor.RESET + ChatColor.GRAY + reason);
         }
+        // MCC: 50 coins for surviving the entire round, split across the surviving winners
+        List<UUID> survivors = new ArrayList<>();
+        for (UUID u : alive) if (Bukkit.getPlayer(u) != null) survivors.add(u);
+        if (surviveRoundPool > 0 && !survivors.isEmpty()) {
+            double each = surviveRoundPool / (double) survivors.size();
+            for (UUID u : survivors) ctx.addCoins(u, each, "Survived the round");
+        }
         for (int i = 0; i < remaining.size(); i++) {
             String s = remaining.get(i);
             if (placedSides.contains(s)) continue;
             int place = i + 1;
-            int pts = place <= PLACEMENT.length ? PLACEMENT[place - 1] : 1;
+            int pts = com.mcm.api.McmCoins.placementOrLast(PLACEMENT, place);
             placedSides.add(s);
-            ctx.addSidePoints(s, pts, "Sky Battle placement #" + place);
+            if (pts > 0) ctx.addTeamCoins(s, pts, "Sky Battle placement #" + place);
             ctx.broadcast(ctx.sideLabel(s) + ChatColor.GRAY + " survived - placed " + ChatColor.YELLOW + "#" + place
-                    + ChatColor.GRAY + " (+" + pts + " side points)");
+                    + ChatColor.GRAY + " (+" + pts + " team coins)");
         }
         // keep the HUD frozen during the victory pause, make survivors invulnerable
         for (Player p : alivePlayers()) p.setInvulnerable(true);

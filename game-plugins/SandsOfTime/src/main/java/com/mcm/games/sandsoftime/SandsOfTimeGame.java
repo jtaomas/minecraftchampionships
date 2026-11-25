@@ -72,9 +72,13 @@ public final class SandsOfTimeGame implements McmGame, Listener {
     static final int COUNTDOWN = 5;
     static final int AUTO_REVIVE = 20;     // downed players free themselves after this many seconds
     static final double BANK_FEE = 0.20;   // Sphinx fee
-    static final double POINTS_PER_COIN = 0.12;
-    static final int ESCAPE_BONUS = 15;
-    static final int[] SIDE_BONUS = {30, 20, 10};
+    // MCC coins (base x1.0, config coins.*; the core applies the event multiplier). See game-plugins/COINS.md.
+    // MCC: "The amount of coins you collect and escape the dungeon with is exactly the amount of coins you earn";
+    // the Sphinx takes 20%; banked team coins are split evenly amongst the team at the end (MCC 8+).
+    double POINTS_PER_COIN = 1.0;   // MCC: 1 coin per gold coin banked (our gold is already on the MCC coin scale)
+    int ESCAPE_BONUS = 0;           // MCC: no escape bonus (OURS if > 0)
+    int[] SIDE_BONUS = {};          // MCC: no placement bonus (OURS if set)
+    boolean splitBanked = true;     // MCC 8+: banked team coins split evenly at the end
 
     static final int HOLD_X = -60, HOLD_Y = 120, HOLD_Z = -60;
 
@@ -133,6 +137,12 @@ public final class SandsOfTimeGame implements McmGame, Listener {
         }
         this.ctx = ctx;
         this.world = w;
+        plugin.saveDefaultConfig();
+        var cfg = plugin.getConfig();
+        POINTS_PER_COIN = Math.max(0, cfg.getDouble("coins.per-gold", 1.0));
+        ESCAPE_BONUS = Math.max(0, cfg.getInt("coins.escape-bonus", 0));
+        SIDE_BONUS = com.mcm.api.McmCoins.toIntArray(cfg.getList("coins.placement"), new int[0]);
+        splitBanked = cfg.getBoolean("coins.split-banked-evenly", true);
         if (guard == null) guard = new SpectatorGuard(plugin, this::spectatorZone);
         running = true;
         gen++;
@@ -278,8 +288,15 @@ public final class SandsOfTimeGame implements McmGame, Listener {
             Dungeon d = order.get(n);
             int banked = sideBanked(d);
             String line = "§e#" + (n + 1) + " " + ctx.sideLabel(d.sideKey) + " §7— §6" + banked + " coins banked";
-            if (order.size() > 1 && n < SIDE_BONUS.length && banked > 0) {
-                ctx.addSidePoints(d.sideKey, SIDE_BONUS[n], "Sands of Time placement #" + (n + 1));
+            if (splitBanked && banked > 0) {
+                // MCC 8+: the team's banked coins are split evenly amongst the team's players
+                List<UUID> on = new ArrayList<>();
+                for (UUID id : members.getOrDefault(d.sideKey, List.of())) if (Bukkit.getPlayer(id) != null) on.add(id);
+                double each = on.isEmpty() ? 0 : banked * POINTS_PER_COIN / on.size();
+                for (UUID id : on) if (each > 0) ctx.addCoins(id, each, "Team treasure (split evenly)");
+            }
+            if (order.size() > 1 && n < SIDE_BONUS.length && banked > 0 && SIDE_BONUS[n] > 0) {
+                ctx.addTeamCoins(d.sideKey, SIDE_BONUS[n], "Sands of Time placement #" + (n + 1));
                 line += " §a(+" + SIDE_BONUS[n] + " team bonus)";
             }
             if (n < 8) ctx.broadcast(line);
@@ -717,7 +734,7 @@ public final class SandsOfTimeGame implements McmGame, Listener {
         s.carried = 0;
         s.status = Status.ESCAPED;
         syncPoints(s);
-        ctx.addPoints(s.id, ESCAPE_BONUS, "Escaped the dungeon");
+        if (ESCAPE_BONUS > 0) ctx.addCoins(s.id, ESCAPE_BONUS, "Escaped the dungeon");
         stripGameItems(p, d);
         resetPlayer(p, GameMode.SPECTATOR);
         p.teleport(d.viewPos());
@@ -782,10 +799,12 @@ public final class SandsOfTimeGame implements McmGame, Listener {
         }
     }
 
+    /** Without the MCC team split, banked coins are paid to the player as they bank. */
     private void syncPoints(PS s) {
+        if (splitBanked) return;   // paid at the end, split evenly amongst the team (endGame)
         int target = (int) Math.floor(s.banked * POINTS_PER_COIN);
         if (target > s.awarded) {
-            ctx.addPoints(s.id, target - s.awarded, "Banked treasure");
+            ctx.addCoins(s.id, target - s.awarded, "Banked treasure");
             s.awarded = target;
         }
     }

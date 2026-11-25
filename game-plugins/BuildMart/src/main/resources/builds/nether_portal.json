@@ -1,0 +1,26 @@
+{
+  "id": "nether_portal",
+  "name": "Nether Portal",
+  "debut": "MCC 10",
+  "stars": 2,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Nether_Portal.png",
+  "floor": ["sssnnnn","sssnnnn","sssnnnn","sssnnnn","sssnnnn","LssLnnn","LLLLLLn"],
+  "palette": {
+    "s": "minecraft:soul_soil",
+    "n": "minecraft:netherrack",
+    "L": "minecraft:lava",
+    "o": "minecraft:obsidian",
+    "p": "minecraft:nether_portal[axis=x]"
+  },
+  "layers": [
+    [".......", ".......", ".......", ".ooooo.", ".......", ".......", "......."],
+    [".......", ".......", ".......", ".opppo.", ".......", ".......", "......."],
+    [".......", ".......", ".......", ".opppo.", ".......", ".......", "......."],
+    [".......", ".......", ".......", ".opppo.", ".......", ".......", "......."],
+    [".......", ".......", ".......", ".ooooo.", ".......", ".......", "......."]
+  ],
+  "guessed": [
+    "floor behind the portal is hidden; soul soil (left) / netherrack (right) split continued to the back",
+    "portal row (row 3) estimated; dark-brown left floor read as soul soil"
+  ]
+}

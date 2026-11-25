@@ -30,6 +30,8 @@ public class TeamScoring {
     private int maxTeamSize = 2;
     private final Map<UUID, String> playerTeams = new HashMap<>();
     private final Map<UUID, Integer> playerPoints = new HashMap<>();
+    /** Fraction of a coin owed to each player (multiplied awards such as 3 x 1.5 = 4.5). */
+    private final Map<UUID, Double> coinCarry = new HashMap<>();
 
     public int getMaxTeamSize() {
         return maxTeamSize;
@@ -123,19 +125,49 @@ public class TeamScoring {
 
     public void resetScores() {
         playerPoints.clear();
+        coinCarry.clear();
     }
 
     public int getPlayerPoints(UUID id) {
         return playerPoints.getOrDefault(id, 0);
     }
 
+    /**
+     * Awards MCC coins that are already multiplied (may be fractional or negative). Fractions are carried per
+     * player so nothing is lost to rounding (two awards of 7.5 credit 15); a player's total never drops below 0.
+     * Prints "+N coins (reason)" (or "-N coins") to the player. Returns the whole coins credited now.
+     */
+    public int addCoins(UUID id, double coins, String reason) {
+        if (coins == 0 || Double.isNaN(coins) || Double.isInfinite(coins)) return 0;
+        double exact = coinCarry.getOrDefault(id, 0.0) + coins;
+        int whole = com.mcm.api.McmCoins.whole(exact);
+        coinCarry.put(id, exact - whole);
+        int before = playerPoints.getOrDefault(id, 0);
+        int after = Math.max(0, before + whole);
+        playerPoints.put(id, after);
+        Player p = Bukkit.getServer() == null ? null : Bukkit.getPlayer(id);
+        if (p != null) {
+            String amt = com.mcm.api.McmCoins.format(Math.abs(coins));
+            if (coins > 0) {
+                p.sendMessage(ChatColor.GOLD + "+" + amt + " coins " + ChatColor.GRAY + "(" + reason + ")");
+                if (!com.mcm.api.McmFx.packSound(p, coins >= 40 ? "mcc.ui.coins_big" : "mcc.ui.coins_small", 0.8f, 1f))
+                    p.playSound(p.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.6f, 1.3f);
+            } else {
+                p.sendMessage(ChatColor.RED + "-" + amt + " coins " + ChatColor.GRAY + "(" + reason + ")");
+            }
+        }
+        return after - before;
+    }
+
     /** Awards individual points (automatically rolls into that player's team total!). */
     public void addIndividualPoints(UUID id, int pts, String reason) {
         if (pts <= 0) return;
         playerPoints.merge(id, pts, Integer::sum);
-        Player p = Bukkit.getPlayer(id);
+        Player p = Bukkit.getServer() == null ? null : Bukkit.getPlayer(id);
         if (p != null) {
-            p.sendMessage(ChatColor.GOLD + "+" + pts + " pts " + ChatColor.GRAY + "(" + reason + ")");
+            p.sendMessage(ChatColor.GOLD + "+" + pts + " coins " + ChatColor.GRAY + "(" + reason + ")");
+            if (!com.mcm.api.McmFx.packSound(p, pts >= 40 ? "mcc.ui.coins_big" : "mcc.ui.coins_small", 0.8f, 1f))
+                p.playSound(p.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.6f, 1.3f);
         }
     }
 

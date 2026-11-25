@@ -10,6 +10,7 @@ public final class DodgeboltPlugin extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         game = new DodgeboltGame(this);
+        game.prepareWorld();
         getServer().getPluginManager().registerEvents(game, this);
         McmApi.registerGame(this, game);
     }

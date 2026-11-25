@@ -1,0 +1,11 @@
+# McmMeltdown settings.
+# MCC coins (base x1.0; the core applies the event multiplier). Source: MCC wiki, Meltdown "Coins Rewards"
+# (https://mcchampionship.fandom.com/wiki/Meltdown). See game-plugins/COINS.md.
+# Team pools are shared amongst the team: each member gets the MCC per-member share (pool / 4).
+coins:
+  crate: 10                # MCC: team pool per coin crate mined
+  freeze: 25               # MCC: to the shooter for freezing a player; taken away if that player is thawed out
+  final-freeze-bonus: 0    # MCC: nothing extra when the frozen player is eliminated
+  outlive: 0               # MCC: nothing for outliving players
+  # MCC team placement by how long the team survived: 1st 210 ... 10th 30 (later teams get the last value)
+  placement: [210, 190, 170, 150, 125, 100, 80, 60, 45, 30]

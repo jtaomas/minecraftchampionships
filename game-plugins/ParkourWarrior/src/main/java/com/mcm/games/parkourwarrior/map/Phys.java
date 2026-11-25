@@ -132,6 +132,20 @@ final class Phys {
             }
             return p(s, "half").equals("top") ? new double[][]{b16(0, 13, 0, 16, 16, 16)} : new double[][]{b16(0, 0, 0, 16, 3, 16)};
         }
+        if (id.endsWith("_door")) {
+            // DoorBlock.getShape (1.21): closed -> facing box; open -> turned by the hinge
+            boolean open = p(s, "open").equals("true"), right = p(s, "hinge").equals("right");
+            double[] n = b16(0, 0, 13, 16, 16, 16), so = b16(0, 0, 0, 16, 16, 3), we = b16(13, 0, 0, 16, 16, 16), ea = b16(0, 0, 0, 3, 16, 16);
+            switch (p(s, "facing")) {
+                case "south": return new double[][]{!open ? so : right ? ea : we};
+                case "west": return new double[][]{!open ? we : right ? so : n};
+                case "north": return new double[][]{!open ? n : right ? we : ea};
+                default: return new double[][]{!open ? ea : right ? n : so};
+            }
+        }
+        if (id.equals("stonecutter")) return new double[][]{b16(0, 0, 0, 16, 9, 16)};
+        if (id.equals("end_portal_frame")) return new double[][]{b16(0, 0, 0, 16, 13, 16)};
+        if (id.equals("cactus")) return new double[][]{b16(1, 0, 1, 15, 15, 15)};
         if (id.equals("chest") || id.equals("trapped_chest") || id.equals("ender_chest")) return new double[][]{b16(1, 0, 1, 15, 14, 15)};
         if (id.equals("flower_pot") || id.startsWith("potted_")) return new double[][]{b16(5, 0, 5, 11, 6, 11)};
         if ((id.endsWith("_head") || id.endsWith("_skull")) && !id.contains("wall")) return new double[][]{b16(4, 0, 4, 12, 8, 12)};
@@ -213,7 +227,14 @@ final class Phys {
         /** Cells forced empty (e.g. for "what if" queries). */
         final java.util.Set<Long> removed = new java.util.HashSet<>();
 
-        World(W w, Map<Long, String> timed) { this.w = w; this.timed = timed; }
+        /** Conveyor belts (support cell -> push per tick {vx, vz}), from the model. */
+        final Map<Long, double[]> belts = new HashMap<>();
+
+        World(W w, Map<Long, String> timed) {
+            this.w = w; this.timed = timed;
+            if (w != null) for (com.mcm.games.parkourwarrior.CourseModel.Belt b : w.model.belts)
+                for (com.mcm.games.parkourwarrior.CourseModel.BlockPos c : b.cells()) belts.put(W.key(c.x(), c.y(), c.z()), new double[]{b.vx(), b.vz()});
+        }
 
         String state(int x, int y, int z) {
             long k = W.key(x, y, z);
@@ -320,6 +341,18 @@ final class Phys {
             p.vy = Math.max(p.vy, -0.15f);
         }
         move(wd, p, og0, sin, cos, mag);
+        if (p.onGround && p.sup != Long.MIN_VALUE && !wd.belts.isEmpty()) {
+            // conveyor: the runtime shifts the player by the belt push (relative teleport), same displacement per tick
+            double[] bv = wd.belts.get(p.sup);
+            if (bv != null) {
+                List<double[]> bx = TMP.get();
+                double[] box = {p.x - HW, p.y, p.z - HW, p.x + HW, p.y + PH, p.z + HW};
+                wd.collect(box[0] - 1, box[1], box[2] - 1, box[3] + 1, box[4], box[5] + 1, bx);
+                double[] v = collideAll(box, bv[0], 0, bv[1], bx);
+                p.x += v[0]; p.z += v[2];
+                p.sup = support(wd, p);
+            }
+        }
         if ((p.hColl || jump) && onClimbable(wd, p)) p.vy = 0.2;
         double f3 = og0 ? f2 * 0.91f : 0.91f;
         p.vy = (p.vy - 0.08) * 0.98f;

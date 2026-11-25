@@ -131,6 +131,10 @@ final class PowerUpService {
         if (applied) {
             removeFromTeam(pod, id);
             hooks.announce("§d[➤] §f" + player.getName() + " used §d" + def.name() + "§f for " + teamName(pod) + "!");
+        } else {
+            // nothing to act on yet (no chicken hatched, no target team): keep the power-up
+            instance.refund();
+            hooks.tell(player, "§7Nothing for §d" + def.name() + " §7to act on yet. It's still yours.");
         }
         return true;
     }

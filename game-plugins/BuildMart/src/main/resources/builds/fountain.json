@@ -1,0 +1,23 @@
+{
+  "id": "fountain",
+  "name": "Fountain",
+  "debut": "MCC 5",
+  "stars": 2,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Fountain.png",
+  "floor": ["ggggggg","ggggggg","ggggggg","ggggggg","ggggggg","ggggggg","ggggggg"],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "d": "minecraft:diorite",
+    "w": "minecraft:water",
+    "q": "minecraft:quartz_pillar[axis=y]"
+  },
+  "layers": [
+    [".......", "..ddd..", ".dwwwd.", ".dwqwd.", ".dwwwd.", "..ddd..", "......."],
+    [".......", "..d.d..", ".d...d.", "...q...", ".d...d.", "..d.d..", "......."]
+  ],
+  "guessed": [
+    "basin interior hidden behind the front rim: filled with water around a central quartz pillar",
+    "back half of the octagonal rim and the four rear diorite posts mirrored from the front",
+    "posts and rim read as diorite; centre column read as quartz_pillar"
+  ]
+}

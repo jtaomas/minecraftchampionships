@@ -1,0 +1,36 @@
+{
+  "id": "forest",
+  "name": "Forest",
+  "debut": "MCC 4",
+  "stars": 3,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Forest.png",
+  "floor": ["ggggggg","ggggggg","ggggggg","ggggggg","ggggggg","ggggggg","ggggggg"],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "D": "minecraft:dark_oak_log[axis=y]",
+    "O": "minecraft:oak_log[axis=y]",
+    "B": "minecraft:birch_log[axis=y]",
+    "J": "minecraft:jungle_log[axis=y]",
+    "A": "minecraft:acacia_log[axis=y]",
+    "S": "minecraft:spruce_log[axis=y]",
+    "d": "minecraft:dark_oak_leaves[persistent=true]",
+    "o": "minecraft:oak_leaves[persistent=true]",
+    "b": "minecraft:birch_leaves[persistent=true]",
+    "j": "minecraft:jungle_leaves[persistent=true]",
+    "a": "minecraft:acacia_leaves[persistent=true]",
+    "s": "minecraft:spruce_leaves[persistent=true]"
+  },
+  "layers": [
+    [".......", ".......", ".A..S..", ".......", "..B..J.", ".......", ".D.O..."],
+    [".......", ".......", ".A..S..", ".......", "..B..J.", ".......", ".D.O..."],
+    [".......", ".......", ".A..S..", ".......", "..B..J.", ".......", ".D.O..."],
+    [".......", ".......", ".a..s..", ".......", ".bb..J.", ".......", ".d.oo.."],
+    [".......", ".......", ".......", ".......", "....jj.", ".......", "......."]
+  ],
+  "guessed": [
+    "six single-column trees (dark oak, oak, birch, jungle, acacia, spruce); positions estimated by perspective",
+    "grey-bark back-left tree read as acacia, dark back-right tree read as spruce; their leaf caps partly hidden",
+    "lighter floor patches ignored (all grass_block)",
+    "leaves rendered green in the render (uniform tint); per-species leaves used to match logs"
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "id": "swingset",
+  "name": "Swingset",
+  "debut": "MCC 10",
+  "stars": 3,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Swingset.png",
+  "floor": [
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg"
+  ],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "f": "minecraft:birch_fence",
+    "c": "minecraft:cut_copper"
+  },
+  "layers": [
+    [
+      "f.....f",
+      ".......",
+      ".......",
+      ".......",
+      "f.....f",
+      ".......",
+      "......."
+    ],
+    [
+      "f.....f",
+      ".......",
+      "...c...",
+      ".......",
+      "f.....f",
+      ".......",
+      "......."
+    ],
+    [
+      "f.....f",
+      "f.....f",
+      "...f...",
+      "f.....f",
+      "f.....f",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "f.....f",
+      "f..f..f",
+      "f.....f",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "fffffff",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "A-frame legs modelled as stepped fences (rows 0/4 up to the beam at row 2); exact rows estimated from perspective",
+    "seat read as cut copper; small side nubs on the seat ignored",
+    "right side mirrored from the left"
+  ]
+}

@@ -1,0 +1,94 @@
+# Clouds 2 - Electric Boogaloo, played in the imported world. Rules are the map's own command blocks, per player.
+name: "Clouds 2"
+world: mcc_clouds2
+laps: 1
+time-limit: 600
+start: [5.5, 4.0, 24.5, 180.0]
+pen: [-1, 4, 22, 11, 4, 27]
+gate: [-2, 4, 20, 12, 6, 20]
+open:
+  - [-3, 4, 29, 12, 6, 29]
+finish: [-3, 3, 19, 13, 10, 21]
+waypoints:
+  - [-245, -64, -270, -85, 320, -245]
+  - [-20, -64, 195, 70, 320, 270]
+void-y: -59
+# No trident at the start: the yellow checkpoint pads hand it out before the water sections.
+trident: {give: false, riptide: 1, unbreaking: 3}
+# The five light-blue rings of the sky flight (leg L8) boost a gliding player forward.
+boost-strength: 2.2
+# The yellow chevron/checkpoint pads become green arrows (purple glazed in the pack). They keep the map makers'
+# own facings, which follow the racing line (593 of 595 agree with their neighbours); the 2 lone pads by the start
+# point along the route below instead. (Playtest: the route-only facing got ~30% of the pads wrong on the bends.)
+arrow-pads: {from: yellow_glazed_terracotta, to: purple_glazed_terracotta, facing: keep, area: [-260, -64, -290, 90, 60, 290]}
+route:
+  - [5, 24]
+  - [5, -10]
+  - [5, -50]
+  - [8, -140]
+  - [20, -215]
+  - [0, -256]
+  - [-88, -256]
+  - [-240, -256]
+  - [-160, -190]
+  - [-158, -161]
+  - [-158, -147]
+  - [-194, -80]
+  - [-140, -73]
+  - [-196, -27]
+  - [-159, 34]
+  - [-150, 75]
+  - [-150, 210]
+  - [-150, 265]
+  - [-13, 265]
+  - [25, 201]
+  - [15, 60]
+  - [5, 20]
+boost-rings:
+  - [-158, -18, -147, 7]
+  - [-194.5, -40, -80.5, 7]
+  - [-140.5, -31, -73.5, 7]
+  - [-196, -45, -27, 7]
+  - [-159, -50, 34, 7]
+bank-range: 150
+banks:
+  A: [-153, 186]
+  B: [-175, -197]
+  C: [-2, -130]
+  D: [-1, -10]
+  E: [35, 232]
+  F: [42, -273]
+  START: [-25, 25]
+always:
+  - "effect conduit_power inf 255"
+  - "effect dolphins_grace inf 0"
+  - "effect glowing inf 0"
+  - "effect saturation inf 255"
+  - "effect water_breathing inf 255"
+  - "effect weakness inf 255"
+rules:
+  # The map wiped every inventory on calcite (the terraces); that also took the trident before the pools, so it only drops the elytra.
+  - "* | 0 -1 0 | calcite | item armor.chest air"
+  - "* | 0 -1 0 | yellow_glazed_terracotta | item hotbar.0 trident ; item armor.chest air ; checkpoint ; effect speed 3 2 ; sound block.chain.break"
+  - "* | 0 -1 0 | green_glazed_terracotta | uneffect jump_boost ; effect slowness 1 0 ; uneffect speed"
+  - "* | 0 -1 0 | red_terracotta | item armor.feet depth_boots"
+  - "* | 0 -2 0 | red_terracotta | item armor.feet depth_boots"
+  - "* | 0 -3 0 | red_terracotta | item armor.feet depth_boots"
+  - "* | 0 -4 0 | red_terracotta | item armor.feet depth_boots"
+  - "* | 0 -5 0 | red_terracotta | item armor.feet depth_boots"
+  - "* | 0 -1 0 | air | item armor.feet air"
+  - "* | 0 0 0 | cave_air | item armor.chest air ; sound block.chain.step"
+  - "A | 0 -1 0 | lime_shulker_box | launch 1.22 0.4"
+  - "B,C,D | 0 -1 0 | lime_shulker_box | launch 1.12 0.4"
+  - "E,F | 0 -1 0 | lime_shulker_box | launch 1.02 0.4"
+  - "* | 0 -1 0 | lime_shulker_box | sound block.cave_vines.break"
+  - "* | 0 -1 0 | magenta_glazed_terracotta | effect jump_boost 1 3 ; effect speed 1 15 ; sound block.bell.use"
+  - "* | 0 -1 0 | red_glazed_terracotta | effect jump_boost 1 3 ; effect speed 1 15 ; sound block.bell.use"
+  - "* | 0 -1 0 | pink_glazed_terracotta | effect jump_boost 1 3 ; effect speed 1 15 ; sound block.bell.use"
+  - "* | 0 -1 0 | orange_shulker_box | effect speed 1 35 ; effect jump_boost 1 14 ; sound block.candle.extinguish"
+  - "A,B,F | 0 -1 0 | spruce_planks | item armor.chest elytra"
+  - "E | 0 -1 0 | andesite_slab | clear trident ; item armor.chest elytra"
+  - "START | 0 0 0 | stone_stairs | uneffect jump_boost"
+  - "START | 0 0 0 | stone_slab | uneffect jump_boost"
+  - "START | 0 -1 0 | stone_stairs | uneffect jump_boost"
+  - "START | 0 -1 0 | stone_slab | uneffect jump_boost"

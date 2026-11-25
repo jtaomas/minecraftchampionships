@@ -5,20 +5,21 @@ Runtime (mechanics) lives in `com.mcm.games.tgttos`; the 8 maps are pure-Java ge
 `com.mcm.games.tgttos.maps.a` / `.maps.b` behind the contract in `com.mcm.games.tgttos.model` (`TgMap`, `TgMapData`).
 
 ## How it plays
-- 6 rounds, each on a different random map (no repeats while there are >= 6 playable maps; with fewer, maps repeat and a warning is logged).
-- Pre-round 15 s in the start strip with the kit already in hand, held by the map's barrier blocks (plus a strip check that puts anyone outside back). Big title card with the map name, then a "3-2-1 / GO!" title. At GO the barrier (and on elytra maps the gantry floor) disappears.
-- Round: 100 s. Punch any named goal chicken (visible name tag, config `goal.chicken-name`, default "Punch me!") in the goal pen to finish. Decoy chickens wander near the pen wearing the same "Punch me!" tag; punching one only gets "haha lol" (`goal.decoy-message`) - see "Changes after playtest 2". Finish: placement title, red "Whack!" text, chicken sound, firework, chat line with place + time + points. Finishers become spectators, confined to the map's play box.
+- 5 rounds (`rounds`), each on a different random map: Laundry Line, Dam Face, Bookshelf Run, Ticket Gates, Quarry Steps (no repeats while there are enough playable maps; with fewer, maps repeat and a warning is logged). Elytra and boat maps (Kite Festival, Frozen Canal, imported ones) moved to the Race plugin; Orchard Drop was deleted (owner, feedback 3).
+- Pre-round 15 s in the start strip with the kit already in hand, held by the map's barrier blocks (plus a strip check that puts anyone outside back). Big title card with the map name, then a "3-2-1 / GO!" title. At GO the barrier disappears.
+- Round: 300 s (config `round-seconds`, owner change after playtest 2; was 100 s), cut short by the time skip once half the racers are in. Punch any goal chicken (visible name tag, config `goal.chicken-name`, default "Punch me!") in the finish row to finish. Every map ends in a row of goal chickens across the full width of the finish line, one every 2 blocks, on hay in front of a black / white chequered board under a striped arch with a FINISH sign (`model.FinishRow`). No decoys (`goal.decoys: false`, code kept). Finish: placement title, red "Whack!" text, chicken sound, firework, chat line with place + time + points. Finishers become spectators, confined to the map's play box.
 - Falling below the map, leaving the play box, entering a hazard region or touching a hazard block (lava always) sends you back to a random start spawn instantly with a fresh starting kit, and a chicken pun goes to chat.
-- No damage at all. Punches and snowballs only knock back. A map may turn on lethal falls (`lethalFallHeight()`, default off; Orchard Drop will use it): landing on anything but water after a fall of that many blocks sends you back to the start like a void fall, with a chat line - still no health damage. Players never collide (scoreboard team rule on every viewer's board).
-- Kits by map: bridging = 64 team-colour concrete (endless: the stack tops back up to 64 after every placement, `bridging.infinite-blocks` / `bridging.refill-delay-ticks`; owner decision, replaces the old 64-block limit) + iron pickaxe + 25 snowballs (SURVIVAL); parkour/doors = 25 snowballs (ADVENTURE); boat = seated in a boat + 25 snowballs; elytra = worn elytra + 2 fireworks; at GO the barrier opens but the gantry floor stays `elytra.floor-drop-delay-seconds` (default 3) so racers can punch each other off; knockback on a gliding player is added to their flight velocity (`knockback.glide-multiplier`). You can place only concrete, only on bridging maps, only into air inside the map's build box; you can break only player-placed concrete (anyone's), with no drops.
+- No damage at all. Punches and snowballs only knock back. A map may turn on lethal falls (`lethalFallHeight()`, default off; no TGTTOS map uses it since Orchard Drop was deleted): landing on anything but water after a fall of that many blocks sends you back to the start like a void fall, with a chat line - still no health damage. Players never collide (scoreboard team rule on every viewer's board).
+- Kits by map: bridging = 64 team-colour concrete (endless: the stack tops back up to 64 after every placement, `bridging.infinite-blocks` / `bridging.refill-delay-ticks`; owner decision, replaces the old 64-block limit) + iron pickaxe + 25 snowballs (SURVIVAL); parkour/doors/push = 25 snowballs (ADVENTURE). (The boat and elytra kits are still in the code but no TGTTOS map uses them.) You can place only concrete, only on bridging maps, only into air inside the map's build box; you can break only player-placed concrete (anyone's), with no drops.
 - Karma: **off by default (owner decision after playtest 2: karma off; `karma.enabled: false`)**. Off means no karma gain, no extra knockback, no glow or Slowness, no punch lock and no hit protection; the HUD hides it. The code is kept; with `karma.enabled: true`: punching raises your karma (more for the same victim within 5 s, none for punching a red player). Above 3 you take more knockback; at 6 you glow red and get Slowness I; at 9 you cannot punch for 4 s. Decays 0.35/s. Players who get hit a lot take up to 45% less knockback. Karma state is shown in the action bar.
-- Round ends when every online racer has finished or at 0:00. When 80% have finished the timer drops to 20 s. Placed blocks, boats, chickens and projectiles are removed between rounds.
-- After round 6: top-5 list in chat, each player's own round places, a 3-2-1 side placement reveal, then `finish` (exactly once).
+- Round ends when every online racer has finished or at 0:00. When half have finished (`time-skip.finished-fraction: 0.5`) the timer drops to 20 s. Placed blocks, boats, chickens and projectiles are removed between rounds.
+- After the last round: top-5 list in chat, each player's own round places, a 3-2-1 side placement reveal, then `finish` (exactly once).
 
-## Scoring (researched shape, scaled /5; config `points`)
-- Finishing place: 8 points for places 1-5, 7 for 6-10, ... minimum 1. Top-10 bonus 16, 15, ... 7. Non-finishers 0. So 1st = 24 per round.
-- Team bonus: the first 4 sides with 2+ online members who have all finished get 20 / 15 / 10 / 5, paid with `addSidePoints` (split evenly).
-- A perfect game is about 144 + team bonus.
+## Scoring (real MCC coins, TGTTOSAWAF; config `coins.*`, see `../COINS.md`)
+- Finishing place: 40 coins for 1st, 1 less per place (40, 39, 38, ...). Top-10 bonus 80, 75, ... 35. Non-finishers 0. So 1st = 120 per round.
+- Team bonus: the first 4 sides with 2+ online members who have all finished get the team pools 100 / 75 / 50 / 25; each member gets the MCC share (pool / 4).
+- Line bonus (ours, gate maps): medium 5, hard 15 per section, cap 75.
+- The core applies the event multiplier to every award.
 
 ## HUD
 - Boss bar timer (`ctx.setTimer`): pre-round countdown, then the round timer.
@@ -29,12 +30,12 @@ Runtime (mechanics) lives in `com.mcm.games.tgttos`; the 8 maps are pure-Java ge
 - Start barrier line that drops at GO; strip check during pre-round.
 - Respawn refills the starting kit; lava (and any map hazard block/region) = respawn; respawn point = random start spawn.
 - Finished players: spectator mode confined to the map (instead of the real finish pen with a spectate item).
-- Time skip 80% -> 20 s (MCC Island rule).
+- Time skip: once half of the racers (config `time-skip.finished-fraction: 0.5`, was 0.8; rounded up, 2+ players) have finished, the clock drops to 20 s (`seconds-left`) if more than that is left; broadcast + sound + sidebar "Time skip!". With 300 s rounds this, not the clock, normally ends a round.
 - Karma values: +1 per punch, +0.5 same victim within 5 s, decay 0.35/s, more knockback from 3 (+8%/point, max x1.8), red glow + Slowness I from 6, punch lock 4 s from 9; hit protection 7% per hit up to 45%, decays.
 - Knockback: punch 0.42 horizontal / 0.36 up, +0.35 when sprinting with a charged hit, weaker for uncharged hits; snowball **1.375 / 0.45** (owner-set after playtest 2: 2.5x the old 0.55 horizontal; not researched, no clamp) in the snowball's travel direction (`knockback.snowball` / `knockback.snowball-vertical`, no per-victim cooldown, same gliding handling as punches; a racer in a boat gets the boat pushed); 10-tick per-victim cooldown for punches. Snowball hits give no karma (`karma.snowball-hits-count: false`).
-- Iron pickaxe, no enchantments, unbreakable; **25 snowballs per attempt (owner-set after playtest 2; `kit.snowballs`)**, they don't regenerate but every respawn refills the kit; 2 fireworks on elytra maps.
-- 10 chickens per pen, AI on but teleported back if they leave the pen; invulnerable, no collision, no eggs. Goal chickens and decoys are persistent and their chunks are held by plugin tickets for the round (see the chicken bug below). Decoys: AI and gravity on, leashed 4 blocks round their spot (`goal.decoy-leash-radius`).
-- Endless concrete refill after 1 tick; elytra floor held 3 s after GO; gliding knockback x1.6.
+- Iron pickaxe, no enchantments, unbreakable; **25 snowballs per attempt (owner-set after playtest 2; `kit.snowballs`)**, they don't regenerate but every respawn refills the kit.
+- One goal chicken on every spot of the finish row (at least `chickens.count`), AI off (`chickens.wander: false`), sent back to their own spot if pushed; invulnerable, no collision, no eggs. Goal chickens and decoys are persistent and their chunks are held by plugin tickets for the round (see the chicken bug below). Decoys: AI and gravity on, leashed 4 blocks round their spot (`goal.decoy-leash-radius`).
+- Endless concrete refill after 1 tick.
 - 6 s intermission between rounds; maps use fixed seeds (`random-seeds: false`), turnstile/variant outcomes are re-rolled every round.
 - Punches, snowballs and fireworks are disabled before GO.
 
@@ -50,13 +51,13 @@ Runtime (mechanics) lives in `com.mcm.games.tgttos`; the 8 maps are pure-Java ge
 
 ## Maps and world
 - World `mcc_tgttos` (void) is deleted and recreated at every plugin enable. Map slot i is pasted at x = i * 600, local y 0 = world y 64.
-- Maps are loaded from `config.yml -> maps:` (fully-qualified class names; missing classes are skipped with a warning) plus auto-discovery of any `TgMap` class under `com.mcm.games.tgttos.maps.*` in the jar. `stub.StubBridgeMap` is a dev stub used only when fewer than 6 real maps load (`stub-map: auto`).
+- Maps are loaded from `config.yml -> maps:` (fully-qualified class names; missing classes are skipped with a warning) plus auto-discovery of any `TgMap` class under `com.mcm.games.tgttos.maps.*` in the jar. `stub.StubBridgeMap` is a dev stub used only when fewer real maps than rounds load (`stub-map: auto`). Imported community maps are no longer loaded by TGTTOS (Race takes elytra / boat imports; droppers go to the core Multi-Stage Dropper).
 - Each map is built once, off the main thread (one worker thread, pure Java), when the plugin enables or `/tg reload` runs, and checked (>= 40 spawns, >= 8 chickens, pen/strip/bounds present, no dyed concrete). A game started before that finishes waits for it. Pasting: see "Map loading and pasting" below.
 - Map lines, time estimates and route checks are documented by the map builders (see the map packages / previews).
 
 ## Acceptance checklist mapping
 1. 6 rounds, different maps, sidebar round n/6 + map - `TgttosGame.start/prepareRound/sidebar`.
-2. 100 s round, 15 s pre-round, held in strip, kit in hand - `beginPre`, `onTick` strip check, barrier blocks, `go`.
+2. 300 s round (time skip at half finished), 15 s pre-round, held in strip, kit in hand - `beginPre`, `onTick` strip check, barrier blocks, `go`.
 3. Kits by type - `giveKit` (+ boat seat in `placeAtStart`).
 4. Only player-placed concrete breakable; no placing on non-bridging maps - `canPlace/canBreak` + `GameListener.onPlace/onBreak`.
 5. Knockback-only, no collision, no fall/fire/lava death - `GameListener.onDamage`, `punch/snowballHit/knock`, `ScoreTeams`, world gamerules.
@@ -82,18 +83,6 @@ Runtime (mechanics) lives in `com.mcm.games.tgttos`; the 8 maps are pure-Java ge
 Both are `default` methods on `com.mcm.games.tgttos.model.TgMap`; override them in the map class. Existing maps compile unchanged.
 - `int lethalFallHeight()` - default `0` = off. `> 0`: a racer who lands on a non-water block after falling at least this many blocks (highest point since last standing / swimming / climbing / gliding / riding, minus landing height) is sent back to a start spawn with a fresh kit and a chat line. No damage.
 - `java.util.List<int[]> decoyChickens()` - default `List.of()`. Each entry `{x, y, z}` is the local feet block of one decoy (same local integer convention as `TgMapData.pen`); it stands at `(x + 0.5, y, z + 0.5)`. Since playtest 2 an empty list (now the norm) means the runtime scatters 6 wandering decoys with `model.DecoySpots.pick` (walkable, never ice / glass / roofs, outside hazards, >= 4 from the pen, on the later part of the map); validators use `DecoySpots.effective` so they check the same spots. Decoys wear the goal name tag, wander (leashed), are unkillable; punching one says `goal.decoy-message` ("haha lol"). Must be inside `playBounds` (validated). Real goal chickens (from `TgMapData.chickenSpawns`) always carry the visible name tag.
-## Orchard Drop (after playtest 1)
-Drop map, snowballs only, **lethal falls: `lethalFallHeight()` = 8** (only map with it). You start on a windmill gallery (feet y 60) and drop in three stages through a giant apple tree. Every landing is a pool of water 2 deep in a giant cut apple, or a pond in the meadow at the bottom. A fall of 8+ blocks onto anything else (apple rim, branch, canopy, meadow) sends you back to the gallery. Intended drops are 15-26 blocks; ordinary hops stay under 2. The limit of 8 also catches near misses onto the rim, which is 1 block above the water.
-- **SAFE (left):** big apples with 5-wide pools (tops y 40 and 22), each a 7-8 block jump-out. Then the big pond, the left hedge gaps, a 5-wide plank bridge far left, up the west side of the cider yard and round to the pen. Estimate: expert 32.4 s, median 42.2 s.
-- **FAST (right):** small apples with 3-wide pools, lower and further out (tops y 34 and 14). Each drop must be steered diagonally (gaps 8-10). Then the small pond, the right/middle hedge gaps, a 3-wide fallen branch over the void (choke, with a knot and twigs), and a 4-wide ledge along the yard's void edge with staggered barrels (2-wide squeezes). Estimate: expert 25.7 s, median 33.1 s (21% faster).
-- **Confusion at the bottom:** two hedge rows with three offset gaps each, a dead-end pocket and a loop. Three ways across the void: the branch, the plank bridge, and a broken bridge (dead end, 6 blocks of void). A barrel wall blocks the direct way into the yard. Two decoy pens hold 9 decoy chickens with no name tag: one in the inner yard, one in a dead-end pocket. The real pen sits under the cider tower with the giant apple (landmark). Lantern posts and bunting mark the real way. Two dry apples (no water) sit where careless jumpers aim. The middle canopy hides the lower stage from the gallery.
-- Validators (`tools/a`, extra checks in `maps/a/util/ExtraChecks.java`):
-  - every lethal-height drop on both lines lands in water at least 2 deep
-  - every dry surface within 5 blocks of a landing is a lethal fall
-  - all water is contained
-  - a "dry descent" search finds no way down from the gallery or any pool without a water landing
-  - decoys stand on solid ground outside the pen
-
 ## Bookshelf Run (after playtest 1)
 Parkour over the void, snowballs only, no lethal falls. Mouse-sized racers cross a giant library wall: short wall-shelf boards with gaps between them, chained books hanging from brass arms out over the room, and two wide brawl spots next to the drop. The goal is the teacup on the desk, under the desk lamp (landmark). The map is about 50% longer than before (start z 0, cup z 137).
 - **FAST (outer):**
@@ -112,83 +101,6 @@ Parkour over the void, snowballs only, no lethal falls. Mouse-sized racers cross
   Void crossings: 6, gaps 2, plus the 12-block drop to the drawer. 36% of walked cells have a void drop beside them. Estimate: expert 33.7 s, median 44.2 s (fast 21% faster).
 - **Brawl spots:** the open atlas (26 x 13, 320 cells, 50 on a void edge) before the pencil, and the dictionary on a book tower (24 x 12, 288 cells, 53 on a void edge) before the final descent.
 - Jump limits are well inside the game's movement: safe flat gaps <= 3 (actually 2), fast <= 4 with run-up (1.21, no effects). The validator reports every void crossing per line.
-
-## Kite Festival (rebuild after playtest 1)
-Elytra map (`maps/b/KiteFestival.java` + `KiteCourse.java`, same class name / slot / start-strip / pen conventions). The old map took about 10 s and had no contact. Now it is a long folded canyon: 4 straight legs joined by 3 hairpins (radius 55, interior 37 wide), about **1,430 blocks of centre line**. The safe line flies about 1,540 blocks and the fast line about 1,330. You start on a gantry at y 173 and descend to a landing meadow at y -45. Kite-banner walls (striped canvas, bunting, lights) carry the gates. Colour code: **lime = safe 9-11**, **orange = fast 5-7**, **red = needle 4x4 / 5x5**. Every opening has a black frame and a froglight (or sea-lantern) ring.
-
-**Segments:**
-1. Launch Gantry (the floor drops 3 s after GO)
-2. Drop Gate Run (three 11s; the third adds a fast 7)
-3. Canyon Slalom
-4. Turn 1
-5. Tunnel Split (11x11 tube vs 5x5 tube with bends)
-6. Lift Hill (the fast 6s climb, the safe 9s weave below)
-7. Ring Stack (low 11 / mid 7 / high 5)
-8. Tether Forest (mast rows with full-height slots)
-9. Turn 2
-10. Dive & Pull-up
-11. Needle (three 4x4 in a straight line; safe detours through 9s)
-12. S-Canyon
-13. Turn 3
-14. Finish & Field (15x15 finish frame, then a 2-high hedge choke with a 3-wide gap, then the pen)
-
-**Punching spots:**
-- the gantry
-- 5 wall ledges (ladder towers from the meadow with open 5x5 platforms; three are mid-hairpin)
-- the landing field, with the choke and 4 decoy chickens on hay bales
-
-**Rockets:** 2 from the kit plus 14 from the map (`TgMapData.extraItems`) = 16. There are no refills, because the runtime has no ring, updraft or checkpoint hook. The chat kit line still says 2. Landing on the meadow is not a fail: relaunch with a rocket or climb a ledge. Leaving the canyon (76 hazard boxes outside the walls) sends you back to the start.
-
-**Validation:** `sh tools/b/kite_render.sh` writes `tools/b/out/kite_validation.txt` and the previews `previews/kite_festival_{top,iso,iso2,side,start}.png`.
-
-The glide model is the vanilla elytra tick. Steady glide: 0° gives 1:10.1 at 30 b/s; 20° gives 1:8.8 at 40 b/s; 40° gives 1:5.7 at 61 b/s. A rocket holds about 34 b/s. Turn scrub per tick is sqrt(0.82+0.18cos(lead)), so a hairpin taken at speed costs 25-40% of it. A pilot controller flies each line through the real blocks.
-
-The validator checks:
-- the gates and the 3D flood fill seal the canyon
-- both tubes are clear and closed
-- the landmark can be seen from the start
-- every ledge relaunches onto the safe line (at most 3 rockets)
-- the hazards cover everything outside the walls
-
-Results:
-
-| Line | Gates passed | Time | Rockets used |
-|---|---|---|---|
-| Safe line, 2 boosts per hairpin + rescue rockets | 27/27 | about 61 s | 6 |
-| Fast line, expert (a rocket whenever under 28 b/s) | 29/29 | about 43 s | 7 |
-
-- The fast line is 30% faster than the safe line.
-- Median estimate: about 85 s. Weak players: about 115 s, so they DNF at 100 s.
-- Without rockets, the safe line runs short of height in the S-canyon, and the fast line is not flyable. The course is built for rockets.
-- Block count: about 341k blocks. Generation takes about 0.2-0.5 s, and pasting is spread over ticks by the runtime paster (15 ms of block writes per tick, about 2-4 s of wall time, normally done during the previous round).
-
-**Defaults, not researched:**
-- rocket count (16)
-- ledge heights
-- choke width
-- glide-pilot parameters (gain 40, step 4, leak 0.1)
-- the median and weak multipliers (x1.2 / x1.35 plus landings)
-
-## Frozen Canal (lengthened after playtest 1)
-Boat map (`maps/b/FrozenCanal.java` + `CanalCourse.java`, same class name / slot / start lock / pen conventions). One continuous point-to-point boat run through a snowy canal town, folded inside the slot, then an on-foot scramble from the dock to the pen on the island in the frozen mere (Christmas-tree landmark). Track centre line **1,117 blocks** (safe), lanes 11-15 wide (93% of the main line >= 11), ice falls y 0 -> -6 in 1-block step-downs only, never up. Brick walls with stone copings contain the boats; nothing non-full at boat height.
-
-**Segments:** 1 Grid Straight (88) - 2 Mill Hairpin - 3 Weavers' Chicane - 4 Cellar Hairpin - 5 Cellar Steps (four 1-block step-downs) - 6 Fish Market split (walled ring vs the narrow raised blue-ice causeway, 5 wide, open edges) - 7 Brewery Bend - 8 Blue Mile (168 straight, blue-ice stripe, three arch bridges) - 9 Bell Switchbacks (two hairpins under the bell footbridge) - 10 Tannery Sweeper - 11 Lantern Bend - 12 Barge Basin (moored barges, 3-wide fast gaps) + finish straight to the dock. Low footbridges at the grid (headroom 2) and the cellar (4); dolphins (mooring posts) on the chicane.
-
-**Lines** (boat model from the vanilla ice speeds: packed ice ~40 b/s top, blue ice ~73, snow/land ~2; turn caps by radius):
-
-| Line | Boat | On foot | Expert total |
-|---|---|---|---|
-| SAFE: middle of the lane, Fish Market ring, wide barge gaps, quay side flight + east bridge | 1,103 blocks, 47.0 s | 61 blocks, 10.3 s | 58 s |
-| FAST: inside kerbs, causeway, blue stripe, 3-wide barge gaps, Dock Stairs + 3-wide jetty (brawl) | 1,061 blocks, 40.8 s | 41 blocks, 7.1 s | 49 s |
-
-At the researched expert pace (~30 b/s average on packed ice) the fast line is ~36 s boat + 8 s = **~44 s**; the conservative model above says 49 s. Median: ~80-85 s by safe length / 19 b/s + crowd; the validator's formula (x1.5 boat + 8 s) says ~90 s. Knocked off the jetty onto the mere: back to the pen in 5.5 s.
-
-**Mechanics support missing** (so no mid-race boat change): map-declared boat depots that hand an on-foot racer a fresh boat of their own, a Le Mans start with boats to claim, and checkpoints / per-segment respawn (a fall means a full restart, so the map has no lethal holes). Racers can leave their boat at any time but can only re-enter their own.
-
-**Validation:** `sh tools/b/canal_quarry_render.sh frozen_canal` (report `tools/b/out/canal_quarry_validation.txt`, previews `previews/frozen_canal_{top,iso,iso2,side,start}.png`). Checks: boat continuity start lock -> dock (downhill only), no trap pockets, closed walls, no snags, drops <= 1, lane width, bridge headroom, no on-foot escape into the town before the finish, both foot routes, the start lock holds 40 boats, plus the common contract / start / post-pass / staircase / landmark checks. About 134k blocks, generated in ~0.4-0.6 s.
-
-**Defaults, not researched:** turn-cap model and the x1.5 median factor, barge and dolphin spacing, 2-block headroom under the grid footbridges.
-**Unverified (needs a live test):** seated riders under the 2-headroom footbridges, 1-block step-downs at full speed, boats at the causeway's open edges, 40-boat pile-ups at the hairpins, chunk loading at blue-ice speed.
 
 ## Quarry Steps (rebuilt after playtest 1)
 Push + bridge map (`maps/b/QuarrySteps.java`, same class name / slot / start strip / pen conventions). Bigger: the bowl is 55 x 52 (was 39 x 38), and the yard on top runs to z 130.
@@ -223,12 +135,6 @@ The fake coops are gone (Quarry Steps: plain sandstone tiles; Orchard Drop: D1 i
 - **Bonus regions**: tier 1 orange / 2 red / 3 brutal; the best tier per group pays once, only on finishing, capped (`bonus.enabled`, `bonus.tier-points [1,2,3]`, `bonus.cap 8`; 1st place is 24, so a perfect hard line is worth a third of a win). Shown in the title, results and chat ("+N line").
 - All features stop and restore their blocks at round end. `/tg info` shows feature status.
 
-### Kite Festival features
-Glider's Challenge (MIT) letterbox sequence on drops 1-2, red / brutal holes added to the existing screens, fire-ring frames on the ring stack, six movers (wrecking ball, turn 1 / turn 2 pendulums, lift fan, windmill, needle shutter; all clear of the lime line at every phase, open >= 50% of the time for the orange / red lines - `tools/b/KiteV`), 5 ledge checkpoints, 8 gold refill openings (+2 rockets), 6 rockets up front, 33 bonus openings in 5 groups.
-
-### Frozen Canal features
-Blue Mile pendulum (edges always clear), causeway lock gate (iron bars, 3 s open / 1.5 s shut, lintel goes red 1 s before), Blue Mile slush strip (blue ice -> snow 2 s every 7 s, wall lamps warn), 5 checkpoints, 2 boat depots, bonus regions on the hairpin inside kerbs, the lock gate and the blue stripe (`tools/b/CanalV`).
-
 ### Ticket Gates
 Lengthened (owner: expert 25-35 s): a third live track (T3 = 70), a queue hall of single-file ticket barriers, plaza and clock tower moved 56 along; expert 25.1 s, safe 33.6 s (`TicketV` checks the window). The three coupling anvils are traps: 0.4 s after a racer lands on one it creaks, then drops with its iron-bar stand into the live pit (hazard = respawn); it is back 3 s later once the cell is empty. The fast line over the couplings now needs a quick hop.
 
@@ -249,3 +155,12 @@ Void holes in the grating, at the toe walkway ends, the terrace-end slits, the c
   - A participant who has already finished this round, or who joins during the intermission, spectates the current map. While the next map is still loading, the core default applies; the next round then places every participant at the start.
   - Non-participants become spectators at the map's overview point and are confined to its play box. They are also kept out of other slots.
 - Round announcement: the kit text is counted from a racer's real inventory after the kit is given (base kit plus the map's `extraItems`), e.g. "Elytra, 18 fireworks" on Kite Festival.
+
+
+## Changes after feedback 3 (owner)
+- **Split:** Kite Festival, Frozen Canal, the imported-map loader, the elytra crash rule and the boat handling now live in the Race plugin (`game-plugins/Race`, see its README). Orchard Drop is deleted. TGTTOS is jumping, building and snowball fights only.
+- **Round timing:** `round-seconds: 300` (was 100), `time-skip.finished-fraction: 0.5` (was 0.8). The time skip (half finished -> 20 s left) is what normally ends a round now; `TgttosGame.onTick` checks it every second (2+ racers, rounded up, only if more than 20 s are left).
+- **Finish rows:** every map ends at a full-width row of goal chickens (`model.FinishRow.build`): Laundry Line roof C z 78 (16 chickens), Dam Face crest z 55 (16), Bookshelf Run back of the desk z 159 (14; the teacup stays as a landmark in the way), Ticket Gates plaza z 138 wall to wall (20), Quarry Steps far yard z 105 (18) with an open apron in front. Validators (`FinishRow.check`, every map): >= 8 chickens in one straight row, spacing 1.5-2.5, a standing cell in front of every chicken, >= 75% in sight from the approach (8-16 blocks out, eye height).
+- **Decoys gone:** `goal.decoys: false`; no fake pens (Quarry Steps' former pens are plain tiles).
+- **Dam Face holes (playtester, world 582,65,15 and 603,87,35):** (1) the play box ended at x -19 / 18 while the training walls, apron and side lids run out to x -21 / 20, so stepping onto the outer columns was an instant respawn ("killbox") - play box widened; (2) the dam was a hollow 2-thick shell, open to the void underneath, with a 1-high slot under every tier's face - the core is now solid (`fillCore`); (3) gaps between the playfield and the noisy canyon rock at every height were filled (`sideFill`, `sealSides` down to solid ground), the start strip's side walls are as wide as the apron; (4) the canyon rim is kept out of reach (y >= 46 from z 8), a rock bank closes the reservoir's far shore, rail gaps let a swimmer climb back onto the footbridge, and an invisible barrier curtain (x -22 / 21, z -10 / 108) encloses the map. **Why the old validator missed them:** it ran on seed 20261124 while the server builds each map with `id.hashCode() * 2654435761L` (the canyon noise differs), it only looked beside cells reachable on foot inside the design search box, and it ignored the play box edge. The validators now use the in-game seed (`model.Seeds`), and the new `EscapeScan` floods walking / jumping / falling anywhere, every holdable cell of the build box (bridging kit), and 6-block snowball knockback from every standing cell, failing on any reachable void column, any exit from the play box, any dead-end pocket and any hazard block.
+- **Known regressions, reported:** Bookshelf Run's fast line no longer beats the safe line (the drop-into-the-cup goal was what made the safe line long; `minFastSave` 0); Orchard is gone; Ticket Gates' fast line saves 19.6% (check lowered to 18%).

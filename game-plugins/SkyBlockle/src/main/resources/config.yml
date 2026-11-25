@@ -11,13 +11,15 @@ grace-seconds: 0
 # Victory pause before the core takes everyone back to the lobby.
 end-delay-seconds: 8
 
-# ---------------------------------------------------------------- scoring (confirmed 70/10/150 scaled to 14/2/30)
-points:
-  kill: 14
+# ---------------------------------------------------------------- MCC coins (confirmed 70/10/150)
+# Base x1.0 values; the core applies the event multiplier. Source: MCC wiki, Skyblockle "Coin Rewards"
+# (https://mcchampionship.fandom.com/wiki/Skyblockle; research/mcc_archive/skyblockle/skb-1). See game-plugins/COINS.md.
+coins:
+  kill: 70
   # to every OTHER living player each time a player dies
-  survive-death: 2
+  survive-death: 10
   # to every player still alive when the game ends (last side standing or time-out)
-  alive-at-end: 30
+  alive-at-end: 150
   # team kills give nothing (confirmed); friendly fire is off (confirmed)
   team-kill: 0
 

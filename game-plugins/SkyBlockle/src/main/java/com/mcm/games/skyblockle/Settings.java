@@ -40,10 +40,11 @@ final class Settings {
         s.countdownSeconds = Math.max(0, c.getInt("countdown-seconds", 10));
         s.graceSeconds = Math.max(0, c.getInt("grace-seconds", 0));
         s.endDelaySeconds = Math.max(1, c.getInt("end-delay-seconds", 8));
-        s.killPoints = c.getInt("points.kill", 14);
-        s.surviveDeathPoints = c.getInt("points.survive-death", 2);
-        s.aliveAtEndPoints = c.getInt("points.alive-at-end", 30);
-        s.teamKillPoints = c.getInt("points.team-kill", 0);
+        // MCC coins (classic Skyblockle; base x1.0, the core applies the event multiplier). See game-plugins/COINS.md.
+        s.killPoints = c.getInt("coins.kill", 70);                // MCC: personal elimination
+        s.surviveDeathPoints = c.getInt("coins.survive-death", 10); // MCC: every time another player dies, you alive
+        s.aliveAtEndPoints = c.getInt("coins.alive-at-end", 150);  // MCC: survived the entire game
+        s.teamKillPoints = c.getInt("coins.team-kill", 0);
         s.killCreditSeconds = Math.max(0, c.getInt("kill-credit-seconds", 10));
         for (String t : c.getStringList("timeout-tiebreak")) s.tiebreak.add(t.toLowerCase(Locale.ROOT).trim());
         if (s.tiebreak.isEmpty()) s.tiebreak.addAll(List.of("players-alive", "kills"));

@@ -12,6 +12,9 @@ import com.mcm.games.tgttos.model.TgMapData.Pos;
 import com.mcm.games.tgttos.model.TgMapData.Region;
 import com.mcm.games.tgttos.model.TgMapData.Spawn;
 
+import com.mcm.games.tgttos.model.MapFeatures;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,7 +45,12 @@ public final class BookshelfRunMap extends AMap {
     @Override public String id() { return "bookshelf_run"; }
     @Override public String displayName() { return "Bookshelf Run"; }
     @Override public MapType type() { return MapType.PARKOUR; }
-    @Override public Kit kit() { return Kit.SNOWBALLS_ONLY; }
+    // owner: "people have blocks as well" - the usual TGTTOS kit (concrete, pickaxe, snowballs); building is boxed in below
+    @Override public Kit kit() { return Kit.CONCRETE_PICKAXE_SNOWBALLS; }
+    @Override public MapFeatures features() { return feats(); }
+
+    /** Everything from the drawer / coins on moved this far along z to make room for the page-turner section. */
+    static final int DZ = 44;
 
     private Gen g;
     static final String PAGES = "smooth_sandstone";
@@ -66,30 +74,46 @@ public final class BookshelfRunMap extends AMap {
         brawlAtlas();
         section2();
         brawlDictionary();
+        pageTurner();
+        fallingBookLanding();
         deskAndCup(d);
         section3();
+        // feedback 3: the finish is a row of goal chickens across the back of the desk (was a pen inside the teacup);
+        // the cup now sits in the way: over it (letter opener, rim, drop) is the fast way, round the saucer the safe one
+        com.mcm.games.tgttos.model.FinishRow.build(d, -17, 9, -12, 159 + DZ, 1, "dark_oak_planks");
+        deskFanMount();   // x 10 is the room wall
         lamp(de);
         roomScenery();
         // desk clutter: no free sprint on the desk
-        List<Region> keep = List.of(Region.of(-10, -12, 126, 11, 0, 147), Region.of(-2, -12, 142, 2, 0, 150), Region.of(-16, -12, 116, -10, -10, 124));
-        g.breakRuns(-18, 16, 117, 160, -11, 8, keep, "bone_block[axis=y]", "white_terracotta", "yellow_terracotta",
+        List<Region> keep = List.of(Region.of(-18, -12, 156 + DZ, 10, -5, 161 + DZ), Region.of(-10, -12, 126 + DZ, 11, 0, 147 + DZ),
+                Region.of(-2, -12, 142 + DZ, 2, 0, 150 + DZ), Region.of(-16, -12, 116 + DZ, -10, -10, 124 + DZ), Region.of(-8, -12, 153 + DZ, -1, -5, 157 + DZ));
+        g.breakRuns(-18, 16, 117 + DZ, 160 + DZ, -11, 8, keep, "bone_block[axis=y]", "white_terracotta", "yellow_terracotta",
                 "brown_mushroom_block[down=true,east=true,north=true,south=true,up=true,west=true]");
 
         d.voidY = -22;
-        d.playBounds = Region.of(-24, -26, -2, 14, 36, 164);
+        // feedback 3: with the finish a full-width row on the desk, the safe line (drawer stair) reaches the row about as
+        // fast as the fast line (coins, letter opener); the old "drop into the cup" goal was what made the safe line long.
+        // Known regression, reported - the check only asks that FAST is not slower.
+        de.minFastSave = 0.0;
+        de.maxExpert = 50;
+        d.playBounds = Region.of(-24, -26, -2, 14, 36, 164 + DZ);
+        // blocks: only along the run (no building up over the shelves, none in the start)
+        d.buildBounds = Region.of(-20, -14, 13, 9, 16, 162 + DZ);
         d.overviewPoints.add(new Spawn(-28, 22, 30, -60f, 30f));
         d.overviewPoints.add(new Spawn(-6.5, 12, -8, -20f, 20f));
         d.notes.put("fastLine", "chained books over the void (gaps 3-4), pencil choke, chained notebooks, coin stacks into the cup");
         d.notes.put("safeLine", "shelf boards with 2-gaps, ruler bridge, ruler stair down, bookmark ribbon, stair up, drawer stair, round the saucer, spoon");
-        d.notes.put("brawlSpots", "open atlas z 41-53, dictionary z 95-106");
+        d.notes.put("brawlSpots", "open atlas z 41-53, dictionary z 95-106, falling-book landing z 137-150");
+        d.notes.put("movers", "pocket watch over the atlas, books sliding out of the wall (safe line, section 2), six flipping pages over the open book spine, seven falling books on the landing, desk fan before the row");
 
-        de.searchBox = Region.of(-24, -24, -2, 13, 30, 162);
-        de.lane.add(Region.of(-20, -30, -4, 9, 30, 160));
-        de.sprintExempt.add(Region.of(-24, -12, 117, 16, -10, 162));    // desk top crossings checked per line
+        de.searchBox = Region.of(-24, -24, -2, 13, 30, 162 + DZ);
+        de.lane.add(Region.of(-20, -30, -4, 9, 30, 160 + DZ));
+        de.sprintExempt.add(Region.of(-24, -12, 117 + DZ, 16, -10, 162 + DZ));    // desk top crossings checked per line
         de.voidReport = true;
         de.minVoidCrossings = 6;
         de.brawl.add(Region.of(-16, 3, 41, 9, 4, 53));
         de.brawl.add(Region.of(-14, 1, 95, 9, 2, 106));
+        de.brawl.add(Region.of(-14, 1, 137, 9, 2, 150));
 
         Design.Line fast = de.line("FAST", false, true);
         fast.description = "three chained books over the void (gaps 3-4, +1/-1), the open atlas, the 3-wide pencil (choke), the dictionary stack, "
@@ -97,14 +121,18 @@ public final class BookshelfRunMap extends AMap {
         fast.leg("brawl 1", Region.of(-16, 3, 41, 9, 3, 53), Region.of(-18, 0, 0, -1, 14, 53))
             .leg("dictionary stack", Region.of(-11, 3, 69, 0, 3, 76), Region.of(-17, 0, 40, 9, 14, 77))
             .leg("brawl 2", Region.of(-14, 1, 95, 9, 1, 106), Region.of(-14, -2, 66, 2, 14, 107))
-            .leg("cup", d.pen, Region.of(-14, -12, 94, 2, 6, 150));
+            .leg("page spine", Region.of(-4, 1, 130, -2, 1, 134), Region.of(-14, -1, 95, 9, 14, 135))
+            .leg("landing", Region.of(-14, 1, 137, 9, 1, 150), Region.of(-14, -1, 128, 9, 14, 151))
+            .leg("cup", d.pen, Region.of(-14, -12, 136, 2, 6, 150 + DZ), Region.of(-18, -12, 140 + DZ, 10, 0, 162 + DZ));
         Design.Line safe = de.line("SAFE", false, false);
         safe.maxGap = 3;
         safe.description = "boards against the wall (2-gaps), 3-wide ruler bridge, the open atlas, 3-wide ruler stair down, 2-gap, 2-wide bookmark ribbon, "
                 + "2-gap, stair up to the dictionary, stair down to the drawer, round the saucer, up the spoon, drop in";
         safe.leg("brawl 1", Region.of(0, 3, 41, 9, 3, 53), Region.of(0, 0, 0, 9, 14, 53))
             .leg("brawl 2", Region.of(-14, 1, 95, 9, 1, 106), Region.of(0, -6, 41, 9, 14, 106))
-            .leg("cup", d.pen, Region.of(-14, 0, 95, 9, 2, 106), Region.of(-16, -12, 107, -8, 1, 123), Region.of(-18, -12, 117, 16, -5, 162));
+            .leg("page spine", Region.of(-4, 1, 130, -2, 1, 134), Region.of(-14, -1, 95, 9, 14, 135))
+            .leg("landing", Region.of(-14, 1, 137, 9, 1, 150), Region.of(-14, -1, 128, 9, 14, 151))
+            .leg("cup", d.pen, Region.of(-14, 0, 137, 9, 2, 150), Region.of(-16, -12, 107 + DZ, -8, 1, 123 + DZ), Region.of(-18, -12, 117 + DZ, 16, -5, 162 + DZ));
     }
 
     // ------------------------------------------------------------------ helpers
@@ -158,7 +186,7 @@ public final class BookshelfRunMap extends AMap {
     // ------------------------------------------------------------------ room
 
     private void room() {
-        for (int z = -8; z <= 166; z++) for (int y = -24; y <= 40; y++) {
+        for (int z = -8; z <= 166 + DZ; z++) for (int y = -24; y <= 40; y++) {
             String s;
             if (y < -14) s = (Math.floorMod(z, 6) == 0) ? "stripped_dark_oak_wood[axis=y]" : "dark_oak_planks";
             else if (y == -14) s = "dark_oak_slab[type=top]";
@@ -170,30 +198,30 @@ public final class BookshelfRunMap extends AMap {
             boolean mullion = window && (Math.floorMod(x, 7) == 0 || y == 12);
             String s = window ? (mullion ? "white_terracotta" : "light_blue_stained_glass") : (Math.floorMod(x, 6) < 2 ? "green_terracotta" : PAGES);
             if (y < -14 && !window) s = "dark_oak_planks";
-            g.set(x, y, 168, s);
+            g.set(x, y, 168 + DZ, s);
         }
-        for (int y = -12; y <= 33; y++) for (int x = -19; x <= -15; x++) g.set(x, y, 167, (x + y) % 3 == 0 ? "red_nether_bricks" : "red_wool");
-        for (int y = -12; y <= 33; y++) for (int x = 15; x <= 19; x++) g.set(x, y, 167, (x + y) % 3 == 0 ? "red_nether_bricks" : "red_wool");
-        for (int x = -21; x <= 21; x++) g.set(x, 34, 167, "gold_block");
+        for (int y = -12; y <= 33; y++) for (int x = -19; x <= -15; x++) g.set(x, y, 167 + DZ, (x + y) % 3 == 0 ? "red_nether_bricks" : "red_wool");
+        for (int y = -12; y <= 33; y++) for (int x = 15; x <= 19; x++) g.set(x, y, 167 + DZ, (x + y) % 3 == 0 ? "red_nether_bricks" : "red_wool");
+        for (int x = -21; x <= 21; x++) g.set(x, 34, 167 + DZ, "gold_block");
         for (int x = -2; x <= 10; x++) for (int y = 14; y <= 26; y++) {
             double dd = Math.hypot(x - 4, y - 20);
-            if (dd <= 6) g.set(x, y, 208, dd < 4.5 ? "glowstone" : "shroomlight");
+            if (dd <= 6) g.set(x, y, 208 + DZ, dd < 4.5 ? "glowstone" : "shroomlight");
         }
     }
 
     /** Upper shelf (scenery) with giant books, above the whole run against the wall. */
     private void upperShelf() {
-        g.fill(-3, 25, -6, 9, 26, 90, walnut);
-        for (int z = -6; z <= 90; z++) g.set(-3, 26, z, "stripped_dark_oak_log[axis=z]");
+        g.fill(-3, 25, -6, 9, 26, 150, walnut);
+        for (int z = -6; z <= 150; z++) g.set(-3, 26, z, "stripped_dark_oak_log[axis=z]");
         int z = -5, i = 3;
-        while (z < 88) {
+        while (z < 148) {
             int t = 2 + (int) (g.rnd(z, 0, 0, 3) * 3);
             int h = 9 + (int) (g.rnd(z, 0, 0, 4) * 6);
             if (g.rnd(z, 1, 1, 5) < 0.12) { z += 2; continue; }
-            book(-2, 7, 27, 26 + h, z, Math.min(89, z + t - 1), cover(i++), true);
+            book(-2, 7, 27, 26 + h, z, Math.min(149, z + t - 1), cover(i++), true);
             z += t;
         }
-        for (int zz = -2; zz <= 88; zz += 15) for (int k = 0; k < 6; k++)
+        for (int zz = -2; zz <= 148; zz += 15) for (int k = 0; k < 6; k++)
             for (int x = 9 - k; x <= 9; x++) g.set(x, 24 - k, zz, x == 9 - k ? Gen.st("dark_oak", "west", true) : "dark_oak_planks");
     }
 
@@ -266,6 +294,8 @@ public final class BookshelfRunMap extends AMap {
         g.set(3, 3, 46, "candle[candles=3,lit=true,waterlogged=false]");
         g.fill(-11, 3, 45, -10, 3, 45, "white_terracotta");
         book(1, 9, 3, 7, 47, 48, "cyan_terracotta", true);         // a standing book on the open pages: go round it
+        for (int y = 16; y <= 24; y++) g.set(-3, y, 44, "chain[axis=y]");   // the pocket watch hangs from the upper shelf
+        g.set(-3, 15, 44, "lightning_rod[facing=down,powered=false,waterlogged=false]");
     }
 
     // ------------------------------------------------------------------ section 2
@@ -331,59 +361,193 @@ public final class BookshelfRunMap extends AMap {
         g.set(-9, 1, 103, "white_terracotta");
     }
 
+    // ------------------------------------------------------------------ page turner: run the spine while the pages flip
+
+    /** Spine walkway of the giant open book (x -4..-2, top 0, feet 1), z PAGE_Z1..PAGE_Z2. */
+    static final int PAGE_Z1 = 109, PAGE_Z2 = 134;
+    /** Page hinges along the spine (z of each page centre). */
+    static final int[] PAGE_ZS = {110, 114, 118, 124, 128, 132};
+    /** The binding is torn: a 2-gap across the whole book (two halves of the run, each under 15 to sprint). */
+    static final int TEAR_Z1 = 121, TEAR_Z2 = 122;
+    static final int PAGE_PERIOD = 64;
+
+    private void pageTurner() {
+        // the book tower from the floor far below
+        book(-15, 9, -40, -26, PAGE_Z1, PAGE_Z2, "brown_terracotta", false);
+        book(-14, 8, -25, -12, PAGE_Z1 + 1, PAGE_Z2 - 1, "green_terracotta", false);
+        book(-15, 9, -11, -3, PAGE_Z1, TEAR_Z1 - 1, "blue_terracotta", false);
+        book(-15, 9, -11, -3, TEAR_Z2 + 1, PAGE_Z2, "purple_terracotta", false);
+        // the open giant book: leather covers (y -2), page blocks either side of the spine (top -1), the spine (top 0)
+        for (int x = -14; x <= 8; x++) for (int z = PAGE_Z1; z <= PAGE_Z2; z++) {
+            if (z >= TEAR_Z1 && z <= TEAR_Z2) continue;
+            boolean spine = x >= -4 && x <= -2;
+            boolean rim = x == -14 || x == 8 || z == PAGE_Z1 || z == PAGE_Z2 || z == TEAR_Z1 - 1 || z == TEAR_Z2 + 1;
+            g.set(x, -2, z, "red_nether_bricks");
+            if (spine) {
+                g.set(x, -1, z, "red_terracotta");
+                g.set(x, 0, z, x == -3 ? ((z & 3) == 0 ? "gold_block" : "red_terracotta") : "red_nether_bricks");
+            } else if (rim) {
+                g.set(x, -1, z, "red_nether_bricks");
+            } else {
+                g.set(x, -1, z, (z % 4 == 2 && Math.abs(x + 3) > 2 && g.rnd(x, -1, z, 51) < 0.7) ? "black_terracotta" : pages.at(x, -1, z, g.seed));
+            }
+        }
+        // a bookmark ribbon hanging off the end of the spine, the hinge rings under each page
+        for (int y = -12; y <= -3; y++) g.set(-3, y, PAGE_Z2 + 1, "red_wool");
+        for (int pz : PAGE_ZS) { g.set(-4, 0, pz, "waxed_cut_copper"); g.set(-2, 0, pz, "waxed_cut_copper"); }
+    }
+
+    // ------------------------------------------------------------------ the falling-book landing
+
+    static final int LAND_Z1 = 137, LAND_Z2 = 150;
+    /** Falling books {x, z} (centres) over the landing; the first rows (z 137-139) stay clear for the checkpoint. */
+    static final double[][] DROPS = {{-10.5, 142.5}, {-4.5, 144.5}, {1.5, 141.5}, {6.5, 144.5}, {-8.5, 148.5}, {-1.5, 148.5}, {4.5, 148.5}};
+
+    private void fallingBookLanding() {
+        // a stack of giant books on a tower, top 0 (feet 1)
+        book(-14, 9, -40, -26, LAND_Z1 + 1, LAND_Z2 - 1, "black_terracotta", false);
+        book(-15, 9, -25, -3, LAND_Z1, LAND_Z2, "cyan_terracotta", false);
+        flatBook(-15, 9, -1, LAND_Z1, LAND_Z2, "crimson_planks");
+        for (int x = -14; x <= 9; x++) for (int z = LAND_Z1; z <= LAND_Z2; z++)
+            g.set(x, 0, z, (x == -14 || z == LAND_Z1 || z == LAND_Z2) ? "dark_prismarine" : (((x + z) % 7 == 0) ? "gold_block" : "warped_planks"));
+        // shadows: a dark square under each falling book shows where it lands
+        for (double[] dz : DROPS)
+            for (int x = (int) Math.floor(dz[0] - 1); x <= (int) Math.floor(dz[0] + 1); x++)
+                for (int z = (int) Math.floor(dz[1] - 1); z <= (int) Math.floor(dz[1] + 1); z++) g.set(x, 0, z, "black_terracotta");
+        // the chains the books hang from, up to the upper shelf
+        for (double[] dz : DROPS) for (int y = 14; y <= 24; y++) g.set((int) Math.floor(dz[0]), y, (int) Math.floor(dz[1]), "chain[axis=y]");
+        g.set(-3, 1, LAND_Z1 + 2, "candle[candles=4,lit=true,waterlogged=false]");
+        g.set(8, 1, LAND_Z1 + 1, "lantern[hanging=false,waterlogged=false]");
+    }
+
+    /** Pole of the desk fan in front of the finish row (the blades are a mover). */
+    private void deskFanMount() {
+        int z = 156 + DZ;
+        for (int y = -11; y <= -9; y++) g.set(-5, y, z, "waxed_copper_block");
+    }
+
+    // ------------------------------------------------------------------ moving parts and checkpoints
+
+    private static MapFeatures FEATURES;
+
+    public static synchronized MapFeatures feats() {
+        if (FEATURES != null) return FEATURES;
+        MapFeatures f = new MapFeatures();
+        // the pocket watch swings across the open atlas (brawl 1)
+        f.movers.add(MapFeatures.Mover.pendulum("pocket watch", -2.5, 15.5, 44.5, 'z', 55, 70, 0, List.of(
+                new MapFeatures.Box(-0.1, -9.5, -0.1, 0.1, 0, 0.1, "chain[axis=y]", false),
+                new MapFeatures.Box(-1.4, -12.0, -0.4, 1.4, -9.4, 0.4, "gold_block", true),
+                new MapFeatures.Box(-1.05, -11.65, -0.5, 1.05, -9.75, 0.5, "white_concrete", true),
+                new MapFeatures.Box(-0.1, -10.8, -0.55, 0.1, -9.9, 0.55, "black_concrete", false))));
+        // books shoved out of the wall across the low boards (safe line, section 2): hug the outer edge or time it
+        int k = 0;
+        for (double z : new double[]{62.5, 72.5}) {
+            k++;
+            f.movers.add(MapFeatures.Mover.slider("sliding book", 10, -3, z, -7, 0, 0, 40, 10, 20, k * 31, List.of(
+                    new MapFeatures.Box(0, 0, -0.5, 5, 2.6, 0.5, k == 1 ? "red_terracotta" : "blue_terracotta", true),
+                    new MapFeatures.Box(0, 0.4, -0.55, 0.4, 2.2, 0.55, "gold_block", true))));
+        }
+        // the flipping pages: each page is hinged on the spine and flops from one half of the book to the other;
+        // the hinge is under the walkway, so the spine is only safe while the page is lying down
+        for (int i = 0; i < PAGE_ZS.length; i++) {
+            f.movers.add(MapFeatures.Mover.pendulum("flipping page", -2.5, 0.2, PAGE_ZS[i] + 0.5, 'z', 86, PAGE_PERIOD, i * 9, List.of(
+                    new MapFeatures.Box(-0.15, 1.2, -1.4, 0.15, 8.8, 1.4, "smooth_quartz", true),
+                    new MapFeatures.Box(-0.18, 3.0, -1.0, 0.18, 3.3, 1.0, "black_concrete", false),
+                    new MapFeatures.Box(-0.18, 5.0, -1.0, 0.18, 5.3, 1.0, "black_concrete", false),
+                    new MapFeatures.Box(-0.18, 7.0, -1.0, 0.18, 7.3, 1.0, "black_concrete", false))).withSound("item.book.page_turn"));
+        }
+        // falling books on chains over the landing: they slam down onto their shadow and winch back up
+        String[] cov = {"red_terracotta", "green_terracotta", "blue_terracotta", "brown_terracotta", "cyan_terracotta", "black_terracotta", "crimson_planks"};
+        for (int i = 0; i < DROPS.length; i++) {
+            f.movers.add(MapFeatures.Mover.slider("falling book", DROPS[i][0], 10, DROPS[i][1], 0, -9, 0, 30, 8, 16, (i * 23) % 62, List.of(
+                    new MapFeatures.Box(-1.5, 0, -1.5, 1.5, 1.6, 1.5, cov[i], true),
+                    new MapFeatures.Box(-1.52, 0.5, -1.25, 1.52, 1.1, 1.25, "smooth_sandstone", true),
+                    new MapFeatures.Box(-0.08, 1.6, -0.08, 0.08, 4.0, 0.08, "chain[axis=y]", false))).withSound("block.chiseled_bookshelf.pickup"));
+        }
+        // the desk fan in front of the finish row
+        double fz = 156 + DZ - 0.5;
+        f.movers.add(MapFeatures.Mover.rotor("desk fan", -4.5, -8.5, fz, 'z', 0, 36, 0, List.of(
+                new MapFeatures.Box(-0.6, -0.6, -0.25, 0.6, 0.6, 0.25, "waxed_copper_block", false),
+                new MapFeatures.Box(-0.3, 0.6, -0.15, 0.3, 3.3, 0.15, "light_blue_concrete", true),
+                new MapFeatures.Box(-0.3, -3.3, -0.15, 0.3, -0.6, 0.15, "light_blue_concrete", true),
+                new MapFeatures.Box(0.6, -0.3, -0.15, 3.3, 0.3, 0.15, "light_blue_concrete", true),
+                new MapFeatures.Box(-3.3, -0.3, -0.15, -0.6, 0.3, 0.15, "light_blue_concrete", true))));
+        // owner: only the pages send you back; everything else knocks you about (and maybe off the map)
+        f.pushers.add("pocket watch");
+        f.pushers.add("sliding book");
+        f.pushers.add("falling book");
+        f.pushers.add("desk fan");
+        // checkpoints at the brawl spots
+        f.checkpoints.add(new MapFeatures.Checkpoint(1, "The Open Atlas", Region.of(-16, 3, 41, 9, 6, 42), spawns(-14, 7, 3, 42.5), List.of()));
+        f.checkpoints.add(new MapFeatures.Checkpoint(2, "The Dictionary", Region.of(-14, 1, 95, 9, 4, 96), spawns(-12, 7, 1, 96.5), List.of()));
+        f.checkpoints.add(new MapFeatures.Checkpoint(3, "The Landing", Region.of(-14, 1, LAND_Z1, 9, 4, LAND_Z1 + 1), spawns(-12, 7, 1, LAND_Z1 + 0.5), List.of()));
+        FEATURES = f;
+        return f;
+    }
+
+    private static List<Spawn> spawns(int x1, int x2, double y, double z) {
+        List<Spawn> s = new ArrayList<>();
+        for (int x = x1; x <= x2; x += 2) s.add(new Spawn(x + 0.5, y, z, 0f));
+        return s;
+    }
+
     // ------------------------------------------------------------------ desk, drawer, cup
 
     private void deskAndCup(TgMapData d) {
-        g.fill(-18, -14, 124, 16, -12, 162, desk);
-        for (int x = -18; x <= 16; x++) { g.set(x, -12, 124, "stripped_dark_oak_log[axis=x]"); g.set(x, -13, 124, "stripped_dark_oak_log[axis=x]"); }
-        for (int[] c : new int[][]{{-17, 125}, {14, 125}, {-17, 159}, {14, 159}})
+        g.fill(-18, -14, 168, 16, -12, 206, desk);
+        for (int x = -18; x <= 16; x++) { g.set(x, -12, 168, "stripped_dark_oak_log[axis=x]"); g.set(x, -13, 168, "stripped_dark_oak_log[axis=x]"); }
+        for (int[] c : new int[][]{{-17, 169}, {14, 169}, {-17, 203}, {14, 203}})
             g.fill(c[0], -40, c[1], c[0] + 2, -15, c[1] + 2, "dark_oak_log[axis=y]");
         // the pulled-out drawer (the safe stair lands on it)
-        g.fill(-16, -14, 116, -10, -12, 123, "spruce_planks");
-        for (int x = -16; x <= -10; x++) g.set(x, -12, 116, "stripped_spruce_log[axis=x]");
-        g.set(-13, -13, 115, "gold_block");
-        Stairs.flight(g, "drawer stair", "spruce", null, -14, 118, -12, 0, -1, 12, 3);
+        g.fill(-16, -14, 160, -10, -12, 167, "spruce_planks");
+        for (int x = -16; x <= -10; x++) g.set(x, -12, 160, "stripped_spruce_log[axis=x]");
+        g.set(-13, -13, 159, "gold_block");
+        Stairs.flight(g, "drawer stair", "spruce", null, -14, 162, -12, 0, -1, 12, 3);
         // saucer and cup (rim y -6), floor of tea
-        double cx = 0.5, cz = 136.5;
+        double cx = 0.5, cz = 180.5;
         g.cyl(cx, cz, 9.5, -11, -11, new Pal("white_terracotta", 80, "light_blue_terracotta", 20));
         g.ring(cx, cz, 9.5, 1, -10, -10, new Pal("white_terracotta", 1));
         g.ring(cx, cz, 6.6, 1.7, -10, -6, new Pal("white_terracotta", 70, "calcite", 30));
         g.ring(cx, cz, 6.6, 1.7, -8, -8, new Pal("light_blue_terracotta", 1));
         g.cyl(cx, cz, 4.9, -11, -11, new Pal("brown_terracotta", 60, "orange_terracotta", 40));
-        for (int y = -10; y <= -7; y++) g.set(8, y, 136, "white_terracotta");
-        g.set(7, -7, 136, "white_terracotta");
-        g.set(7, -10, 136, "white_terracotta");
-        d.pen = Region.of(-3, -10, 133, 3, -8, 139);
-        for (int i = 0; i < 10; i++) d.chickenSpawns.add(new Spawn(-2.5 + (i % 5) * 1.3, -10, 134.5 + (i / 5) * 3, 180f));
+        for (int y = -10; y <= -7; y++) g.set(8, y, 180, "white_terracotta");
+        g.set(7, -7, 180, "white_terracotta");
+        g.set(7, -10, 180, "white_terracotta");
         // spoon ramp on the far side (safe line): from the desk up to the rim
-        Stairs.flight(g, "spoon ramp", "polished_diorite", null, -1, 148, -12, 0, -1, 6, 3);
-        g.ellipsoid(0.5, -11.5, 151.5, 2.4, 0.6, 2.8, new Pal("polished_diorite", 1));
+        Stairs.flight(g, "spoon ramp", "polished_diorite", null, -1, 192, -12, 0, -1, 6, 3);
+        g.ellipsoid(0.5, -11.5, 195.5, 2.4, 0.6, 2.8, new Pal("polished_diorite", 1));
         // desk clutter: inkwell, quill, letters, candle, globe, sugar cubes
-        g.cyl(-12.5, 132.5, 2.6, -11, -8, new Pal("black_stained_glass", 1));
-        g.cyl(-12.5, 132.5, 1.4, -7, -7, new Pal("black_terracotta", 1));
-        g.line(-12, -6, 132, -7, 6, 138, "white_wool");
-        g.line(-11, -6, 132, -6, 6, 138, "white_wool");
-        book(9, 15, -11, -9, 136, 144, "white_terracotta", false);
-        book(10, 14, -8, -8, 137, 142, "white_terracotta", false);
-        g.cyl(-12.5, 152.5, 1.2, -11, -9, new Pal("spruce_planks", 1));
-        g.ellipsoid(-12.5, -3.5, 152.5, 4.5, 4.5, 4.5, new Pal("blue_terracotta", 50, "green_terracotta", 30, "lime_terracotta", 20));
-        g.fill(-13, -9, 152, -12, -8, 152, "gold_block");
-        g.fill(-12, -11, 129, -11, -10, 130, "bone_block[axis=y]");
-        g.fill(-9, -11, 143, -8, -11, 144, "bone_block[axis=y]");
+        g.cyl(-12.5, 176.5, 2.6, -11, -8, new Pal("black_stained_glass", 1));
+        g.cyl(-12.5, 176.5, 1.4, -7, -7, new Pal("black_terracotta", 1));
+        g.line(-12, -6, 176, -7, 6, 182, "white_wool");
+        g.line(-11, -6, 176, -6, 6, 182, "white_wool");
+        book(9, 15, -11, -9, 180, 188, "white_terracotta", false);
+        book(10, 14, -8, -8, 181, 186, "white_terracotta", false);
+        g.cyl(-12.5, 196.5, 1.2, -11, -9, new Pal("spruce_planks", 1));
+        g.ellipsoid(-12.5, -3.5, 196.5, 4.5, 4.5, 4.5, new Pal("blue_terracotta", 50, "green_terracotta", 30, "lime_terracotta", 20));
+        g.fill(-13, -9, 196, -12, -8, 196, "gold_block");
+        g.fill(-12, -11, 173, -11, -10, 174, "bone_block[axis=y]");
+        g.fill(-9, -11, 187, -8, -11, 188, "bone_block[axis=y]");
+        // feedback 3 (finish row at the back of the desk): sugar cubes and a letter stack on the long desk run
+        g.fill(-11, -11, 182, -9, -11, 182, "bone_block[axis=y]");
+        g.fill(-11, -11, 172, -9, -11, 172, "bone_block[axis=y]");
+
+        g.fill(-12, -11, 194, -9, -10, 195, "white_terracotta");
+        g.fill(4, -11, 198, 6, -11, 199, "bone_block[axis=y]");
     }
 
     // ------------------------------------------------------------------ section 3: coins over the void (fast)
 
     private void section3() {
-        coin(-2.5, 110.5, -2);
-        coin(0.5, 115.5, -4);
+        coin(-2.5, 154.5, -2);
+        coin(0.5, 159.5, -4);
         // a letter opener (2 wide, top -5) leaning from the coins onto the teacup rim
-        for (int z = 119; z <= 129; z++) for (int x = 0; x <= 1; x++) {
-            g.set(x, -5, z, z <= 121 ? (z == 119 ? "gold_block" : "polished_blackstone") : "iron_block");
-            if (z <= 121) g.set(x, -6, z, "polished_blackstone");
+        for (int z = 163; z <= 173; z++) for (int x = 0; x <= 1; x++) {
+            g.set(x, -5, z, z <= 165 ? (z == 163 ? "gold_block" : "polished_blackstone") : "iron_block");
+            if (z <= 165) g.set(x, -6, z, "polished_blackstone");
         }
-        g.set(0, -4, 120, "polished_blackstone_slab[type=bottom,waterlogged=false]");     // the grip guard: hop it
-        g.set(1, -4, 120, "polished_blackstone_slab[type=bottom,waterlogged=false]");
+        g.set(0, -4, 164, "polished_blackstone_slab[type=bottom,waterlogged=false]");     // the grip guard: hop it
+        g.set(1, -4, 164, "polished_blackstone_slab[type=bottom,waterlogged=false]");
     }
 
     /** A stack of giant coins on a chain-hung pole of stacked coins from the desk/floor (gold, 3 x 3 minus corners). */
@@ -395,20 +559,20 @@ public final class BookshelfRunMap extends AMap {
     // ------------------------------------------------------------------ lamp (landmark) and room scenery
 
     private void lamp(Design de) {
-        g.cyl(12.5, 147.5, 3.2, -11, -10, new Pal("gold_block", 60, "cut_copper", 40));
-        for (int y = -9; y <= 24; y++) g.set(12, y, 147, "cut_copper");
-        g.line(12, 24, 147, 3, 30, 140, "cut_copper");
-        g.line(12, 25, 147, 3, 31, 140, "waxed_cut_copper");
+        g.cyl(12.5, 191.5, 3.2, -11, -10, new Pal("gold_block", 60, "cut_copper", 40));
+        for (int y = -9; y <= 24; y++) g.set(12, y, 191, "cut_copper");
+        g.line(12, 24, 191, 3, 30, 184, "cut_copper");
+        g.line(12, 25, 191, 3, 31, 184, "waxed_cut_copper");
         for (int y = 23; y <= 30; y++) {
             double r = 1.5 + (30 - y) * 0.75;
-            g.ring(1.5, 137.5, r, 1.0, y, y, new Pal("green_terracotta", 70, "gold_block", 30));
+            g.ring(1.5, 181.5, r, 1.0, y, y, new Pal("green_terracotta", 70, "gold_block", 30));
         }
-        g.cyl(1.5, 137.5, 2.2, 24, 24, new Pal("ochre_froglight", 1));
-        g.cyl(1.5, 137.5, 1.2, 23, 23, new Pal("glowstone", 1));
+        g.cyl(1.5, 181.5, 2.2, 24, 24, new Pal("ochre_froglight", 1));
+        g.cyl(1.5, 181.5, 1.2, 23, 23, new Pal("glowstone", 1));
         for (int y = 23; y <= 30; y++)            // the near (start-facing) side of the shade
             for (int x = -3; x <= 5; x += 2)
-                for (int z = 125; z <= 137; z++) if (!g.air(x, y, z)) { de.landmark.add(new Pos(x, y, z)); break; }
-        de.landmark.add(new Pos(12, 24, 147));
+                for (int z = 169; z <= 181; z++) if (!g.air(x, y, z)) { de.landmark.add(new Pos(x, y, z)); break; }
+        de.landmark.add(new Pos(12, 24, 191));
     }
 
     private void roomScenery() {

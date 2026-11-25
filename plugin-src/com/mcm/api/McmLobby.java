@@ -71,6 +71,9 @@ public final class McmLobby {
         /** Outer radius of a wedge. */
         default double wedgeRadius() { return padRadius(); }
 
+        /** Inner radius of the wedges: chickens closer to the dial centre than this do not vote. */
+        default double wedgeInnerRadius() { return wedgeRadius() * 0.62; }
+
         /** Recolour/re-light a wedge; the v1 implementation forwards to the pad. */
         default void setWedge(int i, DyeColor color, boolean lit) { setPad(i, color, lit); }
 

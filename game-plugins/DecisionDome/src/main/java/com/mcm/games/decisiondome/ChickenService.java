@@ -42,7 +42,7 @@ final class ChickenService {
 
     Entity spawn(Chicken logical, DomeVenue venue) {
         if (logical == null || venue == null || venue.world() == null) return null;
-        Location at = venue.at(logical.x(), logical.z(), logical.levitating(0) ? 1.6 : 0.08);
+        Location at = onGround(venue.at(logical.x(), logical.z(), logical.levitating(0) ? 1.6 : 0.08));
         if (at == null) return null;
         Entity entity;
         try {
@@ -94,6 +94,20 @@ final class ChickenService {
         return entity;
     }
 
+    /**
+     * Stand the mob on the real top of the dial block under it: the dial is bottom slabs (top = floor) but its
+     * divider lines are full blocks half a block higher, and a mob placed inside them looks sunk into the floor.
+     */
+    static Location onGround(Location at) {
+        if (at == null || at.getWorld() == null) return at;
+        try {
+            org.bukkit.block.Block b = at.getWorld().getBlockAt(at.getBlockX(), (int) Math.floor(at.getY() - 0.1), at.getBlockZ());
+            double top = b.isPassable() ? b.getY() : b.getBoundingBox().getMaxY();
+            if (!b.isPassable() && top > at.getY() - 0.1 && top - at.getY() < 1.0) at.setY(top + 0.02);
+        } catch (Throwable ignored) { }
+        return at;
+    }
+
     /** Mirror the engine's logical positions onto the real entities. */
     void sync(VoteEngine engine, DomeVenue venue) {
         if (engine == null || venue == null) return;
@@ -108,7 +122,7 @@ final class ChickenService {
                 if (entity == null) continue;
             }
             double extra = logical.levitating(engine.totalTick()) ? 1.6 : 0.08;
-            Location target = venue.at(logical.x(), logical.z(), extra);
+            Location target = onGround(venue.at(logical.x(), logical.z(), extra));
             if (target == null || target.getWorld() == null) continue;
             target.setYaw((float) ((logical.id().hashCode() % 360)));
             if (entity.getLocation().distanceSquared(target) > 0.0025) {

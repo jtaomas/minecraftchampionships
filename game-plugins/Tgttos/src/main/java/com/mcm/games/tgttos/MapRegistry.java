@@ -87,6 +87,52 @@ final class MapRegistry {
         return entries;
     }
 
+    /** Worker thread: add the maps found in {@code plugins/McmTgttos/imported/<id>/}. No folder = nothing added. */
+    void addImported(List<Entry> entries, java.io.File dir) {
+        if (dir == null || !dir.isDirectory()) return;
+        java.util.Set<String> ids = new java.util.LinkedHashSet<>();
+        for (Entry e : entries) ids.add(e.map.id().toLowerCase(Locale.ROOT));
+        for (com.mcm.games.tgttos.imported.ImportedMap m : com.mcm.games.tgttos.imported.ImportedMaps.loadAll(dir, log)) {
+            if (!ids.add(m.id())) { log.warning("TGTTOS: imported map id " + m.id() + " is already used; skipped."); continue; }
+            entries.add(new Entry(m, entries.size(), false));
+        }
+    }
+
+    /**
+     * Worker thread: give every map its permanent slot. Slots used to be the map's position in the list, so deleting
+     * Quarry Steps (owner, playtest 4) moved every later map one slot along, onto the blocks of the map that used to
+     * live there: Industry was pasted into Badlands, Badlands onto Quarry Steps, Pits into Industry. Now a map keeps
+     * its slot forever (slots.yml); a new map gets a slot no map has ever used, and a removed map's slot is never reused.
+     */
+    List<Entry> fixSlots(List<Entry> list, File file) {
+        org.bukkit.configuration.file.YamlConfiguration y = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(file);
+        java.util.Map<String, Integer> book = new java.util.LinkedHashMap<>();
+        if (!file.isFile()) {
+            // the slots every map had before slots were saved (live server, 2026-11-25, before Quarry Steps was removed)
+            String[] history = {"laundry_line", "dam_face", "bookshelf_run", "ticket_gates", "quarry_steps", "tg_badlands", "tg_industry", "tg_pits"};
+            for (int i = 0; i < history.length; i++) book.put(history[i], i);
+        }
+        for (String k : y.getKeys(false)) book.put(k, y.getInt(k));
+        int next = 0;
+        for (int v : book.values()) next = Math.max(next, v + 1);
+        List<Entry> out = new ArrayList<>();
+        boolean changed = !file.isFile();
+        for (Entry e : list) {
+            String id = e.map.id().toLowerCase(Locale.ROOT);
+            Integer slot = book.get(id);
+            if (slot == null) { slot = next++; book.put(id, slot); changed = true; log.info("TGTTOS: map " + id + " gets new slot " + slot); }
+            out.add(new Entry(e.map, slot, e.stub));
+        }
+        if (changed) {
+            org.bukkit.configuration.file.YamlConfiguration w = new org.bukkit.configuration.file.YamlConfiguration();
+            w.options().setHeader(List.of("Permanent world slot of every TGTTOS map (slot n sits at x = n * map-spacing).",
+                    "Never edit or reuse a number: the world still holds the blocks of whatever map had that slot."));
+            for (var en : book.entrySet()) w.set(en.getKey(), en.getValue());
+            try { file.getParentFile().mkdirs(); w.save(file); } catch (java.io.IOException ex) { log.warning("TGTTOS: could not save " + file + ": " + ex); }
+        }
+        return out;
+    }
+
     /** Main thread: make a scanned + validated list the live one. */
     void install(List<Entry> list) { entries = list; ready = true; }
 

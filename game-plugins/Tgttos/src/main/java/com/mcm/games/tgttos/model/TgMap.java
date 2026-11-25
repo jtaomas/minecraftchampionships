@@ -6,8 +6,8 @@ package com.mcm.games.tgttos.model;
  *
  * <p>Expected class names (listed in the default config; any other public non-abstract {@code TgMap} class in
  * {@code com.mcm.games.tgttos.maps..} is also auto-discovered from the jar):
- * {@code maps.a.LaundryLineMap, maps.a.DamFaceMap, maps.a.BookshelfRunMap, maps.a.OrchardDropMap,
- * maps.b.KiteFestivalMap, maps.b.FrozenCanalMap, maps.b.TicketGatesMap, maps.b.QuarryStepsMap}.
+ * {@code maps.a.LaundryLineMap, maps.a.DamFaceMap, maps.a.BookshelfRunMap, maps.b.TicketGates}
+ * (elytra / boat / drop maps moved to the Race plugin, feedback 3).
  *
  * <p>{@link #build(long)} may be called more than once (preview tools, validators, each game) and must be
  * deterministic for a given seed. It runs on the main thread at game start, so keep it to well under a second.
@@ -45,6 +45,9 @@ public interface TgMap {
      */
     default java.util.List<int[]> decoyChickens() { return java.util.List.of(); }
 
+    /** False = an empty {@link #decoyChickens()} means really no decoys (imported maps: one honest goal row). */
+    default boolean scatterDecoys() { return true; }
+
     /**
      * Interactive features (default none): moving hazards, timed block toggles, line-bonus gates, checkpoints,
      * rocket refills, boat depots. Local coordinates of the slot like {@link TgMapData}. Must describe the map
@@ -52,4 +55,13 @@ public interface TgMap {
      * section "Map contract additions".
      */
     default MapFeatures features() { return MapFeatures.NONE; }
+
+    /** Round length in seconds for this map; {@code 0} (default) = config {@code round-seconds}. */
+    default int roundSeconds() { return 0; }
+
+    /** Builder credit shown to players as "Map by ..." ({@code null} = our own map, nothing shown). */
+    default String credit() { return null; }
+
+    /** {@code false} = only played when chosen with {@code /tg map} / {@code /mcm map}, never picked at random. */
+    default boolean inRotation() { return true; }
 }

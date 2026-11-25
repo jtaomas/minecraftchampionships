@@ -28,9 +28,6 @@ public final class Themes {
         l.add(new GreenhouseTheme());
         l.add(new ToyWorkshopTheme());
         l.add(new SkiLodgeTheme());
-        l.add(new CanalShipsTheme());
-        l.add(new TrainStationTheme());
-        l.add(new VillaCourtyardTheme());
         return l;
     }
 

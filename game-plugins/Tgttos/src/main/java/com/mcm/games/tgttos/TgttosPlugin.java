@@ -45,6 +45,7 @@ public final class TgttosPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        dropForeignWorld();
         resetWorldFolder();
         world = McmBuild.voidWorld(WORLD);
         if (world == null) getLogger().severe("Could not create world " + WORLD + "; the game cannot run.");
@@ -87,11 +88,18 @@ public final class TgttosPlugin extends JavaPlugin {
         String stub = getConfig().getString("stub-map", "auto");
         int rounds = Math.max(1, getConfig().getInt("rounds", 6));
         File jar = getFile();
+        File importedDir = new File(getDataFolder(), "imported");
         long t0 = System.nanoTime();
         worker.execute(() -> {
             List<MapRegistry.Entry> list;
             try {
                 list = registry.scan(classes, auto, jar, stub, rounds);
+                try {
+                    registry.addImported(list, importedDir);   // run / bridge maps from plugins/McmTgttos/imported
+                } catch (Throwable t) {
+                    getLogger().warning("TGTTOS: imported maps skipped: " + t);
+                }
+                list = registry.fixSlots(list, new File(getDataFolder(), "slots.yml"));
                 registry.validate(list);
             } catch (Throwable t) {
                 getLogger().severe("TGTTOS: loading maps failed: " + t);
@@ -111,6 +119,23 @@ public final class TgttosPlugin extends JavaPlugin {
 
     Paster paster() { return paster; }
     ExecutorService worker() { return worker; }
+
+    /**
+     * Owner bug (Bookshelf Run, 2026-11-25: "a whole birch forest around it, and a cave underneath"): Multiverse loads
+     * mcc_tgttos from its worlds.yml with the vanilla generator before this plugin enables, so the folder reset was
+     * skipped and every chunk a map reached for the first time grew vanilla terrain. Unload such a world (nobody is in
+     * it at startup) so the folder is wiped and the world is re-created with the void generator.
+     */
+    private void dropForeignWorld() {
+        World pre = Bukkit.getWorld(WORLD);
+        if (pre == null) return;
+        org.bukkit.generator.ChunkGenerator gen = pre.getGenerator();
+        if (gen != null && gen.getClass().getSimpleName().contains("Void")) return;
+        getLogger().warning("World " + WORLD + " was loaded by another plugin with generator "
+                + (gen == null ? "vanilla" : gen.getClass().getName()) + "; unloading it to re-create it as a void world.");
+        for (org.bukkit.entity.Player p : pre.getPlayers()) p.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
+        if (!Bukkit.unloadWorld(pre, false)) getLogger().severe("Could not unload " + WORLD + "; vanilla terrain may show around the maps.");
+    }
 
     /** The world is regenerated on every enable so no stale map/player blocks survive a restart. */
     private void resetWorldFolder() {
@@ -191,6 +216,9 @@ public final class TgttosPlugin extends JavaPlugin {
                 if (!d.variants.isEmpty()) sender.sendMessage(ChatColor.GRAY + "sample roll: " + Variants.summary(d, Variants.pick(d, new Random())));
                 sender.sendMessage(ChatColor.GRAY + "lethal fall: " + (e.map.lethalFallHeight() > 0 ? e.map.lethalFallHeight() + " blocks (water only)" : "off")
                         + ", decoy chickens " + e.map.decoyChickens().size() + ", pen " + d.pen);
+                if (e.map.credit() != null || e.map.roundSeconds() > 0 || !e.map.inRotation())
+                    sender.sendMessage(ChatColor.GRAY + "map by " + e.map.credit() + (e.map.roundSeconds() > 0 ? ", round " + e.map.roundSeconds() + " s" : "")
+                            + (e.map.inRotation() ? "" : ", only when forced (/tg map)"));
                 for (String p : e.problems) sender.sendMessage(ChatColor.YELLOW + "! " + p);
                 for (Map.Entry<String, String> n : d.notes.entrySet()) sender.sendMessage(ChatColor.DARK_AQUA + n.getKey() + ": " + ChatColor.WHITE + n.getValue());
                 if (game.isRunning() && game.current() == e) for (String l : game.liveStatus()) sender.sendMessage(l);

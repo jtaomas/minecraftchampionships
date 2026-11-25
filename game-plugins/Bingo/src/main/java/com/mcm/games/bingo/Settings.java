@@ -9,12 +9,13 @@ final class Settings {
     int[] bingoMix = {0, 9, 10, 5, 1};
     int[] lockoutMix = {0, 6, 10, 6, 3};
     int woodCap = 2;
-    int[] bingoTierPoints = {0, 3, 5, 8, 12};
-    int[] placementPercent = {100, 80, 60, 40};
-    int[] lockoutTierPoints = {0, 5, 8, 12, 16};
-    int bingoLineFirst4 = 12, bingoLineLater = 6, bingoFullCard = 30;
-    int lockoutLine = 15;
-    int[] lockoutPlacement = {20, 12, 6};
+    // MCC coins (base x1.0, team pools shared amongst the team). See game-plugins/COINS.md.
+    int[] bingoTierPoints = {0, 50, 50, 50, 50};          // MCC: an item is worth 50 to the 1st team, whatever its difficulty
+    int[] placementPercent = {100, 80, 60, 40, 20, 10};   // MCC: 50 / 40 / 30 / 20 / 10 / 5 (6th-10th team)
+    int[] lockoutTierPoints = {0, 100, 100, 100, 100};    // OURS (lockout is not in current MCC)
+    int bingoLineFirst4 = 200, bingoLineLater = 100, bingoFullCard = 0;   // MCC lines; full card is ours (0 = off)
+    int lockoutLine = 200;                                 // OURS
+    int[] lockoutPlacement = {0, 0, 0};                    // OURS (0 = off)
     int killPoints = 0;
 
     int topCooldown = 30;
@@ -40,15 +41,15 @@ final class Settings {
         s.bingoMix = mix(c.getIntegerList("card.bingo-mix"), s.bingoMix);
         s.lockoutMix = mix(c.getIntegerList("card.lockout-mix"), s.lockoutMix);
         s.woodCap = c.getInt("card.max-wood-only-items", s.woodCap);
-        s.bingoTierPoints = mix(c.getIntegerList("points.bingo-tier"), s.bingoTierPoints);
-        s.placementPercent = arr(c.getIntegerList("points.bingo-placement-percent"), s.placementPercent);
-        s.lockoutTierPoints = mix(c.getIntegerList("points.lockout-tier"), s.lockoutTierPoints);
-        s.bingoLineFirst4 = c.getInt("points.bingo-line-first-4", s.bingoLineFirst4);
-        s.bingoLineLater = c.getInt("points.bingo-line-later", s.bingoLineLater);
-        s.bingoFullCard = c.getInt("points.bingo-full-card", s.bingoFullCard);
-        s.lockoutLine = c.getInt("points.lockout-line", s.lockoutLine);
-        s.lockoutPlacement = arr(c.getIntegerList("points.lockout-placement"), s.lockoutPlacement);
-        s.killPoints = Math.max(0, c.getInt("points.pvp-kill", s.killPoints));
+        s.bingoTierPoints = mix(c.getIntegerList("coins.bingo-tier"), s.bingoTierPoints);
+        s.placementPercent = arr(c.getIntegerList("coins.bingo-placement-percent"), s.placementPercent);
+        s.lockoutTierPoints = mix(c.getIntegerList("coins.lockout-tier"), s.lockoutTierPoints);
+        s.bingoLineFirst4 = c.getInt("coins.bingo-line-first-4", s.bingoLineFirst4);
+        s.bingoLineLater = c.getInt("coins.bingo-line-later", s.bingoLineLater);
+        s.bingoFullCard = c.getInt("coins.bingo-full-card", s.bingoFullCard);
+        s.lockoutLine = c.getInt("coins.lockout-line", s.lockoutLine);
+        s.lockoutPlacement = arr(c.getIntegerList("coins.lockout-placement"), s.lockoutPlacement);
+        s.killPoints = Math.max(0, c.getInt("coins.pvp-kill", s.killPoints));
         s.topCooldown = Math.max(0, c.getInt("top.cooldown-seconds", s.topCooldown));
         s.topBlockedInCombat = c.getBoolean("top.blocked-in-combat", s.topBlockedInCombat);
         s.combatSeconds = Math.max(0, c.getInt("top.combat-seconds", s.combatSeconds));

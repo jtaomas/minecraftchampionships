@@ -1,0 +1,29 @@
+{
+  "id": "bad_granite",
+  "name": "Bad Granite",
+  "debut": "MCC 3",
+  "stars": 3,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Bad_Granite.png",
+  "floor": ["sssssss","sLLLLss","ssLLLLs","sLLLLss","sssLLss","sssssss","sssssss"],
+  "palette": {
+    "s": "minecraft:stone",
+    "L": "minecraft:lava",
+    "d": "minecraft:diorite",
+    "t": "minecraft:smooth_stone_slab[type=top]",
+    "b": "minecraft:smooth_stone_slab[type=bottom]",
+    "i": "minecraft:iron_bars",
+    "G": "minecraft:granite"
+  },
+  "layers": [
+    [".......", ".......", ".......", "......d", ".......", ".......", "......."],
+    [".......", ".......", "..ttt..", "..ttt.d", "..ttt..", ".......", "......."],
+    [".......", ".......", "..iii..", "..iGi.d", "..iii..", ".......", "......."],
+    [".......", ".......", "..iii..", "..iii.d", "..iii..", ".......", "......."],
+    [".......", ".......", "..bbb..", "..bbbbd", "..bbb..", ".......", "......."]
+  ],
+  "guessed": [
+    "lava pool outline in the stone floor estimated (render shows it at a flat angle)",
+    "cage read as 3x3 smooth stone slab top/bottom with iron bars around a single granite block; cage depth assumed 3",
+    "support pillar read as diorite, 5 tall at col 6 row 3, joined by a slab arm at col 5; pillar depth estimated"
+  ]
+}

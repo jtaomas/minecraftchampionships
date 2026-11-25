@@ -21,15 +21,12 @@ final class ArenaBuilder {
     private final Plugin plugin;
     private final Deque<Job> jobs = new ArrayDeque<>();
     private final List<Runnable> whenIdle = new ArrayList<>();
-    private List<ArenaBlueprint.Placement> blueprint;
     private BukkitTask task;
 
-    ArenaBuilder(Plugin plugin) { this.plugin = plugin; }
+    /** One block of a map, already parsed. */
+    record Placement(int x, int y, int z, org.bukkit.block.data.BlockData data) {}
 
-    private List<ArenaBlueprint.Placement> blueprint() {
-        if (blueprint == null) blueprint = ArenaBlueprint.generate();
-        return blueprint;
-    }
+    ArenaBuilder(Plugin plugin) { this.plugin = plugin; }
 
     /** Sets every non-air block in the box [x0..x1] x [y0..y1] x [z0..z1] to air. */
     void clear(World world, int x0, int y0, int z0, int x1, int y1, int z1) {
@@ -49,14 +46,13 @@ final class ArenaBuilder {
         ensureTask();
     }
 
-    void build(World world, int ox, int oy, int oz) {
-        final List<ArenaBlueprint.Placement> bp = blueprint();
+    void build(World world, int ox, int oy, int oz, List<Placement> bp) {
         jobs.add(new Job() {
             int i = 0;
             @Override public boolean step(int[] budget) {
                 if (!world.equals(Bukkit.getWorld(world.getUID()))) return true;
                 while (budget[0] > 0 && i < bp.size()) {
-                    ArenaBlueprint.Placement p = bp.get(i++);
+                    Placement p = bp.get(i++);
                     world.getBlockAt(ox + p.x(), oy + p.y(), oz + p.z()).setBlockData(p.data(), false);
                     budget[0]--;
                 }

@@ -1,6 +1,7 @@
 package com.mcm.games.footrace;
 
 import com.mcm.api.McmGame;
+import com.mcm.api.McmCoins;
 import com.mcm.api.McmGameContext;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -40,8 +41,11 @@ public final class FootRaceGame implements McmGame, Listener {
     static final String WORLD_NAME = "mcc_footrace";
     static final int RACE_SECONDS = 300;
     static final int COUNTDOWN_SECONDS = 10;
-    static final int LAP_POINTS = 15;
-    static final int PLACE_BONUS_FIRST = 60, PLACE_BONUS_STEP = 3, PLACE_BONUS_MIN = 10;
+    // MCC coins (MCC 1-6 Foot Race; base x1.0, config coins.*; the core applies the event multiplier). COINS.md.
+    double lapCoins = 0;            // MCC: nothing per lap
+    double finishFirst = 500;       // MCC: the 1st finisher
+    double finishStep = 12.5;       // MCC: 12.5 less for every later finisher
+    double finishMin = 0;           // MCC: no floor (no coins if you don't finish)
 
     private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacySection();
 
@@ -90,6 +94,12 @@ public final class FootRaceGame implements McmGame, Listener {
         if (state != State.IDLE) stop();
         if (guard == null) guard = new SpectatorGuard(plugin, this::spectatorZone);
         this.ctx = context;
+        plugin.saveDefaultConfig();
+        var cfg = plugin.getConfig();
+        lapCoins = Math.max(0, cfg.getDouble("coins.lap", 0));
+        finishFirst = Math.max(0, cfg.getDouble("coins.finish-first", 500));
+        finishStep = Math.max(0, cfg.getDouble("coins.finish-step", 12.5));
+        finishMin = Math.max(0, cfg.getDouble("coins.finish-minimum", 0));
         runners.clear();
         finishCount = 0;
         World w = ensureWorld();
@@ -249,8 +259,8 @@ public final class FootRaceGame implements McmGame, Listener {
                 + "falling or touching §cmagma§7 sends you back to your last checkpoint.");
         ctx.broadcast("§7Slime pads launch you over the gap. §eGold§7 and §bice§7 stepping stones are risky corner "
                 + "shortcuts. Punch rivals to knock them around!");
-        ctx.broadcast("§7Scoring: §e" + LAP_POINTS + "§7 per lap, finish bonus §e" + PLACE_BONUS_FIRST
-                + "§7 for 1st (−" + PLACE_BONUS_STEP + " per place, min §e" + PLACE_BONUS_MIN + "§7).");
+        ctx.broadcast("§7Coins: §e" + McmCoins.format(finishFirst) + "§7 for the 1st finisher, §e"
+                + McmCoins.format(finishStep) + "§7 less for each later finisher. No coins if you don't finish.");
         ctx.setSidebarLines(List.of("§7Laps: §f" + Track.LAPS, "§7Checkpoints: §f6 per lap",
                 "§7Time limit: §f" + fmtSeconds(RACE_SECONDS), "§eGet ready..."));
 
@@ -506,15 +516,15 @@ public final class FootRaceGame implements McmGame, Listener {
         r.lap++;
         r.seq = 0;
         r.lastCp = 0;
-        ctx.addPoints(r.id, LAP_POINTS, "Foot Race lap " + r.lap);
+        if (lapCoins > 0) ctx.addCoins(r.id, lapCoins, "Foot Race lap " + r.lap);
         if (r.lap >= Track.LAPS) {
             finishRunner(p, r, now);
             return;
         }
         boolean finalLap = r.lap == Track.LAPS - 1;
         p.sendTitle(finalLap ? "§c§lFINAL LAP" : "§e§lLap " + (r.lap + 1) + "/" + Track.LAPS,
-                "§7Last lap §f" + fmtMs(lapMs) + " §8| §a+" + LAP_POINTS, 0, 35, 8);
-        p.sendMessage("§6Foot Race §7» Lap " + r.lap + " in §f" + fmtMs(lapMs) + " §a(+" + LAP_POINTS + ")");
+                "§7Last lap §f" + fmtMs(lapMs), 0, 35, 8);
+        p.sendMessage("§6Foot Race §7» Lap " + r.lap + " in §f" + fmtMs(lapMs));
         p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.2f);
     }
 
@@ -522,11 +532,11 @@ public final class FootRaceGame implements McmGame, Listener {
         r.finished = true;
         r.place = ++finishCount;
         r.finishMs = now - raceStartMs;
-        int bonus = Math.max(PLACE_BONUS_MIN, PLACE_BONUS_FIRST - PLACE_BONUS_STEP * (r.place - 1));
-        ctx.addPoints(r.id, bonus, "Foot Race finished #" + r.place);
+        double bonus = McmCoins.linear(finishFirst, finishStep, r.place, finishMin);
+        if (bonus > 0) ctx.addCoins(r.id, bonus, "Foot Race finished #" + r.place);
         ctx.broadcast("§6Foot Race §7» " + coloredName(p) + " §7finished §e" + ordinal(r.place)
                 + " §7in §f" + fmtMs(r.finishMs) + " §7(best lap §f" + fmtMs(r.bestLapMs) + "§7)");
-        p.sendTitle("§a§lFINISHED " + ordinal(r.place), "§f" + fmtMs(r.finishMs) + " §8| §a+" + (bonus + LAP_POINTS), 0, 60, 15);
+        p.sendTitle("§a§lFINISHED " + ordinal(r.place), "§f" + fmtMs(r.finishMs) + " §8| §6+" + McmCoins.format(bonus * ctx.coinMultiplier()) + " coins", 0, 60, 15);
         p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
         SpectatorGuard.makeSpectator(p, Track.spectatorSpot(world));
     }

@@ -25,11 +25,11 @@ Play with `/mcm play sandsoftime`. Requires MinecraftMondayCore 3.1.0, Paper 1.2
 - The whole game is capped at 8 minutes, after which all dungeons seal (everyone still inside is trapped). It ends early once every side is out.
 - Each player can place up to 24 team-coloured carpets to mark a trail. Players can't damage each other.
 
-## Scoring
-- Banked coins × 0.12 → points for that player, given as they bank.
-- Escaping through the exit: +15 points.
-- Team placement by total banked coins (only with 2+ sides): 1st +30, 2nd +20, 3rd +10, split across the side.
-- A strong player in a 4-player team ends up around 60–110 points. A solo player who clears vaults can reach about 100.
+## Scoring (real MCC coins; config `coins.*`, see `../COINS.md`)
+- MCC: the coins you bank (Sphinx, 20% fee) or walk out with (EXIT, 100%) are exactly the coins you earn: 1 gold coin = 1 coin.
+- MCC 8+: a team's banked coins are split evenly amongst its online players at the end of the game.
+- No escape bonus and no placement bonus (MCC has neither; `coins.escape-bonus` / `coins.placement` are house options).
+- The core multiplies everything by the event multiplier.
 
 ## Sidebar / HUD
 - Sidebar: each side's hourglass time (`*` = paused) and banked coins, sorted by coins (top 5–6 sides).

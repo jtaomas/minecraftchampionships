@@ -1,0 +1,14 @@
+name: McmRace
+version: 1.0.0
+main: com.mcm.games.race.RacePlugin
+api-version: '1.21'
+depend: [MinecraftMondayCore]
+description: Race minigame (elytra and boat races) for MinecraftMondayCore
+commands:
+  race:
+    description: Race admin (list maps, queue a map, info, tp, build, reload)
+    usage: /race list | map <id> | info <id> | tp <id> | build <id> | reload
+    permission: mcm.race.admin
+permissions:
+  mcm.race.admin:
+    default: op

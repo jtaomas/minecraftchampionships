@@ -1,0 +1,27 @@
+{
+  "id": "umbrella",
+  "name": "Umbrella",
+  "debut": "MCC 5",
+  "stars": 2,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Umbrella.png",
+  "floor": ["sssssss","sssssss","sssssss","sssssss","sssssss","wwsssss","wwwwwss"],
+  "palette": {
+    "s": "minecraft:sand",
+    "w": "minecraft:water",
+    "i": "minecraft:iron_block",
+    "c": "minecraft:acacia_stairs[facing=north,half=bottom]",
+    "f": "minecraft:oak_fence",
+    "r": "minecraft:red_concrete"
+  },
+  "layers": [
+    [".......", ".......", ".......", "..ic...", ".......", ".......", "......."],
+    [".......", ".......", ".......", "..f....", ".......", ".......", "......."],
+    [".......", ".......", ".......", "..f....", ".......", ".......", "......."],
+    [".......", ".......", ".rrr...", ".rrr...", ".rrr...", ".......", "......."]
+  ],
+  "guessed": [
+    "canopy taken as a flat 3x3 of red concrete centred on the pole (depth hidden)",
+    "chair read as an acacia stair (seat to the front); pole read as oak fence; base block read as iron block",
+    "row of the umbrella (row 3) estimated from perspective"
+  ]
+}

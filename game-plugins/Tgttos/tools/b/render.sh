@@ -13,7 +13,7 @@ RC=$?
 [ -n "$NORENDER" ] && exit $RC
 R=/c/Users/USER/Desktop/Mcc/tools/render_preview.py
 V=tools/b/views.py
-IDS="$@"; [ -z "$IDS" ] && IDS="kite_festival frozen_canal ticket_gates quarry_steps"
+IDS="$@"; [ -z "$IDS" ] && IDS="ticket_gates"
 for id in $IDS; do
   D=$OUT/$id.mcmdump.gz
   C=$D; [ -f "$OUT/${id}_cut.mcmdump.gz" ] && C=$OUT/${id}_cut.mcmdump.gz
