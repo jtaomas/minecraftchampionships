@@ -112,7 +112,7 @@ public final class ImportedArenaTheme extends ArenaTheme {
             for (int dz = -1; dz <= 1; dz++) {
                 int x = arena.centreX + dx;
                 int z = arena.centreZ + dz;
-                if (grid.isAir(x, arena.centreY - 1, z)) {
+                if (Shapes.standTop(grid.get(x, arena.centreY - 1, z)) < 0.49) {
                     grid.set(x, arena.centreY - 1, z, "sea_lantern");
                 }
                 grid.set(x, arena.centreY, z, neutral);
@@ -134,7 +134,7 @@ public final class ImportedArenaTheme extends ArenaTheme {
             for (int dz = -1; dz <= 1; dz++) {
                 int x = sx + dx;
                 int z = sz + dz;
-                if (grid.isAir(x, sy - 1, z)) {
+                if (Shapes.standTop(grid.get(x, sy - 1, z)) < 0.49) {
                     grid.set(x, sy - 1, z, team + "_concrete");
                 }
                 for (int dy = 0; dy <= 2; dy++) {

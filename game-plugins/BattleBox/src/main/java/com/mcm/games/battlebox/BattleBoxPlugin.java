@@ -26,6 +26,7 @@ public final class BattleBoxPlugin extends JavaPlugin {
         Gear.init(this);
         Themes.loadImported(new File(getDataFolder(), "imported-arenas"), getLogger());
         game = new BattleBoxGame(this);
+        game.ensureWorld();
         getServer().getPluginManager().registerEvents(new GameListener(this, game), this);
         PluginCommand cmd = getCommand("bb");
         if (cmd != null) {

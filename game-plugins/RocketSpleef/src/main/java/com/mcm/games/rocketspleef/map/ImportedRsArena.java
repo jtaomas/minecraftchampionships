@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ public final class ImportedRsArena implements RocketArenaMap {
     private final int[] palIdx;
     private final int removedBlocks;
     private final int maxHorizRadius;
+    private final double centerX;
+    private final double centerZ;
 
     public ImportedRsArena(String id, String displayName, int baseY, int[] size,
                            List<int[]> spawns, String[] palette,
@@ -46,6 +49,21 @@ public final class ImportedRsArena implements RocketArenaMap {
         this.palIdx = palIdx;
         this.removedBlocks = removedBlocks;
         this.maxHorizRadius = maxHorizRadius;
+
+        if (xs.length > 0) {
+            int minX = xs[0], maxX = xs[0], minZ = zs[0], maxZ = zs[0];
+            for (int i = 1; i < xs.length; i++) {
+                if (xs[i] < minX) minX = xs[i];
+                if (xs[i] > maxX) maxX = xs[i];
+                if (zs[i] < minZ) minZ = zs[i];
+                if (zs[i] > maxZ) maxZ = zs[i];
+            }
+            this.centerX = (minX + maxX) * 0.5;
+            this.centerZ = (minZ + maxZ) * 0.5;
+        } else {
+            this.centerX = 0.0;
+            this.centerZ = 0.0;
+        }
     }
 
     @Override
@@ -87,6 +105,14 @@ public final class ImportedRsArena implements RocketArenaMap {
         return maxHorizRadius;
     }
 
+    public double centerX() {
+        return centerX;
+    }
+
+    public double centerZ() {
+        return centerZ;
+    }
+
     @Override
     public void generate(RsCanvas canvas, int scaleRadius) {
         // Imported arenas bypass RsCanvas and paste BlockData directly in build().
@@ -118,12 +144,42 @@ public final class ImportedRsArena implements RocketArenaMap {
             placed.add(new RsCanvas.Pos(wx, wy, wz));
         }
 
-        // Sort outer-to-inner with slight jitter for late-round & overtime crumbling
+        List<Location> spawnLocs = new ArrayList<>(spawns.size());
+        for (int[] s : spawns) {
+            int sx = s[0];
+            int sy = baseY + s[1];
+            int sz = s[2];
+            if (world != null) {
+                if (sy - 1 >= minH && sy - 1 < maxH) {
+                    Block below = world.getBlockAt(sx, sy - 1, sz);
+                    if (!below.getType().isSolid()) {
+                        below.setType(Material.SMOOTH_STONE, false);
+                        placed.add(new RsCanvas.Pos(sx, sy - 1, sz));
+                    }
+                }
+                for (int dy = 0; dy <= 2; dy++) {
+                    int cy = sy + dy;
+                    if (cy >= minH && cy < maxH) {
+                        Block head = world.getBlockAt(sx, cy, sz);
+                        if (!head.isPassable()) {
+                            head.setType(Material.AIR, false);
+                        }
+                    }
+                }
+            }
+            float yaw = (float) Math.toDegrees(Math.atan2(sx - centerX, -(sz - centerZ)));
+            spawnLocs.add(new Location(world, sx + 0.5, sy + 0.05, sz + 0.5, yaw, 0f));
+        }
+        if (spawnLocs.isEmpty()) {
+            spawnLocs.add(new Location(world, centerX + 0.5, baseY + 10.05, centerZ + 0.5));
+        }
+
+        // Sort outer-to-inner from arena center with slight jitter for late-round & overtime crumbling
         ThreadLocalRandom rng = ThreadLocalRandom.current();
         record Weighted(RsCanvas.Pos pos, double score) {}
         List<Weighted> weighted = new ArrayList<>(placed.size());
         for (RsCanvas.Pos p : placed) {
-            double dist = Math.hypot(p.x(), p.z()) + rng.nextDouble(-2.5, 2.5);
+            double dist = Math.hypot(p.x() - centerX, p.z() - centerZ) + rng.nextDouble(-2.5, 2.5);
             weighted.add(new Weighted(p, dist));
         }
         weighted.sort(Comparator.comparingDouble(Weighted::score).reversed());
@@ -132,19 +188,13 @@ public final class ImportedRsArena implements RocketArenaMap {
             crumbleOrder.add(w.pos());
         }
 
-        List<Location> spawnLocs = new ArrayList<>(spawns.size());
-        for (int[] s : spawns) {
-            float yaw = (float) Math.toDegrees(Math.atan2(s[0], -s[2]));
-            spawnLocs.add(new Location(world, s[0] + 0.5, baseY + s[1] + 0.05, s[2] + 0.5, yaw, 0f));
-        }
-        if (spawnLocs.isEmpty()) {
-            spawnLocs.add(new Location(world, 0.5, baseY + 10.05, 0.5));
-        }
-
         return new BuildResult(spawnLocs, crumbleOrder);
     }
 
     private static BlockData resolveBlockData(String state) {
+        if (state == null || state.isEmpty()) {
+            return Material.STONE.createBlockData();
+        }
         try {
             return Bukkit.createBlockData(state);
         } catch (IllegalArgumentException ignored) {

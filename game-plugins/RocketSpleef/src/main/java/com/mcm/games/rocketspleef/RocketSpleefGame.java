@@ -30,6 +30,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -42,6 +44,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -91,6 +94,8 @@ public final class RocketSpleefGame implements McmGame, Listener {
     private int padsSpawned = 0;
     private int activeElimY = 64;
     private int activeClearRadius = 46;
+    private double activeCenterX = 0.5;
+    private double activeCenterZ = 0.5;
     private double spectatorY = 108.0;
 
     private final Set<UUID> alive = new HashSet<>();
@@ -111,6 +116,19 @@ public final class RocketSpleefGame implements McmGame, Listener {
         this.plugin = plugin;
         this.cfg = cfg;
         this.world = world;
+        new SpectatorGuard(plugin, p -> {
+            if (ctx == null || phase == Phase.IDLE || this.world == null) return null;
+            if (!p.getWorld().equals(this.world) && !ctx.participants().contains(p)) return null;
+            double r = activeClearRadius + 24.0;
+            BoundingBox box = new BoundingBox(
+                    activeCenterX - r, activeElimY - 10.0, activeCenterZ - r,
+                    activeCenterX + r, spectatorY + 48.0, activeCenterZ + r);
+            return new SpectatorGuard.Zone(this.world, box, spectatorHome());
+        });
+    }
+
+    private Location spectatorHome() {
+        return new Location(world, activeCenterX, spectatorY, activeCenterZ);
     }
 
     @Override public String id() { return ID; }
@@ -179,6 +197,14 @@ public final class RocketSpleefGame implements McmGame, Listener {
     @Override
     public boolean skipRound() {
         if (ctx == null || phase == Phase.IDLE) return false;
+        if (phase == Phase.INTERMISSION) {
+            if (round >= cfg.rounds) {
+                finishGame("All " + cfg.rounds + " rounds complete!");
+            } else {
+                startNextRound();
+            }
+            return true;
+        }
         endRound(false, "Round skipped by admin");
         return true;
     }
@@ -230,10 +256,14 @@ public final class RocketSpleefGame implements McmGame, Listener {
         if (currentArena instanceof ImportedRsArena imp) {
             activeElimY = Math.min(cfg.elimY, imp.baseY() - 12);
             activeClearRadius = Math.max(cfg.clearRadius, imp.maxHorizRadius());
+            activeCenterX = imp.centerX() + 0.5;
+            activeCenterZ = imp.centerZ() + 0.5;
             spectatorY = imp.baseY() + 30.0;
         } else {
             activeElimY = cfg.elimY;
             activeClearRadius = cfg.clearRadius;
+            activeCenterX = 0.5;
+            activeCenterZ = 0.5;
             spectatorY = 108.0;
         }
 
@@ -248,15 +278,19 @@ public final class RocketSpleefGame implements McmGame, Listener {
 
         for (int i = 0; i < players.size(); i++) {
             Player p = players.get(i);
-            Location spawn = spawns.get(i % spawns.size());
-            p.teleport(spawn);
+            p.teleport(spawns.get(i % spawns.size()));
             p.setGameMode(GameMode.SURVIVAL);
             p.getInventory().clear();
             p.setHealth(20.0);
             p.setFoodLevel(20);
             p.setFallDistance(0f);
+            p.setFireTicks(0);
+            p.setVelocity(new Vector());
+            p.setGliding(false);
             p.setAllowFlight(cfg.allowDoubleJump);
             p.setFlying(false);
+            p.setCooldown(Material.BLAZE_ROD, 0);
+            p.setCooldown(Material.FEATHER, 0);
 
             giveKit(p);
             alive.add(p.getUniqueId());
@@ -324,12 +358,14 @@ public final class RocketSpleefGame implements McmGame, Listener {
                         spawnDynamicPad();
                     }
                 }
-                // Gentle outer-edge crumbling in the final 40s of active play
+                // Gentle outer-edge crumbling in the final 40s of active play, scaled to arena size
                 if (secLeft <= 40 && tickCounter % 10 == 0) {
-                    queueCrumbleBatch(8);
+                    int batch = Math.max(2, (int) Math.ceil(activeBlocks.size() * 0.25 / 80.0));
+                    queueCrumbleBatch(batch);
                 }
             } else if (phase == Phase.OVERTIME && tickCounter % 5 == 0) {
-                queueCrumbleBatch(35);
+                int batch = Math.max(5, (int) Math.ceil(activeBlocks.size() * 0.80 / (cfg.overtimeSeconds * 4.0)));
+                queueCrumbleBatch(batch);
             }
         }
 
@@ -369,6 +405,8 @@ public final class RocketSpleefGame implements McmGame, Listener {
                 for (UUID id : alive) {
                     Player p = Bukkit.getPlayer(id);
                     if (p != null) {
+                        p.setAllowFlight(cfg.allowDoubleJump);
+                        p.setFlying(false);
                         p.showTitle(Title.title(
                                 Component.text("GO!", NamedTextColor.GREEN, TextDecoration.BOLD),
                                 Component.text("Spacebar to Glide • Right-click Blaze Rod / Feather!", NamedTextColor.YELLOW),
@@ -447,12 +485,16 @@ public final class RocketSpleefGame implements McmGame, Listener {
 
         int rCeil = (int) Math.ceil(cfg.blastRadius);
         double r2 = cfg.blastRadius * cfg.blastRadius;
+        int minH = world.getMinHeight();
+        int maxH = world.getMaxHeight();
         for (int dx = -rCeil; dx <= rCeil; dx++) {
             for (int dy = -rCeil; dy <= rCeil; dy++) {
+                int by = center.getBlockY() + dy;
+                if (by < minH || by >= maxH) continue;
                 for (int dz = -rCeil; dz <= rCeil; dz++) {
                     if (dx * dx + dy * dy + dz * dz <= r2) {
-                        Block b = world.getBlockAt(center.getBlockX() + dx, center.getBlockY() + dy, center.getBlockZ() + dz);
-                        if (b.getType() != Material.AIR) {
+                        Block b = world.getBlockAt(center.getBlockX() + dx, by, center.getBlockZ() + dz);
+                        if (!b.getType().isAir()) {
                             b.setType(Material.AIR, false);
                         }
                     }
@@ -486,7 +528,8 @@ public final class RocketSpleefGame implements McmGame, Listener {
 
     private void queueCrumbleBatch(int count) {
         int marked = 0;
-        while (crumbleCursor < activeBlocks.size() && marked < count && pendingCrumbles.size() < 400) {
+        int maxPending = Math.max(400, count * 5);
+        while (crumbleCursor < activeBlocks.size() && marked < count && pendingCrumbles.size() < maxPending) {
             RsCanvas.Pos pos = activeBlocks.get(crumbleCursor++);
             Block b = world.getBlockAt(pos.x(), pos.y(), pos.z());
             if (b.getType() != Material.AIR && b.getType() != Material.RED_CONCRETE) {
@@ -541,9 +584,7 @@ public final class RocketSpleefGame implements McmGame, Listener {
 
         Player victim = Bukkit.getPlayer(victimId);
         if (victim != null) {
-            victim.setGameMode(GameMode.SPECTATOR);
-            victim.setAllowFlight(true);
-            victim.teleport(new Location(world, 0.5, spectatorY, 0.5));
+            SpectatorGuard.makeSpectator(victim, spectatorHome());
             victim.playSound(victim.getLocation(), Sound.ENTITY_WITHER_SPAWN, 0.5f, 1.5f);
         }
 
@@ -574,6 +615,13 @@ public final class RocketSpleefGame implements McmGame, Listener {
     }
 
     private void endRound(boolean awardEndPoints, String reason) {
+        for (Rocket r : rockets) {
+            if (r.entity() != null && !r.entity().isDead()) {
+                r.entity().remove();
+            }
+        }
+        rockets.clear();
+
         if (awardEndPoints && !alive.isEmpty()) {
             int bonus = (hasMultipleSides && countAliveSides() == 1) ? cfg.lastSideBonus : cfg.sharedSurvivorBonus;
             for (UUID id : alive) {
@@ -634,10 +682,6 @@ public final class RocketSpleefGame implements McmGame, Listener {
                 back.setPitch(e.getTo().getPitch());
                 e.setTo(back);
             }
-        } else if (p.getGameMode() == GameMode.SPECTATOR) {
-            if (Math.hypot(e.getTo().getX(), e.getTo().getZ()) > activeClearRadius + 16) {
-                e.setTo(new Location(world, 0.5, spectatorY, 0.5));
-            }
         }
     }
 
@@ -691,6 +735,7 @@ public final class RocketSpleefGame implements McmGame, Listener {
 
         lastUpdraftMs.put(p.getUniqueId(), now);
         updrafts.put(p.getUniqueId(), charges - 1);
+        p.setCooldown(Material.FEATHER, (int) Math.ceil(cfg.updraftCooldownMs / 50.0));
         if (charges - 1 <= 0) {
             p.getInventory().remove(Material.FEATHER);
         } else {
@@ -701,8 +746,43 @@ public final class RocketSpleefGame implements McmGame, Listener {
         if (boost.lengthSquared() > 0.001) boost.normalize().multiply(0.35);
         boost.setY(cfg.updraftVelocity);
         p.setVelocity(boost);
+        p.setFallDistance(0f);
         world.playSound(p.getLocation(), Sound.ENTITY_PHANTOM_FLAP, 1.0f, 1.4f);
         world.spawnParticle(Particle.CLOUD, p.getLocation(), 12, 0.3, 0.1, 0.3, 0.05);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onProjectileHit(ProjectileHitEvent e) {
+        if (!(e.getEntity() instanceof Snowball sb)) return;
+        if (ctx == null || phase == Phase.IDLE || world == null || !sb.getWorld().equals(world)) return;
+
+        Iterator<Rocket> it = rockets.iterator();
+        while (it.hasNext()) {
+            Rocket r = it.next();
+            if (r.entity() != null && r.entity().getUniqueId().equals(sb.getUniqueId())) {
+                if (e.getHitEntity() instanceof Player hitP && hitP.getUniqueId().equals(r.shooter())
+                        && tickCounter - r.bornTick() < 4) {
+                    e.setCancelled(true);
+                    return;
+                }
+                Location hitLoc = sb.getLocation();
+                if (e.getHitBlock() != null) {
+                    hitLoc = e.getHitBlock().getLocation().add(0.5, 0.5, 0.5);
+                } else if (e.getHitEntity() != null) {
+                    hitLoc = e.getHitEntity().getLocation();
+                }
+                explodeRocket(r.shooter(), hitLoc);
+                sb.remove();
+                it.remove();
+                return;
+            }
+        }
+    }
+
+    @EventHandler public void onInventoryClick(InventoryClickEvent e) {
+        if (e.getWhoClicked() instanceof Player p && inArena(p) && alive.contains(p.getUniqueId())) {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler public void onDamage(EntityDamageEvent e) {
@@ -721,8 +801,10 @@ public final class RocketSpleefGame implements McmGame, Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         if (ctx != null && alive.remove(e.getPlayer().getUniqueId())) {
-            if (alive.isEmpty() || (hasMultipleSides && countAliveSides() <= 1 && startCount > 1)) {
-                endRound(true, "Round over!");
+            if (phase == Phase.ACTIVE || phase == Phase.OVERTIME) {
+                if (alive.isEmpty() || (hasMultipleSides && countAliveSides() <= 1 && startCount > 1)) {
+                    endRound(true, "Round over!");
+                }
             }
         }
     }

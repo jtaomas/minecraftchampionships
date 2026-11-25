@@ -89,6 +89,7 @@ public final class SurvivalGamesGame implements McmGame, Listener {
 
     private final SurvivalGamesPlugin plugin;
     private final ArenaBuilder arenaBuilder = new ArenaBuilder();
+    private final Object importedIoLock = new Object();
 
     private volatile boolean running;
     private volatile Phase phase = Phase.IDLE;
@@ -278,6 +279,8 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         border.setSize(initialRadius * 2.0);
         border.setDamageBuffer(1.0);
         border.setDamageAmount(1.5);
+        border.setWarningDistance(8);
+        border.setWarningTime(5);
 
         ctx.broadcast(ChatColor.GOLD + "Generating " + ChatColor.YELLOW + activeMap.displayName()
                 + ChatColor.GOLD + " (" + activeMap.id() + ")...");
@@ -292,14 +295,25 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             for (Player p : new ArrayList<>(existing.getPlayers())) {
                 p.teleport(fallback);
             }
-            Bukkit.unloadWorld(existing, false);
+            if (!Bukkit.unloadWorld(existing, false)) {
+                plugin.getLogger().warning("Could not unload existing runtime world '" + runtimeName + "'; aborting load.");
+                if (ctx != null) {
+                    ctx.broadcast(ChatColor.RED + "Failed to unload previous instance of '" + imp.id() + "'.");
+                }
+                stop();
+                return;
+            }
         }
 
         Path targetDir = plugin.getServer().getWorldContainer().toPath().resolve(runtimeName);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            if (!running || buildGeneration != gen) return;
             try {
-                deleteRecursively(targetDir);
-                copyWorldTemplate(imp.templateDir(), targetDir);
+                synchronized (importedIoLock) {
+                    if (!running || buildGeneration != gen) return;
+                    deleteRecursivelyWithRetry(targetDir);
+                    copyWorldTemplate(imp.templateDir(), targetDir);
+                }
             } catch (IOException ex) {
                 plugin.getLogger().severe("Failed to copy imported SG world '" + imp.id() + "': " + ex.getMessage());
                 Bukkit.getScheduler().runTask(plugin, () -> {
@@ -313,6 +327,11 @@ public final class SurvivalGamesGame implements McmGame, Listener {
 
             Bukkit.getScheduler().runTask(plugin, () -> {
                 if (!running || buildGeneration != gen) return;
+                if (Bukkit.getWorld(runtimeName) != null) {
+                    plugin.getLogger().warning("Runtime world '" + runtimeName + "' already loaded before createWorld().");
+                    stop();
+                    return;
+                }
                 World loaded = new WorldCreator(runtimeName).createWorld();
                 if (loaded == null) {
                     if (ctx != null) {
@@ -331,6 +350,8 @@ public final class SurvivalGamesGame implements McmGame, Listener {
                 border.setSize(imp.radius() * 2.0);
                 border.setDamageBuffer(1.0);
                 border.setDamageAmount(1.5);
+                border.setWarningDistance(8);
+                border.setWarningTime(5);
 
                 scanImportedChestsAndPedestals(imp, loaded, gen);
             });
@@ -355,6 +376,12 @@ public final class SurvivalGamesGame implements McmGame, Listener {
                 }
             }
         }
+        // Scan Cornucopia (center) chunks first so central chests are guaranteed to be discovered & filled first.
+        chunks.sort(Comparator.comparingDouble(c -> {
+            double dx = ((c[0] << 4) + 8.0) - imp.centerX();
+            double dz = ((c[1] << 4) + 8.0) - imp.centerZ();
+            return dx * dx + dz * dz;
+        }));
 
         final int[] idx = {0};
         if (importedScanTask != null) importedScanTask.cancel();
@@ -393,51 +420,141 @@ public final class SurvivalGamesGame implements McmGame, Listener {
 
     private void findImportedPedestals(ImportedSgWorld imp, World w) {
         importedPedestals.clear();
-        int[] radii = {14, 15, 13, 16, 12, 17};
-        int minY = Math.max(w.getMinHeight() + 1, imp.centerY() - 12);
-        int maxY = Math.min(w.getMaxHeight() - 3, imp.centerY() + 18);
+        int[] radii = {14, 15, 13, 16, 12, 17, 11, 10, 9, 8, 7, 18, 19, 6, 5, 20, 21, 22, 4};
+        int[] searchRadii = {8, 7, 10, 12, 14, 6, 16, 5, 9, 11, 13, 15, 18};
+        int minY = Math.max(w.getMinHeight() + 1, imp.centerY() - 16);
+        int maxY = Math.min(w.getMaxHeight() - 3, imp.centerY() + 20);
+        Set<Long> usedXZ = new HashSet<>();
 
         for (int i = 0; i < 24; i++) {
             double angle = (2.0 * Math.PI * i) / 24.0;
             Location found = null;
+            int chosenX = 0, chosenZ = 0;
+
             for (int r : radii) {
                 int px = imp.centerX() + (int) Math.round(Math.cos(angle) * r);
                 int pz = imp.centerZ() + (int) Math.round(Math.sin(angle) * r);
-                for (int y = maxY; y >= minY; y--) {
-                    Block ground = w.getBlockAt(px, y, pz);
-                    Block above1 = w.getBlockAt(px, y + 1, pz);
-                    Block above2 = w.getBlockAt(px, y + 2, pz);
-                    if (isSafeSpawnGround(ground.getType()) && isPassableDry(above1) && isPassableDry(above2)) {
-                        float yaw = (float) Math.toDegrees(Math.atan2(-(imp.centerX() - px), imp.centerZ() - pz));
-                        found = new Location(w, px + 0.5, y + 1.0, pz + 0.5, yaw, 0f);
-                        break;
+                if (usedXZ.contains(packXZ(px, pz))) continue;
+                found = findSafePedestalY(w, px, pz, imp.centerY(), minY, maxY, imp.centerX(), imp.centerZ());
+                if (found != null) { chosenX = px; chosenZ = pz; break; }
+            }
+            if (found == null) {
+                outer:
+                for (int r : searchRadii) {
+                    for (int deg = 4; deg <= 44; deg += 4) {
+                        for (int sgn = -1; sgn <= 1; sgn += 2) {
+                            double a = angle + Math.toRadians(deg * sgn);
+                            int px = imp.centerX() + (int) Math.round(Math.cos(a) * r);
+                            int pz = imp.centerZ() + (int) Math.round(Math.sin(a) * r);
+                            if (usedXZ.contains(packXZ(px, pz))) continue;
+                            found = findSafePedestalY(w, px, pz, imp.centerY(), minY, maxY, imp.centerX(), imp.centerZ());
+                            if (found != null) { chosenX = px; chosenZ = pz; break outer; }
+                        }
                     }
                 }
-                if (found != null) break;
+            }
+            if (found == null) {
+                spiral:
+                for (int dist = 1; dist <= 22; dist++) {
+                    for (int dx = -dist; dx <= dist; dx++) {
+                        for (int dz = -dist; dz <= dist; dz++) {
+                            if (Math.abs(dx) != dist && Math.abs(dz) != dist) continue;
+                            int px = imp.centerX() + dx;
+                            int pz = imp.centerZ() + dz;
+                            if (usedXZ.contains(packXZ(px, pz))) continue;
+                            found = findSafePedestalY(w, px, pz, imp.centerY(), minY, maxY, imp.centerX(), imp.centerZ());
+                            if (found != null) { chosenX = px; chosenZ = pz; break spiral; }
+                        }
+                    }
+                }
+            }
+            if (found == null) {
+                found = findSafePedestalY(w, imp.centerX(), imp.centerZ(), imp.centerY(), minY, maxY, imp.centerX(), imp.centerZ());
+                chosenX = imp.centerX();
+                chosenZ = imp.centerZ();
             }
             if (found == null) {
                 found = new Location(w, imp.centerX() + 0.5, imp.centerY() + 1.0, imp.centerZ() + 0.5);
+                chosenX = imp.centerX();
+                chosenZ = imp.centerZ();
             }
+            usedXZ.add(packXZ(chosenX, chosenZ));
             importedPedestals.add(found);
         }
     }
 
+    private static long packXZ(int x, int z) {
+        return (((long) x) << 32) | (z & 0xFFFFFFFFL);
+    }
+
+    private static Location findSafePedestalY(World w, int px, int pz, int targetY, int minY, int maxY, int cx, int cz) {
+        int maxOffset = Math.max(targetY - minY, maxY - targetY);
+        for (int offset = 0; offset <= maxOffset; offset++) {
+            for (int sign = 0; sign < (offset == 0 ? 1 : 2); sign++) {
+                int y = sign == 0 ? targetY + offset : targetY - offset;
+                if (y < minY || y > maxY) continue;
+                Block ground = w.getBlockAt(px, y, pz);
+                Block above1 = w.getBlockAt(px, y + 1, pz);
+                Block above2 = w.getBlockAt(px, y + 2, pz);
+                if (isSafeSpawnGround(ground.getType()) && isPassableDry(above1) && isPassableDry(above2)) {
+                    float yaw = (float) Math.toDegrees(Math.atan2(-(cx - px), cz - pz));
+                    return new Location(w, px + 0.5, y + 1.0, pz + 0.5, yaw, 0f);
+                }
+            }
+        }
+        return null;
+    }
+
     private static boolean isSafeSpawnGround(Material m) {
+        String nm = m.name();
         return m.isSolid()
-                && !m.name().endsWith("_LEAVES")
+                && !nm.endsWith("_LEAVES")
+                && !nm.endsWith("_FENCE")
+                && !nm.endsWith("_FENCE_GATE")
+                && !nm.endsWith("_WALL")
                 && m != Material.BARRIER
+                && m != Material.CHEST
+                && m != Material.TRAPPED_CHEST
+                && m != Material.BARREL
+                && m != Material.ENDER_CHEST
+                && m != Material.CRAFTING_TABLE
+                && m != Material.ENCHANTING_TABLE
                 && m != Material.CACTUS
-                && m != Material.MAGMA_BLOCK;
+                && m != Material.MAGMA_BLOCK
+                && m != Material.CAMPFIRE
+                && m != Material.SOUL_CAMPFIRE
+                && m != Material.POWDER_SNOW
+                && m != Material.POINTED_DRIPSTONE;
     }
 
     private static boolean isPassableDry(Block b) {
         Material m = b.getType();
-        return !m.isSolid()
+        return b.isPassable()
                 && !b.isLiquid()
                 && m != Material.FIRE
                 && m != Material.SOUL_FIRE
                 && m != Material.SWEET_BERRY_BUSH
                 && m != Material.COBWEB;
+    }
+
+    private static void deleteRecursivelyWithRetry(Path dir) throws IOException {
+        if (!Files.exists(dir)) return;
+        IOException last = null;
+        for (int attempt = 0; attempt < 5; attempt++) {
+            try {
+                deleteRecursively(dir);
+                return;
+            } catch (IOException ex) {
+                last = ex;
+                try {
+                    Thread.sleep(80L);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    throw ex;
+                }
+            }
+        }
+        if (last != null) throw last;
     }
 
     private static void deleteRecursively(Path dir) throws IOException {
@@ -485,6 +602,10 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         for (int i = 0; i < players.size(); i++) {
             Player p = players.get(i);
             Location spawn = pedestals.get(i % pedestals.size()).clone();
+            if (i >= pedestals.size()) {
+                double offsetAngle = (2.0 * Math.PI * (i / pedestals.size())) / 4.0;
+                spawn.add(Math.cos(offsetAngle) * 0.35, 0.0, Math.sin(offsetAngle) * 0.35);
+            }
             p.teleport(spawn);
             p.setGameMode(GameMode.SURVIVAL);
             p.setHealth(20.0);
@@ -764,7 +885,9 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             }
         }
         double dmDiameter = plugin.getConfig().getInt("border.deathmatch-radius", 22) * 2.0;
-        world.getWorldBorder().setSize(dmDiameter, 20);
+        WorldBorder border = world.getWorldBorder();
+        double targetDiameter = Math.min(border.getSize(), dmDiameter);
+        border.setSize(targetDiameter, 20);
     }
 
     private void updateCompassAndActionBar() {
@@ -809,7 +932,8 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         lines.add(ChatColor.YELLOW + "Map: " + ChatColor.WHITE + activeMapDisplayName());
         lines.add(ChatColor.YELLOW + "Phase: " + ChatColor.WHITE + phase.name());
         lines.add(ChatColor.YELLOW + "Alive: " + ChatColor.GREEN + alive.size());
-        lines.add(ChatColor.YELLOW + "Border: " + ChatColor.AQUA + (int) (world.getWorldBorder().getSize() / 2.0) + "m");
+        int borderRadius = world != null ? (int) (world.getWorldBorder().getSize() / 2.0) : activeMapRadius();
+        lines.add(ChatColor.YELLOW + "Border: " + ChatColor.AQUA + borderRadius + "m");
         ctx.setSidebarLines(lines);
     }
 
@@ -896,26 +1020,64 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             mainTask.cancel();
             mainTask = null;
         }
+        if (importedScanTask != null) {
+            importedScanTask.cancel();
+            importedScanTask = null;
+        }
         arenaBuilder.cancel();
         ctx.finish(reason);
+        unloadImportedRuntimeWorld();
     }
 
     private void cleanupWorldState() {
-        for (Location loc : playerPlacedBlocks) {
-            world.getBlockAt(loc).setType(Material.AIR, false);
-        }
-        playerPlacedBlocks.clear();
-        for (Player p : ctx.participants()) {
-            p.setLevel(0);
-            p.setExp(0f);
+        if (ctx != null) {
+            for (Player p : ctx.participants()) {
+                p.setLevel(0);
+                p.setExp(0f);
+            }
         }
         if (world != null) {
+            for (Location loc : playerPlacedBlocks) {
+                world.getBlockAt(loc).setType(Material.AIR, false);
+            }
             for (Entity e : world.getEntities()) {
                 if (!(e instanceof Player)) {
                     e.remove();
                 }
             }
             world.getWorldBorder().reset();
+        }
+        playerPlacedBlocks.clear();
+    }
+
+    private void unloadImportedRuntimeWorld() {
+        if (importedRuntimeWorld == null) return;
+        World toUnload = importedRuntimeWorld;
+        String runtimeName = toUnload.getName();
+        importedRuntimeWorld = null;
+        if (world == toUnload) {
+            world = null;
+        }
+        Location fallback = Bukkit.getWorlds().get(0).getSpawnLocation();
+        for (Player p : new ArrayList<>(toUnload.getPlayers())) {
+            p.teleport(fallback);
+        }
+        boolean unloaded = Bukkit.unloadWorld(toUnload, false);
+        if (!unloaded) {
+            plugin.getLogger().warning("Failed to unload runtime world '" + runtimeName + "'.");
+            return;
+        }
+        Path runtimeDir = plugin.getServer().getWorldContainer().toPath().resolve(runtimeName);
+        if (plugin.isEnabled()) {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                synchronized (importedIoLock) {
+                    try {
+                        deleteRecursivelyWithRetry(runtimeDir);
+                    } catch (IOException ex) {
+                        plugin.getLogger().warning("Could not delete runtime world folder '" + runtimeName + "': " + ex.getMessage());
+                    }
+                }
+            });
         }
     }
 
@@ -952,15 +1114,8 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             }
             world.getWorldBorder().reset();
         }
-        if (importedRuntimeWorld != null) {
-            Location fallback = Bukkit.getWorlds().get(0).getSpawnLocation();
-            for (Player p : new ArrayList<>(importedRuntimeWorld.getPlayers())) {
-                p.teleport(fallback);
-            }
-            Bukkit.unloadWorld(importedRuntimeWorld, false);
-            importedRuntimeWorld = null;
-            world = null;
-        }
+        unloadImportedRuntimeWorld();
+        world = null;
         activeImported = null;
         activeMap = null;
     }
@@ -976,7 +1131,7 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
         if (!isInGameWorld(e.getPlayer())) return;
-        if (phase == Phase.COUNTDOWN && e.getTo() != null) {
+        if (phase == Phase.COUNTDOWN && e.getPlayer().getGameMode() != GameMode.SPECTATOR && e.getTo() != null) {
             if (e.getFrom().getX() != e.getTo().getX() || e.getFrom().getZ() != e.getTo().getZ()) {
                 Location back = e.getFrom().clone();
                 back.setYaw(e.getTo().getYaw());
@@ -1047,19 +1202,26 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent e) {
         if (!isInGameWorld(e.getPlayer())) return;
-        e.setRespawnLocation(new Location(world, activeCenterX() + 0.5, activeCenterY() + 14.0, activeCenterZ() + 0.5));
-        Bukkit.getScheduler().runTask(plugin, () -> e.getPlayer().setGameMode(GameMode.SPECTATOR));
+        World gameWorld = world;
+        e.setRespawnLocation(new Location(gameWorld, activeCenterX() + 0.5, activeCenterY() + 14.0, activeCenterZ() + 0.5));
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            if (running && world != null && world.equals(gameWorld) && e.getPlayer().isOnline() && e.getPlayer().getWorld().equals(gameWorld)) {
+                e.getPlayer().setGameMode(GameMode.SPECTATOR);
+            }
+        });
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
-        if (!isInGameWorld(e.getPlayer())) return;
-        handleElimination(e.getPlayer().getUniqueId(), null);
+        if (!running || ctx == null) return;
+        if (alive.contains(e.getPlayer().getUniqueId())) {
+            handleElimination(e.getPlayer().getUniqueId(), null);
+        }
     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        if (!isInGameWorld(e.getPlayer())) return;
+        if (!isInGameWorld(e.getPlayer()) || ctx == null) return;
         if (e.getAction() != Action.RIGHT_CLICK_BLOCK || e.getClickedBlock() == null) return;
         Location loc = e.getClickedBlock().getLocation();
         if (activeAirdrops.remove(loc)) {

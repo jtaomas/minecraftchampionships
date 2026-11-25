@@ -78,7 +78,9 @@ public final class BattleBoxGame implements McmGame {
     private McmBuild.BuildQueue queue;
     private McmBuild.BuildQueue adminQueue;
     private int buildToken;
+    private int gameToken;
     private boolean buildDone;
+    private final Map<Integer, int[]> slotBounds = new HashMap<>();
 
     // config (read at start)
     private boolean woolMode;
@@ -152,6 +154,7 @@ public final class BattleBoxGame implements McmGame {
         if (running) stop();
         this.ctx = context;
         this.finished = false;
+        this.gameToken++;
         clearState();
         readConfig();
 
@@ -197,6 +200,7 @@ public final class BattleBoxGame implements McmGame {
     @Override
     public void stop() {
         cancelTasks();
+        gameToken++;
         boolean wasRunning = running;
         running = false;
         phase = Phase.IDLE;
@@ -543,13 +547,16 @@ public final class BattleBoxGame implements McmGame {
         }
         buildDone = false;
         final int token = ++buildToken;
-        if (queue == null) queue = new McmBuild.BuildQueue(plugin);
+        if (queue != null) queue.cancel();
+        queue = new McmBuild.BuildQueue(plugin);
         long seed = random.nextLong();
         for (Match m : matches) {
             Grid g = theme.generate(geo, seed, Side.colourName(m.dyeA), Side.colourName(m.dyeB),
                     Side.centreBlock(m.neutral, woolMode).getKey().getKey());
             Location o = arenaOrigin(world, m.arena);
-            ArenaPlacer.enqueue(queue, world, o.getBlockX(), o.getBlockY(), o.getBlockZ(), g, plugin.getLogger());
+            ArenaPlacer.enqueue(queue, world, o.getBlockX(), o.getBlockY(), o.getBlockZ(), g,
+                    slotBounds.get(m.arena), plugin.getLogger());
+            slotBounds.put(m.arena, new int[]{g.minX, g.minY, g.minZ, g.maxX, g.maxY, g.maxZ});
         }
         queue.then(() -> {
             if (!running || token != buildToken) return;
@@ -661,8 +668,10 @@ public final class BattleBoxGame implements McmGame {
                         + ChatColor.WHITE + theme.displayName() + ChatColor.GRAY + ": you are " + s.label + ChatColor.GRAY
                         + " vs " + opp.label + ChatColor.GRAY + ". Pick a kit (menu or the star in your hotbar).");
                 McmFx.sound(p, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1.2f);
+                final int gt = gameToken;
+                final int r = round;
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if (phase == Phase.KIT && p.isOnline() && matchOf.get(u) == m) openKitMenu(p);
+                    if (running && gameToken == gt && round == r && phase == Phase.KIT && p.isOnline() && matchOf.get(u) == m) openKitMenu(p);
                 }, 10L);
             } else {
                 prep(p, GameMode.SPECTATOR);
@@ -900,10 +909,12 @@ public final class BattleBoxGame implements McmGame {
             int cz = theme != null ? theme.centreZ() : 0;
             Location c = arenaOrigin(world, m.arena).add(cx + 0.5, cy + 5, cz + 0.5);
             DyeColor d = m.dyeOf(winner);
+            final int gt = gameToken;
+            final int r = round;
             for (int i = 0; i < 4; i++) {
                 final int k = i;
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if (!running) return;
+                    if (!running || gameToken != gt || round != r) return;
                     McmFx.teamFirework(c.clone().add((k % 2 == 0 ? 4 : -4), k, (k < 2 ? 4 : -4)), d.getColor(), k == 0);
                 }, 4L * i);
             }
@@ -1182,7 +1193,8 @@ public final class BattleBoxGame implements McmGame {
         adminTheme = t;
         ArenaGeo g = new ArenaGeo();
         Grid grid = t.generate(g, System.nanoTime(), "red", "blue", "white_concrete");
-        ArenaPlacer.enqueue(adminQueue, w, ADMIN_X, ARENA_Y, ADMIN_Z, grid, plugin.getLogger());
+        ArenaPlacer.enqueue(adminQueue, w, ADMIN_X, ARENA_Y, ADMIN_Z, grid, slotBounds.get(-1), plugin.getLogger());
+        slotBounds.put(-1, new int[]{grid.minX, grid.minY, grid.minZ, grid.maxX, grid.maxY, grid.maxZ});
         long n = grid.count();
         p.sendMessage(ChatColor.YELLOW + "Building " + t.displayName() + " (" + n + " blocks, " + grid.distinctIds() + " block types)...");
         adminQueue.then(() -> {
