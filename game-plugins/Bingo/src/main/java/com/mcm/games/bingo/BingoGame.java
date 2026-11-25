@@ -63,6 +63,8 @@ public final class BingoGame implements McmGame, Listener {
 
     private enum Phase { IDLE, PREPARING, COUNTDOWN, PLAYING }
 
+    private static final Deque<Set<Material>> RECENT_CARDS = new ArrayDeque<>();
+
     private final BingoPlugin plugin;
     private final BingoWorld worldMgr;
     private final boolean lockout;
@@ -312,7 +314,13 @@ public final class BingoGame implements McmGame, Listener {
         for (AreaLayout.Site s : placed) structures.add(s.kind());
         env = new Env(layout.biomes, structures);
         Random rnd = ThreadLocalRandom.current();
-        card = BingoItem.generateCard(rnd, env, lockout ? cfg.lockoutMix : cfg.bingoMix, cfg.woodCap);
+        Set<Material> recent = new HashSet<>();
+        for (Set<Material> prev : RECENT_CARDS) recent.addAll(prev);
+        card = BingoItem.generateCard(rnd, env, lockout ? cfg.lockoutMix : cfg.bingoMix, cfg.woodCap, recent);
+        Set<Material> used = new HashSet<>(25);
+        for (BingoItem it : card) used.add(it.icon);
+        RECENT_CARDS.addLast(used);
+        while (RECENT_CARDS.size() > 2) RECENT_CARDS.removeFirst();
         plugin.getLogger().info("Bingo card env " + env);
 
         world.setTime(cfg.startTime);

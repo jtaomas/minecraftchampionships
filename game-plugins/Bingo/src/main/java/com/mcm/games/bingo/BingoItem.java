@@ -375,6 +375,11 @@ public final class BingoItem {
         add(2, DRIPSTONE_BLOCK).g("dripstone_cave").need(DRIP);
         add(2, SMOKER).g("furnace");
         add(2, CAMPFIRE).g("campfire");
+        add(2, DROPPER).g("redstone");
+        add(2, TRAPPED_CHEST).g("chest_iron");
+        add(2, SHIELD).g("basic_iron");
+        add(2, WATER_BUCKET).g("basic_iron").need(WATER);
+        add(2, COPPER_DOOR).g("copper");
 
         // ======================= tier 3: hard (a real detour: structure, rare drop, long chain)
         add(3, DIAMOND).g("diamond");
@@ -383,8 +388,6 @@ public final class BingoItem {
         add(3, BELL).g("village").need(VILLAGE);
         add(3, GOLDEN_CARROT).g("village", "gold").need(VILLAGE);
         add(3, BEETROOT_SOUP).g("village").need(VILLAGE);
-        add(3, RABBIT_STEW).g("rabbit", "village").need(RABBITS).need(VILLAGE);
-        add(3, RABBIT_FOOT).g("rabbit").need(RABBITS);
         add(3, GOLDEN_APPLE).g("oak", "gold").need(APPLE_TREES);
         add(3, GLISTERING_MELON_SLICE).g("jungle", "gold").need(JUNGLE_B);
         add(3, PUMPKIN).g("pumpkin").need(FARM);
@@ -407,15 +410,11 @@ public final class BingoItem {
         add(3, FIREWORK_STAR).g("gunpowder");
         add(3, FERMENTED_SPIDER_EYE).g("spider", "paper").need(WATER);
         add(3, TARGET).g("wheat", "redstone");
-        // re-admitted with mob spawning on: slimes in slime chunks underground (any light, any time of day)
-        add(3, SLIME_BALL).g("slime").n("Slimeball (cave slimes)");
-        add(3, STICKY_PISTON).g("slime", "piston");
-        add(4, LEAD).g("slime", "spider");
         add(3, CRAFTER).g("basic_iron", "redstone");
-        add(3, ANVIL).g("basic_iron");
+        add(3, LAVA_BUCKET).g("basic_iron");
+        add(3, GOLDEN_HELMET).g("gold");
         add(3, HOPPER_MINECART).g("chest_iron");
         add(3, LAPIS_BLOCK).g("lapis");
-        add(3, GOLD_BLOCK).g("gold");
         add(3, RAW_GOLD_BLOCK).g("gold");
         add(3, SPYGLASS).g("amethyst", "copper");
         add(3, TINTED_GLASS).g("amethyst", "sand").need(GLASS_SRC);
@@ -423,18 +422,16 @@ public final class BingoItem {
         add(3, BROWN_BANNER).g("wool", "jungle").need(SHEEP).need(JUNGLE_B);
         add(3, PINK_CONCRETE_POWDER).g("sand", "dye_mix").need(SAND).need(FARM);
 
-        // ======================= tier 4: very hard (worth a big detour)
-        add(4, ENDER_PEARL).g("nighttime_mob_drops");
-        add(4, AXOLOTL_BUCKET).g("lush_cave").need(LUSH);
-        add(4, HEART_OF_THE_SEA).g("shipwreck").need(TREASURE);
+        // ======================= tier 4: very hard (worth a big detour, but reliably achievable)
         add(4, OBSIDIAN).g("diamond");
-        add(4, ARCHER_POTTERY_SHERD).g("desert_pyramid").n("Desert Pyramid Sherd")
-                .alt(MINER_POTTERY_SHERD, PRIZE_POTTERY_SHERD, SKULL_POTTERY_SHERD).need(PYRAMID);
         add(4, WOLF_ARMOR).g("armadillo").need(ARMADILLO);
         add(4, DIAMOND_PICKAXE).g("diamond");
+        add(4, DIAMOND_SWORD).g("diamond");
+        add(4, DIAMOND_SHOVEL).g("diamond");
         add(4, DIAMOND_HOE).g("diamond");
         add(4, ENCHANTING_TABLE).g("diamond", "paper").need(FARM).need(WATER);
-        add(4, EMERALD_BLOCK).g("village").need(EMERALD_SRC);
+        add(4, GOLD_BLOCK).g("gold");
+        add(4, ANVIL).g("basic_iron");
     }
 
     /** Points per tier, index 1..4 (filled from config by the game). */
@@ -446,6 +443,10 @@ public final class BingoItem {
      * doubled for items with a biome/structure requirement). Shortfalls in a tier are filled from neighbouring tiers.
      */
     public static List<BingoItem> generateCard(Random rnd, Env env, int[] perTier, int woodCap) {
+        return generateCard(rnd, env, perTier, woodCap, Collections.emptySet());
+    }
+
+    public static List<BingoItem> generateCard(Random rnd, Env env, int[] perTier, int woodCap, Set<Material> recentItems) {
         List<BingoItem> card = new ArrayList<>(25);
         Set<String> usedGroups = new HashSet<>();
         int[] woodLeft = {woodCap};
@@ -459,11 +460,11 @@ public final class BingoItem {
         }
         int shortfall = 0;
         for (int t = 4; t >= 1; t--) {
-            int got = pick(rnd, env, t, want[t] + shortfall, card, usedGroups, woodLeft);
+            int got = pick(rnd, env, t, want[t] + shortfall, card, usedGroups, woodLeft, recentItems);
             shortfall = want[t] + shortfall - got;
         }
         // Still short (tiny env): try every tier again, hardest first, then relax groups.
-        for (int t = 4; t >= 1 && card.size() < 25; t--) pick(rnd, env, t, 25 - card.size(), card, usedGroups, woodLeft);
+        for (int t = 4; t >= 1 && card.size() < 25; t--) pick(rnd, env, t, 25 - card.size(), card, usedGroups, woodLeft, recentItems);
         if (card.size() < 25) {
             for (BingoItem it : POOL) {
                 if (card.size() >= 25) break;
@@ -474,20 +475,29 @@ public final class BingoItem {
         return card;
     }
 
-    private static int pick(Random rnd, Env env, int tier, int count, List<BingoItem> card, Set<String> usedGroups, int[] woodLeft) {
+    private static int pick(Random rnd, Env env, int tier, int count, List<BingoItem> card, Set<String> usedGroups, int[] woodLeft, Set<Material> recentItems) {
         int got = 0;
         while (got < count && card.size() < 25) {
-            List<BingoItem> cands = new ArrayList<>();
-            int totalW = 0;
+            List<BingoItem> fresh = new ArrayList<>();
+            List<BingoItem> fallback = new ArrayList<>();
+            int freshW = 0, fallbackW = 0;
             for (BingoItem it : POOL) {
                 if (it.tier != tier || card.contains(it) || !env.satisfies(it)) continue;
                 if (it.woodOnly && woodLeft[0] <= 0) continue;
                 boolean clash = false;
                 for (String g : it.groups) if (usedGroups.contains(g)) { clash = true; break; }
                 if (clash) continue;
-                cands.add(it);
-                totalW += effWeight(it);
+                int w = effWeight(it);
+                if (recentItems != null && recentItems.contains(it.icon)) {
+                    fallback.add(it);
+                    fallbackW += w;
+                } else {
+                    fresh.add(it);
+                    freshW += w;
+                }
             }
+            List<BingoItem> cands = fresh.isEmpty() ? fallback : fresh;
+            int totalW = fresh.isEmpty() ? fallbackW : freshW;
             if (cands.isEmpty()) break;
             int r = rnd.nextInt(totalW);
             BingoItem chosen = cands.get(cands.size() - 1);

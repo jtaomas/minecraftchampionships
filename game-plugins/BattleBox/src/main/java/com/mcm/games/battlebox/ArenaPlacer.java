@@ -36,13 +36,24 @@ final class ArenaPlacer {
         return d;
     }
 
-    /** Queue the whole grid at origin (ox, oy, oz). */
-    static void enqueue(McmBuild.BuildQueue q, World w, int ox, int oy, int oz, Grid g, Logger log) {
+    /** Queue the whole grid at origin (ox, oy, oz), clearing any leftover blocks from {@code prevBounds} if larger. */
+    static void enqueue(McmBuild.BuildQueue q, World w, int ox, int oy, int oz, Grid g, int[] prevBounds, Logger log) {
         if (AIR == null) AIR = Material.AIR.createBlockData();
-        q.region(w, ox + g.minX, oy + g.minY, oz + g.minZ, ox + g.maxX, oy + g.maxY, oz + g.maxZ, (x, y, z) -> {
+        int minX = prevBounds == null ? g.minX : Math.min(g.minX, prevBounds[0]);
+        int minY = prevBounds == null ? g.minY : Math.min(g.minY, prevBounds[1]);
+        int minZ = prevBounds == null ? g.minZ : Math.min(g.minZ, prevBounds[2]);
+        int maxX = prevBounds == null ? g.maxX : Math.max(g.maxX, prevBounds[3]);
+        int maxY = prevBounds == null ? g.maxY : Math.max(g.maxY, prevBounds[4]);
+        int maxZ = prevBounds == null ? g.maxZ : Math.max(g.maxZ, prevBounds[5]);
+        q.region(w, ox + minX, oy + minY, oz + minZ, ox + maxX, oy + maxY, oz + maxZ, (x, y, z) -> {
             int lx = x - ox, ly = y - oy, lz = z - oz;
             if (g.isAir(lx, ly, lz)) return AIR;
             return data(g.get(lx, ly, lz), log);
         }, false);
+    }
+
+    /** Queue the whole grid at origin (ox, oy, oz). */
+    static void enqueue(McmBuild.BuildQueue q, World w, int ox, int oy, int oz, Grid g, Logger log) {
+        enqueue(q, w, ox, oy, oz, g, null, log);
     }
 }

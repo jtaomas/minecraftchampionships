@@ -44,6 +44,39 @@ public abstract class ArenaTheme {
     protected String daisStairs() { return "smooth_quartz"; }
     protected String daisBody() { return "smooth_quartz"; }
 
+    // ------------------------------------------------------------------ geometry hooks (overridden by imported arenas)
+
+    public boolean isImported() { return false; }
+
+    public int centreX() { return 0; }
+    public int centreY(ArenaGeo geo) { return geo.CENTRE_Y; }
+    public int centreZ() { return 0; }
+
+    public boolean isCentreCell(ArenaGeo geo, int x, int y, int z) {
+        return geo.isCentreCell(x, y, z);
+    }
+
+    public double[] spawn(ArenaGeo geo, boolean sideB, int i) {
+        return geo.spawn(sideB, i);
+    }
+
+    public double[] overview(ArenaGeo geo, boolean sideB, int i) {
+        return geo.overview(sideB, i);
+    }
+
+    public boolean inSpectatorBox(ArenaGeo geo, double x, double y, double z) {
+        return geo.inSpectatorBox(x, y, z);
+    }
+
+    public int voidY() { return -8; }
+
+    public double[] previewLocation(ArenaGeo geo) {
+        return new double[]{0.5, 1.0, -(geo.R - 4) + 0.5, 0.0, 5.0};
+    }
+
+    public int[] minBounds(ArenaGeo geo) { return new int[]{geo.minX, geo.minY, geo.minZ}; }
+    public int[] maxBounds(ArenaGeo geo) { return new int[]{geo.maxX, geo.maxY, geo.maxZ}; }
+
     // ------------------------------------------------------------------ template
 
     public final Grid generate(ArenaGeo geo, long seed, String teamA, String teamB) {
@@ -51,7 +84,7 @@ public abstract class ArenaTheme {
     }
 
     /** @param neutralCentre block the 9 centre cells start filled with (white concrete / white wool). */
-    public final Grid generate(ArenaGeo geo, long seed, String teamA, String teamB, String neutralCentre) {
+    public Grid generate(ArenaGeo geo, long seed, String teamA, String teamB, String neutralCentre) {
         this.geo = geo;
         this.R = geo.R; this.H = geo.H; this.W = geo.W; this.CEIL = geo.CEIL;
         this.seed = seed;

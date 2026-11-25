@@ -165,7 +165,11 @@ final class Abilities {
         self[0] = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
             int t = 0;
             @Override public void run() {
-                if (!game.isActive()) { self[0].cancel(); return; }
+                if (!game.isActive() || game.phase() != BattleBoxGame.Phase.FIGHT) {
+                    self[0].cancel();
+                    tasks.remove(self[0]);
+                    return;
+                }
                 if (t < 30) {
                     ring(w, at, BURST_RADIUS * (1 - t / 40.0), dust, 24);
                     if (t % 5 == 0) w.playSound(at, Sound.BLOCK_NOTE_BLOCK_HAT, 1f, 1.0f + t / 30f);

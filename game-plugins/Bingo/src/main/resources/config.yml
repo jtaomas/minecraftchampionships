@@ -6,7 +6,7 @@ lockout-enabled: false
 
 card:
   # Items per tier on a card: [easy, medium, hard, very hard] (must add up to 25)
-  bingo-mix: [8, 10, 5, 2]
+  bingo-mix: [9, 10, 5, 1]
   lockout-mix: [6, 10, 6, 3]
   # At most this many squares that can be made from wood alone
   max-wood-only-items: 2

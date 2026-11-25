@@ -24,7 +24,9 @@ public final class BattleBoxPlugin extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         Gear.init(this);
+        Themes.loadImported(new File(getDataFolder(), "imported-arenas"), getLogger());
         game = new BattleBoxGame(this);
+        game.ensureWorld();
         getServer().getPluginManager().registerEvents(new GameListener(this, game), this);
         PluginCommand cmd = getCommand("bb");
         if (cmd != null) {
@@ -67,6 +69,8 @@ public final class BattleBoxPlugin extends JavaPlugin {
                     sender.sendMessage(ChatColor.YELLOW + t.id() + ChatColor.GRAY + " - " + ChatColor.WHITE + t.displayName() + ChatColor.GRAY + ": " + t.tagline());
                 String f = getConfig().getString("force-theme", "");
                 sender.sendMessage(ChatColor.GRAY + "Forced theme: " + (f == null || f.isBlank() ? "off" : f)
+                        + ", prefer imported: " + getConfig().getBoolean("prefer-imported-maps", true)
+                        + " (" + Themes.imported().size() + " loaded)"
                         + ", rotate each round: " + getConfig().getBoolean("rotate-maps-each-round", true)
                         + ", centre block: " + getConfig().getString("centre-block", "concrete"));
             }

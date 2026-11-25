@@ -29,3 +29,10 @@ game-plugins/research/acerace/
 game-plugins/research/dome/
 game-plugins/research/*.log
 game-plugins/ParkourWarrior/tools/out_old/
+
+# Imported third-party arenas, worlds, and preview renders stay server-local
+plugins/McmBattleBox/imported-arenas/
+plugins/McmRocketSpleef/imported-arenas/
+plugins/McmSurvivalGames/worlds/
+mcc_hg_*/
+game-plugins/*/previews/imported/

@@ -6,7 +6,9 @@ centre-block: concrete
 centre-tool-efficiency: 0
 # Pick a new random arena theme every round (map rotation). false = one random theme for the whole game.
 rotate-maps-each-round: true
-# Force one theme for every round: greenhouse, toyworkshop, skilodge (empty = off). Also /bb theme <id|off>.
+# Rotate imported real arenas (plugins/McmBattleBox/imported-arenas/) by default when present.
+prefer-imported-maps: true
+# Force one theme for every round: imported arena id or procedural id (empty = off). Also /bb theme <id|off>.
 force-theme: ""
 first-kit-seconds: 20
 kit-seconds: 15
