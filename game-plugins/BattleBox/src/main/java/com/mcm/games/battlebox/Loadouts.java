@@ -36,11 +36,12 @@ final class Loadouts {
         List<ItemStack> l = new ArrayList<>();
         String t = theme == null ? "greenhouse" : theme;
         switch (t) {
-            case "toyworkshop" -> toy(kit, l);
-            case "skilodge" -> ski(kit, l);
-            case "canalships" -> canal(kit, l);
-            case "trainstation" -> train(kit, l);
-            case "villacourtyard" -> villa(kit, l);
+            case "toyworkshop", "office" -> toy(kit, l);
+            case "skilodge", "jaws" -> ski(kit, l);
+            case "canalships", "beach", "waterfalls" -> canal(kit, l);
+            case "trainstation", "trains", "steampunk" -> train(kit, l);
+            case "villacourtyard", "bowser", "copper", "sandstone" -> villa(kit, l);
+            case "greenhouse", "chickadie", "jungle" -> greenhouse(kit, l);
             default -> greenhouse(kit, l);
         }
         return l;

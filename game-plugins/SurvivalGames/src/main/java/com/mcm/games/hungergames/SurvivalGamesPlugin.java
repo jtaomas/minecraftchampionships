@@ -9,6 +9,8 @@ import org.bukkit.WorldCreator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -19,14 +21,25 @@ public final class SurvivalGamesPlugin extends JavaPlugin {
 
     private World gameWorld;
     private SurvivalGamesGame game;
+    private Map<String, ImportedSgWorld> importedWorlds = Map.of();
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        this.importedWorlds = ImportedSgLoader.loadAll(
+                new File(getDataFolder(), "worlds"),
+                getServer().getWorldContainer(),
+                getLogger()
+        );
+        getLogger().info("Loaded " + importedWorlds.size() + " imported SG world(s): " + importedWorlds.keySet());
         this.gameWorld = createVoidWorld(WORLD_NAME);
         this.game = new SurvivalGamesGame(this);
         getServer().getPluginManager().registerEvents(game, this);
         McmApi.registerGame(this, game);
+    }
+
+    public Map<String, ImportedSgWorld> getImportedWorlds() {
+        return importedWorlds;
     }
 
     @Override
@@ -81,7 +94,7 @@ public final class SurvivalGamesPlugin extends JavaPlugin {
         return world;
     }
 
-    private void configureWorld(World world) {
+    public void configureWorld(World world) {
         world.setDifficulty(Difficulty.NORMAL);
         world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
         world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);

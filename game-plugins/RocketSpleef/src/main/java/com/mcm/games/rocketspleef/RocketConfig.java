@@ -10,6 +10,7 @@ import java.util.List;
  */
 public final class RocketConfig {
     public final int rounds;
+    public final boolean preferImportedMaps;
     public final int countdownSeconds;
     public final int activeSeconds;
     public final int overtimeSeconds;
@@ -44,6 +45,7 @@ public final class RocketConfig {
         FileConfiguration c = plugin.getConfig();
 
         this.rounds = Math.max(1, c.getInt("rounds", 3));
+        this.preferImportedMaps = c.getBoolean("prefer-imported-maps", true);
         this.countdownSeconds = Math.max(1, c.getInt("countdown-seconds", 5));
         this.activeSeconds = Math.max(15, c.getInt("active-seconds", 120));
         this.overtimeSeconds = Math.max(10, c.getInt("overtime-seconds", 45));

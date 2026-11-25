@@ -10,16 +10,19 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
-import org.bukkit.GameMode;
+import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -45,7 +48,15 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -56,6 +67,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 
 /**
  * Modern 1.21 MCC-style Survival Games / Hunger Games (id: hungergames).
@@ -63,7 +75,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public final class SurvivalGamesGame implements McmGame, Listener {
     private enum Phase { IDLE, BUILDING, COUNTDOWN, GRACE, ACTIVE, DEATHMATCH }
 
+    private record ImportedChest(int x, int y, int z, LootTable.Tier tier) {}
+
     private static final int INFINITE_XP_LEVEL = 30;
+    private static final int IMPORTED_CHEST_SCAN_CAP = 140;
+    private static final int CHUNKS_SCANNED_PER_TICK = 24;
+    private static final Set<String> SKIPPED_WORLD_ENTRIES = Set.of(
+            "uid.dat", "session.lock", "map.yml", "level.dat_old", "playerdata", "stats"
+    );
     private static final Set<Material> PLACEABLE_BLOCKS = Set.of(
             Material.OAK_PLANKS, Material.COBBLESTONE, Material.COBWEB, Material.FIRE
     );
@@ -74,13 +93,19 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     private volatile boolean running;
     private volatile Phase phase = Phase.IDLE;
     private final AtomicBoolean finished = new AtomicBoolean(false);
+    private int buildGeneration;
 
     private McmGameContext ctx;
     private World world;
+    private World importedRuntimeWorld;
     private SgMap activeMap;
+    private ImportedSgWorld activeImported;
     private String forcedMap;
     private BukkitTask mainTask;
+    private BukkitTask importedScanTask;
 
+    private final List<Location> importedPedestals = new ArrayList<>();
+    private final List<ImportedChest> importedChests = new ArrayList<>();
     private final Set<UUID> alive = new LinkedHashSet<>();
     private final Map<UUID, String> sideOfPlayer = new HashMap<>();
     private final List<String> eliminationOrder = new ArrayList<>();
@@ -122,21 +147,55 @@ public final class SurvivalGamesGame implements McmGame, Listener {
 
     @Override
     public List<String> maps() {
-        return SgMapRegistry.ids();
+        List<String> all = new ArrayList<>(plugin.getImportedWorlds().keySet());
+        all.addAll(SgMapRegistry.ids());
+        return all;
     }
 
     @Override
     public boolean forceNextMap(String id) {
         if (id == null) return false;
         String lower = id.toLowerCase(Locale.ROOT);
-        if (!SgMapRegistry.ids().contains(lower)) return false;
+        if (!maps().contains(lower)) return false;
         forcedMap = lower;
         return true;
     }
 
     @Override
     public String currentMap() {
-        return (running && activeMap != null) ? activeMap.id() : null;
+        return running ? activeMapId() : null;
+    }
+
+    private String activeMapId() {
+        if (activeImported != null) return activeImported.id();
+        return activeMap != null ? activeMap.id() : null;
+    }
+
+    private String activeMapDisplayName() {
+        if (activeImported != null) return activeImported.displayName();
+        return activeMap != null ? activeMap.displayName() : "-";
+    }
+
+    private int activeMapRadius() {
+        if (activeImported != null) return activeImported.radius();
+        return activeMap != null ? activeMap.radius() : ArenaBuilder.DEFAULT_RADIUS;
+    }
+
+    private boolean activeBoatRecommended() {
+        if (activeImported != null) return activeImported.boatRecommended();
+        return activeMap != null && activeMap.boatRecommended();
+    }
+
+    private int activeCenterX() {
+        return activeImported != null ? activeImported.centerX() : 0;
+    }
+
+    private int activeCenterY() {
+        return activeImported != null ? activeImported.centerY() : ArenaBuilder.BASE_Y;
+    }
+
+    private int activeCenterZ() {
+        return activeImported != null ? activeImported.centerZ() : 0;
     }
 
     @Override
@@ -163,8 +222,8 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     @Override
     public void start(McmGameContext ctx) {
         stop();
+        final int gen = ++buildGeneration;
         this.ctx = ctx;
-        this.world = plugin.getGameWorld();
         this.running = true;
         this.finished.set(false);
         this.phase = Phase.BUILDING;
@@ -173,16 +232,28 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         this.eliminationOrder.clear();
         this.activeAirdrops.clear();
         this.playerPlacedBlocks.clear();
+        this.importedPedestals.clear();
+        this.importedChests.clear();
         this.pendingAirdropLoc = null;
         this.pendingAirdropCountdown = 0;
         this.chestsRefilled = false;
         this.deathmatchStarted = false;
+        this.activeImported = null;
+        this.activeMap = null;
 
-        List<SgMap> allMaps = SgMapRegistry.all();
+        Map<String, ImportedSgWorld> imported = plugin.getImportedWorlds();
         if (forcedMap != null) {
-            this.activeMap = SgMapRegistry.byId(forcedMap);
+            if (imported.containsKey(forcedMap)) {
+                this.activeImported = imported.get(forcedMap);
+            } else {
+                this.activeMap = SgMapRegistry.byId(forcedMap);
+            }
             this.forcedMap = null;
+        } else if (plugin.getConfig().getBoolean("prefer-imported-maps", true) && !imported.isEmpty()) {
+            List<ImportedSgWorld> list = new ArrayList<>(imported.values());
+            this.activeImported = list.get(ThreadLocalRandom.current().nextInt(list.size()));
         } else {
+            List<SgMap> allMaps = SgMapRegistry.all();
             this.activeMap = allMaps.get(ThreadLocalRandom.current().nextInt(allMaps.size()));
         }
 
@@ -193,6 +264,14 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             }
         }
 
+        if (activeImported != null) {
+            ctx.broadcast(ChatColor.GOLD + "Loading imported map " + ChatColor.YELLOW + activeImported.displayName()
+                    + ChatColor.GOLD + " (" + activeImported.id() + ")...");
+            prepareAndLoadImportedWorld(activeImported, gen);
+            return;
+        }
+
+        this.world = plugin.getGameWorld();
         WorldBorder border = world.getWorldBorder();
         int initialRadius = plugin.getConfig().getInt("border.initial-radius", activeMap.radius());
         border.setCenter(0.5, 0.5);
@@ -205,10 +284,203 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         arenaBuilder.buildAsync(plugin, world, activeMap.id(), this::onArenaBuilt);
     }
 
+    private void prepareAndLoadImportedWorld(ImportedSgWorld imp, int gen) {
+        String runtimeName = "mcc_hg_" + imp.id();
+        World existing = Bukkit.getWorld(runtimeName);
+        if (existing != null) {
+            Location fallback = Bukkit.getWorlds().get(0).getSpawnLocation();
+            for (Player p : new ArrayList<>(existing.getPlayers())) {
+                p.teleport(fallback);
+            }
+            Bukkit.unloadWorld(existing, false);
+        }
+
+        Path targetDir = plugin.getServer().getWorldContainer().toPath().resolve(runtimeName);
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            try {
+                deleteRecursively(targetDir);
+                copyWorldTemplate(imp.templateDir(), targetDir);
+            } catch (IOException ex) {
+                plugin.getLogger().severe("Failed to copy imported SG world '" + imp.id() + "': " + ex.getMessage());
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    if (running && buildGeneration == gen && ctx != null) {
+                        ctx.broadcast(ChatColor.RED + "Failed to load imported map '" + imp.id() + "'.");
+                        stop();
+                    }
+                });
+                return;
+            }
+
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                if (!running || buildGeneration != gen) return;
+                World loaded = new WorldCreator(runtimeName).createWorld();
+                if (loaded == null) {
+                    if (ctx != null) {
+                        ctx.broadcast(ChatColor.RED + "WorldCreator returned null for '" + runtimeName + "'.");
+                    }
+                    stop();
+                    return;
+                }
+                this.world = loaded;
+                this.importedRuntimeWorld = loaded;
+                plugin.configureWorld(loaded);
+                loaded.setAutoSave(false);
+
+                WorldBorder border = loaded.getWorldBorder();
+                border.setCenter(imp.centerX() + 0.5, imp.centerZ() + 0.5);
+                border.setSize(imp.radius() * 2.0);
+                border.setDamageBuffer(1.0);
+                border.setDamageAmount(1.5);
+
+                scanImportedChestsAndPedestals(imp, loaded, gen);
+            });
+        });
+    }
+
+    private void scanImportedChestsAndPedestals(ImportedSgWorld imp, World loaded, int gen) {
+        int scanR = Math.min(imp.radius(), IMPORTED_CHEST_SCAN_CAP);
+        int minCx = (imp.centerX() - scanR) >> 4;
+        int maxCx = (imp.centerX() + scanR) >> 4;
+        int minCz = (imp.centerZ() - scanR) >> 4;
+        int maxCz = (imp.centerZ() + scanR) >> 4;
+
+        List<int[]> chunks = new ArrayList<>();
+        double maxDist = scanR + 16.0;
+        for (int cx = minCx; cx <= maxCx; cx++) {
+            for (int cz = minCz; cz <= maxCz; cz++) {
+                double chunkCenterX = (cx << 4) + 8.0;
+                double chunkCenterZ = (cz << 4) + 8.0;
+                if (Math.hypot(chunkCenterX - imp.centerX(), chunkCenterZ - imp.centerZ()) <= maxDist) {
+                    chunks.add(new int[]{cx, cz});
+                }
+            }
+        }
+
+        final int[] idx = {0};
+        if (importedScanTask != null) importedScanTask.cancel();
+        importedScanTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            if (!running || buildGeneration != gen) {
+                if (importedScanTask != null) {
+                    importedScanTask.cancel();
+                    importedScanTask = null;
+                }
+                return;
+            }
+            int end = Math.min(idx[0] + CHUNKS_SCANNED_PER_TICK, chunks.size());
+            for (int i = idx[0]; i < end; i++) {
+                int[] coord = chunks.get(i);
+                Chunk chunk = loaded.getChunkAt(coord[0], coord[1]);
+                for (BlockState state : chunk.getTileEntities()) {
+                    if (state instanceof Chest chest) {
+                        double dist = Math.hypot(chest.getX() - imp.centerX(), chest.getZ() - imp.centerZ());
+                        LootTable.Tier tier = dist <= 20.0 ? LootTable.Tier.CORNUCOPIA : LootTable.Tier.OUTER;
+                        importedChests.add(new ImportedChest(chest.getX(), chest.getY(), chest.getZ(), tier));
+                        LootTable.fill(chest.getBlockInventory(), tier);
+                    }
+                }
+            }
+            idx[0] = end;
+            if (idx[0] >= chunks.size()) {
+                importedScanTask.cancel();
+                importedScanTask = null;
+                findImportedPedestals(imp, loaded);
+                plugin.getLogger().info("Prepared imported SG map '" + imp.id() + "': "
+                        + importedChests.size() + " chests, " + importedPedestals.size() + " pedestals.");
+                onArenaBuilt();
+            }
+        }, 1L, 1L);
+    }
+
+    private void findImportedPedestals(ImportedSgWorld imp, World w) {
+        importedPedestals.clear();
+        int[] radii = {14, 15, 13, 16, 12, 17};
+        int minY = Math.max(w.getMinHeight() + 1, imp.centerY() - 12);
+        int maxY = Math.min(w.getMaxHeight() - 3, imp.centerY() + 18);
+
+        for (int i = 0; i < 24; i++) {
+            double angle = (2.0 * Math.PI * i) / 24.0;
+            Location found = null;
+            for (int r : radii) {
+                int px = imp.centerX() + (int) Math.round(Math.cos(angle) * r);
+                int pz = imp.centerZ() + (int) Math.round(Math.sin(angle) * r);
+                for (int y = maxY; y >= minY; y--) {
+                    Block ground = w.getBlockAt(px, y, pz);
+                    Block above1 = w.getBlockAt(px, y + 1, pz);
+                    Block above2 = w.getBlockAt(px, y + 2, pz);
+                    if (isSafeSpawnGround(ground.getType()) && isPassableDry(above1) && isPassableDry(above2)) {
+                        float yaw = (float) Math.toDegrees(Math.atan2(-(imp.centerX() - px), imp.centerZ() - pz));
+                        found = new Location(w, px + 0.5, y + 1.0, pz + 0.5, yaw, 0f);
+                        break;
+                    }
+                }
+                if (found != null) break;
+            }
+            if (found == null) {
+                found = new Location(w, imp.centerX() + 0.5, imp.centerY() + 1.0, imp.centerZ() + 0.5);
+            }
+            importedPedestals.add(found);
+        }
+    }
+
+    private static boolean isSafeSpawnGround(Material m) {
+        return m.isSolid()
+                && !m.name().endsWith("_LEAVES")
+                && m != Material.BARRIER
+                && m != Material.CACTUS
+                && m != Material.MAGMA_BLOCK;
+    }
+
+    private static boolean isPassableDry(Block b) {
+        Material m = b.getType();
+        return !m.isSolid()
+                && !b.isLiquid()
+                && m != Material.FIRE
+                && m != Material.SOUL_FIRE
+                && m != Material.SWEET_BERRY_BUSH
+                && m != Material.COBWEB;
+    }
+
+    private static void deleteRecursively(Path dir) throws IOException {
+        if (!Files.exists(dir)) return;
+        try (Stream<Path> walk = Files.walk(dir)) {
+            for (Path p : walk.sorted(Comparator.reverseOrder()).toList()) {
+                Files.deleteIfExists(p);
+            }
+        }
+    }
+
+    private static void copyWorldTemplate(Path source, Path target) throws IOException {
+        Files.walkFileTree(source, new SimpleFileVisitor<>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                Path rel = source.relativize(dir);
+                if (!rel.toString().isEmpty() && SKIPPED_WORLD_ENTRIES.contains(rel.getName(0).toString())) {
+                    return FileVisitResult.SKIP_SUBTREE;
+                }
+                Files.createDirectories(target.resolve(rel));
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Path rel = source.relativize(file);
+                if (SKIPPED_WORLD_ENTRIES.contains(rel.getFileName().toString())) {
+                    return FileVisitResult.CONTINUE;
+                }
+                Files.copy(file, target.resolve(rel), StandardCopyOption.REPLACE_EXISTING);
+                return FileVisitResult.CONTINUE;
+            }
+        });
+    }
+
+    private List<Location> activePedestals() {
+        return activeImported != null ? importedPedestals : arenaBuilder.getPedestals();
+    }
+
     private void onArenaBuilt() {
         if (!running || ctx == null) return;
 
-        List<Location> pedestals = arenaBuilder.getPedestals();
+        List<Location> pedestals = activePedestals();
         List<Player> players = new ArrayList<>(ctx.participants());
         for (int i = 0; i < players.size(); i++) {
             Player p = players.get(i);
@@ -246,7 +518,7 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             compass.setItemMeta(meta);
         }
         p.getInventory().addItem(compass);
-        if (activeMap != null && activeMap.boatRecommended()) {
+        if (activeBoatRecommended()) {
             p.getInventory().addItem(new ItemStack(Material.OAK_BOAT, 1));
         }
         p.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 4));
@@ -348,7 +620,7 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         int refillAt = plugin.getConfig().getInt("timings.refill-at-elapsed-seconds", 135);
         if (!chestsRefilled && elapsed >= refillAt) {
             chestsRefilled = true;
-            arenaBuilder.refillChests(world);
+            refillActiveChests();
             ctx.broadcast(ChatColor.AQUA + "★ ALL CHESTS REFILLED WITH UPGRADED LOOT! ★");
         }
 
@@ -373,28 +645,64 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         }
     }
 
-    private void announceAirdrop() {
-        double maxR = Math.max(18.0, (world.getWorldBorder().getSize() / 2.0) - 10.0);
-        List<SgCanvas.AirdropSpot> candidates = new ArrayList<>();
-        for (SgCanvas.AirdropSpot spot : arenaBuilder.getAirdrops()) {
-            if (Math.hypot(spot.x(), spot.z()) <= maxR) {
-                candidates.add(spot);
+    private void refillActiveChests() {
+        if (activeImported == null) {
+            arenaBuilder.refillChests(world);
+            return;
+        }
+        for (ImportedChest entry : importedChests) {
+            Block b = world.getBlockAt(entry.x(), entry.y(), entry.z());
+            if (b.getState() instanceof Chest chest) {
+                LootTable.fill(chest.getBlockInventory(), entry.tier());
             }
         }
+    }
 
+    private int findSafeTopY(int x, int z) {
+        if (activeImported == null) {
+            return arenaBuilder.findSafeTopY(world, x, z);
+        }
+        int minY = Math.max(world.getMinHeight() + 1, activeImported.minY());
+        int maxY = Math.min(world.getMaxHeight() - 2, activeImported.maxY());
+        for (int y = maxY; y >= minY; y--) {
+            Material m = world.getBlockAt(x, y, z).getType();
+            if (m != Material.AIR && m != Material.WATER && !m.name().endsWith("_LEAVES")) {
+                return y;
+            }
+        }
+        return activeImported.centerY();
+    }
+
+    private void announceAirdrop() {
+        double maxR = Math.max(18.0, (world.getWorldBorder().getSize() / 2.0) - 10.0);
+        int cx = activeCenterX();
+        int cz = activeCenterZ();
         int x, z;
-        if (!candidates.isEmpty()) {
-            SgCanvas.AirdropSpot chosen = candidates.get(ThreadLocalRandom.current().nextInt(candidates.size()));
-            x = chosen.x();
-            z = chosen.z();
+        if (activeImported == null) {
+            List<SgCanvas.AirdropSpot> candidates = new ArrayList<>();
+            for (SgCanvas.AirdropSpot spot : arenaBuilder.getAirdrops()) {
+                if (Math.hypot(spot.x() - cx, spot.z() - cz) <= maxR) {
+                    candidates.add(spot);
+                }
+            }
+            if (!candidates.isEmpty()) {
+                SgCanvas.AirdropSpot chosen = candidates.get(ThreadLocalRandom.current().nextInt(candidates.size()));
+                x = chosen.x();
+                z = chosen.z();
+            } else {
+                double angle = ThreadLocalRandom.current().nextDouble() * Math.PI * 2.0;
+                double dist = 10.0 + ThreadLocalRandom.current().nextDouble() * Math.max(5.0, maxR - 10.0);
+                x = cx + (int) Math.round(Math.cos(angle) * dist);
+                z = cz + (int) Math.round(Math.sin(angle) * dist);
+            }
         } else {
             double angle = ThreadLocalRandom.current().nextDouble() * Math.PI * 2.0;
             double dist = 10.0 + ThreadLocalRandom.current().nextDouble() * Math.max(5.0, maxR - 10.0);
-            x = (int) Math.round(Math.cos(angle) * dist);
-            z = (int) Math.round(Math.sin(angle) * dist);
+            x = cx + (int) Math.round(Math.cos(angle) * dist);
+            z = cz + (int) Math.round(Math.sin(angle) * dist);
         }
 
-        int topY = arenaBuilder.findSafeTopY(world, x, z);
+        int topY = findSafeTopY(x, z);
         pendingAirdropLoc = new Location(world, x, topY + 1, z);
         pendingAirdropCountdown = 15;
 
@@ -445,7 +753,7 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         deathmatchStarted = true;
         phase = Phase.DEATHMATCH;
         ctx.broadcast(ChatColor.DARK_RED + "⚔ CORNUCOPIA DEATHMATCH! " + ChatColor.RED + "Teleporting survivors to center!");
-        List<Location> pedestals = arenaBuilder.getPedestals();
+        List<Location> pedestals = activePedestals();
         int idx = 0;
         for (UUID uuid : new ArrayList<>(alive)) {
             Player p = Bukkit.getPlayer(uuid);
@@ -498,7 +806,7 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     private void updateSidebar() {
         if (ctx == null) return;
         List<String> lines = new ArrayList<>();
-        lines.add(ChatColor.YELLOW + "Map: " + ChatColor.WHITE + (activeMap != null ? activeMap.displayName() : "-"));
+        lines.add(ChatColor.YELLOW + "Map: " + ChatColor.WHITE + activeMapDisplayName());
         lines.add(ChatColor.YELLOW + "Phase: " + ChatColor.WHITE + phase.name());
         lines.add(ChatColor.YELLOW + "Alive: " + ChatColor.GREEN + alive.size());
         lines.add(ChatColor.YELLOW + "Border: " + ChatColor.AQUA + (int) (world.getWorldBorder().getSize() / 2.0) + "m");
@@ -613,17 +921,24 @@ public final class SurvivalGamesGame implements McmGame, Listener {
 
     @Override
     public void stop() {
+        buildGeneration++;
         running = false;
         phase = Phase.IDLE;
         if (mainTask != null) {
             mainTask.cancel();
             mainTask = null;
         }
+        if (importedScanTask != null) {
+            importedScanTask.cancel();
+            importedScanTask = null;
+        }
         arenaBuilder.cancel();
         alive.clear();
         sideOfPlayer.clear();
         eliminationOrder.clear();
         activeAirdrops.clear();
+        importedPedestals.clear();
+        importedChests.clear();
         pendingAirdropLoc = null;
         if (world != null) {
             for (Location loc : playerPlacedBlocks) {
@@ -637,6 +952,17 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             }
             world.getWorldBorder().reset();
         }
+        if (importedRuntimeWorld != null) {
+            Location fallback = Bukkit.getWorlds().get(0).getSpawnLocation();
+            for (Player p : new ArrayList<>(importedRuntimeWorld.getPlayers())) {
+                p.teleport(fallback);
+            }
+            Bukkit.unloadWorld(importedRuntimeWorld, false);
+            importedRuntimeWorld = null;
+            world = null;
+        }
+        activeImported = null;
+        activeMap = null;
     }
 
     // -------------------------------------------------------------------------
@@ -658,9 +984,11 @@ public final class SurvivalGamesGame implements McmGame, Listener {
                 e.setTo(back);
             }
         } else if (e.getPlayer().getGameMode() == GameMode.SPECTATOR && e.getTo() != null) {
-            int maxR = (activeMap != null ? activeMap.radius() : ArenaBuilder.DEFAULT_RADIUS) + 12;
-            if (Math.hypot(e.getTo().getX(), e.getTo().getZ()) > maxR) {
-                e.setTo(new Location(world, 0.5, ArenaBuilder.BASE_Y + 14.0, 0.5));
+            int maxR = activeMapRadius() + 12;
+            int cx = activeCenterX();
+            int cz = activeCenterZ();
+            if (Math.hypot(e.getTo().getX() - cx, e.getTo().getZ() - cz) > maxR) {
+                e.setTo(new Location(world, cx + 0.5, activeCenterY() + 14.0, cz + 0.5));
             }
         }
     }
@@ -719,7 +1047,7 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent e) {
         if (!isInGameWorld(e.getPlayer())) return;
-        e.setRespawnLocation(new Location(world, 0.5, ArenaBuilder.BASE_Y + 14.0, 0.5));
+        e.setRespawnLocation(new Location(world, activeCenterX() + 0.5, activeCenterY() + 14.0, activeCenterZ() + 0.5));
         Bukkit.getScheduler().runTask(plugin, () -> e.getPlayer().setGameMode(GameMode.SPECTATOR));
     }
 

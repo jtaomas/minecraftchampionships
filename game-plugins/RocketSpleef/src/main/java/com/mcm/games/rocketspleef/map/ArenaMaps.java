@@ -2,42 +2,75 @@ package com.mcm.games.rocketspleef.map;
 
 import org.bukkit.Material;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
- * Registry and builders for the 4 MCC-inspired Rocket Spleef Rush floating void maps:
- * journey_isles, sky_temple, santorini_cliffs, and overlode_core.
+ * Registry and builders for Rocket Spleef Rush floating void maps:
+ * 4 built-in MCC-inspired arenas plus any imported arenas under {@code imported-arenas/}.
  */
 public final class ArenaMaps {
-    private static final Map<String, RocketArenaMap> MAPS = new LinkedHashMap<>();
+    private static final Map<String, RocketArenaMap> BUILTIN = new LinkedHashMap<>();
+    private static final Map<String, RocketArenaMap> IMPORTED = new LinkedHashMap<>();
+    private static final Map<String, RocketArenaMap> ALL = new LinkedHashMap<>();
 
     static {
-        register(new JourneyIslesMap());
-        register(new SkyTempleMap());
-        register(new SantoriniCliffsMap());
-        register(new OverlodeCoreMap());
+        registerBuiltin(new JourneyIslesMap());
+        registerBuiltin(new SkyTempleMap());
+        registerBuiltin(new SantoriniCliffsMap());
+        registerBuiltin(new OverlodeCoreMap());
     }
 
     private ArenaMaps() {}
 
-    private static void register(RocketArenaMap map) {
-        MAPS.put(map.id(), map);
+    private static void registerBuiltin(RocketArenaMap map) {
+        BUILTIN.put(map.id(), map);
+        ALL.put(map.id(), map);
+    }
+
+    /**
+     * Loads imported arenas from {@code <dataFolder>/imported-arenas/}.
+     * Safe to call on plugin enable; replaces any previously loaded imported arenas.
+     */
+    public static int loadImported(File dataFolder, Logger log) {
+        IMPORTED.clear();
+        ALL.clear();
+        ALL.putAll(BUILTIN);
+
+        if (dataFolder == null) return 0;
+        File dir = new File(dataFolder, "imported-arenas");
+        List<ImportedRsArena> loaded = ImportedRsLoader.loadAll(dir, log);
+        for (ImportedRsArena arena : loaded) {
+            IMPORTED.put(arena.id(), arena);
+            ALL.put(arena.id(), arena);
+        }
+        if (log != null && !loaded.isEmpty()) {
+            log.info("Registered " + loaded.size() + " imported Rocket Spleef Rush arena(s).");
+        }
+        return loaded.size();
     }
 
     public static List<String> ids() {
-        return List.copyOf(MAPS.keySet());
+        return List.copyOf(ALL.keySet());
     }
 
     public static RocketArenaMap get(String id) {
-        return id == null ? null : MAPS.get(id.toLowerCase());
+        return id == null ? null : ALL.get(id.toLowerCase());
     }
 
     public static RocketArenaMap forRound(int roundIndex) {
-        List<RocketArenaMap> all = new ArrayList<>(MAPS.values());
-        return all.get(Math.floorMod(roundIndex, all.size()));
+        return forRound(roundIndex, true);
+    }
+
+    public static RocketArenaMap forRound(int roundIndex, boolean preferImported) {
+        List<RocketArenaMap> pool = (preferImported && !IMPORTED.isEmpty())
+                ? new ArrayList<>(IMPORTED.values())
+                : new ArrayList<>(BUILTIN.values());
+        return pool.get(Math.floorMod(roundIndex, pool.size()));
     }
 
     // -------------------------------------------------------------------------

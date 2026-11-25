@@ -2,6 +2,7 @@
 # Defaults are tuned for Paper 1.21.1 + MinecraftMondayCore 3.2.0
 
 rounds: 3
+prefer-imported-maps: true
 countdown-seconds: 5
 active-seconds: 120
 overtime-seconds: 45

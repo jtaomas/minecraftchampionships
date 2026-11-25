@@ -1,6 +1,8 @@
 package com.mcm.games.battlebox;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -34,6 +36,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupArrowEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -113,6 +116,18 @@ final class GameListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent e) { game.onQuit(e.getPlayer()); }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onMove(PlayerMoveEvent e) {
+        Player p = e.getPlayer();
+        if (!game.handles(p) || p.getGameMode() == GameMode.SPECTATOR) return;
+        if (!game.freezeMovementDuringKit() || game.matchOf(p.getUniqueId()) == null) return;
+        Location from = e.getFrom(), to = e.getTo();
+        if (to == null) return;
+        if (from.getX() != to.getX() || from.getZ() != to.getZ()) {
+            e.setTo(new Location(from.getWorld(), from.getX(), to.getY(), from.getZ(), to.getYaw(), to.getPitch()));
+        }
+    }
 
     // ------------------------------------------------------------------ centre blocks
 

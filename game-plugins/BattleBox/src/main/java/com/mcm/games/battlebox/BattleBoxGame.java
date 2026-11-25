@@ -83,6 +83,7 @@ public final class BattleBoxGame implements McmGame {
     // config (read at start)
     private boolean woolMode;
     private boolean rotate;
+    private boolean preferImported;
     private String forceTheme;
     private int firstKitSeconds, kitSeconds, fightSeconds, endSeconds, maxRounds;
     /** Seconds since the gates opened (shown instead of a countdown when there is no fight time limit). */
@@ -107,6 +108,7 @@ public final class BattleBoxGame implements McmGame {
     private int phaseTotal;
     private ArenaTheme theme;
     private ArenaTheme fixedTheme;
+    private ArenaTheme adminTheme;
     private String lastThemeId;
     private String adminNextTheme;   // /mcm map: theme for the next round (one-shot)
     private final Random random = new Random();
@@ -131,6 +133,7 @@ public final class BattleBoxGame implements McmGame {
         woolMode = "wool".equalsIgnoreCase(c.getString("centre-block", "concrete"));
         Gear.centreToolEfficiency = Math.max(0, Math.min(5, c.getInt("centre-tool-efficiency", 0)));
         rotate = c.getBoolean("rotate-maps-each-round", true);
+        preferImported = c.getBoolean("prefer-imported-maps", true);
         forceTheme = c.getString("force-theme", "");
         firstKitSeconds = Math.max(5, c.getInt("first-kit-seconds", 20));
         kitSeconds = Math.max(5, c.getInt("kit-seconds", 15));
@@ -468,7 +471,8 @@ public final class BattleBoxGame implements McmGame {
         }
         ArenaTheme forced = Themes.byId(forceTheme);
         if (forced != null && forceTheme != null && !forceTheme.isBlank()) return forced;
-        List<ArenaTheme> all = Themes.all();
+        List<ArenaTheme> imported = Themes.imported();
+        List<ArenaTheme> all = (preferImported && !imported.isEmpty()) ? imported : Themes.all();
         if (!rotate) {
             if (fixedTheme == null) fixedTheme = all.get(random.nextInt(all.size()));
             return fixedTheme;
@@ -490,7 +494,7 @@ public final class BattleBoxGame implements McmGame {
 
     /** Spectator overview high above a side's half of an arena copy, looking down at the centre. */
     private Location overview(int slot, boolean sideB, int i) {
-        double[] v = geo.overview(sideB, i);
+        double[] v = theme != null ? theme.overview(geo, sideB, i) : geo.overview(sideB, i);
         return local(slot, v[0], v[1], v[2], (float) v[3], (float) v[4]);
     }
 
@@ -504,7 +508,9 @@ public final class BattleBoxGame implements McmGame {
             boolean b = m != null && m.isB(m.sideOf(p.getUniqueId()));
             Location o = arenaOrigin(world, slot);
             Location l = p.getLocation();
-            if (!geo.inSpectatorBox(l.getX() - o.getX(), l.getY() - o.getY(), l.getZ() - o.getZ())) {
+            double lx = l.getX() - o.getX(), ly = l.getY() - o.getY(), lz = l.getZ() - o.getZ();
+            boolean inside = theme != null ? theme.inSpectatorBox(geo, lx, ly, lz) : geo.inSpectatorBox(lx, ly, lz);
+            if (!inside) {
                 p.teleport(overview(slot, b, 0));
                 McmFx.actionBar(p, ChatColor.GRAY + "Spectators stay inside their arena.");
             }
@@ -646,7 +652,7 @@ public final class BattleBoxGame implements McmGame {
                 dress(p, m.dyeOf(s));
                 p.getInventory().setItem(4, Gear.custom(Gear.Custom.MENU, 1));
                 p.getInventory().setHeldItemSlot(4);
-                double[] sp = geo.spawn(m.isB(s), idx);
+                double[] sp = theme != null ? theme.spawn(geo, m.isB(s), idx) : geo.spawn(m.isB(s), idx);
                 p.teleport(local(m.arena, sp[0], sp[1], sp[2], (float) sp[3], 0f));
                 Side opp = m.opponent(s);
                 McmFx.title(p, ChatColor.GOLD + "" + ChatColor.BOLD + "Round " + (round + 1),
@@ -713,6 +719,19 @@ public final class BattleBoxGame implements McmGame {
      */
     private void openGates(Match m) {
         Location o = arenaOrigin(world, m.arena);
+        if (theme != null && theme.isImported()) {
+            for (boolean b : new boolean[]{false, true}) {
+                double[] sp = theme.spawn(geo, b, 0);
+                Location g = o.clone().add(sp[0], sp[1] + 1.0, sp[2]);
+                world.spawnParticle(Particle.CLOUD, g, 12, 0.6, 0.6, 0.6, 0.04);
+                world.playSound(g, Sound.BLOCK_GLASS_BREAK, 1.5f, 0.8f);
+                world.playSound(g, Sound.BLOCK_PISTON_CONTRACT, 1.5f, 0.6f);
+                world.playSound(g, Sound.BLOCK_NOTE_BLOCK_BELL, 1.5f, 1.4f);
+            }
+            world.playSound(o.clone().add(theme.centreX() + 0.5, theme.centreY(geo) + 3, theme.centreZ() + 0.5),
+                    Sound.ITEM_GOAT_HORN_SOUND_0, 2f, 1.2f);
+            return;
+        }
         int missing = 0;
         for (int sg = -1; sg <= 1; sg += 2) {
             for (int x = -geo.GATE_HALF; x <= geo.GATE_HALF; x++)
@@ -803,9 +822,12 @@ public final class BattleBoxGame implements McmGame {
     int[] centreCounts(Match m) {
         int ca = 0, cb = 0;
         Location o = arenaOrigin(world, m.arena);
+        int cx = theme != null ? theme.centreX() : 0;
+        int cy = theme != null ? theme.centreY(geo) : geo.CENTRE_Y;
+        int cz = theme != null ? theme.centreZ() : 0;
         for (int x = -1; x <= 1; x++)
             for (int z = -1; z <= 1; z++) {
-                Block b = world.getBlockAt(o.getBlockX() + x, o.getBlockY() + geo.CENTRE_Y, o.getBlockZ() + z);
+                Block b = world.getBlockAt(o.getBlockX() + cx + x, o.getBlockY() + cy, o.getBlockZ() + cz + z);
                 DyeColor d = Side.dyeOfCentre(b.getType());
                 if (d == null) continue;
                 if (d == m.dyeA) ca++;
@@ -873,7 +895,10 @@ public final class BattleBoxGame implements McmGame {
             }
         }
         if (winner != null) {
-            Location c = arenaOrigin(world, m.arena).add(0.5, 7, 0.5);
+            int cx = theme != null ? theme.centreX() : 0;
+            int cy = theme != null ? theme.centreY(geo) : geo.CENTRE_Y;
+            int cz = theme != null ? theme.centreZ() : 0;
+            Location c = arenaOrigin(world, m.arena).add(cx + 0.5, cy + 5, cz + 0.5);
             DyeColor d = m.dyeOf(winner);
             for (int i = 0; i < 4; i++) {
                 final int k = i;
@@ -952,6 +977,10 @@ public final class BattleBoxGame implements McmGame {
     Match matchOf(UUID u) { return matchOf.get(u); }
 
     boolean woolMode() { return woolMode; }
+
+    boolean freezeMovementDuringKit() {
+        return phase == Phase.KIT && theme != null && theme.isImported();
+    }
 
     boolean isAliveFighter(Player p) {
         Match m = matchOf.get(p.getUniqueId());
@@ -1038,7 +1067,8 @@ public final class BattleBoxGame implements McmGame {
     boolean isCentreCell(Match m, Block b) {
         if (m == null || b == null || !b.getWorld().equals(world)) return false;
         Location o = arenaOrigin(world, m.arena);
-        return geo.isCentreCell(b.getX() - o.getBlockX(), b.getY() - o.getBlockY(), b.getZ() - o.getBlockZ());
+        int lx = b.getX() - o.getBlockX(), ly = b.getY() - o.getBlockY(), lz = b.getZ() - o.getBlockZ();
+        return theme != null ? theme.isCentreCell(geo, lx, ly, lz) : geo.isCentreCell(lx, ly, lz);
     }
 
     /**
@@ -1149,6 +1179,7 @@ public final class BattleBoxGame implements McmGame {
         if (w == null) { p.sendMessage(ChatColor.RED + "World unavailable."); return; }
         if (adminQueue != null) adminQueue.cancel();
         adminQueue = new McmBuild.BuildQueue(plugin);
+        adminTheme = t;
         ArenaGeo g = new ArenaGeo();
         Grid grid = t.generate(g, System.nanoTime(), "red", "blue", "white_concrete");
         ArenaPlacer.enqueue(adminQueue, w, ADMIN_X, ARENA_Y, ADMIN_Z, grid, plugin.getLogger());
@@ -1156,20 +1187,22 @@ public final class BattleBoxGame implements McmGame {
         p.sendMessage(ChatColor.YELLOW + "Building " + t.displayName() + " (" + n + " blocks, " + grid.distinctIds() + " block types)...");
         adminQueue.then(() -> {
             if (!p.isOnline()) return;
-            p.teleport(new Location(w, ADMIN_X + 0.5, ARENA_Y + 1, ADMIN_Z - (g.R - 4) + 0.5, 0f, 5f));
-            p.sendMessage(ChatColor.GREEN + "Built " + t.displayName() + ". You are in side A's forecourt; the centre is ahead. "
-                    + ChatColor.GRAY + t.layoutNotes());
+            double[] pv = t.previewLocation(g);
+            p.teleport(new Location(w, ADMIN_X + pv[0], ARENA_Y + pv[1], ADMIN_Z + pv[2], (float) pv[3], (float) pv[4]));
+            p.sendMessage(ChatColor.GREEN + "Built " + t.displayName() + ". " + ChatColor.GRAY + t.layoutNotes());
         }).start();
     }
 
     Location adminMin() {
         ArenaGeo g = new ArenaGeo();
-        return new Location(ensureWorld(), ADMIN_X + g.minX, ARENA_Y + g.minY, ADMIN_Z + g.minZ);
+        int[] mn = adminTheme != null ? adminTheme.minBounds(g) : new int[]{g.minX, g.minY, g.minZ};
+        return new Location(ensureWorld(), ADMIN_X + mn[0], ARENA_Y + mn[1], ADMIN_Z + mn[2]);
     }
 
     Location adminMax() {
         ArenaGeo g = new ArenaGeo();
-        return new Location(ensureWorld(), ADMIN_X + g.maxX, ARENA_Y + g.maxY, ADMIN_Z + g.maxZ);
+        int[] mx = adminTheme != null ? adminTheme.maxBounds(g) : new int[]{g.maxX, g.maxY, g.maxZ};
+        return new Location(ensureWorld(), ADMIN_X + mx[0], ARENA_Y + mx[1], ADMIN_Z + mx[2]);
     }
 
     void cancelAdmin() {
@@ -1183,6 +1216,7 @@ public final class BattleBoxGame implements McmGame {
     private void fastTick() {
         if (!running || world == null) return;
         keepSpectatorsInside();
+        int voidY = ARENA_Y + (theme != null ? theme.voidY() : -8);
         if (phase == Phase.FIGHT) {
             for (Match m : new ArrayList<>(matches)) {
                 if (m.done) continue;
@@ -1190,14 +1224,14 @@ public final class BattleBoxGame implements McmGame {
                     Player p = Bukkit.getPlayer(u);
                     if (p == null) continue;
                     if (!p.getWorld().equals(world)) { m.alive.remove(u); checkAlive(m); continue; }
-                    if (p.getLocation().getY() < ARENA_Y - 8) eliminate(p, null, false);
+                    if (p.getLocation().getY() < voidY) eliminate(p, null, false);
                 }
             }
         } else {
             for (Player p : players()) {
                 if (!p.getWorld().equals(world) || p.getGameMode() == GameMode.SPECTATOR) continue;
                 double y = p.getLocation().getY();
-                if (y < ARENA_Y - 8 || (y < HOLD_Y - 10 && p.getLocation().getX() < HOLD_X + 40 && p.getLocation().getX() > HOLD_X - 40)) rescue(p);
+                if (y < voidY || (y < HOLD_Y - 10 && p.getLocation().getX() < HOLD_X + 40 && p.getLocation().getX() > HOLD_X - 40)) rescue(p);
             }
         }
         updateActionBars();
@@ -1207,7 +1241,7 @@ public final class BattleBoxGame implements McmGame {
         Match m = matchOf.get(p.getUniqueId());
         if (m != null && phase == Phase.KIT) {
             Side s = m.sideOf(p.getUniqueId());
-            double[] sp = geo.spawn(m.isB(s), 0);
+            double[] sp = theme != null ? theme.spawn(geo, m.isB(s), 0) : geo.spawn(m.isB(s), 0);
             p.teleport(local(m.arena, sp[0], sp[1], sp[2], (float) sp[3], 0f));
         } else if (m != null && (phase == Phase.FIGHT || phase == Phase.END)) {
             p.teleport(overview(m.arena, m.isB(m.sideOf(p.getUniqueId())), 0));

@@ -5,7 +5,7 @@ Game id: `battlebox` (`/mcm play battlebox`). Display name: **Battle Box**. Core
 ## How it plays
 - **Sides:** each tournament team is a side. Solo players are grouped into squads of about 4 (at least two squads if nobody is on a team). If everyone is on one team, it is split in two. One player alone plays 3 practice rounds against an empty side (no points).
 - **Schedule:** round robin, up to 9 rounds (`max-rounds`), at least 3 (with 2-3 sides the pairings repeat). Odd number of sides: one side has a bye each round (+4 each).
-- **Map rotation:** every round picks a new random arena theme (never the same twice in a row); all arena copies that round use it. `rotate-maps-each-round: false` uses one random theme for the whole game; `force-theme` pins one theme.
+- **Map rotation:** every round picks a new random arena theme (never the same twice in a row); all arena copies that round use it. When `plugins/McmBattleBox/imported-arenas/` contains valid imported arenas and `prefer-imported-maps: true` (default), rounds rotate across the imported arenas; `prefer-imported-maps: false` includes the procedural themes in the rotation. `rotate-maps-each-round: false` uses one random theme for the whole game; `force-theme` pins one theme.
 - **Each round:**
   1. **Kit select (20 s in round 1, then 15 s):** players wait in their side's spawn room behind team-coloured glass gates. The kit menu (chest GUI) opens by itself and can be reopened with the star in the hotbar. Picking a kit puts its items in your inventory straight away (they can't be used yet). Each kit can be taken once per side (twice for 6-10 players, ...). Teammates' picks show in the action bar and the menu. Anyone without a pick gets a random free kit.
   2. **Fight (no time limit by default; `fight-seconds` > 0 sets one):** the gates drop (the glass vanishes with block particles, glass-break + piston + bell + horn sting). One life; when you die you become a spectator: you are put high above your own half looking down at the centre and can fly around freely, but you are teleported back if you leave your arena's box. No friendly fire, no dropping, picking up or sharing items, arrows can't be picked up.
@@ -112,7 +112,7 @@ World `mcc_battlebox`: arena copies at x = slot * 100, y 64, z 0; holding platfo
 - `/bb themes` lists the themes and the current settings.
 
 ## Config (`config.yml`)
-`centre-block` (concrete|wool), `centre-tool-efficiency`, `rotate-maps-each-round`, `force-theme`, `first-kit-seconds`, `kit-seconds`, `fight-seconds`, `end-seconds`, `max-rounds`.
+`centre-block` (concrete|wool), `centre-tool-efficiency`, `rotate-maps-each-round`, `prefer-imported-maps`, `force-theme`, `first-kit-seconds`, `kit-seconds`, `fight-seconds`, `end-seconds`, `max-rounds`.
 
 - `fight-seconds`: round time limit. **0 = no limit (default since round 3, owner request).** > 0 = limit in seconds
   (minimum 15; the old default was 60) with the time-out tiebreak. A server that already has a

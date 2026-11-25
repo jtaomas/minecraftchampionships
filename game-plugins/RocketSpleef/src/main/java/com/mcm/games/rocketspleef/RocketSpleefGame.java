@@ -4,6 +4,7 @@ import com.mcm.api.McmApi;
 import com.mcm.api.McmGame;
 import com.mcm.api.McmGameContext;
 import com.mcm.games.rocketspleef.map.ArenaMaps;
+import com.mcm.games.rocketspleef.map.ImportedRsArena;
 import com.mcm.games.rocketspleef.map.RocketArenaMap;
 import com.mcm.games.rocketspleef.map.RsCanvas;
 import net.kyori.adventure.text.Component;
@@ -88,6 +89,9 @@ public final class RocketSpleefGame implements McmGame, Listener {
     private final List<RsCanvas.Pos> dynamicBlocks = new ArrayList<>();
     private int crumbleCursor = 0;
     private int padsSpawned = 0;
+    private int activeElimY = 64;
+    private int activeClearRadius = 46;
+    private double spectatorY = 108.0;
 
     private final Set<UUID> alive = new HashSet<>();
     private final List<UUID> elimOrder = new ArrayList<>();
@@ -220,7 +224,17 @@ public final class RocketSpleefGame implements McmGame, Listener {
             currentArena = ArenaMaps.get(forcedNextMapId);
             forcedNextMapId = null;
         } else {
-            currentArena = ArenaMaps.forRound(round - 1);
+            currentArena = ArenaMaps.forRound(round - 1, cfg.preferImportedMaps);
+        }
+
+        if (currentArena instanceof ImportedRsArena imp) {
+            activeElimY = Math.min(cfg.elimY, imp.baseY() - 12);
+            activeClearRadius = Math.max(cfg.clearRadius, imp.maxHorizRadius());
+            spectatorY = imp.baseY() + 30.0;
+        } else {
+            activeElimY = cfg.elimY;
+            activeClearRadius = cfg.clearRadius;
+            spectatorY = 108.0;
         }
 
         List<Player> players = new ArrayList<>(ctx.participants());
@@ -500,7 +514,7 @@ public final class RocketSpleefGame implements McmGame, Listener {
         List<UUID> fallen = new ArrayList<>();
         for (UUID id : alive) {
             Player p = Bukkit.getPlayer(id);
-            if (p == null || p.getLocation().getY() < cfg.elimY) {
+            if (p == null || p.getLocation().getY() < activeElimY) {
                 fallen.add(id);
             }
         }
@@ -529,7 +543,7 @@ public final class RocketSpleefGame implements McmGame, Listener {
         if (victim != null) {
             victim.setGameMode(GameMode.SPECTATOR);
             victim.setAllowFlight(true);
-            victim.teleport(new Location(world, 0.5, 108, 0.5));
+            victim.teleport(new Location(world, 0.5, spectatorY, 0.5));
             victim.playSound(victim.getLocation(), Sound.ENTITY_WITHER_SPAWN, 0.5f, 1.5f);
         }
 
@@ -621,8 +635,8 @@ public final class RocketSpleefGame implements McmGame, Listener {
                 e.setTo(back);
             }
         } else if (p.getGameMode() == GameMode.SPECTATOR) {
-            if (Math.hypot(e.getTo().getX(), e.getTo().getZ()) > cfg.clearRadius + 16) {
-                e.setTo(new Location(world, 0.5, 108, 0.5));
+            if (Math.hypot(e.getTo().getX(), e.getTo().getZ()) > activeClearRadius + 16) {
+                e.setTo(new Location(world, 0.5, spectatorY, 0.5));
             }
         }
     }

@@ -1,6 +1,8 @@
 # Modern MCC-style Hunger Games / Survival Games (hungergames)
 # Small numeric defaults not fixed by research can be tuned here.
 
+prefer-imported-maps: true
+
 timings:
   countdown-seconds: 10
   grace-seconds: 15

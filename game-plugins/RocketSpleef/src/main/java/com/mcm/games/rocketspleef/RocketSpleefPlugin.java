@@ -1,6 +1,7 @@
 package com.mcm.games.rocketspleef;
 
 import com.mcm.api.McmApi;
+import com.mcm.games.rocketspleef.map.ArenaMaps;
 import org.bukkit.Difficulty;
 import org.bukkit.GameRule;
 import org.bukkit.World;
@@ -16,6 +17,7 @@ public final class RocketSpleefPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         RocketConfig config = new RocketConfig(this);
+        ArenaMaps.loadImported(getDataFolder(), getLogger());
         World world = createVoidWorld(RocketSpleefGame.WORLD_NAME);
         game = new RocketSpleefGame(this, config, world);
         getServer().getPluginManager().registerEvents(game, this);
