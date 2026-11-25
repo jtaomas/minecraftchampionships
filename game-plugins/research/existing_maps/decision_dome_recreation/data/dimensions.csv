@@ -1,0 +1,49 @@
+﻿metric,value,unit,evidence,note
+World block bounds,x -45..39; y 26..82; z -21..44,blocks,H,85 x 57 x 66 envelope
+Drum outer diameter,53,blocks,H,"x -29..23, z -10..42; centre (-3,16)"
+Drum outer radius,26,blocks,H,fitted from the 144-block ring at y40
+Drum wall thickness,1,blocks,H,radial line at z=16: x=-29 only
+Drum height,43,blocks,H,y26 base to y68 terrace
+Base disk,"r25, y26, 1 thick",blocks,H,1993 gray concrete at y26
+Terrace level,y68,blocks,H,walking surface; gray inner + white outer
+Terrace radii / width,r25-28; 4 wide,blocks,H,"gray r25-26, white r27-28"
+Inner barrier rail,"r24-25, y71, 140 barriers",blocks,H,"invisible; full ring, no outer rail"
+Pit inner/outer radius,r9.5 to r25,blocks,H,open annulus around the dial
+Pit depth,42,blocks,H,terrace y68 to base y26
+Dial floor,"y58; r9.0 quartz, rim r9.5",blocks,H,"10 below terrace, 32 above base"
+Dial wedges,8 x 45 deg zones; 8 divider directions at 0/45/90/135/180/225/270/315,-,H,cardinal dividers continuous r0-9; diagonal dividers dashed (1-block gaps at r2/r5); smooth quartz plates
+Dial rim wall,"r9, y53-60",blocks,H,gray concrete ring
+Dial visibility,0-17 of 25 sampled points from terrace; 0/25 from N carpet; 9/25 from y100,points,H,"raycast, glass/panes/barriers transparent"
+Crown footprint / height,17 x 17; y69-82 (14 tall),blocks,H,"x -11..5, z 8..24"
+Crown parts,"8 gold pillars (3x3, y69-72); white cross y73-74; yellow ring y78-80; 8 yellow caps y81; 8 redstone jewels y82",-,H,477 blocks total
+Pods,10,count,H,36 deg spacing at r15.81-16.00
+Pod angles,"270, 305, 342, 18, 55, 90, 125, 162, 198, 235",degrees,H,clockwise from N; lime at 270
+Pod footprint,5x5 body; 7x7 crown; 3x3 caps,blocks,H,hollow 3x3 shaft
+Pod height,51,blocks,H,y27-77; top 9 above terrace
+Pod ring radius,15.81-16.00,blocks,H,centres measured from y68 glass rings
+Seats,0,count,H,no stairs/slabs used as seats; no pod rooms
+Spectator stands,0 tiers; 4-wide standing ring,count,H,terrace ring only
+Stairs into pit,0,count,H,no stair/step from terrace y68 to dial y58
+Functional steps,22 stair blocks (18 tunnel + 4 annex) + 3 stepped dais rises,blocks,H,1-block rises at y67-70; no stair into the pit
+West gatehouse,"10 x 12 x 10 (x -45..-36, z11..22, y64-73)",blocks,H,334 blocks; mirror at x30..39
+North platform,"13 x 14 x 6 (x -9..3, z -21..-8, y66-71)",blocks,H,red carpet head 11 x 5 at y70
+NW annex,"11 x 15 x 12 (x -30..-20, z -15..-1, y64-75)",blocks,H,glass roof y73; 470 blocks
+SE service door,8 x 8 frame; 2x2 iron doors at x19-20 z37-38 y69-70,blocks,H,decorative; solid drum behind
+Command blocks,"2 (1 impulse, 1 chain)",count,H,"overworld only; -3,68,-19 and -3,69,-19"
+Tile entities,45,count,H,"24 banners, 17 skulls, 2 command blocks, 2 beehives"
+Entities,2 armor stands,count,H,"(-19.5,69,-7.5); gold + green leather chestplates"
+Signs,0,count,H,block palette scan
+Light sources,18 sea lanterns,count,H,no glowstone/lantern/torch/froglight
+Copper blocks,0,count,H,palette scan; no copper family
+Chunks,"1,344",count,H,318+339+327+360 across 4 region files
+Dimensions with blocks,Overworld only,-,H,DIM-1/DIM1 have no region folder
+Block budget,"20,054",blocks,H,"85 base types, 186 states"
+Dome / roof,none,-,H,"open drum, no glass dome or ceiling above y82"
+Outer safety rail,none,-,H,only the inner barrier at r24-25 y71
+Pod gap at 90 deg,none,-,H,"10 pods at 36 deg, including the south 90 deg pod"
+Wedge axis facing,none,-,H,E/W and N/S axes are dividers; no wedge centred on an entrance
+World spawn,"source (0, 4, 0); live (0, 76, 0)",coords,H,"Source is 22 blocks below the base disk and inside the pit footprint (unsafe); live Multiverse spawn is above the lime pod crown (lime concrete) and safe (A12)"
+Game rules,Creative; DayTime 6000 fixed; no damage/mobs; keepInventory,-,H,"showcase config, not arena config"
+Datapacks,0 of 12 zips active; 12 in Disabled + 1 unzipped bundle,count,H,"Enabled=[vanilla, mod:forge, mod:worldedit]; 11 feature zips + VanillaTweaks_c772085.zip all Disabled; no dome-specific functions/logic"
+Banners,24 (16 patterned white + 8 coloured/plain),count,H,all in the NW annex
+Heads,"17 (9 chicken, 5 zombie, 3 pale)",count,H/M,3 textures; mounted in the NW annex

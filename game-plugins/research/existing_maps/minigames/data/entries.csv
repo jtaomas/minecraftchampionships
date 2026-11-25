@@ -1,0 +1,11 @@
+id,entry_name,coords,how_reached
+MG-HUB-01,world spawn,-196 24 927,Level.dat SpawnX/Y/Z
+MG-SB-01,sky lobby,2000 78 0,hub pad -208 10 970 (XP 8)
+MG-PT-01,gallery entry,1061 28 995,hub pad -212 10 975 (XP 4)
+MG-SC-01,arena centre,5000 21 0,hub pad -205 10 970 (XP 15)
+MG-SR-HUB-01,level select,20000 41 20000,hub pad -201 10 976 (XP 100)
+MG-SR-RED-01,course start,21000 31 20000,hub red pad (XP 101)
+MG-SR-ORG-01,course start,21000 31 21000,hub orange pad (XP 103)
+MG-CMD-01,service room,none,no player entry
+MG-REB-01,kiosk,-50000 100 -50000,no hub pad; reachable only by teleport
+MG-REB-02,course start,-50000 100 -51000,kiosk pad (XP 200/201)

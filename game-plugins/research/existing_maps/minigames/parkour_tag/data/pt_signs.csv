@@ -1,0 +1,26 @@
+x,y,z,text
+1060,1,984,{'text':'---------------'} | {'text':'Waiting Lobby'} | {'text':''} | {'text':'---------------'}
+1062,1,984,{'text':'---------------'} | {'text':'You picked:'} | {'text':'Runner'} | {'text':'---------------'}
+1057,1,985,{'text':'Three Runners'} | {'text':'<------'} | {'text':'Four Runners'} | {'text':'------>'}
+1060,1,985,{'text':'You picked:'} | {'text':'Hunter'} | {'text':'Start the game'} | {'text':'when ready!'}
+1062,1,985,{'text':'---------------'} | {'text':'Waiting Lobby'} | {'text':''} | {'text':'---------------'}
+1059,1,990,{'text':'On screen'} | {'text':'counter'} | {'text':''} | {'text':'------>'}
+1048,1,992,{'text':'Clear carrot'} | {'text':'on stick'} | {'text':''} | {'text':''}
+1051,1,992,{'text':'Saturation'} | {'text':''} | {'text':''} | {'text':''}
+1053,1,992,{'text':'Items'} | {'text':'free lobby'} | {'text':''} | {'text':''}
+1055,1,993,{'text':'General Runner'} | {'text':'Settings'} | {'text':'<------'} | {'text':''}
+1055,1,995,{'text':'Runner & Hunter'} | {'text':'Countdown'} | {'text':''} | {'text':'<------'}
+1057,1,997,{'text':'Hunter Settings'} | {'text':''} | {'text':'<------'} | {'text':''}
+1059,1,998,{'text':'Reset game'} | {'text':'settings'} | {'text':''} | {'text':'<------'}
+1057,2,983,{'text':'---------------'} | {'text':'Lobby Teleporter'} | {'text':''} | {'text':'---------------'}
+1063,2,983,{'text':'---------------'} | {'text':'Lobby Teleporter'} | {'text':''} | {'text':'---------------'}
+1063,2,988,{'text':'Runner Settings'} | {'text':''} | {'text':'------>'} | {'text':''}
+1065,2,988,{'text':'Hunter Settings'} | {'text':''} | {'text':'------>'} | {'text':''}
+1057,3,985,{'text':'One Runner'} | {'text':'<------'} | {'text':'Two Runners'} | {'text':'------>'}
+1064,4,1006,{'text':'Four runners'} | {'text':''} | {'text':''} | {'text':''}
+1066,4,1006,{'text':'Three runners'} | {'text':''} | {'text':''} | {'text':''}
+1068,4,1006,{'text':'Two runners'} | {'text':''} | {'text':''} | {'text':''}
+1070,4,1006,{'text':'One runner'} | {'text':''} | {'text':''} | {'text':''}
+1056,5,999,{'text':'If the hunter'} | {'text':'leaves settings'} | {'text':''} | {'text':''}
+1050,29,991,{'text':'---------------'} | {'text':'Runner'} | {'text':'Teleporter'} | {'text':'---------------'}
+1050,29,1000,{'text':'---------------'} | {'text':'Hunter'} | {'text':'Teleporter'} | {'text':'---------------'}

@@ -1,0 +1,18 @@
+file,kind,what_it_does,map_use,confidence
+pack.mcmeta,pack metadata,pack_format 9 (1.19.2); must be 34 for 1.21.1; description '§c Ace Race Animation Example',whole map,H
+pack.png,pack icon,world pack icon,UI only,H
+assets/minecraft/models/block/yellow_glazed_terracotta.json,block model override,cube_all -> custom animated pad texture,yellow speed pads (377 blocks),H
+assets/minecraft/models/block/pink_glazed_terracotta.json,block model override,cube_all -> custom animated pad texture,pink jump-pad corners (92 blocks),H
+assets/minecraft/models/block/red_glazed_terracotta.json,block model override,cube_all -> custom animated pad texture,red jump-pad edges (92 blocks),H
+assets/minecraft/models/block/magenta_glazed_terracotta.json,block model override,cube_all -> custom animated pad texture,magenta jump-pad centres (23 blocks),H
+assets/minecraft/models/block/purple_glazed_terracotta.json,block model override,cube_all -> custom animated pad texture,UNUSED: no purple glazed in the world,H
+assets/minecraft/models/item/rotten_flesh.json,item model,item/generated with custom texture,'Energy' item; not given by any command/container,H
+assets/minecraft/textures/block/yellow_glazed_terracotta.png,"block texture (16x256, 16 frames)",animated yellow chevron speed pad,yellow pads,H
+assets/minecraft/textures/block/pink_glazed_terracotta.png,"block texture (16x112, 7 frames)",animated pink ripple jump pad,pink pads,H
+assets/minecraft/textures/block/red_glazed_terracotta.png,"block texture (16x112, 7 frames)",animated red ripple jump pad,red pads,H
+assets/minecraft/textures/block/magenta_glazed_terracotta.png,"block texture (16x112, 7 frames)",animated magenta ripple jump pad,magenta pads,H
+assets/minecraft/textures/block/purple_glazed_terracotta.png,"block texture (16x112, 7 frames)",animated purple ripple jump pad,UNUSED,H
+assets/minecraft/textures/block/glowstone.png,block texture (16x16),custom glowstone texture,UNUSED: no glowstone blocks in the world,H
+assets/minecraft/textures/block/AnimPad.psd,"source art (29,647 B)",Photoshop source for the pad animation,not loaded by the game,H
+assets/minecraft/textures/item/rotten_flesh.png,"item texture (32x16, 2 frames)",animated red/blue 'Energy' icon,not used in commands/containers,H
+assets/minecraft/lang/en_us.json,"language file (5,155 keys)",full 1.19.2 en_us snapshot; custom rename item.minecraft.rotten_flesh='Energy',tooltip only,H (rename) / M (rest vanilla)

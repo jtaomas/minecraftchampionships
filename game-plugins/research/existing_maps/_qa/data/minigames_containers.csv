@@ -1,0 +1,35 @@
+x,y,z,id,items,contents
+-210,23,925,minecraft:barrel,0,
+-208,26,907,minecraft:barrel,0,
+-207,35,912,minecraft:campfire,0,
+-204,26,906,minecraft:chest,0,
+-203,24,908,minecraft:shulker_box,0,
+-200,26,905,minecraft:barrel,0,
+-198,24,907,minecraft:chest,0,
+-197,26,905,minecraft:shulker_box,0,
+1049,28,993,minecraft:lectern,0,
+1049,28,996,minecraft:lectern,0,
+1067,12,992,minecraft:barrel,0,
+1965,24,0,minecraft:shulker_box,9,3:minecraft:crossbow x1 | 4:minecraft:arrow x1 | 5:minecraft:bow x1 | 12:minecraft:arrow x1 | 13:minecraft:stick x4 | 14:minecraft:arrow x1 | 21:minecraft:bow x1 | 22:minecraft:arrow x1 | 23:minecraft:crossbow x1
+1974,14,-26,minecraft:barrel,3,11:minecraft:ender_pearl x1 | 13:minecraft:splash_potion x1 | 15:minecraft:ender_pearl x1
+1974,26,-26,minecraft:chest,9,3:minecraft:cobweb x1 | 4:minecraft:iron_axe x1 | 5:minecraft:cobweb x1 | 12:minecraft:fishing_rod x1 | 13:minecraft:splash_potion x1 | 14:minecraft:fishing_rod x1 | 21:minecraft:cobweb x1 | 22:minecraft:spyglass x1 | 23:minecraft:cobweb x1
+1974,29,-26,minecraft:campfire,0,
+1974,14,26,minecraft:barrel,3,11:minecraft:ender_pearl x1 | 13:minecraft:splash_potion x1 | 15:minecraft:ender_pearl x1
+1974,26,26,minecraft:chest,9,3:minecraft:cobweb x1 | 4:minecraft:iron_axe x1 | 5:minecraft:cobweb x1 | 12:minecraft:fishing_rod x1 | 13:minecraft:splash_potion x1 | 14:minecraft:fishing_rod x1 | 21:minecraft:cobweb x1 | 22:minecraft:spyglass x1 | 23:minecraft:cobweb x1
+1974,29,26,minecraft:campfire,0,
+2000,24,-35,minecraft:shulker_box,9,3:minecraft:crossbow x1 | 4:minecraft:arrow x1 | 5:minecraft:bow x1 | 12:minecraft:arrow x1 | 13:minecraft:stick x4 | 14:minecraft:arrow x1 | 21:minecraft:bow x1 | 22:minecraft:arrow x1 | 23:minecraft:crossbow x1
+2000,77,-1,minecraft:lectern,0,
+2000,29,0,minecraft:barrel,9,3:minecraft:cobweb x2 | 4:minecraft:arrow x2 | 5:minecraft:cobweb x2 | 12:minecraft:ender_pearl x1 | 13:minecraft:trident x1 | 14:minecraft:ender_pearl x1 | 21:minecraft:cobweb x2 | 22:minecraft:arrow x2 | 23:minecraft:cobweb x2
+2000,63,0,minecraft:campfire,0,
+2000,24,35,minecraft:shulker_box,9,3:minecraft:crossbow x1 | 4:minecraft:arrow x1 | 5:minecraft:bow x1 | 12:minecraft:arrow x1 | 13:minecraft:stick x4 | 14:minecraft:arrow x1 | 21:minecraft:bow x1 | 22:minecraft:arrow x1 | 23:minecraft:crossbow x1
+2026,14,-26,minecraft:barrel,3,11:minecraft:ender_pearl x1 | 13:minecraft:splash_potion x1 | 15:minecraft:ender_pearl x1
+2026,26,-26,minecraft:chest,9,3:minecraft:cobweb x1 | 4:minecraft:iron_axe x1 | 5:minecraft:cobweb x1 | 12:minecraft:fishing_rod x1 | 13:minecraft:splash_potion x1 | 14:minecraft:fishing_rod x1 | 21:minecraft:cobweb x1 | 22:minecraft:spyglass x1 | 23:minecraft:cobweb x1
+2026,29,-26,minecraft:campfire,0,
+2026,14,26,minecraft:barrel,3,11:minecraft:ender_pearl x1 | 13:minecraft:splash_potion x1 | 15:minecraft:ender_pearl x1
+2026,26,26,minecraft:chest,9,3:minecraft:cobweb x1 | 4:minecraft:iron_axe x1 | 5:minecraft:cobweb x1 | 12:minecraft:fishing_rod x1 | 13:minecraft:splash_potion x1 | 14:minecraft:fishing_rod x1 | 21:minecraft:cobweb x1 | 22:minecraft:spyglass x1 | 23:minecraft:cobweb x1
+2026,29,26,minecraft:campfire,0,
+2035,24,0,minecraft:shulker_box,9,3:minecraft:crossbow x1 | 4:minecraft:arrow x1 | 5:minecraft:bow x1 | 12:minecraft:arrow x1 | 13:minecraft:stick x4 | 14:minecraft:arrow x1 | 21:minecraft:bow x1 | 22:minecraft:arrow x1 | 23:minecraft:crossbow x1
+4960,20,-20,minecraft:barrel,0,
+4963,20,-19,minecraft:barrel,0,
+5000,21,-5,minecraft:lectern,0,
+20005,41,20000,minecraft:lectern,0,

@@ -1,0 +1,3 @@
+tag,path,values,meaning
+load,data/minecraft/tags/functions/load.json,tgttos:load,runs once on datapack load/reload
+tick,data/minecraft/tags/functions/tick.json,"tgttos:loop, tgttos:color, tgttos:start_timer, tgttos:gamerules, tgttos:respawn",runs every tick in that order

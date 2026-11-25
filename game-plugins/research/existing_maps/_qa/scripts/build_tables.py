@@ -1,0 +1,78 @@
+"""Build acceptance.csv and claim_checks.csv."""
+from __future__ import annotations
+
+import csv
+from pathlib import Path
+
+BASE = Path(__file__).resolve().parents[1] / "data"
+
+ACCEPT = [
+    ["A1", "clouds2", "README, REFERENCE_IMAGES, frames (2 JPG), data (CSV/MD + dumps), renders (51), STATUS", "322 commands / 285 signs / 225 shulkers / 150,414 blocks / 111 checkpoint-pad rows; 31 failures = A12", "41 cited, 0 missing; 4 rows opened; 51 renders; frames/ only 2", "H/M/L used; command/container/route spot checks pass", "PASS (P2: thin frames/)"],
+    ["A2", "city_marathon", "README, REFERENCE_IMAGES, frames (10), data, renders (33), STATUS", "67 commands / 156 containers / 7 signs / 39 item frames / 207,440 blocks; 7 failures = A12", "41 cited, 1 missing (renders/station_iso.png); 3 opened", "H/M/L used; containers and route checked", "PASS WITH FIXES (missing image, scoreboard wording)"],
+    ["A3", "space_race", "README, REFERENCE_IMAGES, frames (9), data, renders (36), STATUS", "29 commands / 0 containers / 22 signs / 296,699 blocks; 0 syntax failures", "37 cited, 0 missing; 3 opened", "H/M/L used; gates/rings/commands checked", "PASS"],
+    ["A4", "yeti_set_go", "README, REFERENCE_IMAGES, frames (20), data, renders (43), pack/, STATUS", "37 commands / 14 signs / 3 shulkers + 1 hopper empty; 3 failures = A12; 28,533 blocks", "36 cited; 3 pack-texture paths omit pack/extracted prefix but files exist; 2 opened", "H/M/L used; route/containers checked", "PASS WITH FIXES (2 campfires omitted; texture paths)"],
+    ["A5", "decision_dome_recreation", "README, REFERENCE_IMAGES, frames (14 + heads), data, renders (43), STATUS", "2 commands / 45 block entities / 20,054 blocks / 85 types; 0 containers; 12 datapack zips installed", "29 cited, 0 missing; 5 opened", "H/M/L used; raycasts and block counts checked", "PASS WITH FIXES (11 'active' packs false; live spawn differs)"],
+    ["A6", "minigames", "README, REFERENCE_IMAGES, frames (12), data, renders (45), subfolders, STATUS; no containers.csv", "942 commands / 187 signs / 133,030 blocks / 10 arenas; containers claimed 14 vs source 34", "14 cited (rejected drafts excluded), 0 missing; 3 opened; atlas checked", "H/M/L used; many numbers checked", "FAIL (container completeness; stale Parkour/Orange/sign claims)"],
+    ["A6a", "minigames/sky_battle", "README, REFERENCE_IMAGES, frames (17), data, renders (30), STATUS; commands.csv not command_blocks.csv", "477 commands / 13 loot containers / 93 entries / 47,874 blocks; 93/93 NBT match", "17 cited, 0 missing; 3 opened", "H/M/L used; loot and geometry checked", "PASS WITH FIXES (5 campfires + lectern excluded by 'containers'; stale A6 notes)"],
+    ["A6b", "minigames/parkour_tag", "README, REFERENCE_IMAGES, frames (16), data, renders (25), STATUS; commands.csv not command_blocks.csv", "123 commands / 25 signs / 1 barrel / 8,375 blocks; 2 lecterns omitted", "29 cited, 0 missing; 2 opened", "H/M/L used; route/commands checked", "PASS WITH FIXES (2 lecterns omitted; stale A6 note)"],
+    ["A6c", "minigames/other", "README, REFERENCE_IMAGES, frames (16), data, renders (16), STATUS; no containers.csv/route/palette", "8 arenas / 342 non-Sky commands / 152 signs; 12 containers in its arenas claimed as 0", "34 cited, 0 missing; 6 opened; Orange vs Red images compared", "H/M/L used; corrections spot-checked", "FAIL (12 containers missing; phantom corrections)"],
+    ["A7", "tgttos_badlands", "README, REFERENCE_IMAGES, frames (10), data, renders (33), STATUS", "0 commands / 0 containers / 1 sign / 411,834 blocks; 27 finish chickens", "43 cited, 0 missing; 3 opened", "H/M/L used; route/finish checked", "PASS"],
+    ["A8", "tgttos_industry", "README, REFERENCE_IMAGES, frames (4), data, renders (41), STATUS", "0 commands / 0 containers / 1 sign / 122,276 blocks; 21 item-NBT lines", "24 cited, 0 missing; 3 opened", "H/M/L used; 8/10 reset coverage checked", "PASS WITH FIXES (frames/ only 4)"],
+    ["A9", "tgttos_pits", "README, REFERENCE_IMAGES, frames (10), data, renders (22), STATUS", "0 commands / 0 containers / 1 sign / 164,145 blocks; 21 item-NBT lines", "32 cited, 0 missing; 2 opened", "H/M/L used; route/finish checked", "PASS"],
+    ["A10", "resource_packs", "README, REFERENCE_IMAGES, frames (5), textures (8), data, packs/, STATUS; no renders/", "3 packs / 71 textures / 455 commands / 387 containers (225+156+6); 0 active packs", "18 cited, 0 missing; 3 opened", "H/M/L used; hashes/counts checked", "PASS WITH FIXES (Yeti 6 vs A4/A13 4 definition)"],
+    ["A11", "video_clouds2", "README, REFERENCE_IMAGES, frames (21), data, renders (8), STATUS", "17 video stills / 48 cuts / 39 timeline rows; HUD inventory exact", "27 cited, 0 missing; 3 opened; countdown/HUD confirmed", "H/M/L used; frames checked", "PASS WITH FIXES (external presentation doc still wrong)"],
+    ["A12", "server_import", "README, STATUS, data; REFERENCE_IMAGES/frames/renders n/a (non-map)", "455 commands / 41 failures (30+1+10) / 9 worlds / 3 packs", "no images (file/log evidence by design)", "H/M/L used; 41 failures reconcile", "PASS WITH FIXES ('double zip' wording; no images accepted)"],
+    ["A13", "comparison", "README, STATUS, data (5), renders (1); REFERENCE_IMAGES/frames n/a (synthesis)", "4x17 matrix / 13 runtime capabilities / 1 composite sheet", "10 cited, 1 shorthand path wrong; 8 sheet rows opened", "H/M/L used; matrix ranks are M", "PASS WITH FIXES (no source column; Space @a overgeneralization; Orange unresolved)"],
+]
+
+CLAIMS = [
+    ["Clouds 2 has 322 command blocks and 31 1.21 failures", "clouds2/README.md L19-20, L210; data/command_blocks.csv; data/command_failures.csv", "VERIFIED", "322 rows; 31 failure rows; A12 also 31 (30 item-NBT + malformed setblock)"],
+    ["City Marathon has 67 command blocks, 156 containers, 7 failures", "city_marathon/README.md L6, L136, L219; data/containers.csv", "VERIFIED", "67 rows; 156 rows all empty (independent NBT scan); A12 7 no-target gamemodes"],
+    ["Space Race has 29 command blocks, 0 containers, 0 syntax failures", "space_race/README.md L7, L74-77, L212; data/command_blocks.csv", "VERIFIED", "29 rows; independent scan 0 containers; A12 0 failures"],
+    ["Yeti has 37 command blocks, 14 signs, 3 shulkers + 1 hopper, 3 failures", "yeti_set_go/README.md L18-25, L204-213; data/containers.csv", "VERIFIED", "37/14/3+1; independent NBT scan; A12 3 no-target gamemodes"],
+    ["Decision Dome has 2 command blocks and 45 block entities", "decision_dome_recreation/README.md L43-45; data/command_blocks.csv", "VERIFIED", "2 rows; 45 TEs; A12 also 2"],
+    ["Decision Dome has 11 active VanillaTweaks datapacks", "decision_dome_recreation/README.md L31, L46, L299; STATUS.md L25", "CONTRADICTED", "source level.dat Enabled=[vanilla,mod:forge,mod:worldedit]; 12 zips all Disabled; A12 README L201 says none enabled. Correct: 12 installed / 0 active."],
+    ["Minigames has 14 containers (Sky Battle 13 + Parkour 1)", "minigames/README.md L30, L239; data/arenas.csv L2/L5/L6", "CONTRADICTED", "independent source scan: 34 container block entities (21 empty, 13 loot); 20 outside the 14 reported; hub 8, Super Clash 3, Sky Race hub 1, Sky Battle 5 campfires+1 lectern, Parkour 2 lecterns"],
+    ["Sky Battle has 13 loot containers and 93 loot entries matching source NBT", "minigames/sky_battle/README.md L178-198; data/chests.csv; data/loot.csv; data/container_nbt.csv", "VERIFIED", "13 rows; 93/93 item multiset identical to NBT; 4 shulkers + 4 chests + 5 barrels"],
+    ["Parkour Tag has 1 empty barrel and no other containers", "minigames/parkour_tag/README.md L36, L325; data/containers.csv", "PARTIAL", "1 barrel correct; 2 lecterns at 1049,28,993/996 are also container block entities and are not inventoried"],
+    ["A6c's arenas have no containers", "minigames/other/README.md L262; data/other_arenas.csv (no containers column)", "CONTRADICTED", "hub 8, Super Clash 3, Sky Race hub 1 = 12 containers; all empty; no container inventory exists"],
+    ["Sky Race Orange is a different, lower layout from Red", "minigames/other/README.md L24, L169; frames/srorg_iso.png vs srred_iso.png", "VERIFIED", "images and block data show Red y13-82 with chains, Orange y13-54 with cobwebs/no chains"],
+    ["A6 top-level says Orange has the same layout as Red", "minigames/README.md L159; minigames/REFERENCE_IMAGES.md L8", "CONTRADICTED", "A6c and the rendered frames show a different upper half; A13 does not list this in its resolved-contradictions table"],
+    ["A6 top-level says Sky Race wall signs are leftover template text", "minigames/README.md L135", "CONTRADICTED", "A6c L149/L258 shows wool/shears signs match the loadout; A13 L215 resolves in A6c's favour"],
+    ["A6 top-level locates Parkour Tag countdown titles at x1064..1066, z995", "minigames/README.md L125", "CONTRADICTED", "commands.csv rows PT-C075..C114 place them at x1044/1048/1052, y5..8, z995; x1064/1066 z995 is bossbar/setup logic"],
+    ["A6 top-level calls 1061 28 995 the 'waiting lobby'", "minigames/README.md L106, L109", "CONTRADICTED", "A6b L29/L176-178: 1061 28 995 is the gallery/barrier roof; waiting lobby is underground at 1064 1 985 / 1058 1 985"],
+    ["A6's atlas cell for MG-CMD-01 says 'logic for every game'", "minigames/other/README.md L27, L194, L256", "CONTRADICTED", "the actual arena_atlas.png panel 08 says '474 command blocks, 57 signs, Sky Battle logic only'; A6 README L136 says Sky Battle brain"],
+    ["A6 said the hub is 'Complete' and Super Clash is 'Complete'", "minigames/other/README.md L259-260", "CONTRADICTED", "A6 README L54 says 'Hub built; 4 of 8 pads wired'; L57 says 'Loop complete; villain objective suspect'"],
+    ["A6 said 'No containers exist in the source'", "minigames/other/README.md L262; minigames/sky_battle/STATUS.md L27; minigames/parkour_tag/STATUS.md L21", "STALE", "A6 README L30 now says Sky Battle 13 + Parkour 1; the correction rows target an older A6 draft"],
+    ["A6 said 161 fill commands reset the wool", "minigames/sky_battle/STATUS.md L28", "NOT FOUND", "A6 README has no 161-fill claim; A6a itself counts 110 air-replace fills"],
+    ["A13: all four Ace Race maps use per-player conditions with @a actions, so one racer buffs/clears/kills everyone", "comparison/README.md L21-22, L100", "PARTIAL", "Space Race levitation/speed pads use effect give @p (command_blocks.csv L18-21); only elytra clear and the two kill planes target @a. Clouds/City/Yeti pads do target @a."],
+    ["A13: at simulation distance 6, parts of every course are dead", "comparison/README.md L116-118; data/runtime_gap.md L75-76", "UNSUPPORTED", "Space's command room is under the start (x10..23,y111,z12..28) and A12 L93 says keep-spawn-in-memory=true keeps spawn chunks loaded; its global checks should tick. Claim is supported for Clouds/Yeti, not proven for Space."],
+    ["A13: kill_sc_vip has zero occurrences in source reports; correct string is kill_sc_vp", "comparison/README.md L198-205; data/contradiction_resolution.md; STATUS.md L62", "VERIFIED", "literal grep over existing_maps: 0 kill_sc_vip outside comparison quotes; 10+ kill_sc_vp; A6/A6c use kill_sc_vp"],
+    ["A6 top-level still contains kill_sc_vip", "task hard check 6", "NOT FOUND", "grep of minigames/README.md, STATUS.md, data/*.csv: 0 kill_sc_vip; uses kill_sc_vp at README L133 and STATUS L65"],
+    ["A11: the old acerace/presentation/README.md S5 row is wrong about no countdown/HUD", "video_clouds2/README.md L33-35, L438-439; game-plugins/research/acerace/presentation/README.md L404-405", "VERIFIED (stale source remains)", "S5 still says 'no countdown, no title card, no freeze' and 'HUD: None'; video frames 01/05b show Starting In and the action bar/custom HUD"],
+    ["A12: 455 commands audited, 41 failures (30 item-NBT + 1 incomplete + 10 no-target)", "server_import/README.md L237-250; data/commands_risk.csv", "VERIFIED", "455 rows; risk_code counts 406 OK, 30 FAIL_ITEM_NBT, 1 FAIL_INCOMPLETE, 10 FAIL_NO_TARGET, 8 RISK"],
+    ["A12: Space Race resources.zip.zip is a double zip", "server_import/README.md L46", "PARTIAL", "It is a wrapper folder ('Space Race Resource Pack/') inside one zip, not a zip-inside-zip; A10 README L205/L289 has the correct description"],
+    ["A10: all 387 containers in the three pack worlds are empty", "resource_packs/README.md L161, L298; data/containers.csv", "VERIFIED", "225 Clouds + 156 City + 6 Yeti = 387; independent scan all 0 items. Note: 6 Yeti includes 2 campfires; A4/A13 count 4."],
+    ["Yeti has 4 containers total (3 shulkers + hopper)", "comparison/data/ace_race_matrix.csv L5; yeti_set_go/data/containers.csv", "PARTIAL", "Source has 6 container block entities: 3 shulkers + 1 hopper + 2 empty campfires. 4 is correct only if campfires are excluded."],
+    ["City Marathon's world has no scoreboard objectives", "city_marathon/README.md L15", "VERIFIED (with wrong evidence wording)", "No data/scoreboard.dat exists, so no objectives; but scoreboard is not stored in level.dat, so 'no scoreboard tag in level.dat' is not the proof."],
+    ["Decision Dome's source spawn is 0,4,0", "decision_dome_recreation/README.md L55, L297", "STALE for the live world", "source spawn 0,4,0; A12 L37/L198: Multiverse changed the live spawn to 0,76,0 and calls it safe"],
+    ["A13: Clouds 2's giant creeper is decoration noise", "comparison/data/what_works.md L88", "UNSUPPORTED", "A11 says the creeper is visible in the video but was not found in sampled world renders (video_clouds2/README.md L237, L345); it is not confirmed in the downloaded world"],
+    ["A13 matrix rows cite a source report", "comparison/data/ace_race_matrix.csv L1; comparison/README.md L255", "MISSING", "17-column header has no primary_sources field; source mapping exists only in README §9, not per row"],
+    ["A13 runtime_gap covers all 13 required capabilities", "comparison/data/runtime_gap.md rows 1-13", "VERIFIED", "timer, laps, ordered checkpoints, finish, positions, teams, per-player effects, respawn, HUD, start gate, reset, spectator, simulation-distance coverage"],
+    ["A13 matrix command/block/container values are traceable to the map reports", "comparison/data/ace_race_matrix.csv L2-5", "PARTIAL", "Clouds 322/150414/225, City 67/207440/156, Space 29/296699/0, Yeti 37/28533/4(6 broad) all reconcile; Yeti container definition differs from A10, and '111 ordered' overstates enforcement"],
+    ["A13 ranks Clouds 2 first for route legibility and Decision Dome last as an anti-pattern", "comparison/README.md L48-61", "VERIFIED (as M design judgement)", "Clouds 2 chevron flow field and five landmarks are documented in A1; Decision Dome's 0 seats/stairs/roof and 0/25 north-carpet dial visibility are documented in A5. The ordering is a design opinion, not a measured score."],
+    ["City Marathon's station exterior image is cited as renders/station_iso.png", "city_marathon/REFERENCE_IMAGES.md L30", "CONTRADICTED", "file does not exist; only station_interior_iso.png and frames/10_station_iso.png exist"],
+    ["Yeti pack texture paths as written exist at the folder root", "yeti_set_go/README.md L256, L299", "CONTRADICTED", "files exist under pack/extracted/assets/minecraft/textures/...; the citation omits that prefix"],
+]
+
+with (BASE / "acceptance.csv").open("w", newline="", encoding="utf-8") as f:
+    w = csv.writer(f)
+    w.writerow(["agent", "folder", "required_files", "count_checks", "image_checks", "hm_l", "verdict"])
+    w.writerows(ACCEPT)
+
+with (BASE / "claim_checks.csv").open("w", newline="", encoding="utf-8") as f:
+    w = csv.writer(f)
+    w.writerow(["claim", "source", "status", "evidence"])
+    w.writerows(CLAIMS)
+
+print(f"acceptance rows {len(ACCEPT)}; claim rows {len(CLAIMS)}")

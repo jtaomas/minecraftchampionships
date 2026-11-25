@@ -1,0 +1,64 @@
+block_id,in_can_place_on,in_world_palette,impact
+acacia_leaves,yes,yes,
+andesite,yes,yes,
+barrier,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+black_concrete,yes,yes,
+black_concrete_powder,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+black_terracotta,yes,yes,
+black_wool,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+blackstone,yes,yes,
+blue_concrete,yes,no,Whitelisted but not present in the saved world (future/earlier build).
+brown_concrete_powder,yes,yes,
+cactus,yes,yes,
+chain,yes,yes,
+cracked_stone_bricks,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+cyan_concrete,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+cyan_concrete_powder,yes,yes,
+cyan_terracotta,yes,yes,
+daylight_detector,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+dead_bush,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+diorite,yes,yes,
+diorite_wall,yes,yes,
+dirt,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+granite,yes,yes,
+gravel,yes,yes,
+gray_concrete,yes,yes,
+gray_terracotta,yes,yes,
+gray_wool,yes,yes,
+iron_bars,yes,yes,
+iron_block,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+iron_trapdoor,yes,yes,
+jungle_fence,yes,yes,
+jungle_planks,yes,yes,
+lantern,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+light_blue_concrete,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+light_blue_concrete_powder,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+light_gray_concrete,yes,yes,
+light_gray_concrete_powder,yes,yes,
+light_gray_terracotta,yes,yes,
+nether_brick_fence,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+nether_brick_slab,yes,yes,
+nether_brick_wall,yes,yes,
+oak_leaves,yes,yes,
+oak_wall_sign,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+polished_granite,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+quartz_block,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+red_concrete,yes,yes,
+red_sand,yes,yes,
+red_sandstone_stairs,yes,yes,
+red_terracotta,yes,yes,
+red_wool,yes,yes,
+sea_lantern,yes,yes,
+smooth_red_sandstone,yes,yes,
+smooth_stone,yes,yes,
+smooth_stone_slab,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+soul_sand,yes,yes,
+spruce_planks,yes,yes,
+stone,yes,yes,
+stone_bricks,yes,yes,
+stripped_dark_oak_log,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.
+stripped_spruce_log,yes,yes,
+terracotta,yes,yes,
+white_concrete,yes,yes,
+white_terracotta,yes,yes,
+white_wool,no,yes,Present in the map but NOT placeable-on: players cannot bridge off this block.

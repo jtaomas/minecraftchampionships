@@ -1,0 +1,26 @@
+/fill 28 115 24 6 117 24 air
+/title @a actionbar {"color":"white","text":"You are in 1st place"}
+/title @a subtitle {"color":"green","text":">1<"}
+/title @a subtitle {"color":"red","text":">3<"}
+/title @a subtitle {"color":"yellow","text":">2<"}
+/title @a title {"color":"dark_aqua","text":"Starting in"}
+effect give @a minecraft:dolphins_grace 999999 1 true
+execute at @a if block ~ ~ ~-1 minecraft:diamond_block run item replace entity @p armor.chest with minecraft:elytra
+execute at @a if block ~ ~ ~-2 minecraft:diamond_block run item replace entity @p armor.chest with minecraft:elytra
+execute at @a if block ~ ~ ~-3 minecraft:diamond_block run item replace entity @p armor.chest with minecraft:elytra
+execute at @a if block ~ ~ ~-4 minecraft:diamond_block run item replace entity @p armor.chest with minecraft:elytra
+execute at @a if block ~ ~ ~-5 minecraft:diamond_block run item replace entity @p armor.chest with minecraft:elytra
+execute at @a if block ~ ~ ~-6 minecraft:diamond_block run item replace entity @p armor.chest with minecraft:elytra
+execute at @a if block ~ ~ ~-7 minecraft:diamond_block run item replace entity @p armor.chest with minecraft:elytra
+execute at @a if block ~ ~-0.35 ~ minecraft:bedrock run kill @a
+execute at @a if block ~ ~-0.35 ~ minecraft:gray_concrete run item replace entity @a armor.chest with minecraft:air
+execute at @a if block ~ ~-0.35 ~ minecraft:lime_stained_glass run kill @a
+execute at @a if block ~ ~-0.35 ~ minecraft:magenta_glazed_terracotta run effect give @p minecraft:speed 2 4 true
+execute at @a if block ~ ~-0.35 ~ minecraft:magenta_glazed_terracotta run setworldspawn
+execute at @a if block ~ ~-0.35 ~ minecraft:orange_concrete run effect give @p minecraft:levitation 1 70 true
+execute at @a if block ~ ~-0.35 ~ minecraft:orange_concrete run effect give @p minecraft:speed 1 255 true
+execute at @a if block ~ ~-0.35 ~ minecraft:red_concrete run effect give @p minecraft:levitation 2 23 true
+execute at @a if block ~ ~-0.35 ~ minecraft:red_concrete run effect give @p minecraft:speed 2 30 true
+execute at @a if block ~ ~-0.35 ~ minecraft:red_concrete run item replace entity @a armor.chest with minecraft:air
+execute at @a if block ~ ~-0.35 ~ minecraft:red_sandstone run item replace entity @a armor.chest with minecraft:air
+execute at @a if block ~ ~-0.35 ~ minecraft:water run item replace entity @a armor.chest with minecraft:air

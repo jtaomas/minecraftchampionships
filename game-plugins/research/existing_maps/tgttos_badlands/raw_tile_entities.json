@@ -1,0 +1,694 @@
+[
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   5,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 94,
+   "y": -18,
+   "z": 7,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   5,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 95,
+   "y": -18,
+   "z": 7,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   5,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 94,
+   "y": -18,
+   "z": 8,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   5,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 95,
+   "y": -18,
+   "z": 8,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   5,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 94,
+   "y": -17,
+   "z": 11,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   5,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 95,
+   "y": -17,
+   "z": 11,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   5,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 94,
+   "y": -17,
+   "z": 12,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   5,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 95,
+   "y": -17,
+   "z": 12,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 103,
+   "y": -18,
+   "z": 7,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 102,
+   "y": -18,
+   "z": 8,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 104,
+   "y": -18,
+   "z": 7,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 103,
+   "y": -18,
+   "z": 8,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 104,
+   "y": -18,
+   "z": 8,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 102,
+   "y": -17,
+   "z": 11,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 103,
+   "y": -17,
+   "z": 11,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 102,
+   "y": -17,
+   "z": 12,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 104,
+   "y": -17,
+   "z": 11,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 103,
+   "y": -17,
+   "z": 12,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 104,
+   "y": -17,
+   "z": 12,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 96,
+   "y": -18,
+   "z": 7,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 96,
+   "y": -18,
+   "z": 8,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 96,
+   "y": -17,
+   "z": 11,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 96,
+   "y": -17,
+   "z": 12,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   0
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 102,
+   "y": -18,
+   "z": 7,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   1
+  ],
+  "nbt": {
+   "GlowingText": 0,
+   "keepPacked": 0,
+   "Color": "black",
+   "Text4": "{\"text\":\"\"}",
+   "x": 9,
+   "Text3": "{\"text\":\"\"}",
+   "y": -41,
+   "Text2": "{\"bold\":true,\"color\":\"green\",\"text\":\"Start\"}",
+   "z": 31,
+   "Text1": "{\"clickEvent\":{\"action\":\"run_command\",\"value\":\"scoreboard players add @s start 1\"},\"text\":\"\"}",
+   "id": "minecraft:sign"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   5,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 94,
+   "y": -17,
+   "z": 50,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   5,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 95,
+   "y": -17,
+   "z": 50,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   5,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 94,
+   "y": -17,
+   "z": 51,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   5,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 95,
+   "y": -17,
+   "z": 51,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   5,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 94,
+   "y": -18,
+   "z": 54,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   5,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 95,
+   "y": -18,
+   "z": 54,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   5,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 94,
+   "y": -18,
+   "z": 55,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   5,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 95,
+   "y": -18,
+   "z": 55,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 96,
+   "y": -17,
+   "z": 50,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 96,
+   "y": -17,
+   "z": 51,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 96,
+   "y": -18,
+   "z": 54,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 96,
+   "y": -18,
+   "z": 55,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 102,
+   "y": -17,
+   "z": 50,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 103,
+   "y": -17,
+   "z": 50,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 102,
+   "y": -17,
+   "z": 51,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 104,
+   "y": -17,
+   "z": 50,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 103,
+   "y": -17,
+   "z": 51,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 104,
+   "y": -17,
+   "z": 51,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 102,
+   "y": -18,
+   "z": 54,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 103,
+   "y": -18,
+   "z": 54,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 102,
+   "y": -18,
+   "z": 55,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 104,
+   "y": -18,
+   "z": 54,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 103,
+   "y": -18,
+   "z": 55,
+   "id": "minecraft:daylight_detector"
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   6,
+   3
+  ],
+  "nbt": {
+   "keepPacked": 0,
+   "x": 104,
+   "y": -18,
+   "z": 55,
+   "id": "minecraft:daylight_detector"
+  }
+ }
+]

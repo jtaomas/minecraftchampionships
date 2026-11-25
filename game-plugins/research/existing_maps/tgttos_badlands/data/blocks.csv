@@ -1,0 +1,98 @@
+block_state,block_id,count,share_pct,role
+minecraft:stone,stone,192974,46.857,terrain
+minecraft:terracotta,terracotta,149342,36.263,terrain
+minecraft:granite,granite,15897,3.860,terrain
+minecraft:andesite,andesite,10515,2.553,terrain
+minecraft:red_sand,red_sand,8796,2.136,terrain
+minecraft:dirt,dirt,7252,1.761,terrain
+minecraft:brown_concrete_powder,brown_concrete_powder,4989,1.211,terrain
+minecraft:white_terracotta,white_terracotta,4493,1.091,"build (walls, towers, roofs)"
+minecraft:red_terracotta,red_terracotta,3555,0.863,terrain
+minecraft:gray_terracotta,gray_terracotta,3308,0.803,terrain
+minecraft:diorite,diorite,2035,0.494,terrain
+minecraft:polished_granite,polished_granite,1149,0.279,terrain
+minecraft:soul_sand,soul_sand,778,0.189,terrain / slow hazard
+minecraft:smooth_stone,smooth_stone,653,0.159,"build (paving, roads)"
+minecraft:light_gray_terracotta,light_gray_terracotta,599,0.145,terrain
+"minecraft:oak_leaves[waterlogged=false,distance=7,persistent=true]",oak_leaves,572,0.139,vegetation
+minecraft:cyan_terracotta,cyan_terracotta,531,0.129,terrain
+minecraft:quartz_block,quartz_block,434,0.105,"build (start floor, finish approach)"
+minecraft:stone_bricks,stone_bricks,320,0.078,"build (paving, ruins)"
+minecraft:gravel,gravel,310,0.075,terrain
+minecraft:red_concrete,red_concrete,190,0.046,sign letters / accent
+minecraft:black_wool,black_wool,190,0.046,"accent (start frame, rail bed)"
+"minecraft:chain[waterlogged=false,axis=z]",chain,185,0.045,hanging detail / fence
+minecraft:barrier,barrier,184,0.045,technical (start gate)
+"minecraft:acacia_leaves[waterlogged=false,distance=7,persistent=true]",acacia_leaves,182,0.044,vegetation
+minecraft:cactus[age=0],cactus,181,0.044,vegetation / hazard
+minecraft:jungle_planks,jungle_planks,173,0.042,crates / scaffolding
+"minecraft:nether_brick_wall[east=none,waterlogged=false,south=none,north=none,west=none,up=true]",nether_brick_wall,155,0.038,industrial trim
+minecraft:blackstone,blackstone,123,0.030,industrial trim / rail
+minecraft:red_wool,red_wool,110,0.027,"accent (sign, markers)"
+"minecraft:nether_brick_slab[waterlogged=false,type=top]",nether_brick_slab,107,0.026,industrial trim
+minecraft:white_concrete,white_concrete,106,0.026,sign / accent
+minecraft:smooth_red_sandstone,smooth_red_sandstone,102,0.025,terrain / build
+minecraft:black_terracotta,black_terracotta,97,0.024,terrain
+minecraft:gray_concrete,gray_concrete,97,0.024,accent (sign base)
+minecraft:sea_lantern,sea_lantern,94,0.023,light
+minecraft:light_gray_concrete,light_gray_concrete,80,0.019,accent
+minecraft:cyan_concrete_powder,cyan_concrete_powder,75,0.018,terrain / accent
+minecraft:white_wool,white_wool,62,0.015,accent
+minecraft:iron_block,iron_block,60,0.015,industrial trim
+"minecraft:iron_trapdoor[waterlogged=false,half=bottom,powered=false,facing=west,open=false]",iron_trapdoor,49,0.012,roof / fence / chicken ledge
+"minecraft:daylight_detector[power=7,inverted=false]",daylight_detector,48,0.012,solar-panel detail
+"minecraft:nether_brick_slab[waterlogged=false,type=bottom]",nether_brick_slab,44,0.011,industrial trim
+minecraft:black_concrete,black_concrete,41,0.010,accent (rail/wall)
+"minecraft:iron_trapdoor[waterlogged=false,half=top,powered=false,facing=west,open=true]",iron_trapdoor,41,0.010,roof / fence / chicken ledge
+"minecraft:iron_bars[east=false,waterlogged=false,south=true,north=true,west=false]",iron_bars,41,0.010,fence
+"minecraft:iron_trapdoor[waterlogged=false,half=bottom,powered=false,facing=south,open=true]",iron_trapdoor,37,0.009,roof / fence / chicken ledge
+"minecraft:iron_trapdoor[waterlogged=false,half=bottom,powered=false,facing=north,open=true]",iron_trapdoor,37,0.009,roof / fence / chicken ledge
+minecraft:gray_wool,gray_wool,33,0.008,accent (sign cap)
+"minecraft:iron_trapdoor[waterlogged=false,half=top,powered=false,facing=west,open=false]",iron_trapdoor,32,0.008,roof / fence / chicken ledge
+minecraft:spruce_planks,spruce_planks,31,0.008,start pen / detail
+minecraft:cyan_concrete,cyan_concrete,28,0.007,accent
+"minecraft:smooth_stone_slab[waterlogged=false,type=top]",smooth_stone_slab,24,0.006,build (paving)
+minecraft:cracked_stone_bricks,cracked_stone_bricks,23,0.006,build (ruin)
+"minecraft:nether_brick_fence[east=false,waterlogged=false,south=true,north=true,west=true]",nether_brick_fence,21,0.005,industrial trim
+"minecraft:smooth_stone_slab[waterlogged=false,type=bottom]",smooth_stone_slab,20,0.005,build (paving)
+minecraft:black_concrete_powder,black_concrete_powder,18,0.004,terrain / accent
+"minecraft:diorite_wall[east=none,waterlogged=false,south=none,north=none,west=none,up=true]",diorite_wall,18,0.004,detail
+"minecraft:iron_trapdoor[waterlogged=false,half=bottom,powered=false,facing=east,open=true]",iron_trapdoor,16,0.004,roof / fence / chicken ledge
+"minecraft:iron_trapdoor[waterlogged=false,half=bottom,powered=false,facing=west,open=true]",iron_trapdoor,16,0.004,roof / fence / chicken ledge
+"minecraft:nether_brick_slab[waterlogged=false,type=double]",nether_brick_slab,16,0.004,industrial trim
+minecraft:dead_bush,dead_bush,15,0.004,vegetation
+"minecraft:lantern[waterlogged=false,hanging=true]",lantern,11,0.003,light
+minecraft:stripped_spruce_log[axis=z],stripped_spruce_log,11,0.003,posts / trees
+"minecraft:nether_brick_wall[east=none,waterlogged=false,south=none,north=none,west=tall,up=true]",nether_brick_wall,11,0.003,industrial trim
+minecraft:light_gray_concrete_powder,light_gray_concrete_powder,9,0.002,accent
+minecraft:stripped_spruce_log[axis=y],stripped_spruce_log,7,0.002,posts / trees
+"minecraft:red_sandstone_stairs[waterlogged=false,half=bottom,shape=straight,facing=south]",red_sandstone_stairs,7,0.002,stairs / detail
+"minecraft:red_sandstone_stairs[waterlogged=false,half=bottom,shape=straight,facing=north]",red_sandstone_stairs,7,0.002,stairs / detail
+"minecraft:nether_brick_wall[east=none,waterlogged=false,south=low,north=low,west=low,up=true]",nether_brick_wall,7,0.002,industrial trim
+"minecraft:nether_brick_fence[east=false,waterlogged=false,south=false,north=false,west=true]",nether_brick_fence,7,0.002,industrial trim
+"minecraft:chain[waterlogged=false,axis=y]",chain,6,0.001,hanging detail / fence
+"minecraft:jungle_fence[east=true,waterlogged=false,south=false,north=true,west=false]",jungle_fence,4,0.001,crates
+minecraft:stripped_spruce_log[axis=x],stripped_spruce_log,4,0.001,posts / trees
+"minecraft:jungle_fence[east=false,waterlogged=false,south=false,north=true,west=false]",jungle_fence,4,0.001,crates
+"minecraft:jungle_fence[east=true,waterlogged=false,south=false,north=true,west=true]",jungle_fence,3,0.001,crates
+"minecraft:nether_brick_fence[east=false,waterlogged=false,south=true,north=false,west=true]",nether_brick_fence,3,0.001,industrial trim
+"minecraft:nether_brick_fence[east=false,waterlogged=false,south=false,north=true,west=true]",nether_brick_fence,3,0.001,industrial trim
+"minecraft:jungle_fence[east=true,waterlogged=false,south=true,north=false,west=false]",jungle_fence,3,0.001,crates
+"minecraft:iron_bars[east=false,waterlogged=false,south=false,north=false,west=false]",iron_bars,2,0.000,fence
+"minecraft:iron_bars[east=false,waterlogged=false,south=true,north=false,west=false]",iron_bars,2,0.000,fence
+minecraft:light_blue_concrete,light_blue_concrete,2,0.000,accent
+"minecraft:acacia_leaves[waterlogged=false,distance=2,persistent=true]",acacia_leaves,2,0.000,vegetation
+"minecraft:acacia_leaves[waterlogged=false,distance=3,persistent=true]",acacia_leaves,2,0.000,vegetation
+"minecraft:iron_bars[east=false,waterlogged=false,south=false,north=true,west=false]",iron_bars,1,0.000,fence
+"minecraft:iron_bars[east=true,waterlogged=false,south=false,north=true,west=false]",iron_bars,1,0.000,fence
+"minecraft:iron_bars[east=false,waterlogged=false,south=false,north=false,west=true]",iron_bars,1,0.000,fence
+"minecraft:lantern[waterlogged=false,hanging=false]",lantern,1,0.000,light
+"minecraft:acacia_leaves[waterlogged=false,distance=1,persistent=true]",acacia_leaves,1,0.000,vegetation
+"minecraft:acacia_leaves[waterlogged=false,distance=4,persistent=true]",acacia_leaves,1,0.000,vegetation
+"minecraft:oak_wall_sign[waterlogged=false,facing=east]",oak_wall_sign,1,0.000,technical (start trigger)
+"minecraft:iron_trapdoor[waterlogged=false,half=top,powered=false,facing=south,open=false]",iron_trapdoor,1,0.000,roof / fence / chicken ledge
+"minecraft:nether_brick_wall[east=none,waterlogged=false,south=low,north=none,west=tall,up=true]",nether_brick_wall,1,0.000,industrial trim
+minecraft:stripped_dark_oak_log[axis=y],stripped_dark_oak_log,1,0.000,post
+minecraft:light_blue_concrete_powder,light_blue_concrete_powder,1,0.000,accent
+"minecraft:nether_brick_wall[east=none,waterlogged=false,south=none,north=low,west=tall,up=true]",nether_brick_wall,1,0.000,industrial trim
+"minecraft:jungle_fence[east=false,waterlogged=false,south=true,north=false,west=false]",jungle_fence,1,0.000,crates

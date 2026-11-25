@@ -1,0 +1,17 @@
+[
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": 73,
+  "Text3": "{\"text\":\"\"}",
+  "y": -32,
+  "Text2": "{\"bold\":true,\"color\":\"green\",\"text\":\"Start\"}",
+  "z": 10,
+  "Text1": "{\"clickEvent\":{\"action\":\"run_command\",\"value\":\"tag @a add starting\"},\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_cx": 4,
+  "_cz": 0
+ }
+]

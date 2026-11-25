@@ -1,0 +1,3 @@
+map,file,item,name,lore,custom_model_data
+space_race,00000000-0000-0000-0000-000000000000.dat/Inventory[0],minecraft:trident,"[{""text"":""Trident"",""italic"":false,""color"":""yellow""}]",,
+space_race,00000000-0000-0000-0000-000000000000.dat/Inventory[1],minecraft:carrot_on_a_stick,"[{""text"":""Restart Attempt"",""italic"":false,""color"":""red""}]",,

@@ -1,0 +1,7 @@
+x,y,z,block,kind,items,slots_used
+15,4,7,minecraft:light_gray_shulker_box[facing=up],storage,[],0
+27,-1,7,minecraft:light_gray_shulker_box[facing=down],storage,[],0
+27,4,7,minecraft:light_gray_shulker_box[facing=up],storage,[],0
+-149,33,27,"minecraft:hopper[enabled=true,facing=north]",storage,[],0
+-39,4,32,"minecraft:campfire[facing=west,lit=true,signal_fire=false,waterlogged=false]",cooking,[],0
+-101,2,35,"minecraft:campfire[facing=west,lit=true,signal_fire=false,waterlogged=false]",cooking,[],0

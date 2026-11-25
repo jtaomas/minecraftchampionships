@@ -1,0 +1,17 @@
+leg,what,x,y,z,notes
+START,start pen floor,10,-43,31,"Quartz floor; player spawn 10,-42,31; sign 9,-41,31 on the west wall."
+START,gate east wall,12,-42,31,"Barrier x=12, z 20..41, y -42..-38; removed by the countdown fill at 120."
+LEG1,first stake,25,-31,41,Red concrete/red wool marker stake; three stakes on the west slope.
+LEG1,first rail line,64,-30,31,"3-wide smooth-stone strip x 63..65, z 10..52; also the MCC billboard x=64 above."
+LEG2,mine west gate,64,-29,31,Course passes under the MCC billboard/gantry at x=64.
+LEG2,mine plaza,100,-29,31,Open plaza between the two white mine wings; wings at z 2..14 and 47..60.
+LEG2,solar arrays,99,-18,9,"Daylight-detector arrays x 94..104, z 7..12 and 50..55."
+LEG3,stone-brick platform,120,-28,31,"x 118..123, y -31..-28, z 12..44."
+LEG3,black rail/wall,137,-26,31,"x=137..139, y -29..-26, z 9..53; go around the z ends or bridge."
+LEG4,canyon floor / cave mouth,150,-22,31,"Mesa west face; cave mouth at x~150..160, z 14..50, y -22..-5."
+LEG4,cave chamber,175,-20,31,"West-facing dead-end chamber; white pillar walls at x 182..189, z 14..48."
+LEG4,mesa top,190,-1,31,Mesa top y -5..+2; east face drops ~21 blocks into the finish canyon.
+LEG5,finish canyon floor,210,-11,31,Open canyon; floor rises from -21 at x 195 to -5 at x 230.
+LEG5,finish trench,235,-7,31,Soul sand/dirt at x 231..239; smooth-stone step x 233..235 at y -6..-4.
+FINISH,chicken ledge,241,-2,31,"1-wide red-terracotta ledge; 27 chickens at y=-1, z 11..52; chain/iron-bar fence x=240."
+FINISH,MCC wall,244,1,31,"Gray-terracotta wall x 242..247, y -10..+2; red/white MCC sign x 241..242, y 4..12, z 22..40."

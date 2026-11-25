@@ -1,0 +1,37 @@
+rule,value,effect_on_this_map
+announceAdvancements,false,No advancement use.
+commandBlockOutput,true,"true, but 0 command blocks."
+disableElytraMovementCheck,false,"false, no elytra."
+disableRaids,false,
+doDaylightCycle,false,"Permanent time (DayTime=0, sunrise); golden-hour lighting."
+doEntityDrops,false,No entity drops.
+doFireTick,false,No fire spread; no fire sources.
+doImmediateRespawn,false,"false: death screen, then vanilla respawn; no datapack respawn handler."
+doInsomnia,false,No phantoms.
+doLimitedCrafting,false,Crafting unrestricted.
+doMobLoot,false,No mob loot.
+doMobSpawning,false,No natural mobs; only the 27 saved chickens.
+doPatrolSpawning,false,No patrols.
+doTileDrops,false,Mined blue concrete drops nothing; item entities are killed every tick anyway.
+doTraderSpawning,false,No traders.
+doWardenSpawning,false,No wardens.
+doWeatherCycle,false,No rain/thunder.
+drowningDamage,true,"true, no water."
+fallDamage,false,No fall damage: the 20-block drop into the finish canyon and the mesa descent are safe.
+fireDamage,true,"true, no fire/lava."
+forgiveDeadPlayers,true,No anger/raids.
+freezeDamage,true,"true, no powder snow."
+keepInventory,false,false: death drops inventory (but items are killed and the kit is re-given).
+logAdminCommands,true,true.
+maxCommandChainLength,65536,
+maxEntityCramming,24,24.
+mobGriefing,true,"true, but no mobs."
+naturalRegeneration,true,"true, but no damage sources except void."
+playersSleepingPercentage,100,100; not used.
+randomTickSpeed,0,0: no crop/leaf/ice random ticks; leaves are persistent.
+reducedDebugInfo,false,false.
+sendCommandFeedback,true,true.
+showDeathMessages,false,false.
+spawnRadius,10,"10: new players without a personal spawn respawn within 10 blocks of 10,-42,31, possibly outside the start pen."
+spectatorsGenerateChunks,true,true.
+universalAnger,false,No anger/raids.

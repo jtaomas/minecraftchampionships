@@ -1,0 +1,17 @@
+order,id,x,y,z,type,gate_axis,width,functional_checkpoint,grants,clears,evidence
+0,start_finish_gate,17,116,24,glass_wall_gate,Z (23 wide x 3 high),23,no,nothing (opens via /fill air),nothing,H
+1,cavern_pad_1,-26,128,-30,levitation_pad,none,3,no,levitation 23 + speed 30 (~48 blocks),nothing,H
+2,cavern_pad_2,-14,134,-58,levitation_pad,none,3,no,levitation 23 + speed 30 (~48 blocks),nothing,H
+3,cavern_pad_3,10,140,-67,levitation_pad,none,3,no,levitation 23 + speed 30 (~48 blocks),nothing,H
+4,cavern_pad_4,26,149,-47,levitation_pad,none,3,no,levitation 23 + speed 30 (~48 blocks),nothing,H
+5,cavern_pad_5,32,159,-73,levitation_pad,none,3,no,levitation 23 + speed 30 (~48 blocks),nothing,H
+6,elytra_ring_A,-44,170,-44,elytra_ring,X plane frame 9x11 opening 7x9,7,no,elytra (broken check; see README),nothing,H
+7,elytra_ring_B,-124,204,3,elytra_ring,Z plane frame 9x9 opening 7x7,7,no,elytra (broken check),nothing,H
+8,elytra_ring_C,88,210,0,elytra_ring,X plane frame 9x11 opening 7x9,7,no,elytra (broken check),nothing,H
+9,elytra_ring_D,112,245,246,elytra_ring,Z plane frame 10x13 opening 8x11,8,no,elytra (broken check),nothing,H
+10,trident_ring_1,-36,198,270,water_tube,Z cylinder,9,no,swim/riptide lift to ~198,nothing,H
+11,trident_ring_2,-31,198,300,water_tube,Z cylinder,9,no,swim/riptide lift to ~198,nothing,H
+12,launch_pad_C,-32,184,340,levitation_pad,none,3,no,levitation 23 + speed 30 (~48 blocks),nothing,H
+13,orange_mega_pad,41,192,419,levitation_pad,none,3,no,levitation 70 + speed 255 (~71 blocks),nothing,H
+14,station_red_pad,114,200,262,levitation_pad,none,3,no,levitation 23 + speed 30 (~48 blocks),nothing,H
+15,actual_scored_checkpoint,,,,,,,NO,no command writes any checkpoint score,none,H

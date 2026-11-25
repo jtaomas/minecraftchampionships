@@ -1,0 +1,112 @@
+﻿order,leg,x,y,z,type,what_it_does
+1,L0,5,4,24,start/spawn,teleport target; faces north (5 5 -20)
+2,L0,5,4,20,start line,checkered gate; barrier at y=5 removed on start
+3,L1,11,0,16,checkpoint,yellow glazed; setworldspawn + trident
+4,L1,11,1,11,mega jump,orange shulker; speed 35 + jump boost 14 + clear
+5,L1,11,1,8,jump pad,lime shulker; jump boost 7
+6,L1,5,3,4,checkpoint band,"3 pads at z=2..6, x -2..12"
+7,L1,5,2,-6,jump+speed,red/magenta pad row at z=-7
+8,L1,-7,3,-7,jump+speed,"red glazed, west pad"
+9,L1,17,3,-7,jump+speed,"red glazed, east pad"
+10,L1,5,3,-17,checkpoint band,4 pads x -5..15 at z=-19..-15
+11,L2,5,3,-37,checkpoint band,5 pads x -8..18 at z=-39..-35
+12,L3,0,0,-56,jump+speed,red glazed
+13,L3,10,0,-56,jump+speed,red glazed
+14,L3,0,0,-62,slow trap,green glazed; slowness 1s + clears speed
+15,L3,10,0,-62,slow trap,green glazed
+16,L3,5,0,-77,jump+speed,red glazed
+17,L3,9,-2,-96,checkpoint,yellow glazed
+18,L3,12,-3,-100,checkpoint,yellow glazed
+19,L3,-2,-2,-116,jump pad,lime shulker; jump boost 5/6
+20,L3,8,0,-123,jump+speed,red glazed
+21,L3,-1,5,-127,jump+speed,red glazed
+22,L3,11,3,-141,jump+speed,red glazed
+23,L3,24,5,-142,checkpoint,yellow glazed
+24,L4,26,8,-151,jump+speed,red glazed
+25,L4,-7,9,-151,checkpoint,yellow glazed
+26,L4,13,8,-159,jump+speed,red glazed
+27,L4,12,14,-177,jump+speed,red glazed
+28,L4,-10,11,-176,checkpoint,yellow glazed
+29,L4,22,18,-177,checkpoint band,yellow glazed
+30,L4,-1,14,-184,jump+speed,red glazed
+31,L4,30,16,-189,jump+speed,red glazed
+32,L4,30,16,-198,checkpoint band,yellow glazed
+33,L4,35,16,-210,jump+speed,red glazed
+34,L5,29,19,-234,elytra grant,spruce planks; elytra to chest
+35,L5,35,17,-238,jump+speed,red glazed
+36,L5,14,18,-254,checkpoint,yellow glazed on the planet approach
+37,L5,11,18,-254,jump pad,lime shulker
+38,L5,4,23,-256,jump+speed,red glazed on the rim
+39,L5,-16,23,-259,checkpoint,yellow glazed on the rim
+40,L5,-38,25,-252,mega jump,orange shulker; launches into the planet pool
+41,L6,-88,-5,-256,tunnel entry,waterfall base; glass tunnel starts at x=-88
+42,L6,-240,-5,-256,tunnel exit,inside the stone ruin
+43,L7,-159,-24,-283,checkpoint,ruin exit pad
+44,L7,-150,-24,-283,checkpoint,ruin exit pad
+45,L7,-155,-26,-270,jump pad,lime shulker
+46,L7,-155,-30,-264,checkpoint,yellow glazed
+47,L7,-150,-29,-250,checkpoint,yellow glazed
+48,L7,-157,-30,-232,checkpoint,yellow glazed
+49,L7,-158,-29,-206,checkpoint,crater rim
+50,L7,-171,-29,-196,jump pad,lime shulker
+51,L7,-145,-29,-196,jump pad,lime shulker
+52,L7,-172,-25,-191,checkpoint,crater terrace
+53,L7,-143,-25,-191,checkpoint,crater terrace
+54,L8,-158,-19,-161,elytra grant,spruce planks in the crater
+55,L8,-158,-18,-182,checkpoint,crater floor before launch
+56,L8,-161,-18,-147,flight ring,light_blue concrete ring
+57,L8,-153,-19,-124,flight marker,yellow concrete lightning bolt
+58,L8,-196,-40,-80,flight ring,west ring
+59,L8,-139,-31,-76,flight ring,east ring
+60,L8,-224,-25,-61,flight marker,"yellow bolt, west"
+61,L8,-198,-45,-27,flight ring,ring
+62,L8,-161,-50,33,flight ring,ring before the village
+63,L8,-165,-35,39,flight marker,yellow bolt
+64,L9,-148,-57,75,elytra grant,"spruce planks, village"
+65,L9,-147,-38,82,checkpoint,village
+66,L9,-149,-57,88,checkpoint,village
+67,L9,-148,-57,96,checkpoint,village
+68,L9,-148,-57,103,jump+speed,red glazed
+69,L9,-151,-39,151,checkpoint,terrace
+70,L9,-142,-39,151,checkpoint,terrace
+71,L9,-150,-33,161,rainbow gate,"7-band terracotta arch, x -172..-130, apex y=2"
+72,L9,-147,-32,169,jump+speed,red glazed
+73,L9,-140,-39,176,jump+speed,red glazed
+74,L9,-157,-47,139,jump pad,lime shulker
+75,L9,-137,-51,137,jump pad,lime shulker
+76,L9,-153,-57,129,jump pad,lime shulker
+77,L9,-143,-57,129,jump pad,lime shulker
+78,L10,-165,-38,211,checkpoint,terrace exit
+79,L10,-124,-34,260,checkpoint,bottom platform
+80,L10,-115,-29,260,jump+speed,red glazed
+81,L10,-100,-29,260,jump+speed,red glazed
+82,L10,-60,-39,255,jump+speed,red glazed
+83,L10,-47,-39,255,jump+speed,red glazed
+84,L10,-41,-42,260,jump+speed,red glazed
+85,L10,-21,-40,255,checkpoint,yellow glazed
+86,L11,-13,-40,265,jump+speed,red glazed
+87,L11,3,-40,250,elytra grant,spruce planks (castle low)
+88,L11,9,-39,232,elytra grant,spruce planks
+89,L11,13,-39,232,checkpoint,castle stair
+90,L11,29,-32,232,checkpoint,castle stair
+91,L11,40,-32,232,checkpoint,castle stair
+92,L11,50,-32,232,checkpoint,castle stair
+93,L11,39,-23,220,checkpoint,castle terrace
+94,L11,49,-27,219,elytra grant,spruce planks
+95,L11,49,-17,218,jump+speed,red glazed
+96,L11,48,-10,199,checkpoint,castle north gate
+97,L11,48,-8,195,elytra grant,andesite slab (unique variant)
+98,L11,49,-19,205,jump pad,lime shulker
+99,L11,46,-16,203,jump pad,lime shulker
+100,L12,40,-12,201,checkered gate,"black/white wall, x 42..50, y -16..-10"
+101,L12,30,-8,169,arch,white concrete + orange terracotta gate
+102,L12,26,-6,145,arch,white concrete + orange terracotta gate
+103,L12,9,-13,93,checkpoint,coral section
+104,L12,26,-5,82,jump+speed,red glazed
+105,L12,15,-6,72,jump+speed,red glazed
+106,L12,28,-4,68,jump+speed,red glazed
+107,L12,17,0,61,elytra grant,"spruce planks, coral"
+108,L12,9,0,56,jump+speed,red glazed
+109,L12,22,-2,55,jump+speed,red glazed
+110,L13,5,2,41,checkpoint,yellow glazed on the finish corridor
+111,L13,5,4,20,FINISH,same checkered line; approached from the south

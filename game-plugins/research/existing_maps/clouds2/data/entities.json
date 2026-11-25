@@ -1,0 +1,14 @@
+[
+ {
+  "type": "minecraft:marker",
+  "x": 26.0,
+  "y": -6.0,
+  "z": 132.0,
+  "custom_name": "",
+  "tags": [
+   "refresh_worldspawn"
+  ],
+  "items": 0,
+  "armor": 0
+ }
+]

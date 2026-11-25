@@ -1,0 +1,22 @@
+file,source_t,resolution,shows,cited_in,conf
+frames/01_countdown_12s.png,0:12,1920x1080,"'Starting In' + yellow 12 over the green-hedge start; checkered apron; MCC banner; action bar","README 3.1, 4; REFERENCE_IMAGES",H
+frames/02_start_straight_16s.png,0:16,1920x1080,"First-person over yellow speed pads on the start straight toward the stone arch","README 3.1, 5; REFERENCE_IMAGES",H
+frames/03_fall_creeper_23s.png,0:23,1920x1080,"Elytra fall past the giant black/green creeper; no HUD; no respawn","README 3.1, 6; REFERENCE_IMAGES",H
+frames/04_elytra_ring_63s.png,1:03,1920x1080,"Giant flat yellow elytra ring in the sky; tiny player at centre; freecam","README 3.1, 5; REFERENCE_IMAGES",H
+frames/05_water_tunnel_hud_65s.png,1:05,1920x1080,"First-person blue water tunnel; red beams; 10 air bubbles; black wing element; HUD","README 3.2, 4; REFERENCE_IMAGES",H
+frames/05b_hud_detail_65s.png,1:05,1300x400,"Crop of the exact HUD: 'You are in 1st place', hearts, hunger, air","README 3.2; REFERENCE_IMAGES",H
+frames/06_water_tunnel_67s.png,1:07,1920x1080,"Red square gate in the water tunnel; blue fog; green floor edge; HUD","README 3.1, 5; REFERENCE_IMAGES",H
+frames/07_animated_cave_80s.png,1:20,1920x1080,"Prismarine/coral cave with 'and with custom animated textures' overlay; HUD","README 3.5, 6; REFERENCE_IMAGES",H
+frames/08_blue_tube_94s.png,1:34,1920x1080,"Green platform with blue tiles leading into a blue glass tube with red rims; freecam","README 3.1, 5; REFERENCE_IMAGES",H
+frames/09_launch_pads_98s.png,1:38,1920x1080,"Red spiral launch pads on a grass hill; black/green arrow; white structure ahead; HUD","README 3.1, 5; REFERENCE_IMAGES",H
+frames/10_castle_aerial_100s.png,1:40,1920x1080,"Castle aerial: red conical roofs, white sandstone towers, wooden bridge, yellow pads; no HUD","README 3.2, 5, 7; REFERENCE_IMAGES",H
+frames/11_rainbow_bridge_114s.png,1:54,1920x1080,"Rainbow over the blue causeway; green lily pads; red/yellow pads; player; no HUD","README 3.2, 5, 7; REFERENCE_IMAGES",H
+frames/12_look_up_climb_118s.png,1:58,1920x1080,"First-person look-up at the sandstone arch/teal beam; vertical slot; HUD","README 3.3, 5; REFERENCE_IMAGES",H
+frames/13_water_garden_124s.png,2:04,1920x1080,"Water garden aerial: blue pool, grass pads, yellow chevrons, red spiral; no HUD","README 3.2, 5; REFERENCE_IMAGES",H
+frames/14_pink_launch_152s.png,2:32,1920x1080,"First-person red spiral pad on a magenta frame; blue/yellow canyon; black wing; HUD","README 3.2, 5; REFERENCE_IMAGES",H
+frames/15_finish_arch_176s.png,2:56,1920x1080,"Green hedge arch, black/white checkerboard banner, two pink flowers, checkered apron; HUD","README 3.1, 5; REFERENCE_IMAGES",H
+frames/16_water_crossing_200s.png,3:20,1920x1080,"First-person grass pads over a blue pool; rainbow behind; HUD","README 3.1, 5; REFERENCE_IMAGES",H
+frames/17_finish_apron_203s.png,3:23,1920x1080,"High view of the checkered finish apron and green arrow; player; no HUD","README 3.1, 6; REFERENCE_IMAGES",H
+frames/18_world_start_render.png,n/a,352x232,"World render of the spawn start/finish: green hedge, checkered apron, red sign/banner, pink flowers","README 6; REFERENCE_IMAGES",H/M
+frames/19_world_rainbow_render.png,n/a,388x283,"World render of the rainbow arch, blue causeway, pads, and blue/red tube","README 6; REFERENCE_IMAGES",H
+frames/20_world_topdown_marks.png,n/a,650x1216,"World top-down with six command-station markers A-F; layered loop; void centre","README 6; REFERENCE_IMAGES",H

@@ -1,0 +1,352 @@
+  0 chai 926,13,-13 a=1 c=1 /fill 1949 55 -51 2051 0 -51 air replace yellow_wool
+  1 chai 926,13,-11 a=1 c=1 /fill 1949 55 -51 2051 0 -51 air replace green_wool
+  2 chai 926,13,-9 a=1 c=1 /fill 1949 55 -51 2051 0 -51 air replace blue_wool
+  3 chai 926,10,-8 a=1 c=1 /fill 1949 55 -51 2051 0 -51 air replace red_wool
+  4 chai 926,10,-6 a=1 c=1 /fill 1949 55 -51 2051 0 -51 air replace cobweb
+  5 chai 927,13,-13 a=1 c=1 /fill 1949 55 -46 2051 0 -50 air replace yellow_wool
+  6 chai 927,13,-11 a=1 c=1 /fill 1949 55 -46 2051 0 -50 air replace green_wool
+  7 chai 927,13,-9 a=1 c=1 /fill 1949 55 -46 2051 0 -50 air replace blue_wool
+  8 chai 927,10,-8 a=1 c=1 /fill 1949 55 -46 2051 0 -50 air replace red_wool
+  9 chai 927,10,-6 a=1 c=1 /fill 1949 55 -46 2051 0 -50 air replace cobweb
+ 10 chai 928,13,-13 a=1 c=1 /fill 1949 55 -41 2051 0 -45 air replace yellow_wool
+ 11 chai 928,13,-11 a=1 c=1 /fill 1949 55 -41 2051 0 -45 air replace green_wool
+ 12 chai 928,13,-9 a=1 c=1 /fill 1949 55 -41 2051 0 -45 air replace blue_wool
+ 13 chai 928,10,-8 a=1 c=1 /fill 1949 55 -41 2051 0 -45 air replace red_wool
+ 14 chai 928,10,-6 a=1 c=1 /fill 1949 55 -41 2051 0 -45 air replace cobweb
+ 15 chai 929,13,-13 a=1 c=1 /fill 1949 55 -36 2051 0 -40 air replace yellow_wool
+ 16 chai 929,13,-11 a=1 c=1 /fill 1949 55 -36 2051 0 -40 air replace green_wool
+ 17 chai 929,13,-9 a=1 c=1 /fill 1949 55 -36 2051 0 -40 air replace blue_wool
+ 18 chai 929,10,-8 a=1 c=1 /fill 1949 55 -36 2051 0 -40 air replace red_wool
+ 19 comm 929,18,-7 a=0 c=1 /xp set @a[level=14] 8 levels
+ 20 chai 929,10,-6 a=1 c=1 /fill 1949 55 -36 2051 0 -40 air replace cobweb
+ 21 comm 929,18,-3 a=0 c=1 /kill @a[level=14]
+ 22 chai 929,19,-3 a=1 c=1 /scoreboard players set @a death_skybattle 0
+ 23 chai 930,13,-13 a=1 c=1 /fill 1949 55 -31 2051 0 -35 air replace yellow_wool
+ 24 chai 930,13,-11 a=1 c=1 /fill 1949 55 -31 2051 0 -35 air replace green_wool
+ 25 chai 930,13,-9 a=1 c=1 /fill 1949 55 -31 2051 0 -35 air replace blue_wool
+ 26 chai 930,10,-8 a=1 c=1 /fill 1949 55 -31 2051 0 -35 air replace red_wool
+ 27 chai 930,10,-6 a=1 c=1 /fill 1949 55 -31 2051 0 -35 air replace cobweb
+ 28 chai 931,13,-13 a=1 c=1 /fill 1949 55 -26 2051 0 -30 air replace yellow_wool
+ 29 chai 931,13,-11 a=1 c=1 /fill 1949 55 -26 2051 0 -30 air replace green_wool
+ 30 chai 931,13,-9 a=1 c=1 /fill 1949 55 -26 2051 0 -30 air replace blue_wool
+ 31 chai 931,10,-8 a=1 c=1 /fill 1949 55 -26 2051 0 -30 air replace red_wool
+ 32 chai 931,10,-6 a=1 c=1 /fill 1949 55 -26 2051 0 -30 air replace cobweb
+ 33 chai 932,13,-13 a=1 c=1 /fill 1949 55 -21 2051 0 -25 air replace yellow_wool
+ 34 chai 932,13,-11 a=1 c=1 /fill 1949 55 -21 2051 0 -25 air replace green_wool
+ 35 chai 932,13,-9 a=1 c=1 /fill 1949 55 -21 2051 0 -25 air replace blue_wool
+ 36 chai 932,10,-8 a=1 c=1 /fill 1949 55 -21 2051 0 -25 air replace red_wool
+ 37 chai 932,10,-6 a=1 c=1 /fill 1949 55 -21 2051 0 -25 air replace cobweb
+ 38 chai 933,13,-13 a=1 c=1 /fill 1949 55 -16 2051 0 -20 air replace yellow_wool
+ 39 chai 933,13,-11 a=1 c=1 /fill 1949 55 -16 2051 0 -20 air replace green_wool
+ 40 chai 933,13,-9 a=1 c=1 /fill 1949 55 -16 2051 0 -20 air replace blue_wool
+ 41 chai 933,10,-8 a=1 c=1 /fill 1949 55 -16 2051 0 -20 air replace red_wool
+ 42 chai 933,10,-6 a=1 c=1 /fill 1949 55 -16 2051 0 -20 air replace cobweb
+ 43 comm 933,18,-5 a=0 c=1 /fill 976 10 -8 976 10 -8 minecraft:redstone_block
+ 44 chai 933,19,-5 a=1 c=1 /fill 945 18 0 951 18 0 air
+ 45 chai 933,20,-5 a=1 c=1 /fill 976 10 -8 976 10 -8 air
+ 46 comm 933,18,-3 a=0 c=1 /tp @a[level=14] 2000 77 0
+ 47 chai 933,19,-3 a=1 c=1 /gamemode adventure @a[level=14]
+ 48 chai 933,20,-3 a=1 c=1 /clear @a[level=14]
+ 49 comm 933,18,-1 a=0 c=1 /fill 978 10 1 978 10 1 minecraft:white_concrete
+ 50 chai 933,19,-1 a=1 c=1 /execute as @a[level=14] at @s run scoreboard players set @s timer_skybattle 0
+ 51 chai 933,20,-1 a=1 c=1 /scoreboard players set @a[level=14] death_skybattle 0
+ 52 chai 934,13,-13 a=1 c=1 /fill 1949 55 -11 2051 0 -15 air replace yellow_wool
+ 53 chai 934,13,-11 a=1 c=1 /fill 1949 55 -11 2051 0 -15 air replace green_wool
+ 54 chai 934,13,-9 a=1 c=1 /fill 1949 55 -11 2051 0 -15 air replace blue_wool
+ 55 chai 934,10,-8 a=1 c=1 /fill 1949 55 -11 2051 0 -15 air replace red_wool
+ 56 chai 934,10,-6 a=1 c=1 /fill 1949 55 -11 2051 0 -15 air replace cobweb
+ 57 comm 934,10,-2 a=0 c=1 /scoreboard players add @a[level=10] timer_skybattle 1
+ 58 chai 934,11,-2 a=1 c=1 /scoreboard players add @a[level=11] timer_skybattle 1
+ 59 chai 934,12,-2 a=1 c=1 /scoreboard players add @a[level=12] timer_skybattle 1
+ 60 chai 934,13,-2 a=1 c=1 /scoreboard players add @a[level=13] timer_skybattle 1
+ 61 chai 935,13,-13 a=1 c=1 /fill 1949 55 -6 2051 0 -10 air replace yellow_wool
+ 62 chai 935,13,-11 a=1 c=1 /fill 1949 55 -6 2051 0 -10 air replace green_wool
+ 63 chai 935,13,-9 a=1 c=1 /fill 1949 55 -6 2051 0 -10 air replace blue_wool
+ 64 chai 935,10,-8 a=1 c=1 /fill 1949 55 -6 2051 0 -10 air replace red_wool
+ 65 chai 935,10,-6 a=1 c=1 /fill 1949 55 -6 2051 0 -10 air replace cobweb
+ 66 chai 936,13,-13 a=1 c=1 /fill 1949 55 -1 2051 0 -5 air replace yellow_wool
+ 67 chai 936,13,-11 a=1 c=1 /fill 1949 55 -1 2051 0 -5 air replace green_wool
+ 68 chai 936,13,-9 a=1 c=1 /fill 1949 55 -1 2051 0 -5 air replace blue_wool
+ 69 chai 936,10,-8 a=1 c=1 /fill 1949 55 -1 2051 0 -5 air replace red_wool
+ 70 chai 936,10,-6 a=1 c=1 /fill 1949 55 -1 2051 0 -5 air replace cobweb
+ 71 chai 937,13,-13 a=1 c=1 /fill 1949 55 1 2051 0 0 air replace yellow_wool
+ 72 chai 937,13,-11 a=1 c=1 /fill 1949 55 1 2051 0 0 air replace green_wool
+ 73 chai 937,13,-9 a=1 c=1 /fill 1949 55 1 2051 0 0 air replace blue_wool
+ 74 chai 937,10,-8 a=1 c=1 /fill 1949 55 1 2051 0 0 air replace red_wool
+ 75 chai 937,10,-6 a=1 c=1 /fill 1949 55 1 2051 0 0 air replace cobweb
+ 76 chai 938,13,-13 a=1 c=1 /fill 1949 55 2 2051 0 6 air replace yellow_wool
+ 77 chai 938,13,-11 a=1 c=1 /fill 1949 55 2 2051 0 6 air replace green_wool
+ 78 chai 938,13,-9 a=1 c=1 /fill 1949 55 2 2051 0 6 air replace blue_wool
+ 79 chai 938,10,-8 a=1 c=1 /fill 1949 55 2 2051 0 6 air replace red_wool
+ 80 chai 938,10,-6 a=1 c=1 /fill 1949 55 2 2051 0 6 air replace cobweb
+ 81 chai 939,13,-13 a=1 c=1 /fill 1949 55 11 2051 0 7 air replace yellow_wool
+ 82 chai 939,13,-11 a=1 c=1 /fill 1949 55 11 2051 0 7 air replace green_wool
+ 83 chai 939,13,-9 a=1 c=1 /fill 1949 55 11 2051 0 7 air replace blue_wool
+ 84 chai 939,10,-8 a=1 c=1 /fill 1949 55 11 2051 0 7 air replace red_wool
+ 85 chai 939,10,-6 a=1 c=1 /fill 1949 55 11 2051 0 7 air replace cobweb
+ 86 chai 940,13,-13 a=1 c=1 /fill 1949 55 12 2051 0 16 air replace yellow_wool
+ 87 chai 940,13,-11 a=1 c=1 /fill 1949 55 12 2051 0 16 air replace green_wool
+ 88 chai 940,13,-9 a=1 c=1 /fill 1949 55 12 2051 0 16 air replace blue_wool
+ 89 chai 940,10,-8 a=1 c=1 /fill 1949 55 12 2051 0 16 air replace red_wool
+ 90 chai 940,10,-6 a=1 c=1 /fill 1949 55 12 2051 0 16 air replace cobweb
+ 91 chai 941,13,-13 a=1 c=1 /fill 1949 55 21 2051 0 17 air replace yellow_wool
+ 92 chai 941,13,-11 a=1 c=1 /fill 1949 55 21 2051 0 17 air replace green_wool
+ 93 chai 941,13,-9 a=1 c=1 /fill 1949 55 21 2051 0 17 air replace blue_wool
+ 94 chai 941,10,-8 a=1 c=1 /fill 1949 55 21 2051 0 17 air replace red_wool
+ 95 chai 941,10,-6 a=1 c=1 /fill 1949 55 21 2051 0 17 air replace cobweb
+ 96 chai 942,13,-13 a=1 c=1 /fill 1949 55 22 2051 0 26 air replace yellow_wool
+ 97 chai 942,13,-11 a=1 c=1 /fill 1949 55 22 2051 0 26 air replace green_wool
+ 98 chai 942,13,-9 a=1 c=1 /fill 1949 55 22 2051 0 26 air replace blue_wool
+ 99 chai 942,10,-8 a=1 c=1 /fill 1949 55 22 2051 0 26 air replace red_wool
+100 chai 942,10,-6 a=1 c=1 /fill 1949 55 22 2051 0 26 air replace cobweb
+101 comm 942,10,6 a=0 c=1 /fill 945 18 0 951 18 0 minecraft:redstone_block
+102 chai 942,11,6 a=1 c=1 /xp set @a[team=Sky_Battle_Red] 10 levels
+103 chai 942,12,6 a=1 c=1 /xp set @a[team=Sky_Battle_Green] 12 levels
+104 chai 942,13,6 a=1 c=1 /xp set @a[team=Sky_Battle_Yellw] 13 levels
+105 chai 942,14,6 a=1 c=1 /xp set @a[team=Sky_Battle_Blue] 11 levels
+106 chai 943,13,-13 a=1 c=1 /fill 1949 55 31 2051 0 27 air replace yellow_wool
+107 chai 943,13,-11 a=1 c=1 /fill 1949 55 31 2051 0 27 air replace green_wool
+108 chai 943,13,-9 a=1 c=1 /fill 1949 55 31 2051 0 27 air replace blue_wool
+109 chai 943,10,-8 a=1 c=1 /fill 1949 55 31 2051 0 27 air replace red_wool
+110 chai 943,14,-8 a=1 c=1 /execute as @a[level=13] at @s if entity @a[level=13,team=Sky_Battle_Yellw] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run xp set @s 14 levels
+111 chai 943,14,-7 a=1 c=1 /execute as @a[level=13,gamemode=adventure] at @s if entity @a[level=13,team=Sky_Battle_Yellw] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run gamemode spectator @s
+112 chai 943,10,-6 a=1 c=1 /fill 1949 55 31 2051 0 27 air replace cobweb
+113 chai 943,14,-6 a=1 c=1 /execute as @a[level=13,gamemode=adventure] at @s if entity @a[level=13,team=Sky_Battle_Yellw] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run scoreboard players add Yellow POINTS 50
+114 chai 943,14,-5 a=1 c=1 /execute as @a[level=13,gamemode=adventure] at @s if entity @a[level=13,team=Sky_Battle_Yellw] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run fill 953 18 -3 953 18 -3 minecraft:redstone_block
+115 comm 943,10,-4 a=0 c=1 /fill 2001 25 -30 1999 25 -30 air
+116 chai 943,14,-4 a=1 c=1 /execute as @a[level=13,gamemode=adventure] at @s if entity @a[level=13,team=Sky_Battle_Yellw,gamemode=adventure] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run summon firework_rocket ~ ~1 ~ {LifeTime:15,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:0,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;11743532,2437522,8073150,4312372,14602026,15435844],FadeColors:[I;11743532,2437522,8073150,4312372,14602026,15435844]}]}}}}
+117 repe 943,14,-3 a=1 c=1 /execute if entity @a[level=13,team=Sky_Battle_Yellw,gamemode=adventure] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run tellraw @a {'text':'[Sky Battle] Team Yellow wins!','color':'yellow'}
+118 comm 943,10,-2 a=0 c=1 /fill 2030 25 1 2030 25 -1 air
+119 comm 943,18,-1 a=0 c=1 /fill 934 10 2 934 10 2 air
+120 comm 943,10,0 a=0 c=1 /fill 2001 25 30 1999 25 30 air
+121 comm 943,10,2 a=0 c=1 /fill 1970 25 -1 1970 25 1 air
+122 comm 943,10,4 a=0 c=1 /execute as @a[level=9] at @s run playsound minecraft:block.note_block.bell player @s
+123 chai 944,13,-13 a=1 c=1 /fill 1949 55 32 2051 0 36 air replace yellow_wool
+124 chai 944,13,-11 a=1 c=1 /fill 1949 55 32 2051 0 36 air replace green_wool
+125 chai 944,13,-9 a=1 c=1 /fill 1949 55 32 2051 0 36 air replace blue_wool
+126 chai 944,10,-8 a=1 c=1 /fill 1949 55 32 2051 0 36 air replace red_wool
+127 chai 944,10,-6 a=1 c=1 /fill 1949 55 32 2051 0 36 air replace cobweb
+128 chai 945,13,-13 a=1 c=1 /fill 1949 55 41 2051 0 37 air replace yellow_wool
+129 chai 945,13,-11 a=1 c=1 /fill 1949 55 41 2051 0 37 air replace green_wool
+130 chai 945,13,-9 a=1 c=1 /fill 1949 55 41 2051 0 37 air replace blue_wool
+131 chai 945,10,-8 a=1 c=1 /fill 1949 55 41 2051 0 37 air replace red_wool
+132 chai 945,14,-8 a=1 c=1 /execute as @a[level=11] at @s if entity @a[level=11,team=Sky_Battle_Blue] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run xp set @s 14 levels
+133 chai 945,14,-7 a=1 c=1 /execute as @a[level=11,gamemode=adventure] at @s if entity @a[level=11,team=Sky_Battle_Blue] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run gamemode spectator @s
+134 chai 945,10,-6 a=1 c=1 /fill 1949 55 41 2051 0 37 air replace cobweb
+135 chai 945,14,-6 a=1 c=1 /execute as @a[level=11,gamemode=adventure] at @s if entity @a[level=11,team=Sky_Battle_Blue] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run scoreboard players add Blue POINTS 50
+136 chai 945,14,-5 a=1 c=1 /execute as @a[level=11,gamemode=adventure] at @s if entity @a[level=11,team=Sky_Battle_Blue] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run fill 953 18 -3 953 18 -3 minecraft:redstone_block
+137 chai 945,14,-4 a=1 c=1 /execute as @a[level=11,gamemode=adventure] at @s if entity @a[level=11,team=Sky_Battle_Blue] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run summon firework_rocket ~ ~1 ~ {LifeTime:15,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:0,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;11743532,2437522,8073150,4312372,14602026,15435844],FadeColors:[I;11743532,2437522,8073150,4312372,14602026,15435844]}]}}}}
+138 repe 945,14,-3 a=1 c=1 /execute if entity @a[level=11,team=Sky_Battle_Blue,gamemode=adventure] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run tellraw @a {'text':'[Sky Battle] Team Blue wins!','color':'blue'}
+139 repe 945,18,1 a=0 c=1 /team empty Sky_Battle_Yellw
+140 chai 945,18,2 a=1 c=1 /team join Sky_Battle_Yellw @a[level=13]
+141 chai 946,13,-13 a=1 c=1 /fill 1949 55 42 2051 0 46 air replace yellow_wool
+142 chai 946,13,-11 a=1 c=1 /fill 1949 55 42 2051 0 46 air replace green_wool
+143 chai 946,13,-9 a=1 c=1 /fill 1949 55 42 2051 0 46 air replace blue_wool
+144 chai 946,10,-8 a=1 c=1 /fill 1949 55 42 2051 0 46 air replace red_wool
+145 chai 946,10,-6 a=1 c=1 /fill 1949 55 42 2051 0 46 air replace cobweb
+146 comm 947,13,-13 a=0 c=1 /fill 1949 55 51 2051 0 47 air replace yellow_wool
+147 comm 947,13,-11 a=0 c=1 /fill 1949 55 51 2051 0 47 air replace green_wool
+148 comm 947,13,-9 a=0 c=1 /fill 1949 55 51 2051 0 47 air replace blue_wool
+149 comm 947,10,-8 a=0 c=1 /fill 1949 55 51 2051 0 47 air replace red_wool
+150 chai 947,14,-8 a=1 c=1 /execute as @a[level=10] at @s if entity @a[level=10,team=Sky_Battle_Red] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run xp set @s 14 levels
+151 chai 947,14,-7 a=1 c=1 /execute as @a[level=10,gamemode=adventure] at @s if entity @a[level=10,team=Sky_Battle_Red] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run gamemode spectator @s
+152 comm 947,10,-6 a=0 c=1 /fill 1949 55 51 2051 0 47 air replace cobweb
+153 chai 947,14,-6 a=1 c=1 /execute as @a[level=10,gamemode=adventure] at @s if entity @a[level=10,team=Sky_Battle_Red] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run scoreboard players add Red POINTS 50
+154 chai 947,14,-5 a=1 c=1 /execute as @a[level=10,gamemode=adventure] at @s if entity @a[level=10,team=Sky_Battle_Red] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run fill 953 18 -3 953 18 -3 minecraft:redstone_block
+155 comm 947,10,-4 a=0 c=1 /fill 2001 25 -30 1999 25 -30 minecraft:lime_stained_glass
+156 chai 947,14,-4 a=1 c=1 /execute as @a[level=10,gamemode=adventure] at @s if entity @a[level=10,team=Sky_Battle_Red] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run summon firework_rocket ~ ~1 ~ {LifeTime:20,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:0,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;11743532,2437522,8073150,4312372,14602026,15435844],FadeColors:[I;11743532,2437522,8073150,4312372,14602026,15435844]}]}}}}
+157 repe 947,14,-3 a=1 c=1 /execute if entity @a[level=10,team=Sky_Battle_Red,gamemode=adventure] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run tellraw @a {'text':'[Sky Battle] Team Red wins!','color':'red'}
+158 comm 947,18,-3 a=0 c=1 /fill 959 14 -3 975 14 -3 air
+159 comm 947,10,-2 a=0 c=1 /fill 2030 25 1 2030 25 -1 minecraft:lime_stained_glass
+160 comm 947,10,0 a=0 c=1 /fill 2001 25 30 1999 25 30 minecraft:lime_stained_glass
+161 repe 947,14,1 a=0 c=1 /team join pve @a[level=14]
+162 repe 947,18,1 a=0 c=1 /team empty Sky_Battle_Green
+163 comm 947,10,2 a=0 c=1 /fill 1970 25 -1 1970 25 1 minecraft:lime_stained_glass
+164 chai 947,18,2 a=1 c=1 /team join Sky_Battle_Green @a[level=12]
+165 repe 947,14,3 a=1 c=1 /clear @a[level=14]
+166 comm 947,10,4 a=0 c=1 /execute as @a[level=9] at @s run playsound minecraft:block.note_block.hat player @s
+167 chai 947,11,4 a=1 c=1 /title @a[level=9] subtitle {'text':'>1<','color':'green'}
+168 chai 947,12,4 a=1 c=1 /title @a[level=9] title {'text':'','color':'red'}
+169 repe 947,14,5 a=1 c=1 /effect clear @a[level=14]
+170 comm 947,10,8 a=0 c=1 /spawnpoint @a[team=Sky_Battle_Red] 1997 70 -1 -90
+171 chai 947,10,9 a=1 c=1 /spawnpoint @a[team=Sky_Battle_Blue] 1999 70 3 180
+172 chai 947,10,10 a=1 c=1 /spawnpoint @a[team=Sky_Battle_Green] 2003 70 1 90
+173 chai 947,10,11 a=1 c=1 /spawnpoint @a[team=Sky_Battle_Yellw] 2001 70 -3 0
+177 chai 949,14,-8 a=1 c=1 /execute as @a[level=12] at @s if entity @a[level=12,team=Sky_Battle_Green] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run xp set @s 14 levels
+178 chai 949,14,-7 a=1 c=1 /execute as @a[level=12,gamemode=adventure] at @s if entity @a[level=12,team=Sky_Battle_Green] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run gamemode spectator @s
+179 chai 949,14,-6 a=1 c=1 /execute as @a[level=12,gamemode=adventure] at @s if entity @a[level=12,team=Sky_Battle_Green] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run scoreboard players add Green POINTS 50
+180 chai 949,14,-5 a=1 c=1 /execute as @a[level=12,gamemode=adventure] at @s if entity @a[level=12,team=Sky_Battle_Green] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run fill 953 18 -3 953 18 -3 minecraft:redstone_block
+181 chai 949,14,-4 a=1 c=1 /execute as @a[level=12,gamemode=adventure] at @s if entity @a[level=12,team=Sky_Battle_Green] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run summon firework_rocket ~ ~ ~ {LifeTime:20,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:2,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;11743532,2437522,8073150,4312372,14602026,15435844],FadeColors:[I;11743532,2437522,8073150,4312372,14602026,15435844]}]}}}}
+182 repe 949,14,-3 a=1 c=1 /execute if entity @a[level=12,team=Sky_Battle_Green,gamemode=adventure] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run tellraw @a {'text':'[Sky Battle] Team Green wins!','color':'dark_green'}
+183 comm 949,18,-3 a=0 c=1 /fill 953 18 -3 953 18 -3 air
+184 repe 949,14,1 a=1 c=1 /execute as @a[x=1800,y=-500,z=-200,dx=400,dy=700,dz=400,scores={death_skybattle=1}] at @s run gamemode spectator
+185 repe 949,18,1 a=0 c=1 /team empty Sky_Battle_Blue
+186 chai 949,14,2 a=1 c=1 /execute as @a[x=1800,y=-200,z=-500,dx=400,dy=700,dz=400,scores={death_skybattle=1}] at @s run xp set @s 14 levels
+187 chai 949,18,2 a=1 c=1 /team join Sky_Battle_Blue @a[level=11]
+188 chai 949,14,3 a=1 c=1 /execute as @a[level=14,scores={death_skybattle=1}] at @s run scoreboard players set @s death_skybattle 0
+192 comm 951,10,-4 a=0 c=1 /fill 2001 25 -30 1999 25 -30 minecraft:yellow_stained_glass
+193 comm 951,10,-2 a=0 c=1 /fill 2030 25 1 2030 25 -1 minecraft:yellow_stained_glass
+194 comm 951,10,0 a=0 c=1 /fill 2001 25 30 1999 25 30 minecraft:yellow_stained_glass
+195 repe 951,14,1 a=1 c=1 /execute as @e[type=minecraft:armor_stand] at @s run tp @a[level=11,distance=300..400] 2000 50 0
+196 repe 951,18,1 a=0 c=1 /team empty Sky_Battle_Red
+197 comm 951,10,2 a=0 c=1 /fill 1970 25 -1 1970 25 1 minecraft:yellow_stained_glass
+198 chai 951,18,2 a=1 c=1 /team join Sky_Battle_Red @a[level=10]
+199 comm 951,10,4 a=0 c=1 /execute as @a[level=9] at @s run playsound minecraft:block.note_block.hat player @s
+200 chai 951,11,4 a=1 c=1 /title @a[level=9] subtitle {'text':'>2<','color':'yellow'}
+201 chai 951,12,4 a=1 c=1 /title @a[level=9] title {'text':'','color':'red'}
+205 comm 953,18,-5 a=0 c=1 /stopsound @a[level=14] player minecraft:music_disc.blocks
+206 chai 953,19,-5 a=0 c=1 /execute as @a[level=14] at @s run playsound minecraft:block.bell.use player @s
+207 comm 953,10,6 a=0 c=1 /fill 934 10 2 934 10 2 minecraft:white_concrete
+211 comm 955,10,-4 a=0 c=1 /fill 2001 25 -30 1999 25 -30 minecraft:red_stained_glass
+212 comm 955,10,-2 a=0 c=1 /fill 2030 25 1 2030 25 -1 minecraft:red_stained_glass
+213 comm 955,10,0 a=0 c=1 /fill 2001 25 30 1999 25 30 minecraft:red_stained_glass
+214 comm 955,10,2 a=0 c=1 /fill 1970 25 -1 1970 25 1 minecraft:red_stained_glass
+215 comm 955,10,4 a=0 c=1 /execute as @a[level=9] at @s run playsound minecraft:block.note_block.hat player @s
+216 chai 955,11,4 a=1 c=1 /title @a[level=9] subtitle {'text':'>3<','color':'red'}
+217 chai 955,12,4 a=1 c=1 /title @a[level=9] title {'text':'','color':'red'}
+218 comm 955,10,6 a=0 c=1 /execute as @a[level=9] at @s run item replace entity @s hotbar.0 with stone_sword{Unbreakable:1b,CanDestroy:[cobweb]}
+228 comm 957,10,8 a=0 c=1 /execute as @a[level=9] at @s run item replace entity @s hotbar.1 with minecraft:stone_pickaxe{Unbreakable:1b,CanDestroy:[iron_block]}
+238 chai 959,14,-8 a=1 c=1 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^5
+239 chai 959,14,-7 a=1 c=1 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=5..50] minecraft:wither 1 1 true
+240 comm 959,10,-6 a=0 c=1 /title @a[level=9] times 0 20 0
+241 chai 959,11,-6 a=1 c=1 /execute as @a[level=9] at @s run scoreboard players set @s timer_skybattle 0
+242 chai 959,14,-6 a=1 c=1 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^5
+243 chai 959,14,-5 a=1 c=1 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^5
+244 repe 959,14,-4 a=0 c=1 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^5
+245 comm 959,10,4 a=0 c=1 /execute as @a[level=9,team=Sky_Battle_Blue] at @s run item replace entity @s weapon.offhand with blue_wool 64
+246 repe 959,14,4 a=1 c=1 /execute as @a[scores={timer_skybattle=180}] at @s run fill 959 14 -3 959 14 -3 redstone_block
+247 chai 959,14,5 a=1 c=1 /execute as @a[scores={timer_skybattle=180}] at @s run fill 961 14 -3 961 14 -3 air
+248 comm 959,10,6 a=0 c=1 /execute as @a[level=9] at @s run item replace entity @s hotbar.2 with shears{Unbreakable:1b,CanDestroy:[red_wool,blue_wool,green_wool,yellow_wool]}
+249 comm 960,10,2 a=0 c=1 /title @a[level=9] subtitle {'text':'>4<','color':'gray'}
+250 chai 960,11,2 a=1 c=1 /title @a[level=9] title {'text':'','color':'red'}
+251 chai 960,12,2 a=1 c=1 /effect give @a[level=9] minecraft:hunger 2 255 true
+252 chai 960,10,4 a=1 c=1 /execute as @a[level=9,team=Sky_Battle_Red] at @s run item replace entity @s weapon.offhand with red_wool 64
+262 chai 961,14,-8 a=1 c=1 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^6
+263 chai 961,14,-7 a=1 c=1 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=6..50] minecraft:wither 1 1 true
+264 comm 961,10,-6 a=0 c=1 /scoreboard players set @a[level=9] kill_event 0
+265 chai 961,11,-6 a=1 c=1 /scoreboard players set @a[level=9] death_event 0
+266 chai 961,12,-6 a=1 c=1 /scoreboard players set @a[level=9] dummy_event 0
+267 chai 961,14,-6 a=1 c=1 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^6
+268 chai 961,14,-5 a=1 c=1 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^6
+269 repe 961,14,-4 a=0 c=1 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^6
+270 chai 961,10,4 a=1 c=1 /execute as @a[level=9,team=Sky_Battle_Green] at @s run item replace entity @s weapon.offhand with green_wool 64
+271 repe 961,14,4 a=1 c=1 /execute as @a[scores={timer_skybattle=175}] at @s run fill 961 14 -3 961 14 -3 redstone_block
+272 chai 961,14,5 a=1 c=1 /execute as @a[scores={timer_skybattle=175}] at @s run fill 963 14 -3 963 14 -3 air
+273 chai 962,10,4 a=1 c=1 /execute as @a[level=9,team=Sky_Battle_Yellw] at @s run item replace entity @s weapon.offhand with yellow_wool 64
+283 chai 963,14,-8 a=1 c=1 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^8
+284 chai 963,14,-7 a=1 c=1 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=8..50] minecraft:wither 1 1 true
+285 comm 963,10,-6 a=0 c=1 /fill 945 18 0 951 18 0 air
+286 chai 963,14,-6 a=1 c=1 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^8
+287 chai 963,14,-5 a=1 c=1 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^8
+288 repe 963,14,-4 a=0 c=1 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^8
+289 chai 963,10,4 a=1 c=1 /execute as @a[level=9] at @s run item replace entity @s hotbar.8 with minecraft:cooked_beef 16
+290 repe 963,14,4 a=1 c=1 /execute as @a[scores={timer_skybattle=170}] at @s run fill 963 14 -3 963 14 -3 redstone_block
+291 chai 963,14,5 a=1 c=1 /execute as @a[scores={timer_skybattle=170}] at @s run fill 965 14 -3 965 14 -3 air
+292 comm 964,10,2 a=0 c=1 /title @a[level=9] subtitle {'text':'>5<','color':'gray'}
+293 chai 964,11,2 a=1 c=1 /title @a[level=9] title {'text':'','color':'red'}
+294 chai 964,10,4 a=1 c=1 /execute as @a[level=9] at @s run item replace entity @s armor.chest with minecraft:iron_chestplate{Unbreakable:1b}
+304 chai 965,14,-8 a=1 c=1 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^10
+305 chai 965,14,-7 a=1 c=1 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=10..50] minecraft:wither 1 1 true
+306 comm 965,10,-6 a=0 c=1 /fill 953 18 -3 953 18 -3 air
+307 chai 965,14,-6 a=1 c=1 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^10
+308 chai 965,14,-5 a=1 c=1 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^10
+309 repe 965,14,-4 a=0 c=1 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^10
+310 repe 965,14,1 a=1 c=1 /tellraw @a[scores={timer_skybattle=150}] {'text':'The border will keep shrinking!','color':'dark_gray'}
+311 chai 965,14,2 a=1 c=1 /execute as @a[scores={timer_skybattle=150}] at @s run playsound minecraft:block.note_block.didgeridoo player @s
+312 chai 965,14,3 a=1 c=1 /execute as @a[scores={timer_skybattle=150}] at @s run scoreboard players set @s timer_skybattle 151
+313 repe 965,14,4 a=1 c=1 /execute as @a[scores={timer_skybattle=160}] at @s run fill 965 14 -3 965 14 -3 redstone_block
+314 chai 965,14,5 a=1 c=1 /execute as @a[scores={timer_skybattle=160}] at @s run fill 967 14 -3 967 14 -3 air
+324 chai 967,14,-8 a=1 c=1 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^15
+325 chai 967,14,-7 a=1 c=1 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=15..50] minecraft:wither 1 1 true
+326 comm 967,10,-6 a=0 c=1 /spawnpoint @a[level=9] 2000 77 0
+327 chai 967,14,-6 a=1 c=1 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^15
+328 chai 967,14,-5 a=1 c=1 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^15
+329 repe 967,14,-4 a=0 c=1 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^15
+330 repe 967,14,1 a=1 c=1 /tellraw @a[scores={timer_skybattle=130}] {'text':'The border will shrink with 5 blocks in 8 seconds!','color':'dark_gray'}
+331 chai 967,14,2 a=1 c=1 /execute as @a[scores={timer_skybattle=130}] at @s run playsound minecraft:block.note_block.didgeridoo player @s
+332 chai 967,14,3 a=1 c=1 /execute as @a[scores={timer_skybattle=130}] at @s run scoreboard players set @s timer_skybattle 131
+333 repe 967,14,4 a=1 c=1 /execute as @a[scores={timer_skybattle=140}] at @s run fill 967 14 -3 967 14 -3 redstone_block
+334 chai 967,14,5 a=1 c=1 /execute as @a[scores={timer_skybattle=140}] at @s run fill 969 14 -3 969 14 -3 air
+335 comm 968,10,2 a=0 c=1 /title @a[level=9] subtitle {'text':'>6<','color':'gray'}
+336 chai 968,11,2 a=1 c=1 /title @a[level=9] title {'text':'','color':'red'}
+346 chai 969,14,-8 a=1 c=1 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^20
+347 chai 969,14,-7 a=1 c=1 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=20..50] minecraft:wither 1 1 true
+348 comm 969,10,-6 a=0 c=1 /fill 934 10 2 934 10 2 air
+349 chai 969,14,-6 a=1 c=1 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^20
+350 chai 969,14,-5 a=1 c=1 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^20
+351 repe 969,14,-4 a=0 c=1 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^20
+352 repe 969,14,1 a=1 c=1 /tellraw @a[scores={timer_skybattle=110}] {'text':'The border will shrink with 10 blocks in 10 seconds!','color':'dark_gray'}
+353 chai 969,14,2 a=1 c=1 /execute as @a[scores={timer_skybattle=110}] at @s run playsound minecraft:block.note_block.didgeridoo player @s
+354 chai 969,14,3 a=1 c=1 /execute as @a[scores={timer_skybattle=110}] at @s run scoreboard players set @s timer_skybattle 111
+355 repe 969,14,4 a=1 c=1 /execute as @a[scores={timer_skybattle=110}] at @s run fill 969 14 -3 969 14 -3 redstone_block
+356 chai 969,14,5 a=1 c=1 /execute as @a[scores={timer_skybattle=110}] at @s run fill 971 14 -3 971 14 -3 air
+366 chai 971,14,-8 a=1 c=1 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^30
+367 chai 971,14,-7 a=1 c=1 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=30..50] minecraft:wither 1 1 true
+368 comm 971,10,-6 a=0 c=1 /fill 975 14 -3 975 14 -3 minecraft:redstone_block
+369 chai 971,14,-6 a=1 c=1 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^30
+370 chai 971,14,-5 a=1 c=1 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^30
+371 repe 971,14,-4 a=0 c=1 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^30
+372 repe 971,14,1 a=1 c=1 /tellraw @a[scores={timer_skybattle=80}] {'text':'The border will shrink with 10 blocks in 10 seconds!','color':'dark_gray'}
+373 chai 971,14,2 a=1 c=1 /execute as @a[scores={timer_skybattle=80}] at @s run playsound minecraft:block.note_block.didgeridoo player @s
+374 chai 971,14,3 a=1 c=1 /execute as @a[scores={timer_skybattle=80}] at @s run scoreboard players set @s timer_skybattle 81
+375 repe 971,14,4 a=1 c=1 /execute as @a[scores={timer_skybattle=90}] at @s run fill 971 14 -3 971 14 -3 redstone_block
+376 chai 971,14,5 a=1 c=1 /execute as @a[scores={timer_skybattle=90}] at @s run fill 973 14 -3 973 14 -3 air
+377 comm 972,10,2 a=0 c=1 /title @a[level=9] subtitle {'text':'>7<','color':'gray'}
+378 chai 972,11,2 a=1 c=1 /title @a[level=9] title {'text':'','color':'red'}
+388 chai 973,14,-8 a=1 c=1 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^40
+389 chai 973,14,-7 a=1 c=1 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=40..50] minecraft:wither 1 1 true
+390 comm 973,10,-6 a=0 c=1 /fill 959 14 -3 975 14 -3 air
+391 chai 973,14,-6 a=1 c=1 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^40
+392 chai 973,14,-5 a=1 c=1 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^40
+393 repe 973,14,-4 a=0 c=1 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^40
+394 repe 973,14,1 a=1 c=1 /tellraw @a[scores={timer_skybattle=50}] {'text':'The border will shrink with 10 blocks in 10 seconds!','color':'dark_gray'}
+395 chai 973,14,2 a=1 c=1 /execute as @a[scores={timer_skybattle=50}] at @s run playsound minecraft:block.note_block.didgeridoo player @s
+396 chai 973,14,3 a=1 c=1 /execute as @a[scores={timer_skybattle=50}] at @s run scoreboard players set @s timer_skybattle 51
+397 repe 973,14,4 a=1 c=1 /execute as @a[scores={timer_skybattle=60}] at @s run fill 973 14 -3 973 14 -3 redstone_block
+398 chai 973,14,5 a=1 c=1 /execute as @a[scores={timer_skybattle=60}] at @s run fill 975 14 -3 975 14 -3 air
+399 chai 975,10,-14 a=1 c=1 /kill @e[type=item,x=1800,y=-400,z=-200,dx=400,dy=600,dz=400]
+400 chai 975,10,-13 a=1 c=1 /fill 2033 26 0 2033 25 0 iron_block
+401 chai 975,10,-12 a=1 c=1 /fill 1967 26 0 1967 25 0 iron_block
+402 chai 975,10,-11 a=1 c=1 /fill 2000 26 33 2000 25 33 iron_block
+403 comm 975,10,-10 a=0 c=1 /fill 2000 26 -33 2000 25 -33 iron_block
+404 chai 975,14,-8 a=1 c=1 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^50
+405 chai 975,14,-7 a=1 c=1 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=50..50] minecraft:wither 1 1 false
+406 chai 975,14,-6 a=1 c=1 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^50
+407 chai 975,14,-5 a=1 c=1 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^50
+408 repe 975,14,-4 a=0 c=1 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^50
+409 comm 975,10,4 a=0 c=1 /title @a[level=9] subtitle {'text':'>8<','color':'gray'}
+410 chai 975,11,4 a=1 c=1 /title @a[level=9] title {'text':'','color':'red'}
+411 comm 976,10,3 a=0 c=1 /setblock 978 10 3 air
+412 comm 978,10,-8 a=0 c=1 /fill 2000 24 35 2000 24 35 minecraft:white_shulker_box destroy
+413 chai 978,11,-8 a=1 c=1 /fill 1965 24 0 1965 24 0 minecraft:white_shulker_box destroy
+414 chai 978,12,-8 a=1 c=1 /fill 2000 24 -35 2000 24 -35 minecraft:white_shulker_box destroy
+415 chai 978,13,-8 a=1 c=1 /fill 2035 24 0 2035 24 0 minecraft:white_shulker_box destroy
+416 chai 978,14,-8 a=1 c=1 /fill 2000 29 0 2000 29 0 barrel destroy
+417 chai 978,15,-8 a=1 c=1 /fill 1974 26 26 1974 26 26 chest destroy
+418 chai 978,16,-8 a=1 c=1 /fill 1974 26 -26 1974 26 -26 chest destroy
+419 chai 978,17,-8 a=1 c=1 /fill 2026 26 26 2026 26 26 chest destroy
+420 chai 978,18,-8 a=1 c=1 /fill 2026 26 -26 2026 26 -26 chest destroy
+421 chai 978,19,-8 a=1 c=1 /fill 1974 14 26 1974 14 26 barrel destroy
+422 chai 978,20,-8 a=1 c=1 /fill 1974 14 -26 1974 14 -26 minecraft:barrel destroy
+423 chai 978,21,-8 a=1 c=1 /fill 2026 14 26 2026 14 26 barrel destroy
+424 chai 978,22,-8 a=1 c=1 /fill 2026 14 -26 2026 14 -26 barrel destroy
+425 chai 978,23,-8 a=1 c=1 /kill @e[x=1800,y=-400,z=-200,dx=400,dy=600,dz=400,type=item]
+426 comm 978,10,-1 a=0 c=1 /setblock 978 10 1 air
+427 comm 978,10,6 a=0 c=1 /title @a[level=9] subtitle {'text':'>9<','color':'gray'}
+428 chai 978,11,6 a=1 c=1 /title @a[level=9] title {'text':'','color':'red'}
+429 comm 982,10,-1 a=0 c=1 /fill 1970 25 -1 1970 25 1 barrier
+430 comm 982,10,1 a=0 c=1 /execute as @a[level=9,team=Sky_Battle_Red] at @s run tp @s 1970 23 0
+431 comm 982,10,5 a=0 c=1 /title @a[level=9] subtitle {'text':'>10<','color':'gray'}
+432 chai 982,11,5 a=1 c=1 /title @a[level=9] title {'text':'','color':'red'}
+433 chai 982,12,5 a=1 c=1 /execute as @a[level=9] at @s run playsound minecraft:block.note_block.hat player @s
+434 chai 983,10,-1 a=1 c=1 /fill 2001 25 30 1999 25 30 barrier
+435 chai 983,10,1 a=1 c=1 /execute as @a[level=9,team=Sky_Battle_Blue] at @s run tp @s 2000 23 30
+436 chai 984,10,-1 a=1 c=1 /fill 2030 25 1 2030 25 -1 barrier
+437 chai 984,10,1 a=1 c=1 /execute as @a[level=9,team=Sky_Battle_Green] at @s run tp @s 2030 23 0
+438 chai 985,10,-1 a=1 c=1 /fill 2001 25 -30 1999 25 -30 barrier
+439 chai 985,10,1 a=1 c=1 /execute as @a[level=9,team=Sky_Battle_Yellw] at @s run tp @s 2000 23 -30
+440 chai 986,10,-1 a=1 c=1 /execute as @a[level=8,team=Sky_Battle_Red] at @s run xp set @s 9 levels
+441 chai 986,10,1 a=1 c=1 /clear @a[level=9]
+442 chai 987,10,-1 a=1 c=1 /execute as @a[level=8,team=Sky_Battle_Blue] at @s run xp set @s 9 levels
+443 chai 988,10,-1 a=1 c=1 /execute as @a[level=8,team=Sky_Battle_Green] at @s run xp set @s 9 levels
+444 chai 989,10,-1 a=1 c=1 /execute as @a[level=8,team=Sky_Battle_Yellw] at @s run xp set @s 9 levels

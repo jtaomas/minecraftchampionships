@@ -1,0 +1,344 @@
+===== pack.mcmeta (pack.mcmeta) =====
+   1| {
+   2|     "pack": {
+   3|       "pack_format": 10,
+   4|       "description": "Made by Mickey_Kat"
+   5|     }
+   6| }
+
+===== load tag (data\minecraft\tags\functions\load.json) =====
+   1| {
+   2|     "values": [
+   3|         "tgttos:load"
+   4|     ]
+   5| }
+
+===== tick tag (data\minecraft\tags\functions\tick.json) =====
+   1| {
+   2|     "values": [
+   3|         "tgttos:loop",
+   4|         "tgttos:color",
+   5|         "tgttos:start_timer",
+   6|         "tgttos:gamerules",
+   7|         "tgttos:respawn"
+   8|     ]
+   9| }
+
+===== load (data\tgttos\functions\load.mcfunction) =====
+   1| scoreboard objectives add hit_chicken minecraft.custom:minecraft.damage_dealt_resisted
+   2| scoreboard objectives add playing dummy
+   3| scoreboard objectives add countdown dummy
+   4| scoreboard objectives add spawntime dummy
+   5| scoreboard objectives add playtimeMi1 dummy
+   6| scoreboard objectives add playtimeMi2 dummy
+   7| scoreboard objectives add playtimeSe1 dummy
+   8| scoreboard objectives add playtimeSe2 dummy
+   9| scoreboard objectives add playtimeMs1 dummy
+  10| scoreboard objectives add playtimeMs2 dummy
+  11| scoreboard objectives add finished dummy
+  12| scoreboard objectives add respawn dummy
+  13| scoreboard objectives add color trigger
+  14| scoreboard objectives add selectColor dummy
+  15| 
+  16| scoreboard players add @a playtimeMs1 0
+  17| scoreboard players add @a playtimeMs2 0
+  18| scoreboard players add @a playtimeSe1 0
+  19| scoreboard players add @a playtimeSe2 0
+  20| scoreboard players add @a playtimeMi1 0
+  21| scoreboard players add @a playtimeMi2 0
+  22| 
+  23| 
+
+===== loop (data\tgttos\functions\loop.mcfunction) =====
+   1| kill @e[type=item]
+   2| effect give @e[type=chicken] resistance 1 5 true
+   3| fill 14 1 46 17 -2 25 air replace #minecraft:mineable/pickaxe
+   4| setworldspawn 15 -2 36
+   5| spawnpoint @a 15 -2 36
+   6| 
+   7| 
+   8| #finish
+   9| execute as @a[scores={hit_chicken=1..}] at @s run tag @s add finished
+  10| 
+  11| execute as @a[tag=finished] at @s run gamemode spectator @s
+  12| execute as @a[tag=finished] at @s run scoreboard players add @s finished 1
+  13| execute as @a[tag=finished] at @s run tag @a remove playing
+  14| execute as @a[scores={finished=1..5}] at @s run title @a times 0 100 20
+  15| execute as @a[scores={finished=1..5}] at @s run title @s subtitle ["",{"text":"Time: ","bold":true,"color":"gray"},{"score":{"name":"@s","objective":"playtimeMi2"},"bold":true,"color":"gray"},{"score":{"name":"@s","objective":"playtimeMi1"},"bold":true,"color":"gray"},{"text":":","bold":true,"color":"gray"},{"score":{"name":"@s","objective":"playtimeSe2"},"bold":true,"color":"gray"},{"score":{"name":"@s","objective":"playtimeSe1"},"bold":true,"color":"gray"},{"text":":","bold":true,"color":"gray"},{"score":{"name":"@s","objective":"playtimeMs2"},"bold":true,"color":"gray"},{"score":{"name":"@s","objective":"playtimeMs1"},"bold":true,"color":"gray"}]
+  16| execute as @a[scores={finished=1..5}] at @s run title @a title {"text":"Finished","color":"green"}
+  17| 
+  18| execute as @a[scores={finished=60..}] at @s run execute as @e[tag=remove_block] at @s run fill ~-15 ~-25 ~-15 ~15 ~5 ~15 air replace red_concrete
+  19| execute as @a[scores={finished=60..}] at @s run execute as @e[tag=remove_block] at @s run fill ~-15 ~-25 ~-15 ~15 ~5 ~15 air replace orange_concrete
+  20| execute as @a[scores={finished=60..}] at @s run execute as @e[tag=remove_block] at @s run fill ~-15 ~-25 ~-15 ~15 ~5 ~15 air replace lime_concrete
+  21| execute as @a[scores={finished=60..}] at @s run execute as @e[tag=remove_block] at @s run fill ~-15 ~-25 ~-15 ~15 ~5 ~15 air replace cyan_concrete
+  22| execute as @a[scores={finished=60..}] at @s run execute as @e[tag=remove_block] at @s run fill ~-15 ~-25 ~-15 ~15 ~5 ~15 air replace light_blue_concrete
+  23| execute as @a[scores={finished=60..}] at @s run execute as @e[tag=remove_block] at @s run fill ~-15 ~-25 ~-15 ~15 ~5 ~15 air replace blue_concrete
+  24| execute as @a[scores={finished=60..}] at @s run execute as @e[tag=remove_block] at @s run fill ~-15 ~-25 ~-15 ~15 ~5 ~15 air replace purple_concrete
+  25| execute as @a[scores={finished=60..}] at @s run execute as @e[tag=remove_block] at @s run fill ~-15 ~-25 ~-15 ~15 ~5 ~15 air replace pink_concrete
+  26| 
+  27| execute as @a[scores={finished=60..}] at @s run kill @e[type=armor_stand,tag=remove_block]
+  28| 
+  29| execute as @a[scores={finished=140..}] at @s run fill 14 1 25 17 -2 25 barrier replace air
+  30| execute as @a[scores={finished=140..}] at @s run fill 17 1 25 17 -2 46 barrier replace air
+  31| execute as @a[scores={finished=140..}] at @s run fill 17 1 46 13 -2 46 barrier replace air
+  32| execute as @a[scores={finished=140..}] at @s run fill 14 1 25 17 -2 25 barrier replace #minecraft:mineable/pickaxe
+  33| execute as @a[scores={finished=140..}] at @s run fill 17 1 25 17 -2 46 barrier replace #minecraft:mineable/pickaxe
+  34| execute as @a[scores={finished=140..}] at @s run fill 17 1 46 13 -2 46 barrier replace #minecraft:mineable/pickaxe
+  35| execute as @a[scores={finished=140..}] at @s run tp @a 15 -2 36 -90 0
+  36| execute as @a[scores={finished=140..}] at @s run tag @a remove finished
+  37| execute as @a[scores={finished=140..}] at @s run gamemode adventure @a
+  38| execute as @a[scores={finished=140..}] at @s run scoreboard players set @a hit_chicken 0
+  39| 
+  40| execute as @a[scores={finished=140..}] at @s run clear @a
+  41| execute as @a[scores={finished=140..}] at @s run scoreboard players set @a playtimeMs1 0
+  42| execute as @a[scores={finished=140..}] at @s run scoreboard players set @a playtimeMs2 0
+  43| execute as @a[scores={finished=140..}] at @s run scoreboard players set @a playtimeSe1 0
+  44| execute as @a[scores={finished=140..}] at @s run scoreboard players set @a playtimeSe2 0
+  45| execute as @a[scores={finished=140..}] at @s run scoreboard players set @a playtimeMi1 0
+  46| execute as @a[scores={finished=140..}] at @s run scoreboard players set @a playtimeMi2 0
+  47| 
+  48| execute as @a[scores={finished=140..}] at @s run scoreboard players set @s finished 0
+  49| 
+  50| 
+  51| 
+  52| #timer
+  53| execute as @a[tag=playing] at @s run scoreboard players add @s playtimeMs1 5
+  54| execute as @a[tag=playing] at @s run scoreboard players add @s spawntime 1
+  55| 
+  56| execute as @a[scores={spawntime=20..}] at @s run summon armor_stand ~ ~10 ~ {NoGravity:1b,Marker:1b,Silent:1b,Invulnerable:1b,Small:1b,Invisible:1b,NoBasePlate:1b,Tags:["remove_block"]}
+  57| execute as @s[scores={spawntime=5..}] at @s run execute as @a[scores={respawn=..-30}] at @s run summon armor_stand ~ ~10 ~ {NoGravity:1b,Marker:1b,Silent:1b,Invulnerable:1b,Small:1b,Invisible:1b,NoBasePlate:1b,Tags:["remove_block"]}
+  58| execute as @a[scores={spawntime=20..}] at @s run scoreboard players set @s spawntime 0
+  59| 
+  60| 
+  61| execute as @a[scores={playtimeMs1=10..}] at @s run scoreboard players add @s playtimeMs2 1
+  62| execute as @a[scores={playtimeMs1=10..}] at @s run scoreboard players set @s playtimeMs1 0
+  63| execute as @a[scores={playtimeMs2=10..}] at @s run scoreboard players add @s playtimeSe1 1
+  64| execute as @a[scores={playtimeMs2=10..}] at @s run scoreboard players set @s playtimeMs2 0
+  65| execute as @a[scores={playtimeSe1=10..}] at @s run scoreboard players add @s playtimeSe2 1
+  66| execute as @a[scores={playtimeSe1=10..}] at @s run scoreboard players set @s playtimeSe1 0
+  67| execute as @a[scores={playtimeSe2=6..}] at @s run scoreboard players add @s playtimeMi1 1
+  68| execute as @a[scores={playtimeSe2=6..}] at @s run scoreboard players set @s playtimeSe2 0
+  69| execute as @a[scores={playtimeMi1=10..}] at @s run scoreboard players add @s playtimeMi2 1
+  70| execute as @a[scores={playtimeMi1=10..}] at @s run scoreboard players set @s playtimeMi1 0
+  71| 
+  72| 
+  73| execute as @a[tag=red] at @s run title @s actionbar ["",{"score":{"name":"@s","objective":"playtimeMi2"},"bold":true,"color":"red"},{"score":{"name":"@s","objective":"playtimeMi1"},"bold":true,"color":"red"},{"text":":","bold":true,"color":"red"},{"score":{"name":"@s","objective":"playtimeSe2"},"bold":true,"color":"red"},{"score":{"name":"@s","objective":"playtimeSe1"},"bold":true,"color":"red"},{"text":":","bold":true,"color":"red"},{"score":{"name":"@s","objective":"playtimeMs2"},"bold":true,"color":"red"},{"score":{"name":"@s","objective":"playtimeMs1"},"bold":true,"color":"red"}]
+  74| execute as @a[tag=orange] at @s run title @s actionbar ["",{"score":{"name":"@s","objective":"playtimeMi2"},"bold":true,"color":"gold"},{"score":{"name":"@s","objective":"playtimeMi1"},"bold":true,"color":"gold"},{"text":":","bold":true,"color":"gold"},{"score":{"name":"@s","objective":"playtimeSe2"},"bold":true,"color":"gold"},{"score":{"name":"@s","objective":"playtimeSe1"},"bold":true,"color":"gold"},{"text":":","bold":true,"color":"gold"},{"score":{"name":"@s","objective":"playtimeMs2"},"bold":true,"color":"gold"},{"score":{"name":"@s","objective":"playtimeMs1"},"bold":true,"color":"gold"}]
+  75| execute as @a[tag=yellow] at @s run title @s actionbar ["",{"score":{"name":"@s","objective":"playtimeMi2"},"bold":true,"color":"yellow"},{"score":{"name":"@s","objective":"playtimeMi1"},"bold":true,"color":"yellow"},{"text":":","bold":true,"color":"yellow"},{"score":{"name":"@s","objective":"playtimeSe2"},"bold":true,"color":"yellow"},{"score":{"name":"@s","objective":"playtimeSe1"},"bold":true,"color":"yellow"},{"text":":","bold":true,"color":"yellow"},{"score":{"name":"@s","objective":"playtimeMs2"},"bold":true,"color":"yellow"},{"score":{"name":"@s","objective":"playtimeMs1"},"bold":true,"color":"yellow"}]
+  76| execute as @a[tag=lime] at @s run title @s actionbar ["",{"score":{"name":"@s","objective":"playtimeMi2"},"bold":true,"color":"green"},{"score":{"name":"@s","objective":"playtimeMi1"},"bold":true,"color":"green"},{"text":":","bold":true,"color":"green"},{"score":{"name":"@s","objective":"playtimeSe2"},"bold":true,"color":"green"},{"score":{"name":"@s","objective":"playtimeSe1"},"bold":true,"color":"green"},{"text":":","bold":true,"color":"green"},{"score":{"name":"@s","objective":"playtimeMs2"},"bold":true,"color":"green"},{"score":{"name":"@s","objective":"playtimeMs1"},"bold":true,"color":"green"}]
+  77| execute as @a[tag=green] at @s run title @s actionbar ["",{"score":{"name":"@s","objective":"playtimeMi2"},"bold":true,"color":"dark_green"},{"score":{"name":"@s","objective":"playtimeMi1"},"bold":true,"color":"dark_green"},{"text":":","bold":true,"color":"dark_green"},{"score":{"name":"@s","objective":"playtimeSe2"},"bold":true,"color":"dark_green"},{"score":{"name":"@s","objective":"playtimeSe1"},"bold":true,"color":"dark_green"},{"text":":","bold":true,"color":"dark_green"},{"score":{"name":"@s","objective":"playtimeMs2"},"bold":true,"color":"dark_green"},{"score":{"name":"@s","objective":"playtimeMs1"},"bold":true,"color":"dark_green"}]
+  78| execute as @a[tag=cyan] at @s run title @s actionbar ["",{"score":{"name":"@s","objective":"playtimeMi2"},"bold":true,"color":"dark_aqua"},{"score":{"name":"@s","objective":"playtimeMi1"},"bold":true,"color":"dark_aqua"},{"text":":","bold":true,"color":"dark_aqua"},{"score":{"name":"@s","objective":"playtimeSe2"},"bold":true,"color":"dark_aqua"},{"score":{"name":"@s","objective":"playtimeSe1"},"bold":true,"color":"dark_aqua"},{"text":":","bold":true,"color":"dark_aqua"},{"score":{"name":"@s","objective":"playtimeMs2"},"bold":true,"color":"dark_aqua"},{"score":{"name":"@s","objective":"playtimeMs1"},"bold":true,"color":"dark_aqua"}]
+  79| execute as @a[tag=aqua] at @s run title @s actionbar ["",{"score":{"name":"@s","objective":"playtimeMi2"},"bold":true,"color":"aqua"},{"score":{"name":"@s","objective":"playtimeMi1"},"bold":true,"color":"aqua"},{"text":":","bold":true,"color":"aqua"},{"score":{"name":"@s","objective":"playtimeSe2"},"bold":true,"color":"aqua"},{"score":{"name":"@s","objective":"playtimeSe1"},"bold":true,"color":"aqua"},{"text":":","bold":true,"color":"aqua"},{"score":{"name":"@s","objective":"playtimeMs2"},"bold":true,"color":"aqua"},{"score":{"name":"@s","objective":"playtimeMs1"},"bold":true,"color":"aqua"}]
+  80| execute as @a[tag=blue] at @s run title @s actionbar ["",{"score":{"name":"@s","objective":"playtimeMi2"},"bold":true,"color":"blue"},{"score":{"name":"@s","objective":"playtimeMi1"},"bold":true,"color":"blue"},{"text":":","bold":true,"color":"blue"},{"score":{"name":"@s","objective":"playtimeSe2"},"bold":true,"color":"blue"},{"score":{"name":"@s","objective":"playtimeSe1"},"bold":true,"color":"blue"},{"text":":","bold":true,"color":"blue"},{"score":{"name":"@s","objective":"playtimeMs2"},"bold":true,"color":"blue"},{"score":{"name":"@s","objective":"playtimeMs1"},"bold":true,"color":"blue"}]
+  81| execute as @a[tag=purple] at @s run title @s actionbar ["",{"score":{"name":"@s","objective":"playtimeMi2"},"bold":true,"color":"dark_purple"},{"score":{"name":"@s","objective":"playtimeMi1"},"bold":true,"color":"dark_purple"},{"text":":","bold":true,"color":"dark_purple"},{"score":{"name":"@s","objective":"playtimeSe2"},"bold":true,"color":"dark_purple"},{"score":{"name":"@s","objective":"playtimeSe1"},"bold":true,"color":"dark_purple"},{"text":":","bold":true,"color":"dark_purple"},{"score":{"name":"@s","objective":"playtimeMs2"},"bold":true,"color":"dark_purple"},{"score":{"name":"@s","objective":"playtimeMs1"},"bold":true,"color":"dark_purple"}]
+  82| execute as @a[tag=pink] at @s run title @s actionbar ["",{"score":{"name":"@s","objective":"playtimeMi2"},"bold":true,"color":"light_purple"},{"score":{"name":"@s","objective":"playtimeMi1"},"bold":true,"color":"light_purple"},{"text":":","bold":true,"color":"light_purple"},{"score":{"name":"@s","objective":"playtimeSe2"},"bold":true,"color":"light_purple"},{"score":{"name":"@s","objective":"playtimeSe1"},"bold":true,"color":"light_purple"},{"text":":","bold":true,"color":"light_purple"},{"score":{"name":"@s","objective":"playtimeMs2"},"bold":true,"color":"light_purple"},{"score":{"name":"@s","objective":"playtimeMs1"},"bold":true,"color":"light_purple"}]
+  83| 
+  84| 
+  85| #items
+  86| item replace entity @a hotbar.0 with iron_pickaxe{CanDestroy:["minecraft:red_concrete","minecraft:blue_concrete","minecraft:lime_concrete","minecraft:pink_concrete","minecraft:green_concrete","minecraft:orange_concrete","minecraft:purple_concrete","minecraft:yellow_concrete","minecraft:light_blue_concrete","minecraft:cyan_concrete"],Unbreakable:1b,Enchantments:[{id:"minecraft:efficiency",lvl:2s}]} 1
+  87| 
+  88| item replace entity @a[tag=red] weapon.offhand with red_concrete{CanPlaceOn:["minecraft:red_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 2
+  89| item replace entity @a[tag=red] weapon.offhand with red_concrete{CanPlaceOn:["minecraft:red_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 1
+  90| 
+  91| item replace entity @a[tag=orange] weapon.offhand with orange_concrete{CanPlaceOn:["minecraft:orange_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 2
+  92| item replace entity @a[tag=orange] weapon.offhand with orange_concrete{CanPlaceOn:["minecraft:orange_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 1
+  93| 
+  94| item replace entity @a[tag=yellow] weapon.offhand with yellow_concrete{CanPlaceOn:["minecraft:yellow_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 2
+  95| item replace entity @a[tag=yellow] weapon.offhand with yellow_concrete{CanPlaceOn:["minecraft:yellow_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 1
+  96| 
+  97| item replace entity @a[tag=lime] weapon.offhand with lime_concrete{CanPlaceOn:["minecraft:lime_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 2
+  98| item replace entity @a[tag=lime] weapon.offhand with lime_concrete{CanPlaceOn:["minecraft:lime_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 1
+  99| 
+ 100| item replace entity @a[tag=green] weapon.offhand with green_concrete{CanPlaceOn:["minecraft:green_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:light_gray_concrete"]} 2
+ 101| item replace entity @a[tag=green] weapon.offhand with green_concrete{CanPlaceOn:["minecraft:green_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:light_gray_concrete"]} 1
+ 102| 
+ 103| item replace entity @a[tag=cyan] weapon.offhand with cyan_concrete{CanPlaceOn:["minecraft:cyan_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 2
+ 104| item replace entity @a[tag=cyan] weapon.offhand with cyan_concrete{CanPlaceOn:["minecraft:cyan_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 1
+ 105| 
+ 106| item replace entity @a[tag=aqua] weapon.offhand with light_blue_concrete{CanPlaceOn:["minecraft:light_blue_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 2
+ 107| item replace entity @a[tag=aqua] weapon.offhand with light_blue_concrete{CanPlaceOn:["minecraft:light_blue_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 1
+ 108| 
+ 109| item replace entity @a[tag=blue] weapon.offhand with blue_concrete{CanPlaceOn:["minecraft:blue_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 2
+ 110| item replace entity @a[tag=blue] weapon.offhand with blue_concrete{CanPlaceOn:["minecraft:blue_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 1
+ 111| 
+ 112| item replace entity @a[tag=purple] weapon.offhand with purple_concrete{CanPlaceOn:["minecraft:purple_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 2
+ 113| item replace entity @a[tag=purple] weapon.offhand with purple_concrete{CanPlaceOn:["minecraft:purple_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 1
+ 114| 
+ 115| item replace entity @a[tag=pink] weapon.offhand with pink_concrete{CanPlaceOn:["minecraft:pink_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 2
+ 116| item replace entity @a[tag=pink] weapon.offhand with pink_concrete{CanPlaceOn:["minecraft:pink_concrete","minecraft:blackstone","minecraft:cobblestone","minecraft:quartz_block","minecraft:yellow_terracotta","minecraft:bricks","minecraft:black_stained_glass","minecraft:light_blue_stained_glass","minecraft:light_blue_wool","minecraft:light_gray_wool","minecraft:gray_wool","minecraft:black_wool","minecraft:white_wool","minecraft:brown_wool","minecraft:green_wool","minecraft:gray_terracotta","minecraft:spruce_planks","minecraft:light_gray_terracotta","minecraft:netherrack","minecraft:glowstone","minecraft:quartz_stairs","minecraft:quartz_slab","minecraft:diorite","minecraft:red_wool","minecraft:end_stone","minecraft:stone_bricks","minecraft:polished_diorite","minecraft:brown_terracotta","minecraft:smooth_stone_slab","minecraft:snow_block","minecraft:polished_granite","minecraft:polished_granite_slab","minecraft:red_sandstone","minecraft:sandstone","minecraft:sandstone_stairs","minecraft:sandstone_slab","minecraft:yellow_concrete","minecraft:black_concrete","minecraft:green_concrete","minecraft:light_gray_concrete"]} 1
+ 117| 
+ 118| 
+ 119| 
+ 120| 
+ 121| 
+ 122| 
+ 123| 
+ 124| 
+ 125| 
+ 126| 
+ 127| 
+ 128| 
+ 129| 
+
+===== color (data\tgttos\functions\color.mcfunction) =====
+   1| scoreboard players enable @a color
+   2| 
+   3| execute as @a[scores={color=1..}] at @s run tellraw @s ["",{"text":"---","color":"dark_gray"},{"text":" Select a Color","color":"gray"},{"text":" ---","color":"dark_gray"},{"text":"\n "},{"text":"[Red]","color":"red","clickEvent":{"action":"run_command","value":"/scoreboard players set @s selectColor 1"}},{"text":"     "},{"text":"[Orange]","color":"gold","clickEvent":{"action":"run_command","value":"/scoreboard players set @s selectColor 2"}},{"text":"\n "},{"text":"[Yellow]","color":"gray","strikethrough":true,"hoverEvent":{"action":"show_text","contents":"This color is used for building this map"}},{"text":"   "},{"text":"[Lime]","color":"green","clickEvent":{"action":"run_command","value":"/scoreboard players set @s selectColor 4"}},{"text":"\n "},{"text":"[Green]","color":"gray","strikethrough":true,"hoverEvent":{"action":"show_text","contents":"This color is used for building this map"}},{"text":"   "},{"text":"[Cyan]","color":"dark_aqua","clickEvent":{"action":"run_command","value":"/scoreboard players set @s selectColor 6"}},{"text":"\n "},{"text":"[Aqua]","color":"aqua","clickEvent":{"action":"run_command","value":"/scoreboard players set @s selectColor 7"}},{"text":"    "},{"text":"[Blue]","color":"blue","clickEvent":{"action":"run_command","value":"/scoreboard players set @s selectColor 8"}},{"text":"\n "},{"text":"[Purple]","color":"dark_purple","clickEvent":{"action":"run_command","value":"/scoreboard players set @s selectColor 9"}},{"text":"  "},{"text":"[Pink]","color":"light_purple","clickEvent":{"action":"run_command","value":"/scoreboard players set @s selectColor 10"}},{"text":"\n"},{"text":"-------------------","color":"dark_gray"}]
+   4| execute as @a[scores={color=1..}] at @s run scoreboard players set @a color 0
+   5| 
+   6| 
+   7| 
+   8| #red
+   9| execute as @a[scores={selectColor=0..1}] at @s run tag @s add red
+  10| execute as @a[scores={selectColor=0..1}] at @s run tag @s remove orange
+  11| execute as @a[scores={selectColor=0..1}] at @s run tag @s remove yellow
+  12| execute as @a[scores={selectColor=0..1}] at @s run tag @s remove lime
+  13| execute as @a[scores={selectColor=0..1}] at @s run tag @s remove green
+  14| execute as @a[scores={selectColor=0..1}] at @s run tag @s remove cyan
+  15| execute as @a[scores={selectColor=0..1}] at @s run tag @s remove aqua
+  16| execute as @a[scores={selectColor=0..1}] at @s run tag @s remove blue
+  17| execute as @a[scores={selectColor=0..1}] at @s run tag @s remove purple
+  18| execute as @a[scores={selectColor=0..1}] at @s run tag @s remove pink
+  19| 
+  20| #orange
+  21| execute as @a[scores={selectColor=2}] at @s run tag @s add orange
+  22| execute as @a[scores={selectColor=2}] at @s run tag @s remove red
+  23| execute as @a[scores={selectColor=2}] at @s run tag @s remove yellow
+  24| execute as @a[scores={selectColor=2}] at @s run tag @s remove lime
+  25| execute as @a[scores={selectColor=2}] at @s run tag @s remove green
+  26| execute as @a[scores={selectColor=2}] at @s run tag @s remove cyan
+  27| execute as @a[scores={selectColor=2}] at @s run tag @s remove aqua
+  28| execute as @a[scores={selectColor=2}] at @s run tag @s remove blue
+  29| execute as @a[scores={selectColor=2}] at @s run tag @s remove purple
+  30| execute as @a[scores={selectColor=2}] at @s run tag @s remove pink
+  31| 
+  32| #yellow not used
+  33| 
+  34| #lime
+  35| execute as @a[scores={selectColor=3..4}] at @s run tag @s add lime
+  36| execute as @a[scores={selectColor=3..4}] at @s run tag @s remove red
+  37| execute as @a[scores={selectColor=3..4}] at @s run tag @s remove orange
+  38| execute as @a[scores={selectColor=3..4}] at @s run tag @s remove yellow
+  39| execute as @a[scores={selectColor=3..4}] at @s run tag @s remove green
+  40| execute as @a[scores={selectColor=3..4}] at @s run tag @s remove cyan
+  41| execute as @a[scores={selectColor=3..4}] at @s run tag @s remove aqua
+  42| execute as @a[scores={selectColor=3..4}] at @s run tag @s remove blue
+  43| execute as @a[scores={selectColor=3..4}] at @s run tag @s remove purple
+  44| execute as @a[scores={selectColor=3..4}] at @s run tag @s remove pink
+  45| 
+  46| #green not used
+  47| 
+  48| #cyan
+  49| execute as @a[scores={selectColor=5..6}] at @s run tag @s add cyan
+  50| execute as @a[scores={selectColor=5..6}] at @s run tag @s remove red
+  51| execute as @a[scores={selectColor=5..6}] at @s run tag @s remove orange
+  52| execute as @a[scores={selectColor=5..6}] at @s run tag @s remove yellow
+  53| execute as @a[scores={selectColor=5..6}] at @s run tag @s remove lime
+  54| execute as @a[scores={selectColor=5..6}] at @s run tag @s remove green
+  55| execute as @a[scores={selectColor=5..6}] at @s run tag @s remove aqua
+  56| execute as @a[scores={selectColor=5..6}] at @s run tag @s remove blue
+  57| execute as @a[scores={selectColor=5..6}] at @s run tag @s remove purple
+  58| execute as @a[scores={selectColor=5..6}] at @s run tag @s remove pink
+  59| 
+  60| #aqua
+  61| execute as @a[scores={selectColor=7}] at @s run tag @s add aqua
+  62| execute as @a[scores={selectColor=7}] at @s run tag @s remove red
+  63| execute as @a[scores={selectColor=7}] at @s run tag @s remove orange
+  64| execute as @a[scores={selectColor=7}] at @s run tag @s remove yellow
+  65| execute as @a[scores={selectColor=7}] at @s run tag @s remove lime
+  66| execute as @a[scores={selectColor=7}] at @s run tag @s remove green
+  67| execute as @a[scores={selectColor=7}] at @s run tag @s remove cyan
+  68| execute as @a[scores={selectColor=7}] at @s run tag @s remove blue
+  69| execute as @a[scores={selectColor=7}] at @s run tag @s remove purple
+  70| execute as @a[scores={selectColor=7}] at @s run tag @s remove pink
+  71| 
+  72| #blue
+  73| execute as @a[scores={selectColor=8}] at @s run tag @s add blue
+  74| execute as @a[scores={selectColor=8}] at @s run tag @s remove red
+  75| execute as @a[scores={selectColor=8}] at @s run tag @s remove orange
+  76| execute as @a[scores={selectColor=8}] at @s run tag @s remove yellow
+  77| execute as @a[scores={selectColor=8}] at @s run tag @s remove lime
+  78| execute as @a[scores={selectColor=8}] at @s run tag @s remove green
+  79| execute as @a[scores={selectColor=8}] at @s run tag @s remove cyan
+  80| execute as @a[scores={selectColor=8}] at @s run tag @s remove aqua
+  81| execute as @a[scores={selectColor=8}] at @s run tag @s remove purple
+  82| execute as @a[scores={selectColor=8}] at @s run tag @s remove pink
+  83| 
+  84| #purple
+  85| execute as @a[scores={selectColor=9}] at @s run tag @s add purple
+  86| execute as @a[scores={selectColor=9}] at @s run tag @s remove red
+  87| execute as @a[scores={selectColor=9}] at @s run tag @s remove orange
+  88| execute as @a[scores={selectColor=9}] at @s run tag @s remove yellow
+  89| execute as @a[scores={selectColor=9}] at @s run tag @s remove lime
+  90| execute as @a[scores={selectColor=9}] at @s run tag @s remove green
+  91| execute as @a[scores={selectColor=9}] at @s run tag @s remove cyan
+  92| execute as @a[scores={selectColor=9}] at @s run tag @s remove aqua
+  93| execute as @a[scores={selectColor=9}] at @s run tag @s remove blue
+  94| execute as @a[scores={selectColor=9}] at @s run tag @s remove pink
+  95| 
+  96| #pink
+  97| execute as @a[scores={selectColor=10}] at @s run tag @s add pink
+  98| execute as @a[scores={selectColor=10}] at @s run tag @s remove red
+  99| execute as @a[scores={selectColor=10}] at @s run tag @s remove orange
+ 100| execute as @a[scores={selectColor=10}] at @s run tag @s remove yellow
+ 101| execute as @a[scores={selectColor=10}] at @s run tag @s remove lime
+ 102| execute as @a[scores={selectColor=10}] at @s run tag @s remove green
+ 103| execute as @a[scores={selectColor=10}] at @s run tag @s remove cyan
+ 104| execute as @a[scores={selectColor=10}] at @s run tag @s remove aqua
+ 105| execute as @a[scores={selectColor=10}] at @s run tag @s remove blue
+ 106| execute as @a[scores={selectColor=10}] at @s run tag @s remove purple
+ 107| 
+ 108| 
+ 109| 
+ 110| 
+ 111| 
+
+===== start_timer (data\tgttos\functions\start_timer.mcfunction) =====
+   1| execute as @a[tag=starting] at @s run scoreboard players add @s countdown 1
+   2| execute as @a[scores={countdown=40..140}] at @s run title @a times 0 3 20
+   3| execute as @a[scores={countdown=40..140}] at @s run title @a title {"text":"Starting in","color":"aqua"}
+   4| execute as @a[scores={countdown=40..60}] at @s run title @a subtitle {"text":"5","bold":true}
+   5| execute as @a[scores={countdown=60..80}] at @s run title @a subtitle {"text":"4","bold":true}
+   6| execute as @a[scores={countdown=80..100}] at @s run title @a subtitle {"text":"3","bold":true}
+   7| execute as @a[scores={countdown=100..120}] at @s run title @a subtitle {"text":"2","bold":true}
+   8| execute as @a[scores={countdown=120..140}] at @s run title @a subtitle {"text":"1","bold":true}
+   9| execute as @a[scores={countdown=140..200}] at @s run title @a times 0 60 20
+  10| execute as @a[scores={countdown=140..200}] at @s run title @a title {"text":" ","color":"aqua"}
+  11| execute as @a[scores={countdown=140..200}] at @s run title @a subtitle {"text":"GO!!","bold":true,"color":"green"}
+  12| 
+  13| execute as @a[scores={countdown=140..}] at @s run tag @a add playing
+  14| 
+  15| execute as @a[scores={countdown=140..}] at @s run fill 14 1 46 17 -2 25 air replace barrier
+  16| execute as @a[scores={countdown=140..}] at @s run tag @a remove starting
+  17| execute as @a[scores={countdown=140..}] at @s run scoreboard players set @a countdown 0
+  18| 
+  19| 
+  20| 
+  21| 
+  22| 
+  23| 
+  24| 
+  25| 
+
+===== gamerules (data\tgttos\functions\gamerules.mcfunction) =====
+   1| difficulty peaceful
+   2| gamerule sendCommandFeedback false
+   3| gamerule fallDamage false
+   4| gamerule commandBlockOutput false
+   5| gamerule doEntityDrops false
+   6| gamerule disableRaids true
+   7| gamerule doFireTick false
+   8| gamerule doDaylightCycle false
+   9| gamerule doWeatherCycle false
+  10| gamerule doMobSpawning false
+  11| gamerule fireDamage false
+  12| gamerule showDeathMessages false
+  13| gamerule freezeDamage false
+  14| gamerule keepInventory true
+  15| 
+  16| 
+
+===== respawn (data\tgttos\functions\respawn.mcfunction) =====
+   1| execute as @a store result score @s respawn run data get entity @s Pos[1]
+   2| execute as @a[scores={respawn=..-41}] at @s run tp @s 15 -2 36 -90 0
+   3| 

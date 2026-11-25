@@ -1,0 +1,345 @@
+{
+ "loop_lines": 130,
+ "cactus_commands": [
+  {
+   "line": 56,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 229 -4 47 229 -2 47 cactus"
+  },
+  {
+   "line": 57,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 227 -4 49 227 -3 49 cactus"
+  },
+  {
+   "line": 58,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 224 -4 27 224 -2 27 cactus"
+  },
+  {
+   "line": 59,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 218 -8 28 218 -4 28 cactus"
+  },
+  {
+   "line": 60,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 218 -8 34 218 -6 34 cactus"
+  },
+  {
+   "line": 61,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 217 -8 35 217 -7 35 cactus"
+  },
+  {
+   "line": 62,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 216 -8 29 216 -6 29 cactus"
+  },
+  {
+   "line": 63,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 206 -14 13 206 -12 13 cactus"
+  },
+  {
+   "line": 64,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 206 -16 27 206 -13 27 cactus"
+  },
+  {
+   "line": 65,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 204 -14 15 204 -13 15 cactus"
+  },
+  {
+   "line": 66,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 201 -18 28 201 -15 28 cactus"
+  },
+  {
+   "line": 67,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 199 -18 26 199 -16 26 cactus"
+  },
+  {
+   "line": 69,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 150 -21 13 150 -19 13 cactus"
+  },
+  {
+   "line": 70,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 149 -21 14 149 -20 14 cactus"
+  },
+  {
+   "line": 71,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 147 -21 29 147 -19 29 cactus"
+  },
+  {
+   "line": 72,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 144 -23 28 144 -20 28 cactus"
+  },
+  {
+   "line": 73,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 72 -30 37 72 -28 37 cactus"
+  },
+  {
+   "line": 74,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 71 -30 36 71 -29 36 cactus"
+  },
+  {
+   "line": 76,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 69 -30 21 69 -28 21 cactus"
+  },
+  {
+   "line": 77,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 69 -30 42 69 -27 42 cactus"
+  },
+  {
+   "line": 79,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 60 -30 28 60 -29 28 cactus"
+  },
+  {
+   "line": 80,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 59 -30 26 59 -28 26 cactus"
+  },
+  {
+   "line": 81,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 58 -30 49 58 -28 49 cactus"
+  },
+  {
+   "line": 83,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 56 -30 15 56 -29 15 cactus"
+  },
+  {
+   "line": 84,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 54 -30 18 54 -27 18 cactus"
+  },
+  {
+   "line": 85,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 53 -30 16 53 -29 16 cactus"
+  },
+  {
+   "line": 86,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 53 -32 54 53 -30 54 cactus"
+  },
+  {
+   "line": 87,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 51 -34 55 51 -32 55 cactus"
+  },
+  {
+   "line": 88,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 46 -32 13 46 -30 13 cactus"
+  },
+  {
+   "line": 89,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 44 -32 15 44 -31 15 cactus"
+  },
+  {
+   "line": 90,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 43 -36 24 43 -33 24 cactus"
+  },
+  {
+   "line": 91,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 41 -36 53 41 -33 53 cactus"
+  },
+  {
+   "line": 92,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 39 -36 52 39 -34 52 cactus"
+  },
+  {
+   "line": 94,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 31 -38 51 31 -36 51 cactus"
+  },
+  {
+   "line": 95,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 30 -40 54 30 -37 54 cactus"
+  },
+  {
+   "line": 96,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 28 -40 19 28 -37 19 cactus"
+  },
+  {
+   "line": 97,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 27 -40 35 27 -38 35 cactus"
+  },
+  {
+   "line": 98,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 26 -40 18 26 -39 18 cactus"
+  },
+  {
+   "line": 99,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 23 -42 24 23 -39 24 cactus"
+  },
+  {
+   "line": 100,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 22 -42 25 22 -41 25 cactus"
+  },
+  {
+   "line": 102,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 192 2 22 192 3 22 cactus"
+  },
+  {
+   "line": 103,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 191 2 24 191 5 24 cactus"
+  },
+  {
+   "line": 104,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 176 0 31 176 5 31 cactus"
+  },
+  {
+   "line": 105,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 174 0 32 174 3 32 cactus"
+  },
+  {
+   "line": 106,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 170 -1 16 170 2 16 cactus"
+  },
+  {
+   "line": 107,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 169 -1 14 169 1 14 cactus"
+  },
+  {
+   "line": 108,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 169 -1 44 169 1 44 cactus"
+  },
+  {
+   "line": 109,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 167 -1 46 167 2 46 cactus"
+  },
+  {
+   "line": 110,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 155 -4 17 155 -3 17 cactus"
+  },
+  {
+   "line": 111,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 155 -3 35 155 -2 35 cactus"
+  },
+  {
+   "line": 112,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 154 -4 18 154 -2 18 cactus"
+  },
+  {
+   "line": 113,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 154 -4 18 154 -2 18 cactus"
+  },
+  {
+   "line": 114,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 151 -6 4 151 -5 4 cactus"
+  },
+  {
+   "line": 115,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 151 -6 56 151 -3 56 cactus"
+  },
+  {
+   "line": 118,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 146 -8 60 146 -5 60 cactus"
+  },
+  {
+   "line": 119,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run fill 146 -9 62 146 -7 62 cactus"
+  },
+  {
+   "line": 68,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run setblock 193 -20 43 cactus"
+  },
+  {
+   "line": 75,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run setblock 70 -30 13 cactus"
+  },
+  {
+   "line": 78,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run setblock 67 -30 20 cactus"
+  },
+  {
+   "line": 82,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run setblock 57 -30 50 cactus"
+  },
+  {
+   "line": 93,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run setblock 38 -36 51 cactus"
+  },
+  {
+   "line": 116,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run setblock 150 -6 5 cactus"
+  },
+  {
+   "line": 117,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run setblock 149 -6 54 cactus"
+  },
+  {
+   "line": 120,
+   "cmd": "execute as @a[scores={finished=60..}] at @s run setblock 145 -8 58 cactus"
+  }
+ ],
+ "cactus_reset_count": 179,
+ "cactus_world_count": 181,
+ "cactus_missing_from_reset": [
+  [
+   154,
+   -3,
+   33
+  ],
+  [
+   154,
+   -2,
+   33
+  ],
+  [
+   154,
+   -1,
+   33
+  ],
+  [
+   154,
+   0,
+   33
+  ]
+ ],
+ "cactus_extra_in_reset": [
+  [
+   22,
+   -42,
+   25
+  ],
+  [
+   22,
+   -41,
+   25
+  ]
+ ],
+ "barrier_world": 184,
+ "barrier_reset_union": 140,
+ "can_place_on": [
+  "blue_concrete",
+  "gray_wool",
+  "jungle_planks",
+  "jungle_fence",
+  "red_wool",
+  "light_gray_concrete_powder",
+  "gray_concrete",
+  "nether_brick_wall",
+  "red_concrete",
+  "sea_lantern",
+  "chain",
+  "red_terracotta",
+  "diorite",
+  "white_terracotta",
+  "white_concrete",
+  "cactus",
+  "soul_sand",
+  "red_sand",
+  "cyan_concrete_powder",
+  "smooth_stone",
+  "stripped_spruce_log",
+  "acacia_leaves",
+  "gravel",
+  "diorite_wall",
+  "nether_brick_slab",
+  "iron_trapdoor",
+  "gray_terracotta",
+  "andesite",
+  "red_sandstone_stairs",
+  "light_gray_concrete",
+  "light_gray_terracotta",
+  "spruce_planks",
+  "brown_concrete_powder",
+  "granite",
+  "terracotta",
+  "stone",
+  "smooth_red_sandstone",
+  "stone_bricks",
+  "blackstone",
+  "iron_bars",
+  "cyan_terracotta",
+  "oak_leaves",
+  "black_terracotta",
+  "black_concrete"
+ ]
+}

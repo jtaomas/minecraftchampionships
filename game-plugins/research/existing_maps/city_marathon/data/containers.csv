@@ -1,0 +1,157 @@
+id,type,block_id,x,y,z,items_count,contents,cluster,inferred_use,evidence
+C001,shulker_box,minecraft:light_gray_shulker_box,-285,29,19,0,(empty),"roof-AC-01 (-285..-285, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C002,shulker_box,minecraft:light_gray_shulker_box,-285,30,19,0,(empty),"roof-AC-01 (-285..-285, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C003,shulker_box,minecraft:light_gray_shulker_box,-285,30,20,0,(empty),"roof-AC-01 (-285..-285, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C004,shulker_box,minecraft:light_gray_shulker_box,-285,29,21,0,(empty),"roof-AC-01 (-285..-285, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C005,shulker_box,minecraft:light_gray_shulker_box,-285,30,21,0,(empty),"roof-AC-01 (-285..-285, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C006,shulker_box,minecraft:light_gray_shulker_box,-262,29,19,0,(empty),"roof-AC-02 (-262..-262, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C007,shulker_box,minecraft:light_gray_shulker_box,-262,30,19,0,(empty),"roof-AC-02 (-262..-262, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C008,shulker_box,minecraft:light_gray_shulker_box,-262,30,20,0,(empty),"roof-AC-02 (-262..-262, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C009,shulker_box,minecraft:light_gray_shulker_box,-262,29,21,0,(empty),"roof-AC-02 (-262..-262, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C010,shulker_box,minecraft:light_gray_shulker_box,-262,30,21,0,(empty),"roof-AC-02 (-262..-262, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C011,shulker_box,minecraft:light_gray_shulker_box,-262,29,53,0,(empty),"roof-AC-03 (-262..-262, 29..30, 53..55)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C012,shulker_box,minecraft:light_gray_shulker_box,-262,30,53,0,(empty),"roof-AC-03 (-262..-262, 29..30, 53..55)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C013,shulker_box,minecraft:light_gray_shulker_box,-262,30,54,0,(empty),"roof-AC-03 (-262..-262, 29..30, 53..55)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C014,shulker_box,minecraft:light_gray_shulker_box,-262,29,55,0,(empty),"roof-AC-03 (-262..-262, 29..30, 53..55)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C015,shulker_box,minecraft:light_gray_shulker_box,-262,30,55,0,(empty),"roof-AC-03 (-262..-262, 29..30, 53..55)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C016,shulker_box,minecraft:light_gray_shulker_box,-262,29,121,0,(empty),"roof-AC-04 (-262..-262, 29..30, 121..123)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C017,shulker_box,minecraft:light_gray_shulker_box,-262,30,121,0,(empty),"roof-AC-04 (-262..-262, 29..30, 121..123)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C018,shulker_box,minecraft:light_gray_shulker_box,-262,30,122,0,(empty),"roof-AC-04 (-262..-262, 29..30, 121..123)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C019,shulker_box,minecraft:light_gray_shulker_box,-262,29,123,0,(empty),"roof-AC-04 (-262..-262, 29..30, 121..123)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C020,shulker_box,minecraft:light_gray_shulker_box,-262,30,123,0,(empty),"roof-AC-04 (-262..-262, 29..30, 121..123)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C021,shulker_box,minecraft:light_gray_shulker_box,-262,29,155,0,(empty),"roof-AC-05 (-262..-262, 29..30, 155..157)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C022,shulker_box,minecraft:light_gray_shulker_box,-262,30,155,0,(empty),"roof-AC-05 (-262..-262, 29..30, 155..157)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C023,shulker_box,minecraft:light_gray_shulker_box,-262,30,156,0,(empty),"roof-AC-05 (-262..-262, 29..30, 155..157)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C024,shulker_box,minecraft:light_gray_shulker_box,-262,29,157,0,(empty),"roof-AC-05 (-262..-262, 29..30, 155..157)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C025,shulker_box,minecraft:light_gray_shulker_box,-262,30,157,0,(empty),"roof-AC-05 (-262..-262, 29..30, 155..157)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C026,shulker_box,minecraft:light_gray_shulker_box,-239,29,19,0,(empty),"roof-AC-06 (-239..-239, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C027,shulker_box,minecraft:light_gray_shulker_box,-239,30,19,0,(empty),"roof-AC-06 (-239..-239, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C028,shulker_box,minecraft:light_gray_shulker_box,-239,30,20,0,(empty),"roof-AC-06 (-239..-239, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C029,shulker_box,minecraft:light_gray_shulker_box,-239,29,21,0,(empty),"roof-AC-06 (-239..-239, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C030,shulker_box,minecraft:light_gray_shulker_box,-239,30,21,0,(empty),"roof-AC-06 (-239..-239, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C031,shulker_box,minecraft:light_gray_shulker_box,-239,29,53,0,(empty),"roof-AC-07 (-239..-239, 29..30, 53..55)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C032,shulker_box,minecraft:light_gray_shulker_box,-239,30,53,0,(empty),"roof-AC-07 (-239..-239, 29..30, 53..55)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C033,shulker_box,minecraft:light_gray_shulker_box,-239,30,54,0,(empty),"roof-AC-07 (-239..-239, 29..30, 53..55)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C034,shulker_box,minecraft:light_gray_shulker_box,-239,29,55,0,(empty),"roof-AC-07 (-239..-239, 29..30, 53..55)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C035,shulker_box,minecraft:light_gray_shulker_box,-239,30,55,0,(empty),"roof-AC-07 (-239..-239, 29..30, 53..55)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C036,shulker_box,minecraft:light_gray_shulker_box,-239,29,121,0,(empty),"roof-AC-08 (-239..-239, 29..30, 121..123)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C037,shulker_box,minecraft:light_gray_shulker_box,-239,30,121,0,(empty),"roof-AC-08 (-239..-239, 29..30, 121..123)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C038,shulker_box,minecraft:light_gray_shulker_box,-239,30,122,0,(empty),"roof-AC-08 (-239..-239, 29..30, 121..123)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C039,shulker_box,minecraft:light_gray_shulker_box,-239,29,123,0,(empty),"roof-AC-08 (-239..-239, 29..30, 121..123)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C040,shulker_box,minecraft:light_gray_shulker_box,-239,30,123,0,(empty),"roof-AC-08 (-239..-239, 29..30, 121..123)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C041,shulker_box,minecraft:light_gray_shulker_box,-239,29,155,0,(empty),"roof-AC-09 (-239..-239, 29..30, 155..157)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C042,shulker_box,minecraft:light_gray_shulker_box,-239,30,155,0,(empty),"roof-AC-09 (-239..-239, 29..30, 155..157)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C043,shulker_box,minecraft:light_gray_shulker_box,-239,30,156,0,(empty),"roof-AC-09 (-239..-239, 29..30, 155..157)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C044,shulker_box,minecraft:light_gray_shulker_box,-239,29,157,0,(empty),"roof-AC-09 (-239..-239, 29..30, 155..157)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C045,shulker_box,minecraft:light_gray_shulker_box,-239,30,157,0,(empty),"roof-AC-09 (-239..-239, 29..30, 155..157)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C046,shulker_box,minecraft:light_gray_shulker_box,-219,29,-72,0,(empty),"roof-AC-10 (-219..-219, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C047,shulker_box,minecraft:light_gray_shulker_box,-219,30,-72,0,(empty),"roof-AC-10 (-219..-219, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C048,shulker_box,minecraft:light_gray_shulker_box,-219,30,-71,0,(empty),"roof-AC-10 (-219..-219, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C049,shulker_box,minecraft:light_gray_shulker_box,-219,29,-70,0,(empty),"roof-AC-10 (-219..-219, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C050,shulker_box,minecraft:light_gray_shulker_box,-219,30,-70,0,(empty),"roof-AC-10 (-219..-219, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C051,shulker_box,minecraft:light_gray_shulker_box,-219,29,-32,0,(empty),"roof-AC-11 (-219..-219, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C052,shulker_box,minecraft:light_gray_shulker_box,-219,30,-32,0,(empty),"roof-AC-11 (-219..-219, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C053,shulker_box,minecraft:light_gray_shulker_box,-219,30,-31,0,(empty),"roof-AC-11 (-219..-219, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C054,shulker_box,minecraft:light_gray_shulker_box,-219,29,-30,0,(empty),"roof-AC-11 (-219..-219, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C055,shulker_box,minecraft:light_gray_shulker_box,-219,30,-30,0,(empty),"roof-AC-11 (-219..-219, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C056,shulker_box,minecraft:light_gray_shulker_box,-216,29,19,0,(empty),"roof-AC-12 (-216..-216, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C057,shulker_box,minecraft:light_gray_shulker_box,-216,30,19,0,(empty),"roof-AC-12 (-216..-216, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C058,shulker_box,minecraft:light_gray_shulker_box,-216,30,20,0,(empty),"roof-AC-12 (-216..-216, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C059,shulker_box,minecraft:light_gray_shulker_box,-216,29,21,0,(empty),"roof-AC-12 (-216..-216, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C060,shulker_box,minecraft:light_gray_shulker_box,-216,30,21,0,(empty),"roof-AC-12 (-216..-216, 29..30, 19..21)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C061,shulker_box,minecraft:light_gray_shulker_box,-216,29,53,0,(empty),"roof-AC-13 (-216..-216, 29..30, 53..55)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C062,shulker_box,minecraft:light_gray_shulker_box,-216,30,53,0,(empty),"roof-AC-13 (-216..-216, 29..30, 53..55)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C063,shulker_box,minecraft:light_gray_shulker_box,-216,30,54,0,(empty),"roof-AC-13 (-216..-216, 29..30, 53..55)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C064,shulker_box,minecraft:light_gray_shulker_box,-216,29,55,0,(empty),"roof-AC-13 (-216..-216, 29..30, 53..55)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C065,shulker_box,minecraft:light_gray_shulker_box,-216,30,55,0,(empty),"roof-AC-13 (-216..-216, 29..30, 53..55)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C066,shulker_box,minecraft:light_gray_shulker_box,-216,29,121,0,(empty),"roof-AC-14 (-216..-216, 29..30, 121..123)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C067,shulker_box,minecraft:light_gray_shulker_box,-216,30,121,0,(empty),"roof-AC-14 (-216..-216, 29..30, 121..123)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C068,shulker_box,minecraft:light_gray_shulker_box,-216,30,122,0,(empty),"roof-AC-14 (-216..-216, 29..30, 121..123)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C069,shulker_box,minecraft:light_gray_shulker_box,-216,29,123,0,(empty),"roof-AC-14 (-216..-216, 29..30, 121..123)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C070,shulker_box,minecraft:light_gray_shulker_box,-216,30,123,0,(empty),"roof-AC-14 (-216..-216, 29..30, 121..123)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C071,shulker_box,minecraft:light_gray_shulker_box,-216,29,155,0,(empty),"roof-AC-15 (-216..-216, 29..30, 155..157)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C072,shulker_box,minecraft:light_gray_shulker_box,-216,30,155,0,(empty),"roof-AC-15 (-216..-216, 29..30, 155..157)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C073,shulker_box,minecraft:light_gray_shulker_box,-216,30,156,0,(empty),"roof-AC-15 (-216..-216, 29..30, 155..157)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C074,shulker_box,minecraft:light_gray_shulker_box,-216,29,157,0,(empty),"roof-AC-15 (-216..-216, 29..30, 155..157)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C075,shulker_box,minecraft:light_gray_shulker_box,-216,30,157,0,(empty),"roof-AC-15 (-216..-216, 29..30, 155..157)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C076,shulker_box,minecraft:light_gray_shulker_box,-196,29,-72,0,(empty),"roof-AC-16 (-196..-196, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C077,shulker_box,minecraft:light_gray_shulker_box,-196,30,-72,0,(empty),"roof-AC-16 (-196..-196, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C078,shulker_box,minecraft:light_gray_shulker_box,-196,30,-71,0,(empty),"roof-AC-16 (-196..-196, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C079,shulker_box,minecraft:light_gray_shulker_box,-196,29,-70,0,(empty),"roof-AC-16 (-196..-196, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C080,shulker_box,minecraft:light_gray_shulker_box,-196,30,-70,0,(empty),"roof-AC-16 (-196..-196, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C081,shulker_box,minecraft:light_gray_shulker_box,-196,29,-32,0,(empty),"roof-AC-17 (-196..-196, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C082,shulker_box,minecraft:light_gray_shulker_box,-196,30,-32,0,(empty),"roof-AC-17 (-196..-196, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C083,shulker_box,minecraft:light_gray_shulker_box,-196,30,-31,0,(empty),"roof-AC-17 (-196..-196, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C084,shulker_box,minecraft:light_gray_shulker_box,-196,29,-30,0,(empty),"roof-AC-17 (-196..-196, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C085,shulker_box,minecraft:light_gray_shulker_box,-196,30,-30,0,(empty),"roof-AC-17 (-196..-196, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C086,shulker_box,minecraft:light_gray_shulker_box,-173,29,-72,0,(empty),"roof-AC-18 (-173..-173, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C087,shulker_box,minecraft:light_gray_shulker_box,-173,30,-72,0,(empty),"roof-AC-18 (-173..-173, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C088,shulker_box,minecraft:light_gray_shulker_box,-173,30,-71,0,(empty),"roof-AC-18 (-173..-173, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C089,shulker_box,minecraft:light_gray_shulker_box,-173,29,-70,0,(empty),"roof-AC-18 (-173..-173, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C090,shulker_box,minecraft:light_gray_shulker_box,-173,30,-70,0,(empty),"roof-AC-18 (-173..-173, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C091,shulker_box,minecraft:light_gray_shulker_box,-173,29,-32,0,(empty),"roof-AC-19 (-173..-173, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C092,shulker_box,minecraft:light_gray_shulker_box,-173,30,-32,0,(empty),"roof-AC-19 (-173..-173, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C093,shulker_box,minecraft:light_gray_shulker_box,-173,30,-31,0,(empty),"roof-AC-19 (-173..-173, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C094,shulker_box,minecraft:light_gray_shulker_box,-173,29,-30,0,(empty),"roof-AC-19 (-173..-173, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C095,shulker_box,minecraft:light_gray_shulker_box,-173,30,-30,0,(empty),"roof-AC-19 (-173..-173, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C096,shulker_box,minecraft:light_gray_shulker_box,-150,29,-72,0,(empty),"roof-AC-20 (-150..-150, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C097,shulker_box,minecraft:light_gray_shulker_box,-150,30,-72,0,(empty),"roof-AC-20 (-150..-150, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C098,shulker_box,minecraft:light_gray_shulker_box,-150,30,-71,0,(empty),"roof-AC-20 (-150..-150, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C099,shulker_box,minecraft:light_gray_shulker_box,-150,29,-70,0,(empty),"roof-AC-20 (-150..-150, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C100,shulker_box,minecraft:light_gray_shulker_box,-150,30,-70,0,(empty),"roof-AC-20 (-150..-150, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C101,shulker_box,minecraft:light_gray_shulker_box,-150,29,-32,0,(empty),"roof-AC-21 (-150..-150, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C102,shulker_box,minecraft:light_gray_shulker_box,-150,30,-32,0,(empty),"roof-AC-21 (-150..-150, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C103,shulker_box,minecraft:light_gray_shulker_box,-150,30,-31,0,(empty),"roof-AC-21 (-150..-150, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C104,shulker_box,minecraft:light_gray_shulker_box,-150,29,-30,0,(empty),"roof-AC-21 (-150..-150, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C105,shulker_box,minecraft:light_gray_shulker_box,-150,30,-30,0,(empty),"roof-AC-21 (-150..-150, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C106,shulker_box,minecraft:light_gray_shulker_box,-127,29,-72,0,(empty),"roof-AC-22 (-127..-127, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C107,shulker_box,minecraft:light_gray_shulker_box,-127,30,-72,0,(empty),"roof-AC-22 (-127..-127, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C108,shulker_box,minecraft:light_gray_shulker_box,-127,30,-71,0,(empty),"roof-AC-22 (-127..-127, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C109,shulker_box,minecraft:light_gray_shulker_box,-127,29,-70,0,(empty),"roof-AC-22 (-127..-127, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C110,shulker_box,minecraft:light_gray_shulker_box,-127,30,-70,0,(empty),"roof-AC-22 (-127..-127, 29..30, -72..-70)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C111,shulker_box,minecraft:light_gray_shulker_box,-127,29,-32,0,(empty),"roof-AC-23 (-127..-127, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C112,shulker_box,minecraft:light_gray_shulker_box,-127,30,-32,0,(empty),"roof-AC-23 (-127..-127, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C113,shulker_box,minecraft:light_gray_shulker_box,-127,30,-31,0,(empty),"roof-AC-23 (-127..-127, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C114,shulker_box,minecraft:light_gray_shulker_box,-127,29,-30,0,(empty),"roof-AC-23 (-127..-127, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C115,shulker_box,minecraft:light_gray_shulker_box,-127,30,-30,0,(empty),"roof-AC-23 (-127..-127, 29..30, -32..-30)",Rooftop air-conditioning/roof-plant prop; all 140 are empty (H).,H
+C116,shulker_box,minecraft:light_gray_shulker_box,-12,0,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C117,shulker_box,minecraft:light_gray_shulker_box,-12,1,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C118,shulker_box,minecraft:light_gray_shulker_box,-12,2,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C119,shulker_box,minecraft:light_gray_shulker_box,-12,3,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C120,shulker_box,minecraft:light_gray_shulker_box,-12,4,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C121,shulker_box,minecraft:light_gray_shulker_box,-12,5,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C122,shulker_box,minecraft:light_gray_shulker_box,-12,6,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C123,shulker_box,minecraft:light_gray_shulker_box,-12,7,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C124,shulker_box,minecraft:light_gray_shulker_box,-12,8,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C125,shulker_box,minecraft:light_gray_shulker_box,-12,9,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C126,shulker_box,minecraft:light_gray_shulker_box,-12,10,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C127,shulker_box,minecraft:light_gray_shulker_box,-12,11,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C128,shulker_box,minecraft:light_gray_shulker_box,-12,12,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C129,shulker_box,minecraft:light_gray_shulker_box,-12,13,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C130,shulker_box,minecraft:light_gray_shulker_box,-12,14,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C131,shulker_box,minecraft:light_gray_shulker_box,-12,15,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C132,shulker_box,minecraft:light_gray_shulker_box,-12,16,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C133,shulker_box,minecraft:light_gray_shulker_box,-12,17,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C134,shulker_box,minecraft:light_gray_shulker_box,-12,18,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C135,shulker_box,minecraft:light_gray_shulker_box,-12,19,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C136,shulker_box,minecraft:light_gray_shulker_box,-12,20,49,0,(empty),"vertical-column (x-12, y0..20, z49)","Vertical stack of 21 empty shulkers at x-12,z49; decorative column / possible elevator marker (M).",H
+C137,shulker_box,minecraft:light_gray_shulker_box,2,0,10,0,(empty),"start-gate post (x2/14, z10)","Empty shulker used as a white start-gate post at x2 or x14, z10 (H).",H
+C138,shulker_box,minecraft:light_gray_shulker_box,2,6,10,0,(empty),"start-gate post (x2/14, z10)","Empty shulker used as a white start-gate post at x2 or x14, z10 (H).",H
+C139,shulker_box,minecraft:light_gray_shulker_box,14,0,10,0,(empty),"start-gate post (x2/14, z10)","Empty shulker used as a white start-gate post at x2 or x14, z10 (H).",H
+C140,shulker_box,minecraft:light_gray_shulker_box,14,6,10,0,(empty),"start-gate post (x2/14, z10)","Empty shulker used as a white start-gate post at x2 or x14, z10 (H).",H
+C141,barrel,minecraft:barrel,-117,0,59,0,(empty),"market-stall (-117..-107, z59..66)",Market-stall storage under the awning; empty (H).,H
+C142,barrel,minecraft:barrel,-117,0,61,0,(empty),"market-stall (-117..-107, z59..66)",Market-stall storage under the awning; empty (H).,H
+C143,barrel,minecraft:barrel,-117,0,64,0,(empty),"market-stall (-117..-107, z59..66)",Market-stall storage under the awning; empty (H).,H
+C144,barrel,minecraft:barrel,-117,0,66,0,(empty),"market-stall (-117..-107, z59..66)",Market-stall storage under the awning; empty (H).,H
+C145,barrel,minecraft:barrel,-115,0,59,0,(empty),"market-stall (-117..-107, z59..66)",Market-stall storage under the awning; empty (H).,H
+C146,barrel,minecraft:barrel,-115,0,61,0,(empty),"market-stall (-117..-107, z59..66)",Market-stall storage under the awning; empty (H).,H
+C147,barrel,minecraft:barrel,-115,0,64,0,(empty),"market-stall (-117..-107, z59..66)",Market-stall storage under the awning; empty (H).,H
+C148,barrel,minecraft:barrel,-115,0,66,0,(empty),"market-stall (-117..-107, z59..66)",Market-stall storage under the awning; empty (H).,H
+C149,barrel,minecraft:barrel,-109,0,59,0,(empty),"market-stall (-117..-107, z59..66)",Market-stall storage under the awning; empty (H).,H
+C150,barrel,minecraft:barrel,-109,0,61,0,(empty),"market-stall (-117..-107, z59..66)",Market-stall storage under the awning; empty (H).,H
+C151,barrel,minecraft:barrel,-107,0,59,0,(empty),"market-stall (-117..-107, z59..66)",Market-stall storage under the awning; empty (H).,H
+C152,barrel,minecraft:barrel,-107,0,61,0,(empty),"market-stall (-117..-107, z59..66)",Market-stall storage under the awning; empty (H).,H
+C153,campfire,minecraft:campfire,-116,3,62,0,(empty),campfire props,Decorative campfire; no cooking items (H).,H
+C154,campfire,minecraft:campfire,-116,3,63,0,(empty),campfire props,Decorative campfire; no cooking items (H).,H
+C155,campfire,minecraft:campfire,-41,1,47,0,(empty),campfire props,Decorative campfire; no cooking items (H).,H
+C156,blast_furnace,minecraft:blast_furnace,-232,4,88,0,(empty),workshop,"Workshop prop; empty, no fuel (H).",H

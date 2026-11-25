@@ -1,0 +1,40 @@
+block,count,share_pct,group,use
+smooth_stone,34812,28.470,foundation,21-block-thick table/plinth mass; deck underlay; side walls
+smooth_stone_slab,34675,28.358,foundation,double slabs in the plinth; top/bottom slabs as trim and roof units
+blackstone,13918,11.382,deck,"conveyor belt rubber strips, table edge, roof sheets"
+polished_andesite,8833,7.224,deck,conveyor side rails and belt support frames
+light_blue_stained_glass,7286,5.959,glass,"39-high fins in gap A, 31x105 skylight at y=9, curtain windows, window bands"
+red_concrete,4500,3.680,paint,red paint curtains at z=66 and z=83 (6 segments); reset by block_reset
+yellow_concrete,3090,2.527,paint,yellow paint curtain at z=74 (4 segments); reset by block_reset
+bricks,2511,2.054,machinery,machine tower shafts and head trim
+magenta_terracotta,1811,1.481,machinery,machine tower banding / accent
+black_wool,1299,1.062,deck,"conveyor seam strips, start-room border, catwalk underside"
+gray_wool,1266,1.035,deck,conveyor belt slats (1-wide gray stripes)
+black_concrete,1115,0.912,machinery,"machine panels, start-room walls, border around yellow windows"
+light_blue_stained_glass_pane,1026,0.839,glass,"machine head window, catwalk glazing, small screens"
+iron_trapdoor,834,0.682,catwalk,y=-20 grating walkways (702) and the glass-fin top caps
+quartz_pillar,780,0.638,machinery,conveyor support legs under the deck (y=-31..-27)
+white_concrete,690,0.564,machinery,"machine control panels, curtain window borders and paint drips, roof units"
+cobblestone_wall,534,0.437,catwalk,y=-22 catwalk edge / pipe rail
+iron_bars,472,0.386,trim,catwalk handrails / safety cages
+oak_fence,351,0.287,machinery,thin pipe runs above the catwalk
+acacia_planks,340,0.278,machinery,pipe/valve detail on the machine heads
+polished_diorite,326,0.267,trim,catwalk end caps and fascia
+yellow_wool,258,0.211,machinery,hazard stripe blocks on the catwalk underside / machine trim
+red_sandstone_wall,253,0.207,trim,railing/piping on catwalks and machine frames
+diorite_wall,192,0.157,trim,roof edge / parapet detail
+barrier,184,0.150,functional,start-box walls (184); removed at GO and rebuilt on reset
+blackstone_stairs,148,0.121,deck,belt end transitions at y=-35/-38
+acacia_trapdoor,127,0.104,machinery,vertical pipe clamps (21-high columns at x41/x105)
+red_sandstone,117,0.096,trim,"machine head frames, finish-pen coping, catwalk supports"
+acacia_slab,115,0.094,machinery,pipe brackets and small shelves
+stone_bricks,108,0.088,trim,small machine/tower detail
+red_sandstone_stairs,78,0.064,trim,catwalk underside trim and curtain top rails
+quartz_block,60,0.049,start,start-room floor (20x3)
+ladder,42,0.034,machinery,7-high maintenance ladder on the towers at x43/x103
+gray_concrete,40,0.033,start,start-room wall behind the sign
+acacia_fence,39,0.032,machinery,pipe runs at y=-18
+iron_block,28,0.023,machinery,machine base plates and valve bodies
+sea_lantern,9,0.007,light,9 hidden light sources (machine buttons / roof units)
+tripwire_hook,8,0.007,machinery,decorative hooks on the machine heads (8)
+oak_wall_sign,1,0.001,functional,"the single start sign at 73,-32,10"

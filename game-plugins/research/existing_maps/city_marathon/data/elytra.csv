@@ -1,0 +1,9 @@
+id,x,y,z,pad,command,reachable_ground,evidence
+E1,-127,27,-66,"polished_diorite strip at x-125..-124,y28,z-69..-63",CB01,no (roof y28; no ladder/stairs),H
+E2,-127,27,-36,polished_andesite roof; NO polished_diorite - predicate cannot match,CB02,no (roof y28),H
+E3,-216,27,25,polished_andesite roof; NO polished_diorite - predicate cannot match,CB29,no (roof y28),H
+E4,-216,27,49,polished_andesite roof; NO polished_diorite - predicate cannot match,CB34,no (roof y28),H
+E5,-216,27,127,polished_andesite roof; NO polished_diorite - predicate cannot match,CB66,no (roof y28),H
+E6,-216,27,151,polished_andesite roof; NO polished_diorite - predicate cannot match,CB67,no (roof y28),H
+E7,-351,4,23,"9x132 checkered platform at x-351,y4,z23..154: 594 polished_diorite tiles in a 1,188-tile checker",global CB01/02/29/34/66/67,yes at north end; south end blocked,H
+E8,4,4,66,3x3 glazed pad on quartz podium,none; pad is not polished_diorite,"yes via ladder at x3-5,z63",H

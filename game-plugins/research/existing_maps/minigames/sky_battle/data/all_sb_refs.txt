@@ -1,0 +1,120 @@
+2 -205 17 967 repeating_command_block 1 /scoreboard players set @a[level=0] timer_skybattle 0
+2 -205 16 967 repeating_command_block 1 /execute as @a[level=0] at @s run scoreboard players set @s death_skybattle 0
+2 -205 18 967 repeating_command_block 1 /scoreboard players set @a[level=0] ironblock 0
+3 943 14 -6 chain_command_block 1 /execute as @a[level=13,gamemode=adventure] at @s if entity @a[level=13,team=Sky_Battle_Yellw] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run scoreboard players add Yellow POINTS 50
+3 933 19 -1 chain_command_block 1 /execute as @a[level=14] at @s run scoreboard players set @s timer_skybattle 0
+3 934 13 -2 chain_command_block 1 /scoreboard players add @a[level=13] timer_skybattle 1
+3 933 20 -1 chain_command_block 1 /scoreboard players set @a[level=14] death_skybattle 0
+3 929 19 -3 chain_command_block 1 /scoreboard players set @a death_skybattle 0
+3 943 14 -5 chain_command_block 1 /execute as @a[level=13,gamemode=adventure] at @s if entity @a[level=13,team=Sky_Battle_Yellw] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run fill 953 18 -3 953 18 -3 minecraft:redstone_block
+3 934 12 -2 chain_command_block 1 /scoreboard players add @a[level=12] timer_skybattle 1
+3 934 11 -2 chain_command_block 1 /scoreboard players add @a[level=11] timer_skybattle 1
+3 943 14 -4 chain_command_block 1 /execute as @a[level=13,gamemode=adventure] at @s if entity @a[level=13,team=Sky_Battle_Yellw,gamemode=adventure] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run summon firework_rocket ~ ~1 ~ {LifeTime:15,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:0,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;11743532,2437522,8073150,4312372,14602026,15435844],FadeColors:[I;11743532,2437522,8073150,4312372,14602026,15435844]}]}}}}
+3 934 10 -2 command_block 0 /scoreboard players add @a[level=10] timer_skybattle 1
+3 943 14 -8 chain_command_block 1 /execute as @a[level=13] at @s if entity @a[level=13,team=Sky_Battle_Yellw] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run xp set @s 14 levels
+3 943 14 -3 repeating_command_block 1 /execute if entity @a[level=13,team=Sky_Battle_Yellw,gamemode=adventure] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run tellraw @a {'text':'[Sky Battle] Team Yellow wins!','color':'yellow'}
+3 943 14 -7 chain_command_block 1 /execute as @a[level=13,gamemode=adventure] at @s if entity @a[level=13,team=Sky_Battle_Yellw] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run gamemode spectator @s
+3 949 14 -4 chain_command_block 1 /execute as @a[level=12,gamemode=adventure] at @s if entity @a[level=12,team=Sky_Battle_Green] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run summon firework_rocket ~ ~ ~ {LifeTime:20,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:2,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;11743532,2437522,8073150,4312372,14602026,15435844],FadeColors:[I;11743532,2437522,8073150,4312372,14602026,15435844]}]}}}}
+3 947 14 -4 chain_command_block 1 /execute as @a[level=10,gamemode=adventure] at @s if entity @a[level=10,team=Sky_Battle_Red] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run summon firework_rocket ~ ~1 ~ {LifeTime:20,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:0,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;11743532,2437522,8073150,4312372,14602026,15435844],FadeColors:[I;11743532,2437522,8073150,4312372,14602026,15435844]}]}}}}
+3 949 14 -6 chain_command_block 1 /execute as @a[level=12,gamemode=adventure] at @s if entity @a[level=12,team=Sky_Battle_Green] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run scoreboard players add Green POINTS 50
+3 945 14 -4 chain_command_block 1 /execute as @a[level=11,gamemode=adventure] at @s if entity @a[level=11,team=Sky_Battle_Blue] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run summon firework_rocket ~ ~1 ~ {LifeTime:15,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:0,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;11743532,2437522,8073150,4312372,14602026,15435844],FadeColors:[I;11743532,2437522,8073150,4312372,14602026,15435844]}]}}}}
+3 949 14 -8 chain_command_block 1 /execute as @a[level=12] at @s if entity @a[level=12,team=Sky_Battle_Green] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run xp set @s 14 levels
+3 947 14 -6 chain_command_block 1 /execute as @a[level=10,gamemode=adventure] at @s if entity @a[level=10,team=Sky_Battle_Red] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run scoreboard players add Red POINTS 50
+3 947 14 -8 chain_command_block 1 /execute as @a[level=10] at @s if entity @a[level=10,team=Sky_Battle_Red] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run xp set @s 14 levels
+3 945 14 -6 chain_command_block 1 /execute as @a[level=11,gamemode=adventure] at @s if entity @a[level=11,team=Sky_Battle_Blue] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run scoreboard players add Blue POINTS 50
+3 945 14 -8 chain_command_block 1 /execute as @a[level=11] at @s if entity @a[level=11,team=Sky_Battle_Blue] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run xp set @s 14 levels
+3 949 14 -3 repeating_command_block 1 /execute if entity @a[level=12,team=Sky_Battle_Green,gamemode=adventure] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run tellraw @a {'text':'[Sky Battle] Team Green wins!','color':'dark_green'}
+3 949 14 -5 chain_command_block 1 /execute as @a[level=12,gamemode=adventure] at @s if entity @a[level=12,team=Sky_Battle_Green] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run fill 953 18 -3 953 18 -3 minecraft:redstone_block
+3 947 14 -3 repeating_command_block 1 /execute if entity @a[level=10,team=Sky_Battle_Red,gamemode=adventure] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run tellraw @a {'text':'[Sky Battle] Team Red wins!','color':'red'}
+3 945 14 -3 repeating_command_block 1 /execute if entity @a[level=11,team=Sky_Battle_Blue,gamemode=adventure] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run tellraw @a {'text':'[Sky Battle] Team Blue wins!','color':'blue'}
+3 947 14 -5 chain_command_block 1 /execute as @a[level=10,gamemode=adventure] at @s if entity @a[level=10,team=Sky_Battle_Red] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run fill 953 18 -3 953 18 -3 minecraft:redstone_block
+3 949 14 -7 chain_command_block 1 /execute as @a[level=12,gamemode=adventure] at @s if entity @a[level=12,team=Sky_Battle_Green] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run gamemode spectator @s
+3 945 14 -5 chain_command_block 1 /execute as @a[level=11,gamemode=adventure] at @s if entity @a[level=11,team=Sky_Battle_Blue] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run fill 953 18 -3 953 18 -3 minecraft:redstone_block
+3 947 14 -7 chain_command_block 1 /execute as @a[level=10,gamemode=adventure] at @s if entity @a[level=10,team=Sky_Battle_Red] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run gamemode spectator @s
+3 945 14 -7 chain_command_block 1 /execute as @a[level=11,gamemode=adventure] at @s if entity @a[level=11,team=Sky_Battle_Blue] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run gamemode spectator @s
+3 959 11 -6 chain_command_block 1 /execute as @a[level=9] at @s run scoreboard players set @s timer_skybattle 0
+3 961 12 -6 chain_command_block 1 /scoreboard players set @a[level=9] dummy_event 0
+3 961 11 -6 chain_command_block 1 /scoreboard players set @a[level=9] death_event 0
+3 961 10 -6 command_block 0 /scoreboard players set @a[level=9] kill_event 0
+3 986 10 -1 chain_command_block 1 /execute as @a[level=8,team=Sky_Battle_Red] at @s run xp set @s 9 levels
+3 987 10 -1 chain_command_block 1 /execute as @a[level=8,team=Sky_Battle_Blue] at @s run xp set @s 9 levels
+3 988 10 -1 chain_command_block 1 /execute as @a[level=8,team=Sky_Battle_Green] at @s run xp set @s 9 levels
+3 989 10 -1 chain_command_block 1 /execute as @a[level=8,team=Sky_Battle_Yellw] at @s run xp set @s 9 levels
+3 1001 15 -8 repeating_command_block 1 /execute as @a[level=8] at @s if block ~ ~-1 ~ minecraft:red_concrete_powder run team join Sky_Battle_Red @s
+3 1000 15 -8 repeating_command_block 1 /execute as @a[level=8,team=Sky_Battle_Red] at @s if block ~ ~-1 ~ minecraft:red_concrete_powder run tp @s 1998 70 0
+3 1001 15 -10 repeating_command_block 1 /execute as @a[level=8] at @s if block ~ ~-1 ~ minecraft:blue_concrete_powder run team join Sky_Battle_Blue @s
+3 1000 15 -10 repeating_command_block 1 /execute as @a[level=8,team=Sky_Battle_Blue] at @s if block ~ ~-1 ~ minecraft:blue_concrete_powder run tp @s 2000 70 2
+3 998 15 -8 command_block 0 /execute as @a[level=10,team=Sky_Battle_Red] at @s run item replace entity @s weapon.offhand with red_wool{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete,red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta,red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta,smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone_wall]} 64
+3 1001 15 -12 repeating_command_block 1 /execute as @a[level=8] at @s if block ~ ~-1 ~ minecraft:green_concrete_powder run team join Sky_Battle_Green @s
+3 1000 15 -12 repeating_command_block 1 /execute as @a[level=8,team=Sky_Battle_Green] at @s if block ~ ~-1 ~ minecraft:green_concrete_powder run tp @s 2002 70 0
+3 998 15 -10 command_block 0 /execute as @a[level=11,team=Sky_Battle_Blue] at @s run item replace entity @s weapon.offhand with blue_wool{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone_wall]} 64
+3 1001 15 -14 repeating_command_block 1 /execute as @a[level=8] at @s if block ~ ~-1 ~ minecraft:yellow_concrete_powder run team join Sky_Battle_Yellw @s
+3 1000 15 -14 repeating_command_block 1 /execute as @a[level=8,team=Sky_Battle_Yellw] at @s if block ~ ~-1 ~ minecraft:yellow_concrete_powder run tp @s 2000 70 -2
+3 998 15 -12 command_block 0 /execute as @a[level=12,team=Sky_Battle_Green] at @s run item replace entity @s weapon.offhand with green_wool{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone_wall]} 64
+3 1001 15 -16 repeating_command_block 1 /execute as @a at @s if score @s ironblock matches 1 run give @s iron_block 1
+3 998 15 -14 command_block 0 /execute as @a[level=13,team=Sky_Battle_Yellw] at @s run item replace entity @s weapon.offhand with yellow_wool{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone_wall]} 64
+3 1004 16 -13 repeating_command_block 1 /execute as @a[level=8] at @s if block ~ ~-1 ~ minecraft:green_stained_glass run team join Sky_Battle_Green
+3 1003 16 -13 repeating_command_block 1 /execute as @a[level=8] at @s if block ~ ~-1 ~ minecraft:blue_stained_glass run team join Sky_Battle_Blue
+3 1004 16 -14 repeating_command_block 1 /execute as @a[level=8] at @s if block ~ ~-1 ~ minecraft:yellow_stained_glass run team join Sky_Battle_Yellw
+3 1003 16 -14 repeating_command_block 1 /execute as @a[level=8] at @s if block ~ ~-1 ~ minecraft:red_stained_glass run team join Sky_Battle_Red
+3 1001 16 -16 chain_command_block 1 /execute as @a at @s if score @s ironblock matches 1 run scoreboard players set @s ironblock 0
+3 942 14 6 chain_command_block 1 /xp set @a[team=Sky_Battle_Blue] 11 levels
+3 942 13 6 chain_command_block 1 /xp set @a[team=Sky_Battle_Yellw] 13 levels
+3 942 12 6 chain_command_block 1 /xp set @a[team=Sky_Battle_Green] 12 levels
+3 942 11 6 chain_command_block 1 /xp set @a[team=Sky_Battle_Red] 10 levels
+3 945 18 1 repeating_command_block 0 /team empty Sky_Battle_Yellw
+3 945 18 2 chain_command_block 1 /team join Sky_Battle_Yellw @a[level=13]
+3 947 18 1 repeating_command_block 0 /team empty Sky_Battle_Green
+3 947 18 2 chain_command_block 1 /team join Sky_Battle_Green @a[level=12]
+3 949 18 1 repeating_command_block 0 /team empty Sky_Battle_Blue
+3 949 18 2 chain_command_block 1 /team join Sky_Battle_Blue @a[level=11]
+3 951 18 1 repeating_command_block 0 /team empty Sky_Battle_Red
+3 951 18 2 chain_command_block 1 /team join Sky_Battle_Red @a[level=10]
+3 949 14 1 repeating_command_block 1 /execute as @a[x=1800,y=-500,z=-200,dx=400,dy=700,dz=400,scores={death_skybattle=1}] at @s run gamemode spectator
+3 949 14 2 chain_command_block 1 /execute as @a[x=1800,y=-200,z=-500,dx=400,dy=700,dz=400,scores={death_skybattle=1}] at @s run xp set @s 14 levels
+3 949 14 3 chain_command_block 1 /execute as @a[level=14,scores={death_skybattle=1}] at @s run scoreboard players set @s death_skybattle 0
+3 947 10 8 command_block 0 /spawnpoint @a[team=Sky_Battle_Red] 1997 70 -1 -90
+3 947 10 9 chain_command_block 1 /spawnpoint @a[team=Sky_Battle_Blue] 1999 70 3 180
+3 947 10 10 chain_command_block 1 /spawnpoint @a[team=Sky_Battle_Green] 2003 70 1 90
+3 947 10 11 chain_command_block 1 /spawnpoint @a[team=Sky_Battle_Yellw] 2001 70 -3 0
+3 959 14 4 repeating_command_block 1 /execute as @a[scores={timer_skybattle=180}] at @s run fill 959 14 -3 959 14 -3 redstone_block
+3 959 14 5 chain_command_block 1 /execute as @a[scores={timer_skybattle=180}] at @s run fill 961 14 -3 961 14 -3 air
+3 959 10 4 command_block 0 /execute as @a[level=9,team=Sky_Battle_Blue] at @s run item replace entity @s weapon.offhand with blue_wool 64
+3 973 14 2 chain_command_block 1 /execute as @a[scores={timer_skybattle=50}] at @s run playsound minecraft:block.note_block.didgeridoo player @s
+3 971 14 4 repeating_command_block 1 /execute as @a[scores={timer_skybattle=90}] at @s run fill 971 14 -3 971 14 -3 redstone_block
+3 973 14 4 repeating_command_block 1 /execute as @a[scores={timer_skybattle=60}] at @s run fill 973 14 -3 973 14 -3 redstone_block
+3 961 14 5 chain_command_block 1 /execute as @a[scores={timer_skybattle=175}] at @s run fill 963 14 -3 963 14 -3 air
+3 965 14 1 repeating_command_block 1 /tellraw @a[scores={timer_skybattle=150}] {'text':'The border will keep shrinking!','color':'dark_gray'}
+3 963 14 5 chain_command_block 1 /execute as @a[scores={timer_skybattle=170}] at @s run fill 965 14 -3 965 14 -3 air
+3 967 14 1 repeating_command_block 1 /tellraw @a[scores={timer_skybattle=130}] {'text':'The border will shrink with 5 blocks in 8 seconds!','color':'dark_gray'}
+3 965 14 3 chain_command_block 1 /execute as @a[scores={timer_skybattle=150}] at @s run scoreboard players set @s timer_skybattle 151
+3 965 14 5 chain_command_block 1 /execute as @a[scores={timer_skybattle=160}] at @s run fill 967 14 -3 967 14 -3 air
+3 969 14 1 repeating_command_block 1 /tellraw @a[scores={timer_skybattle=110}] {'text':'The border will shrink with 10 blocks in 10 seconds!','color':'dark_gray'}
+3 967 14 3 chain_command_block 1 /execute as @a[scores={timer_skybattle=130}] at @s run scoreboard players set @s timer_skybattle 131
+3 967 14 5 chain_command_block 1 /execute as @a[scores={timer_skybattle=140}] at @s run fill 969 14 -3 969 14 -3 air
+3 971 14 1 repeating_command_block 1 /tellraw @a[scores={timer_skybattle=80}] {'text':'The border will shrink with 10 blocks in 10 seconds!','color':'dark_gray'}
+3 969 14 3 chain_command_block 1 /execute as @a[scores={timer_skybattle=110}] at @s run scoreboard players set @s timer_skybattle 111
+3 969 14 5 chain_command_block 1 /execute as @a[scores={timer_skybattle=110}] at @s run fill 971 14 -3 971 14 -3 air
+3 973 14 1 repeating_command_block 1 /tellraw @a[scores={timer_skybattle=50}] {'text':'The border will shrink with 10 blocks in 10 seconds!','color':'dark_gray'}
+3 971 14 3 chain_command_block 1 /execute as @a[scores={timer_skybattle=80}] at @s run scoreboard players set @s timer_skybattle 81
+3 971 14 5 chain_command_block 1 /execute as @a[scores={timer_skybattle=90}] at @s run fill 973 14 -3 973 14 -3 air
+3 973 14 3 chain_command_block 1 /execute as @a[scores={timer_skybattle=50}] at @s run scoreboard players set @s timer_skybattle 51
+3 973 14 5 chain_command_block 1 /execute as @a[scores={timer_skybattle=60}] at @s run fill 975 14 -3 975 14 -3 air
+3 961 14 4 repeating_command_block 1 /execute as @a[scores={timer_skybattle=175}] at @s run fill 961 14 -3 961 14 -3 redstone_block
+3 965 14 2 chain_command_block 1 /execute as @a[scores={timer_skybattle=150}] at @s run playsound minecraft:block.note_block.didgeridoo player @s
+3 963 14 4 repeating_command_block 1 /execute as @a[scores={timer_skybattle=170}] at @s run fill 963 14 -3 963 14 -3 redstone_block
+3 960 10 4 chain_command_block 1 /execute as @a[level=9,team=Sky_Battle_Red] at @s run item replace entity @s weapon.offhand with red_wool 64
+3 967 14 2 chain_command_block 1 /execute as @a[scores={timer_skybattle=130}] at @s run playsound minecraft:block.note_block.didgeridoo player @s
+3 965 14 4 repeating_command_block 1 /execute as @a[scores={timer_skybattle=160}] at @s run fill 965 14 -3 965 14 -3 redstone_block
+3 961 10 4 chain_command_block 1 /execute as @a[level=9,team=Sky_Battle_Green] at @s run item replace entity @s weapon.offhand with green_wool 64
+3 962 10 4 chain_command_block 1 /execute as @a[level=9,team=Sky_Battle_Yellw] at @s run item replace entity @s weapon.offhand with yellow_wool 64
+3 969 14 2 chain_command_block 1 /execute as @a[scores={timer_skybattle=110}] at @s run playsound minecraft:block.note_block.didgeridoo player @s
+3 967 14 4 repeating_command_block 1 /execute as @a[scores={timer_skybattle=140}] at @s run fill 967 14 -3 967 14 -3 redstone_block
+3 971 14 2 chain_command_block 1 /execute as @a[scores={timer_skybattle=80}] at @s run playsound minecraft:block.note_block.didgeridoo player @s
+3 969 14 4 repeating_command_block 1 /execute as @a[scores={timer_skybattle=110}] at @s run fill 969 14 -3 969 14 -3 redstone_block
+3 982 10 1 command_block 0 /execute as @a[level=9,team=Sky_Battle_Red] at @s run tp @s 1970 23 0
+3 983 10 1 chain_command_block 1 /execute as @a[level=9,team=Sky_Battle_Blue] at @s run tp @s 2000 23 30
+3 984 10 1 chain_command_block 1 /execute as @a[level=9,team=Sky_Battle_Green] at @s run tp @s 2030 23 0
+3 985 10 1 chain_command_block 1 /execute as @a[level=9,team=Sky_Battle_Yellw] at @s run tp @s 2000 23 -30
+6 5000 24 -28 chain_command_block 1 /scoreboard objectives setdisplay sidebar.team.green Super_Clash
+6 5000 23 -28 command_block 0 /scoreboard objectives setdisplay sidebar.team.dark_gray Super_Clash

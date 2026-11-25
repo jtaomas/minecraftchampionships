@@ -1,0 +1,198 @@
+block,count,share_percent,category,inferred_use,evidence
+stone_slab,21453,10.342,sidewalk,Main sidewalk/curb and roof-edge slab; the dominant grey edge material.,H
+mud_bricks,20587,9.924,facade,Warm brown building facade; most common wall block in the city blocks.,H
+stone_bricks,17900,8.629,facade,Grey masonry facade and station walls.,H
+stone,16447,7.929,structure,Hidden fill/foundations and station mass.,H
+bricks,15532,7.487,facade,Red-brick residential/commercial facades.,H
+gray_wool,14040,6.768,road,Asphalt surface. Standing on it also clears elytra via command CB04.,H
+white_terracotta,12055,5.811,facade,Pale upper-storey band in the building gradient.,H
+terracotta,11004,5.305,facade,Orange-brown mid-band in the building gradient.,H
+polished_andesite,7181,3.462,plaza,"Plaza paving, roof pads and station trim.",H
+grass_block,6739,3.249,park,Park lawn.,H
+deepslate_tile_slab,5010,2.415,roof,Dark modern roof/edge slab.,H
+granite,4799,2.313,facade,Warm trim/base course.,H
+smooth_stone_slab,4582,2.209,sidewalk,Smooth platform/sidewalk slab.,H
+moss_block,4531,2.184,park,Hedge/roof-garden mass.,H
+glass,3520,1.697,station,Station roof glazing and windows.,H
+mushroom_stem,3012,1.452,decor,Flagpole/light-pole shafts.,H
+yellow_wool,2840,1.369,road,Double-yellow road centreline; the strongest route cue.,H
+light,2182,1.052,lighting,"Invisible light block, mostly level 15, embedded in roads/pads.",H
+stone_brick_stairs,2162,1.042,structure,Stairs inside/around buildings and station.,H
+white_wool,1910,0.921,road,White dashed lane markings and awnings.,H
+glass_pane,1813,0.874,station,Window glazing.,H
+smooth_stone,1549,0.747,station,Station floor and smooth plaza surfaces.,H
+barrier,1053,0.508,route,Invisible train chassis (1035) and start-release gate (18).,H
+water,1037,0.5,water,"Park ponds, fountain and the deep west waterfall.",H
+blackstone_slab,1035,0.499,roof,Dark station/roof trim.,H
+sandstone,1005,0.484,plaza,Warm plaza paving.,H
+andesite,956,0.461,facade,Grey wall/trim stone.,H
+iron_bars,954,0.46,station,Station window grilles and fences.,H
+sea_lantern,824,0.397,lighting,Station roof/edge lights; 824 blocks.,H
+cobblestone_slab,765,0.369,station,Platform edge/floor slab.,H
+polished_diorite,681,0.328,route,Elytra auto-equip pad surface; six command blocks check for it.,H
+rooted_dirt,652,0.314,park,Park soil under trees.,H
+yellow_glazed_terracotta,651,0.314,route,Speed IV (2 s) pad; also sets world spawn.,H
+calcite,614,0.296,station,Pale station columns/trim.,H
+stone_brick_wall,602,0.29,structure,Balustrades and station parapets.,H
+coarse_dirt,588,0.283,park,Rougher park soil.,H
+andesite_wall,580,0.28,structure,Balustrades.,H
+dirt_path,569,0.274,park,Park footpaths.,H
+brown_wool,551,0.266,decor,Awnings/roof trim.,H
+mossy_stone_bricks,550,0.265,facade,Weathered wall variant.,H
+white_stained_glass_pane,503,0.242,station,Station roof glazing strips.,H
+cracked_stone_bricks,500,0.241,facade,Weathered wall variant.,H
+dirt,500,0.241,park,Soil fill.,H
+spruce_leaves,491,0.237,park,Conifer foliage.,H
+spruce_planks,480,0.231,decor,Benches/stalls.,H
+stone_brick_slab,478,0.23,structure,Stairs/slabs.,H
+podzol,464,0.224,park,Acidic soil under conifers.,H
+dark_oak_slab,425,0.205,decor,Platform/bench slabs.,H
+light_gray_concrete,383,0.185,station,Train car body band.,H
+rose_bush,376,0.181,park,Flower bed.,H
+stone_stairs,340,0.164,structure,Stone steps.,H
+white_stained_glass,308,0.148,station,Station roof glazing.,H
+red_concrete,262,0.126,station,Train car red body.,H
+black_concrete,252,0.121,station,Train windows/underframe.,H
+andesite_slab,248,0.12,decor,Decorative/detail block.,H
+polished_andesite_slab,236,0.114,plaza,Plaza slab.,H
+horn_coral,234,0.113,water,Pond coral.,H
+horn_coral_fan,234,0.113,water,Pond coral.,H
+cobblestone,230,0.111,structure,Service walls.,H
+fire_coral_fan,229,0.11,water,Pond coral.,H
+light_gray_wool,224,0.108,decor,Awning/roof trim.,H
+sand,220,0.106,water,Pond bed.,H
+seagrass,219,0.106,water,Pond plant.,H
+light_gray_stained_glass_pane,204,0.098,station,Train window glazing.,H
+fire_coral,201,0.097,water,Pond coral.,H
+kelp,197,0.095,water,Pond plant.,H
+black_terracotta,177,0.085,facade,Dark facade band.,H
+yellow_terracotta,176,0.085,facade,Hazard-stripe yellow on platform edges.,H
+cyan_terracotta,169,0.081,facade,Train/car trim.,H
+flowering_azalea,167,0.081,park,Flowering shrub.,H
+polished_andesite_stairs,165,0.08,plaza,Plaza steps.,H
+azalea,157,0.076,park,Shrub.,H
+chiseled_stone_bricks,154,0.074,facade,Decorative wall course.,H
+lantern,146,0.07,lighting,Street/station lantern.,H
+light_gray_shulker_box,140,0.067,container,Empty rooftop AC unit (140 total).,H
+ladder,132,0.064,route,"Vertical shortcut access (TARDIS, north building, market).",H
+oak_leaves,129,0.062,park,Tree canopy.,H
+smooth_quartz_slab,118,0.057,decor,Start podium trim.,H
+tinted_glass,105,0.051,station,Train window glass.,H
+cobbled_deepslate_slab,96,0.046,structure,Slabs.,H
+cobbled_deepslate_stairs,96,0.046,structure,Stairs.,H
+mud_brick_slab,95,0.046,structure,Slabs.,H
+azalea_leaves,91,0.044,park,Shrub canopy.,H
+orange_wool,90,0.043,route,Jump Boost X + Speed XII launch pad.,H
+moss_carpet,87,0.042,park,Moss detail.,H
+spruce_wood,79,0.038,park,Tree trunks.,H
+smooth_sandstone,78,0.038,plaza,Paving.,H
+spruce_fence,75,0.036,park,Fence.,H
+dark_oak_door,74,0.036,decor,Shop/house doors.,H
+gray_stained_glass_pane,71,0.034,station,Window glazing.,H
+oak_slab,68,0.033,decor,Bench/step slab.,H
+white_concrete,65,0.031,route,Lane/edge marking; start-gate area.,H
+pink_glazed_terracotta,64,0.031,route,Speed IX / Jump Boost V pad part.,H
+red_glazed_terracotta,64,0.031,route,Speed IX / Jump Boost V pad part.,H
+cobblestone_stairs,60,0.029,structure,Steps.,H
+iron_door,60,0.029,decor,Station/building doors.,H
+repeating_command_block,60,0.029,command,60 auto command blocks.,H
+tuff,54,0.026,structure,Stone fill.,H
+smooth_quartz,49,0.024,decor,Start podium.,H
+stone_button,43,0.021,redstone,Stadium-seat buttons; decorative/unknown.,H
+lightning_rod,39,0.019,decor,Roof lightning rods.,H
+green_carpet,35,0.017,route,Effect-clear pad at park exit.,H
+brick_stairs,34,0.016,structure,Stairs.,H
+grindstone,33,0.016,decor,Workshop detail.,H
+polished_deepslate_stairs,33,0.016,structure,Stairs.,H
+gray_concrete,32,0.015,structure,Concrete trim.,H
+mud_brick_stairs,32,0.015,structure,Stairs.,H
+oak_fence,32,0.015,park,Fence.,H
+birch_fence,29,0.014,park,Fence.,H
+flowering_azalea_leaves,29,0.014,park,Flowering shrub canopy.,H
+granite_slab,29,0.014,structure,Slab.,H
+green_terracotta,27,0.013,facade,Accent band.,H
+oak_wood,27,0.013,park,Tree trunk.,H
+diorite_wall,24,0.012,structure,Wall/parapet.,H
+light_gray_banner,24,0.012,decor,Pale flag; 24 of 84 banners.,H
+lilac,24,0.012,park,Flower.,H
+peony,24,0.012,park,Flower.,H
+brick_slab,23,0.011,structure,Slab.,H
+black_wall_banner,22,0.011,decor,Black flag; 22 of 84.,H
+red_wall_banner,21,0.01,decor,Red flag; 21 of 84.,H
+dark_oak_trapdoor,20,0.01,decor,Shutters/hatches.,H
+yellow_concrete,19,0.009,route,Effect-clear pad + gate posts.,H
+nether_brick_fence,18,0.009,decor,Fence.,H
+blue_concrete,17,0.008,station,Train car blue body.,H
+wall_torch,17,0.008,lighting,Wall torch.,H
+dark_oak_fence,16,0.008,decor,Fence.,H
+magenta_glazed_terracotta,16,0.008,route,Jump Boost V / Speed IX pad centre.,H
+soul_soil,15,0.007,decor,Planter soil.,H
+acacia_trapdoor,14,0.007,decor,Shutters.,H
+granite_stairs,14,0.007,structure,Stairs.,H
+mossy_cobblestone_wall,14,0.007,structure,Wall.,H
+redstone_wire,13,0.006,redstone,Start circuit wiring.,H
+barrel,12,0.006,container,Empty market-stall barrel (12).,H
+crimson_trapdoor,12,0.006,decor,Hatch.,H
+dark_oak_fence_gate,12,0.006,decor,Gate.,H
+polished_blackstone_wall,12,0.006,structure,Wall.,H
+polished_diorite_slab,12,0.006,route,Elytra pad edge.,H
+smooth_sandstone_stairs,12,0.006,structure,Stairs.,H
+ancient_debris,11,0.005,decor,Dark accent block.,H
+black_stained_glass_pane,11,0.005,station,Train glazing.,H
+lime_concrete,10,0.005,route,Start-light green lens.,H
+repeater,10,0.005,redstone,Start countdown delay.,H
+lime_wool,9,0.004,route,Jump Boost VII pad.,H
+oak_fence_gate,9,0.004,decor,Gate.,H
+iron_trapdoor,7,0.003,decor,Hatch.,H
+polished_deepslate_slab,7,0.003,structure,Slab.,H
+red_sandstone_wall,7,0.003,structure,Wall.,H
+brown_mushroom,6,0.003,park,Mushroom.,H
+polished_blackstone_bricks,6,0.003,structure,Wall.,H
+smooth_quartz_stairs,6,0.003,decor,Start podium.,H
+command_block,5,0.002,command,5 impulse command blocks.,H
+polished_deepslate,5,0.002,structure,Wall.,H
+red_mushroom,5,0.002,park,Mushroom.,H
+yellow_wall_banner,5,0.002,decor,Yellow flag; 5 of 84.,H
+acacia_sign,4,0.002,sign,"4 standing signs (3x NO ENTRY, 1x D0CT WH0).",H
+blackstone_wall,4,0.002,structure,Wall.,H
+cauldron,4,0.002,decor,Market detail.,H
+mangrove_leaves,4,0.002,park,Tree canopy.,H
+polished_blackstone,4,0.002,structure,Wall.,H
+sandstone_wall,4,0.002,structure,Wall.,H
+campfire,3,0.001,container,Empty decorative campfire (3).,H
+orange_wall_banner,3,0.001,decor,Orange flag; 3 of 84.,H
+white_carpet,3,0.001,decor,Start podium trim.,H
+birch_wall_sign,2,0.001,sign,2x D0CT WH0 wall signs.,H
+chain_command_block,2,0.001,command,2 chain command blocks; never fired.,H
+crimson_button,2,0.001,decor,Wood-button wall.,H
+light_blue_wall_banner,2,0.001,decor,Light-blue flag; 2 of 84.,H
+lime_wall_banner,2,0.001,decor,Lime flag; 2 of 84.,H
+magenta_wall_banner,2,0.001,decor,Magenta flag; 2 of 84.,H
+orange_carpet,2,0.001,decor,Carpet.,H
+polished_blackstone_button,2,0.001,redstone,"Start button at 8,0,8; second at -103,0,63.",H
+warped_button,2,0.001,decor,Wood-button wall.,H
+acacia_button,1,0.0,decor,Wood-button wall.,H
+acacia_wall_sign,1,0.0,sign,1x NO ENTRY wall sign.,H
+birch_button,1,0.0,decor,Wood-button wall.,H
+blast_furnace,1,0.0,container,Empty workshop blast furnace.,H
+blue_wall_banner,1,0.0,decor,Blue flag; 1 of 84.,H
+brick_wall,1,0.0,structure,Wall.,H
+brown_carpet,1,0.0,decor,Carpet.,H
+green_wall_banner,1,0.0,decor,Green flag; 1 of 84.,H
+green_wool,1,0.0,decor,Carpet/awning.,H
+jungle_button,1,0.0,decor,Wood-button wall.,H
+jungle_fence,1,0.0,park,Fence.,H
+light_blue_carpet,1,0.0,decor,Carpet.,H
+lime_carpet,1,0.0,decor,Carpet.,H
+magenta_carpet,1,0.0,decor,Carpet.,H
+mangrove_button,1,0.0,decor,Wood-button wall.,H
+oak_button,1,0.0,decor,Wood-button wall.,H
+orange_tulip,1,0.0,park,Flower.,H
+pink_tulip,1,0.0,park,Flower.,H
+pink_wall_banner,1,0.0,decor,Pink flag; 1 of 84.,H
+polished_blackstone_stairs,1,0.0,structure,Stairs.,H
+purple_carpet,1,0.0,decor,Carpet.,H
+red_carpet,1,0.0,decor,Carpet.,H
+red_tulip,1,0.0,park,Flower.,H
+spruce_button,1,0.0,decor,Wood-button wall.,H
+weathered_cut_copper_slab,1,0.0,decor,Copper roof accent.,H

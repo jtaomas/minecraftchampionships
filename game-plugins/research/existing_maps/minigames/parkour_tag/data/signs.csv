@@ -1,0 +1,26 @@
+x,y,z,color,glow,front1,front2,front3,front4,back,click_event,role,notes,confidence
+1060,1,984,white,1,"{""text"":""---------------""}","{""text"":""Waiting Lobby""}","{""text"":""""}","{""text"":""---------------""}",,none,waiting-lobby label,Header over the underground waiting room,H
+1062,1,984,white,1,"{""text"":""---------------""}","{""text"":""You picked:""}","{""text"":""Runner""}","{""text"":""---------------""}",,none,waiting-lobby label,Runner role text,H
+1057,1,985,white,1,"{""text"":""Three Runners""}","{""text"":""<------""}","{""text"":""Four Runners""}","{""text"":""------>""}",,none,runner-count selector,Three (left/south) / Four (right/north) runners; buttons at 1057 1 984 and 1057 1 986,H
+1060,1,985,white,1,"{""text"":""You picked:""}","{""text"":""Hunter""}","{""text"":""Start the game""}","{""text"":""when ready!""}",,none,start prompt,"""Start the game when ready!"" - the count buttons start the round",H
+1062,1,985,white,1,"{""text"":""---------------""}","{""text"":""Waiting Lobby""}","{""text"":""""}","{""text"":""---------------""}",,none,waiting-lobby label,Header,H
+1059,1,990,black,0,"{""text"":""On screen""}","{""text"":""counter""}","{""text"":""""}","{""text"":""------>""}",,none,hint,Points to the on-screen counter (bossbar),H
+1048,1,992,black,0,"{""text"":""Clear carrot""}","{""text"":""on stick""}","{""text"":""""}","{""text"":""""}",,none,hint,Clear carrot on a stick (hub teleporter item) on role selection,H
+1051,1,992,black,0,"{""text"":""Saturation""}","{""text"":""""}","{""text"":""""}","{""text"":""""}",,none,hint,Saturation is granted continuously,H
+1053,1,992,black,0,"{""text"":""Items""}","{""text"":""free lobby""}","{""text"":""""}","{""text"":""""}",,none,hint,Items free lobby - no containers exist in the arena; likely leftover/aspirational,H
+1055,1,993,black,0,"{""text"":""General Runner""}","{""text"":""Settings""}","{""text"":""<------""}","{""text"":""""}",,none,hint,General Runner Settings point east,H
+1055,1,995,black,0,"{""text"":""Runner & Hunter""}","{""text"":""Countdown""}","{""text"":""""}","{""text"":""<------""}",,none,hint,Runner & Hunter Countdown point west,H
+1057,1,997,black,0,"{""text"":""Hunter Settings""}","{""text"":""""}","{""text"":""<------""}","{""text"":""""}",,none,hint,Hunter Settings point west,H
+1059,1,998,black,0,"{""text"":""Reset game""}","{""text"":""settings""}","{""text"":""""}","{""text"":""<------""}",,none,hint,Reset game settings point west,H
+1057,2,983,white,1,"{""text"":""---------------""}","{""text"":""Lobby Teleporter""}","{""text"":""""}","{""text"":""---------------""}",,none,lobby-teleporter,Points to the hub carrot-on-a-stick teleporter,H
+1063,2,983,white,1,"{""text"":""---------------""}","{""text"":""Lobby Teleporter""}","{""text"":""""}","{""text"":""---------------""}",,none,lobby-teleporter,Same,H
+1063,2,988,black,0,"{""text"":""Runner Settings""}","{""text"":""""}","{""text"":""------>""}","{""text"":""""}",,none,hint,Runner Settings point east,H
+1065,2,988,black,0,"{""text"":""Hunter Settings""}","{""text"":""""}","{""text"":""------>""}","{""text"":""""}",,none,hint,Hunter Settings point east,H
+1057,3,985,white,1,"{""text"":""One Runner""}","{""text"":""<------""}","{""text"":""Two Runners""}","{""text"":""------>""}",,none,runner-count selector,One (left/south) / Two (right/north) runners; buttons at 1057 3 984 and 1057 3 986,H
+1064,4,1006,black,0,"{""text"":""Four runners""}","{""text"":""""}","{""text"":""""}","{""text"":""""}",,none,machine label,Four-runner threshold column (x1064),H
+1066,4,1006,black,0,"{""text"":""Three runners""}","{""text"":""""}","{""text"":""""}","{""text"":""""}",,none,machine label,Three-runner threshold column (x1066),H
+1068,4,1006,black,0,"{""text"":""Two runners""}","{""text"":""""}","{""text"":""""}","{""text"":""""}",,none,machine label,Two-runner threshold column (x1068),H
+1070,4,1006,black,0,"{""text"":""One runner""}","{""text"":""""}","{""text"":""""}","{""text"":""""}",,none,machine label,One-runner threshold column (x1070),H
+1056,5,999,black,0,"{""text"":""If the hunter""}","{""text"":""leaves settings""}","{""text"":""""}","{""text"":""""}",,none,hint,"Warning: if the hunter leaves the settings/selection, the round breaks",H
+1050,29,991,white,1,"{""text"":""---------------""}","{""text"":""Runner""}","{""text"":""Teleporter""}","{""text"":""---------------""}",,none,gallery pad,Runner teleporter pad (chiseled stone bricks at 1049 27 990),H
+1050,29,1000,white,1,"{""text"":""---------------""}","{""text"":""Hunter""}","{""text"":""Teleporter""}","{""text"":""---------------""}",,none,gallery pad,Hunter teleporter pad (chiseled polished blackstone at 1049 27 999),H

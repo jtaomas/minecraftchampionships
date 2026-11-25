@@ -1,0 +1,15 @@
+tick,seconds,event,source
+0,0.0,sign click: tag @a add starting; countdown starts at 0,sign / start_timer
+40,2.0,title 'Starting in' + subtitle 5,start_timer
+60,3.0,subtitle 4,start_timer
+80,4.0,subtitle 3,start_timer
+100,5.0,subtitle 2,start_timer
+120,6.0,subtitle 1,start_timer
+140,7.0,GO!!; barriers removed; tag playing; countdown reset,start_timer
+-,-,playing: +5 to playtimeMs1 each tick; +1 spawntime,loop
+-,-,every 20 ticks: summon invisible armor_stand 10 above each player (remove_block marker),loop
+-,-,"fall below y=-58: tp to 73,-33,11 (timer keeps running)",respawn
+0,0.0,"finish: hit chicken -> hit_chicken>=1 -> finished tag, spectator",loop
+60,3.0,clear 10 concrete colours within 15 blocks of every remove_block marker,loop
+65,3.25,block_reset: rebuild 7 of 10 paint-curtain segments,loop -> block_reset
+140,7.0,"tp @a to 73,-33,11; barriers rebuilt; adventure; clear; timer/finished reset",loop

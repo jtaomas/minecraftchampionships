@@ -1,0 +1,134 @@
+block,count,share_pct,family,use_in_map
+water,7781,27.27,water,"waterslides, waterfalls, boat basin, bubble elevator"
+stone,5917,20.737,stone,"track base, island undersides, plaza"
+snow_block,3083,10.805,snow/ice,"snow platforms, north chain, roofs"
+packed_ice,1094,3.834,snow/ice,main ice track/runway surface
+mangrove_planks,906,3.175,wood,village houses and roofs
+andesite,856,3.0,stone,track edging and cave path
+spruce_planks,836,2.93,wood,"station platform, roofs, tunnel"
+gray_concrete,672,2.355,concrete,"start platform, village path, plaza"
+light_gray_wool,472,1.654,wool,pale track edging in the ice cave / lodge / pool rim
+yellow_glazed_terracotta,377,1.321,pad,Speed IV (2 s) pad + global spawn checkpoint
+black_concrete,366,1.283,concrete,"train engine body, lodge roof beams"
+white_concrete,347,1.216,concrete,"train stripe, platform edges"
+stone_bricks,346,1.213,stone,arch/tunnel and station base
+stripped_spruce_wood,318,1.114,wood,train/station trim
+lodestone,312,1.093,gameplay,"elytra equip pad (station, lodge, start lanes)"
+gray_wool,304,1.065,wool,detail / decorative
+spruce_slab,291,1.02,wood,roof and platform slabs
+smooth_quartz,283,0.992,quartz,chalet/station trim and stair
+cobblestone,278,0.974,stone,island rims and cave
+bubble_column,272,0.953,water,vertical elevator x-129..-127 z29..32 (y4-27)
+snow,226,0.792,snow/ice,snow layer detail
+calcite,199,0.697,stone,detail / decorative
+dirt,180,0.631,ground,village ground
+red_concrete,150,0.526,concrete,train cab body/accent
+spruce_leaves,141,0.494,wood,village trees
+polished_blackstone_slab,136,0.477,stone,arch/station detail
+tuff,135,0.473,stone,detail / decorative
+iron_trapdoor,132,0.463,detail,station/start grates and engine detail
+stone_slab,121,0.424,stone,detail / decorative
+quartz_bricks,113,0.396,quartz,chalet detail
+quartz_pillar,106,0.371,quartz,chalet stair columns
+yellow_terracotta,102,0.357,terracotta,village roofs
+mangrove_slab,96,0.336,wood,village roof slabs
+pink_glazed_terracotta,92,0.322,pad,jump pad corner (Speed VIII/IX + Jump Boost V)
+red_glazed_terracotta,92,0.322,pad,jump pad edge (Speed VIII/IX + Jump Boost V)
+red_wool,70,0.245,wool,detail / decorative
+green_terracotta,68,0.238,terracotta,village roofs
+light_blue_stained_glass,66,0.231,glass,detail / decorative
+cyan_stained_glass,60,0.21,glass,detail / decorative
+lime_wool,54,0.189,pad,Jump Boost VII/VIII pad
+dark_oak_planks,43,0.151,wood,detail / decorative
+netherite_block,41,0.144,accent,station/lodge accent blocks
+ice,37,0.13,snow/ice,ice patches on the north chain
+white_wool,35,0.123,wool,detail / decorative
+grass,34,0.119,ground,village ground patches
+cyan_concrete,32,0.112,concrete,station/ice-cave cyan accents
+yellow_wool,32,0.112,wool,train/start accent
+smooth_quartz_stairs,31,0.109,quartz,chalet/station stair
+repeating_command_block,30,0.105,command,always-on pad/kit logic
+barrier,30,0.105,gameplay,start gate wall (removed by fill at GO)
+yellow_concrete,29,0.102,concrete,detail / decorative
+black_wool,29,0.102,wool,train/start accent
+andesite_wall,28,0.098,stone,detail / decorative
+smooth_quartz_slab,28,0.098,quartz,detail / decorative
+stone_brick_slab,25,0.088,stone,arch/station trim
+blue_concrete,24,0.084,concrete,north-tip marker posts; village markers
+magenta_glazed_terracotta,23,0.081,pad,jump pad centre (Speed VIII/IX + Jump Boost V)
+cyan_terracotta,22,0.077,terracotta,detail / decorative
+spruce_trapdoor,20,0.07,wood,village/station shutters
+cut_red_sandstone,19,0.067,stone,chalet/roof accent
+nether_bricks,17,0.06,stone,chalet fireplace/chimney
+soul_sand,16,0.056,ground,campfire base
+stripped_oak_wood,15,0.053,wood,detail / decorative
+acacia_slab,15,0.053,wood,village detail
+mud_bricks,15,0.053,stone,village house walls
+redstone_wire,13,0.046,redstone,countdown circuit
+cyan_wool,13,0.046,wool,pool/ice accent
+red_concrete_powder,12,0.042,concrete,village path accent
+podzol,12,0.042,ground,village ground
+diorite_wall,12,0.042,stone,detail / decorative
+spruce_stairs,12,0.042,wood,village/station stairs
+cut_red_sandstone_slab,12,0.042,stone,detail / decorative
+blue_wool,11,0.039,wool,train/start accent
+ladder,11,0.039,wood,chalet/station access
+andesite_stairs,11,0.039,stone,detail / decorative
+coarse_dirt,11,0.039,ground,detail / decorative
+warped_wall_sign,10,0.035,detail,detail / decorative
+light_blue_stained_glass_pane,10,0.035,glass,detail / decorative
+spruce_fence,10,0.035,wood,village/station fences
+gray_stained_glass_pane,10,0.035,glass,detail / decorative
+repeater,10,0.035,redstone,countdown delay chain
+lime_concrete,9,0.032,concrete,start-gate posts
+iron_block,8,0.028,detail,detail / decorative
+stripped_warped_hyphae,8,0.028,wood,station interior
+granite_slab,8,0.028,stone,detail / decorative
+iron_bars,8,0.028,detail,train windows/rails
+mangrove_trapdoor,8,0.028,wood,village shutters
+purple_concrete,8,0.028,concrete,village marker
+light_gray_concrete,7,0.025,concrete,detail / decorative
+acacia_stairs,6,0.021,wood,village detail
+dirt_path,6,0.021,ground,detail / decorative
+spruce_door,6,0.021,wood,village/station doors
+bookshelf,6,0.021,wood,village interior
+red_carpet,6,0.021,detail,detail / decorative
+acacia_trapdoor,6,0.021,wood,village detail
+sea_lantern,6,0.021,light,north ice bridge lights
+lightning_rod,6,0.021,detail,detail / decorative
+black_stained_glass_pane,6,0.021,glass,detail / decorative
+polished_blackstone_bricks,6,0.021,stone,arch/station detail
+lantern,5,0.018,light,cave/chalet/bridge accent lights
+polished_blackstone_wall,5,0.018,stone,arch/station detail
+terracotta,5,0.018,terracotta,village roofs
+command_block,5,0.018,command,countdown impulse blocks
+white_stained_glass_pane,5,0.018,glass,detail / decorative
+polished_deepslate,5,0.018,stone,detail / decorative
+white_carpet,5,0.018,detail,detail / decorative
+deepslate_bricks,4,0.014,stone,station base
+dark_oak_wall_sign,4,0.014,detail,detail / decorative
+stone_brick_stairs,4,0.014,stone,arch/station stairs
+chiseled_quartz_block,4,0.014,quartz,detail / decorative
+mangrove_stairs,4,0.014,wood,village stairs
+iron_door,4,0.014,detail,station/village doors
+brown_carpet,4,0.014,detail,detail / decorative
+orange_wool,4,0.014,wool,detail / decorative
+yellow_carpet,4,0.014,pad,Speed IV (2 s) pad
+coal_block,3,0.011,detail,detail / decorative
+gold_block,3,0.011,detail,detail / decorative
+composter,3,0.011,detail,detail / decorative
+potted_cornflower,3,0.011,detail,detail / decorative
+oak_log,3,0.011,wood,detail / decorative
+waxed_copper_block,3,0.011,detail,detail / decorative
+light_gray_shulker_box,3,0.011,container,empty start kit boxes
+light_blue_concrete,3,0.011,concrete,train window
+warped_planks,2,0.007,wood,station interior
+quartz_block,2,0.007,quartz,detail / decorative
+campfire,2,0.007,light,cave/chalet accent light and smoke
+chain_command_block,2,0.007,command,countdown chain (title/gamemode)
+granite,1,0.004,stone,detail / decorative
+hopper,1,0.004,container,empty station control hopper
+cauldron,1,0.004,detail,detail / decorative
+lever,1,0.004,redstone,station control lever (powered=true)
+polished_blackstone_button,1,0.004,redstone,detail / decorative
+flower_pot,1,0.004,detail,detail / decorative

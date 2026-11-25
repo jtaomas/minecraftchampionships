@@ -1,0 +1,2 @@
+﻿status,x,y,z,gate_axis,width,grants_or_clears,note
+NONE,,,,,,,"No checkpoint, gate, scoreboard, spawn or finish logic in the world. Only 2 command blocks (egg/glow) exist."

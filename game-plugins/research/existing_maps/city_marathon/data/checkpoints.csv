@@ -1,0 +1,11 @@
+order,name,x,y,z,type,gate_axis,width,grants_clears,evidence
+0,start_pen,8,0,5,spawn/pen,-,15,"World spawn; playerdata at 8.43,0,5.53; no armour, trident+debug stick only.",H
+1,release_gate,8,1,10,barrier gate,x,19,"Closed at save; /fill 3 0 10 13 2 10 air clears the centre (CB14, LastExecution 110345, SuccessCount 1).",H
+2,start_finish_gate,8,4,53,yellow-concrete gate,x,15,"Four yellow concrete posts at (1,4,49),(1,4,57),(15,4,49),(15,4,57); ground speed pad at (8,0,53); no detection.",H
+3,CP1_start_commands,8,-2,5,command cluster,-,20,Trident to hotbar.0; countdown titles; /fill gate; adventure attempts; elytra clear on gray wool.,H
+4,CP2_park_west,-208,-2,88,command cluster,-,20,Enchant unbreaking/riptide; actionbar; setworldspawn on yellow-glazed pads; adventure attempts.,H
+5,CP3_station_north,-388,-8,51,command cluster,-,15,Enchant unbreaking/riptide; actionbar; setworldspawn on yellow-glazed pads; adventure attempts.,H
+6,soft_respawn_pads,-476,-1,5,yellow-glazed speed strips,-,3,Every yellow-glazed strip runs setworldspawn; 40 strips act as soft checkpoints.,H
+7,train_board,-457,7,88,stair/boarding point,z,5,"Yellow concrete stair at x-457,y5-7,z86-90 leads to train roof y8; yellow-glazed roof strip x-445..-441.",H
+8,highway_west_turn,-476,-1,-50,road turn,-,9,T-junction from West Link to North Highway; speed strips both legs.,H
+9,finish_line,8,4,53,same gate,x,15,"No finish detection, no lap counter, no timer. Crossing the gate does nothing by itself.",H

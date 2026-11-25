@@ -1,0 +1,18 @@
+3 Status: **research complete**. No game code, no build, no paste, no registry edit, no server write.
+4 Owner: A6b. Written folder: `game-plugins/research/existing_maps/minigames/parkour_tag/` only.
+5 Source world: `C:\Users\LeonS\AppData\Local\Temp\opencode\mcc_maps\daniellaur-s-minigames-version-3\daniellaur's minigames version 3` (1.17.1, DataVersion 2730).
+140 `1061 984` door → `1060 987` landing → `1057 988` → `1054 988` → `1052 990` → `1052 993` (west ladder) → `1054 995` → `1057 994` (central ladder) → `1060 992` → `1063 993` (deepslate island) → `1065 9
+145 `1060 1005` door → `1061 1003` → `1063 1001` → `1065 999` → `1067 997` (east catwalk) → `1069 995` → `1069 992` → `1067 990` → `1064 988` (NE reactor) → `1062 987` → `1061 985` → `1061 984` (runner do
+180 Full machine export: `data/commands.csv` (123 rows, exact command, trigger, role, 1.21 risk, notes). Summary below.
+243 - The map does not run `scoreboard players add` for kills/deaths. Instead it relies on the objectives’ **criteria**:
+321 See `REFERENCE_IMAGES.md` for the full index, source bounds and what each image proves. The main evidence set:
+324 - `frames/mg_pt_iso_south.png` — full-envelope iso from the south (banner + bowl + course).
+332 - `frames/mg_pt_surface_low.png` / `mg_pt_surface_high.png` — lowest/highest standable surface per column.
+333 - `frames/mg_pt_route_schematic.png` — labelled plan with example runner loop and hunter intercept (interpretive).
+373 The source is **1.17.1** (DataVersion 2730). A 1.21.1 client/server will upgrade the world and run the command blocks; the following need attention.
+394 Minimum 1.21.1 fix list (research only, not implemented): rewrite the six firework commands with `components`; fix `PT-C100`; verify the runtime team-split redstone at `1057 6 1001` and the repeater f
+459 frames/                       full-resolution evidence images (copies of the renders cited below)
+461 data/commands.csv             123 commands: id, cluster, kind, auto, conditional, role, effect, trigger, 1.21 risk, notes
+462 data/signs.csv                25 signs: x,y,z, colour, glow, 4 front lines, click event, role, notes
+464 data/blocks.csv               68 block types: count, share, category, palette role, use, light source
+477 - No Sky Battle, Super Clash, Sky Race or hub analysis. The hub is mentioned only as the entry pad.

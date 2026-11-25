@@ -1,0 +1,37 @@
+order,name,x,y,z,gate_axis,width,detail,grants_or_clears,confidence
+CP0,Start / finish gate,21,-1,7,z,11,"gate plane x16..26, y-1..1",Opens at GO (fill); finish crossed southbound,H
+CP1,Start spawn,21,-1,4,-,1,level.dat SpawnX/Y/Z,Initial world spawn,H
+CP2,Station checkpoint pad,-167,36,31,-,1,"yellow pad x -168..-166, z 29..33; setworldspawn command at -155,35,27",Sets global spawn at station,H
+CP3,Station elytra pad,-163,36,31,-,1,"lodestone; equip command at -155,35,28","Elytra on, chest slot",H (local chunk)
+CP4,Lodge roof elytra pad,-17,35,-36,-,1,lodestone; same command block 152 m away,Elytra on only if sim distance >=10 chunks,M
+CP5,Start side-lane elytra pads,29,-1,0,-,1,lodestone strips x28..31 and x11..14,Elytra on only if sim distance >=12 chunks,L/M
+CP6,North chain,15,-20,-132,-,1,no checkpoint block,No respawn beyond the station/start pads,H
+CP07,Yellow speed pad / spawn pad,27.0,-22.0,-118.0,-,7,x26..28 z-119..-117,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP08,Yellow speed pad / spawn pad,52.6,-23.0,-103.4,-,14,x50..55 z-105..-102,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP09,Yellow speed pad / spawn pad,34.0,-21.0,-92.0,-,9,x33..35 z-93..-91,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP10,Yellow speed pad / spawn pad,60.5,-22.0,-81.5,-,12,x58..63 z-82..-81,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP11,Yellow speed pad / spawn pad,52.5,-13.0,-59.5,-,12,x52..53 z-62..-57,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP12,Yellow speed pad / spawn pad,20.6,-9.0,-55.6,-,14,x19..22 z-58..-53,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP13,Yellow speed pad / spawn pad,-16.5,35.0,-29.5,-,24,x-22..-11 z-30..-29,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP14,Yellow speed pad / spawn pad,-8.5,35.0,-23.0,-,6,x-9..-8 z-24..-22,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP15,Yellow speed pad / spawn pad,-129.5,17.0,-22.5,-,8,x-130..-129 z-24..-21,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP16,Yellow speed pad / spawn pad,-168.0,16.0,-20.0,-,13,x-170..-166 z-22..-18,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP17,Yellow speed pad / spawn pad,-43.5,17.0,-14.5,-,8,x-44..-43 z-16..-13,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP18,Yellow speed pad / spawn pad,-2.5,32.0,-10.0,-,6,x-3..-2 z-11..-9,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP19,Yellow speed pad / spawn pad,-74.5,15.0,-8.5,-,4,x-75..-74 z-9..-8,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP20,Yellow speed pad / spawn pad,-64.5,15.0,-5.5,-,4,x-65..-64 z-6..-5,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP21,Yellow speed pad / spawn pad,-138.5,20.0,0.0,-,10,x-139..-138 z-2..2,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP22,Yellow speed pad / spawn pad,-32.5,18.0,0.0,-,36,x-34..-31 z-4..4,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP23,Yellow speed pad / spawn pad,-104.0,17.0,2.0,-,33,x-105..-103 z-3..7,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP24,Yellow speed pad / spawn pad,-74.5,15.0,6.5,-,4,x-75..-74 z6..7,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP25,Yellow speed pad / spawn pad,-54.5,15.0,6.5,-,4,x-55..-54 z6..7,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP26,Yellow speed pad / spawn pad,-44.5,4.0,24.5,-,12,x-45..-44 z22..27,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP27,Yellow speed pad / spawn pad,21.0,3.0,26.5,-,24,x20..22 z23..30,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP28,Yellow speed pad / spawn pad,-167.0,36.0,31.0,-,15,x-168..-166 z29..33,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP29,Yellow speed pad / spawn pad,14.0,-2.0,32.5,-,14,x11..17 z32..33,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP30,Yellow speed pad / spawn pad,-145.0,29.0,37.0,-,15,x-147..-143 z36..38,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP31,Yellow speed pad / spawn pad,-26.0,-2.0,37.4,-,22,x-31..-21 z36..39,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP32,Yellow speed pad / spawn pad,12.5,-2.0,54.5,-,4,x12..13 z54..55,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP33,Yellow speed pad / spawn pad,-10.0,-2.0,62.0,-,25,x-14..-6 z58..66,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP34,Yellow speed pad / spawn pad,8.0,-2.0,66.0,-,9,x7..9 z65..67,Sets global spawn when stepped on (if command chunk loaded),H/M
+CP35,Yellow speed pad / spawn pad,0.0,-2.0,71.0,-,9,x-1..1 z70..72,Sets global spawn when stepped on (if command chunk loaded),H/M

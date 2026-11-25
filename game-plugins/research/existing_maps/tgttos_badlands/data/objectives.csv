@@ -1,0 +1,10 @@
+objective,criterion,created_by_load,used_by_loop,purpose,notes
+countdown,dummy,yes,yes,countdown ticks 0..130,
+start,dummy,yes,yes,sign click sets >=1; starts the countdown,
+playtimeS,dummy,yes,yes,"whole seconds of run time, shown at finish",
+hit_chicken,minecraft.custom:minecraft.damage_dealt_resisted,yes,yes,finish detection (damage dealt that was resisted),
+playtimeT,dummy,yes,yes,"ticks remainder, shown at finish",
+playing,dummy,yes,yes,1 while running; drives playtime and marker spawning,
+finished,dummy,yes,yes,ticks since finish; 60 = return to start,
+playtime,dummy,no,no,dead objective saved in scoreboard.dat; not created or used by this pack,legacy leftover
+spawntime,dummy,yes,yes,ticks since last reset-marker summon,

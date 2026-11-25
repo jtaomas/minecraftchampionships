@@ -1,0 +1,107 @@
+loot cmds 93 chests 13
+CHEST (2000, 29, 0) slots=9 cmds=9
+   slot  3: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]} 2
+   slot  4: arrow 2
+   slot  5: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]} 2
+   slot 12: minecraft:ender_pearl
+   slot 13: minecraft:trident{Enchantments:[{id:loyalty,lvl:1}]}
+   slot 14: minecraft:ender_pearl
+   slot 21: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]} 2
+   slot 22: arrow 2
+   slot 23: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]} 2
+CHEST (1974, 26, -26) slots=9 cmds=9
+   slot  3: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]}
+   slot  4: minecraft:iron_axe
+   slot  5: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]}
+   slot 12: fishing_rod
+   slot 13: minecraft:splash_potion{Potion:'minecraft:regeneration'}
+   slot 14: fishing_rod
+   slot 21: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]}
+   slot 22: minecraft:spyglass
+   slot 23: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]}
+CHEST (1974, 26, 26) slots=9 cmds=9
+   slot  3: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]}
+   slot  4: minecraft:iron_axe
+   slot  5: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]}
+   slot 12: fishing_rod
+   slot 13: minecraft:splash_potion{Potion:'minecraft:regeneration'}
+   slot 14: fishing_rod
+   slot 21: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]}
+   slot 22: minecraft:spyglass
+   slot 23: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]}
+CHEST (2026, 26, -26) slots=9 cmds=9
+   slot  3: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]}
+   slot  4: minecraft:iron_axe
+   slot  5: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]}
+   slot 12: fishing_rod
+   slot 13: minecraft:splash_potion{Potion:'minecraft:regeneration'}
+   slot 14: fishing_rod
+   slot 21: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]}
+   slot 22: minecraft:spyglass
+   slot 23: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]}
+CHEST (2026, 26, 26) slots=9 cmds=9
+   slot  3: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]}
+   slot  4: minecraft:iron_axe
+   slot  5: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]}
+   slot 12: fishing_rod
+   slot 13: minecraft:splash_potion{Potion:'minecraft:regeneration'}
+   slot 14: fishing_rod
+   slot 21: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]}
+   slot 22: minecraft:spyglass
+   slot 23: cobweb{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone]}
+CHEST (1965, 24, 0) slots=9 cmds=9
+   slot  3: minecraft:crossbow
+   slot  4: arrow
+   slot  5: bow
+   slot 12: arrow
+   slot 13: stick 4
+   slot 14: arrow
+   slot 21: bow
+   slot 22: arrow
+   slot 23: crossbow
+CHEST (2000, 24, -35) slots=9 cmds=9
+   slot  3: minecraft:crossbow
+   slot  4: arrow
+   slot  5: bow
+   slot 12: arrow
+   slot 13: stick 4
+   slot 14: arrow
+   slot 21: bow
+   slot 22: arrow
+   slot 23: crossbow
+CHEST (2000, 24, 35) slots=9 cmds=9
+   slot  3: minecraft:crossbow
+   slot  4: minecraft:arrow
+   slot  5: bow
+   slot 12: arrow
+   slot 13: stick 4
+   slot 14: minecraft:arrow
+   slot 21: bow
+   slot 22: arrow
+   slot 23: crossbow
+CHEST (2035, 24, 0) slots=9 cmds=9
+   slot  3: minecraft:crossbow
+   slot  4: arrow
+   slot  5: bow
+   slot 12: arrow
+   slot 13: stick 4
+   slot 14: arrow
+   slot 21: bow
+   slot 22: arrow
+   slot 23: crossbow
+CHEST (1974, 14, -26) slots=3 cmds=3
+   slot 11: minecraft:ender_pearl
+   slot 13: minecraft:splash_potion{Potion:'minecraft:strong_leaping'}
+   slot 15: minecraft:ender_pearl
+CHEST (1974, 14, 26) slots=3 cmds=3
+   slot 11: minecraft:ender_pearl
+   slot 13: minecraft:splash_potion{Potion:'minecraft:strong_leaping'}
+   slot 15: minecraft:ender_pearl
+CHEST (2026, 14, -26) slots=3 cmds=3
+   slot 11: minecraft:ender_pearl
+   slot 13: minecraft:splash_potion{Potion:'minecraft:strong_leaping'}
+   slot 15: minecraft:ender_pearl
+CHEST (2026, 14, 26) slots=3 cmds=3
+   slot 11: minecraft:ender_pearl
+   slot 13: minecraft:splash_potion{Potion:'minecraft:strong_leaping'}
+   slot 15: minecraft:ender_pearl

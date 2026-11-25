@@ -1,0 +1,2 @@
+x,y,z,block,facing,front_line1,front_line2,front_line3,front_line4,back,color,glowing,click_line,click_action,click_value
+14,-1,36,minecraft:oak_wall_sign,east,"{""clickEvent"":{""action"":""run_command"",""value"":""tag @a add starting""},""text"":""""}","{""text"":""Start"",""color"":""green""}","{""text"":""""}","{""text"":""""}",(none / 1.19 Text1-4 only),black,false,1,run_command,tag @a add starting

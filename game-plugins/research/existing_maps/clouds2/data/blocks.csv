@@ -1,0 +1,172 @@
+﻿block,count,share_pct,use
+water,60002,39.891,"waterfalls, pools, glass water tunnel, bubble elevators"
+snow_block,27192,18.078,primary white walkable surface of sky islands
+stone,6517,4.333,ruin/terrace structure
+calcite,5565,3.7,white cloud/terrace surface; 'clear inventory' pad material
+cobweb,4369,2.905,cave/spider decor and soft-landing traps
+sandstone,3529,2.346,desert village walls/floors
+smooth_sandstone,3447,2.292,desert village trim and terrace edges
+barrier,3130,2.081,"invisible course bounding walls, gate block, pool rim"
+blue_stained_glass,2416,1.606,water-tunnel shell and portal rings
+lime_terracotta,2152,1.431,start hedge/arch and green terrain accents
+packed_mud,2053,1.365,garden/farm paths and castle bridge
+grass_block,1896,1.261,garden and farm surface
+lime_concrete,1632,1.085,"start gate/hedge, animated chevron ground"
+podzol,1239,0.824,crater village ground
+oak_planks,1189,0.79,village decks and bridges
+dirt,1150,0.765,sub-surface
+gray_terracotta,1083,0.72,rainbow/village accents
+green_terracotta,1036,0.689,rainbow/village accents
+light_gray_terracotta,939,0.624,gate trim and terracotta accents
+mud_bricks,869,0.578,crater village walls
+light_blue_wool,798,0.531,ice/water decorative accents
+light_blue_concrete,775,0.515,portal rings and ice accents
+structure_void,772,0.513,"technical block: cuts the tunnel at the ruin, masks structures"
+yellow_terracotta,732,0.487,rainbow band and desert trim
+bubble_column,728,0.484,upward water elevators (3 shafts)
+light_blue_terracotta,634,0.422,rainbow band
+prismarine,611,0.406,water/reef decor
+yellow_glazed_terracotta,595,0.396,checkpoint + animated chevron arrow pads
+oak_slab,550,0.366,village steps
+red_terracotta,549,0.365,rainbow band + depth-strider pad triggers
+stone_bricks,520,0.346,ruin masonry
+ice,518,0.344,frozen pools
+soul_sand,448,0.298,bubble elevator bases
+yellow_concrete,442,0.294,direction arrows / lightning-bolt markers
+packed_ice,395,0.263,frozen pools
+orange_concrete,353,0.235,crater rim and final-leg arches
+warped_planks,341,0.227,nether-ish accents in the castle
+seagrass,328,0.218,water decor
+moss_block,318,0.211,garden/ruin greenery
+gray_concrete,301,0.2,start floor and control-room casing
+smooth_stone,295,0.196,village trim
+spruce_planks,293,0.195,elytra launch platforms
+repeating_command_block,284,0.189,logic (283 always active)
+oak_leaves,279,0.185,garden hedges
+birch_sign,277,0.184,instruction panels
+stripped_oak_wood,262,0.174,village beams
+andesite,248,0.165,ruin/village stone
+diorite,222,0.148,cloud island accents
+orange_terracotta,222,0.148,decor/detail
+black_concrete,210,0.14,checkered gates and start line
+lime_shulker_box,207,0.138,jump-pad surface (+5/6/7 jump boost)
+purple_terracotta,200,0.133,rainbow band / crater decor
+magenta_terracotta,197,0.131,rainbow/village accents
+brown_mushroom_block,195,0.13,giant mushroom decor
+mud_brick_slab,191,0.127,crater village steps
+pink_glazed_terracotta,181,0.12,jump+speed pad
+red_glazed_terracotta,181,0.12,jump+speed pad
+green_concrete,157,0.104,wayfinding arrow heads
+slime_block,154,0.102,bounce decor/landing
+white_concrete,153,0.102,"checkered gates, cloud accents"
+stone_slab,149,0.099,steps
+sandstone_wall,140,0.093,village walls
+cobblestone,137,0.091,ruin rubble
+spruce_leaves,136,0.09,snow-section trees
+red_nether_bricks,131,0.087,castle/nether accents
+red_concrete,121,0.08,castel/bottom accents
+iron_trapdoor,118,0.078,village/ruin detail
+red_nether_brick_stairs,118,0.078,castle stairs
+tuff,114,0.076,ruin stone
+blue_terracotta,110,0.073,rainbow band
+black_terracotta,106,0.07,rainbow/village accents
+warped_slab,90,0.06,castle trim
+oak_wood,85,0.057,village beams
+pink_terracotta,83,0.055,rainbow/desert accents
+sandstone_stairs,82,0.055,village stairs
+vine,77,0.051,hanging greenery on the water tunnel and islands
+black_wool,74,0.049,checker pattern
+white_wool,73,0.049,checker pattern
+spruce_trapdoor,71,0.047,village detail
+white_terracotta,68,0.045,rainbow/village accents
+oak_stairs,67,0.045,village stairs
+brown_concrete,67,0.045,crater/desert accents
+smooth_quartz_slab,66,0.044,village trim
+stripped_birch_log,66,0.044,village beams
+mud_brick_wall,59,0.039,crater village walls
+stripped_spruce_wood,59,0.039,village beams
+diorite_slab,59,0.039,cloud terrace steps
+stone_stairs,53,0.035,ruin stairs
+cracked_stone_bricks,52,0.035,decor/detail
+prismarine_slab,49,0.033,reef decor
+spruce_stairs,48,0.032,village stairs
+magenta_glazed_terracotta,46,0.031,jump+speed pad
+grass,45,0.03,garden decor (becomes short_grass on upgrade)
+redstone_wire,45,0.03,start countdown circuit
+mud_brick_stairs,42,0.028,crater village stairs
+red_stained_glass,42,0.028,reset wall at z=29
+pink_concrete,40,0.027,pad accents
+repeater,39,0.026,start countdown delay line
+terracotta,36,0.024,generic terracotta
+red_nether_brick_slab,34,0.023,castle trim
+green_glazed_terracotta,33,0.022,slowness trap pad
+tall_grass,32,0.021,garden decor
+purple_concrete,32,0.021,flower/castle accents
+sweet_berry_bush,29,0.019,garden decor/trap
+iron_bars,28,0.019,village detail
+sandstone_slab,28,0.019,village steps
+spruce_slab,26,0.017,village steps
+command_block,23,0.015,impulse logic (23)
+smooth_quartz,21,0.014,village trim
+spruce_fence,21,0.014,village rails
+fire_coral_block,20,0.013,reef decor
+prismarine_brick_slab,20,0.013,reef decor
+soul_soil,20,0.013,bubble elevator bases
+fire_coral,19,0.013,reef decor
+tube_coral,18,0.012,reef decor
+brain_coral_block,18,0.012,reef decor
+orange_shulker_box,18,0.012,mega-jump pad surface
+smooth_sandstone_stairs,18,0.012,village stairs
+ladder,18,0.012,village/ruin access
+horn_coral_fan,17,0.011,reef decor
+pink_tulip,17,0.011,garden decor
+orange_tulip,17,0.011,garden decor
+brain_coral,16,0.011,reef decor
+azalea_leaves,16,0.011,garden hedges
+birch_slab,16,0.011,village steps
+tube_coral_block,15,0.01,reef decor
+chain_command_block,15,0.01,sequential start/reset logic (15)
+andesite_slab,15,0.01,elytra launch platform (castle variant)
+dark_oak_leaves,12,0.008,snow-section trees
+spruce_door,10,0.007,village doors
+oak_log,10,0.007,village beams
+cobblestone_slab,10,0.007,ruin steps
+stone_brick_stairs,9,0.006,ruin stairs
+birch_planks,9,0.006,village decks
+warped_stairs,8,0.005,castle stairs
+bamboo_wall_sign,8,0.005,instruction panels
+dark_oak_wood,8,0.005,castle beams
+granite,8,0.005,ruin accents
+quartz_stairs,8,0.005,village stairs
+stone_brick_wall,7,0.005,ruin walls
+andesite_wall,7,0.005,ruin walls
+iron_block,7,0.005,village detail
+sea_lantern,6,0.004,light source
+light_blue_stained_glass,6,0.004,ice/portal accent
+jungle_fence,6,0.004,garden fence
+lily_pad,6,0.004,pond decor
+jungle_leaves,5,0.003,garden canopy
+polished_andesite,4,0.003,gate trim
+red_sandstone_slab,4,0.003,village steps
+mushroom_stem,4,0.003,giant mushroom
+granite_stairs,4,0.003,ruin stairs
+granite_slab,4,0.003,ruin steps
+brown_mushroom,4,0.003,giant mushroom
+snow,4,0.003,snow layer
+smooth_red_sandstone_slab,4,0.003,village steps
+fire_coral_wall_fan,3,0.002,reef decor
+deepslate_tile_slab,3,0.002,ruin steps
+smooth_sandstone_slab,3,0.002,village steps
+tube_coral_wall_fan,2,0.001,reef decor
+chain,2,0.001,hanging chain decor
+stone_button,2,0.001,"START (5,4,22) and RESET (-3,4,25) buttons"
+red_sandstone,2,0.001,village walls
+polished_deepslate_slab,2,0.001,ruin steps
+stone_brick_slab,2,0.001,ruin steps
+horn_coral_block,1,0.001,reef decor
+fire_coral_fan,1,0.001,reef decor
+tube_coral_fan,1,0.001,reef decor
+sticky_piston,1,0.001,start circuit latch
+redstone_block,1,0.001,start circuit power source
+birch_fence,1,0.001,garden fence
+flowering_azalea_leaves,1,0.001,garden hedges

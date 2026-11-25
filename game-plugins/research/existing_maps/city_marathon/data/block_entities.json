@@ -1,0 +1,4343 @@
+[
+ {
+  "keepPacked": 0,
+  "x": -219,
+  "y": 30,
+  "z": -72,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -219,
+  "y": 29,
+  "z": -70,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -219,
+  "y": 29,
+  "z": -72,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -219,
+  "y": 30,
+  "z": -71,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -219,
+  "y": 30,
+  "z": -70,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -196,
+  "y": 30,
+  "z": -70,
+  "id": "minecraft:shulker_box",
+  "_cx": -13,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -196,
+  "y": 29,
+  "z": -70,
+  "id": "minecraft:shulker_box",
+  "_cx": -13,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -196,
+  "y": 30,
+  "z": -72,
+  "id": "minecraft:shulker_box",
+  "_cx": -13,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -196,
+  "y": 30,
+  "z": -71,
+  "id": "minecraft:shulker_box",
+  "_cx": -13,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -196,
+  "y": 29,
+  "z": -72,
+  "id": "minecraft:shulker_box",
+  "_cx": -13,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -173,
+  "y": 29,
+  "z": -72,
+  "id": "minecraft:shulker_box",
+  "_cx": -11,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -173,
+  "y": 30,
+  "z": -71,
+  "id": "minecraft:shulker_box",
+  "_cx": -11,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -173,
+  "y": 30,
+  "z": -70,
+  "id": "minecraft:shulker_box",
+  "_cx": -11,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -173,
+  "y": 30,
+  "z": -72,
+  "id": "minecraft:shulker_box",
+  "_cx": -11,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -173,
+  "y": 29,
+  "z": -70,
+  "id": "minecraft:shulker_box",
+  "_cx": -11,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -150,
+  "y": 30,
+  "z": -70,
+  "id": "minecraft:shulker_box",
+  "_cx": -10,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -150,
+  "y": 29,
+  "z": -70,
+  "id": "minecraft:shulker_box",
+  "_cx": -10,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -150,
+  "y": 30,
+  "z": -72,
+  "id": "minecraft:shulker_box",
+  "_cx": -10,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -150,
+  "y": 29,
+  "z": -72,
+  "id": "minecraft:shulker_box",
+  "_cx": -10,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -150,
+  "y": 30,
+  "z": -71,
+  "id": "minecraft:shulker_box",
+  "_cx": -10,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -127,
+  "y": 29,
+  "z": -70,
+  "id": "minecraft:shulker_box",
+  "_cx": -8,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -127,
+  "y": 29,
+  "z": -72,
+  "id": "minecraft:shulker_box",
+  "_cx": -8,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -127,
+  "y": 30,
+  "z": -71,
+  "id": "minecraft:shulker_box",
+  "_cx": -8,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -127,
+  "y": 30,
+  "z": -70,
+  "id": "minecraft:shulker_box",
+  "_cx": -8,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -127,
+  "y": 30,
+  "z": -72,
+  "id": "minecraft:shulker_box",
+  "_cx": -8,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1263894,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ polished_diorite run item replace entity @a armor.chest with elytra",
+  "keepPacked": 0,
+  "x": -127,
+  "y": 27,
+  "z": -66,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_cx": -8,
+  "_cz": -5,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -241,
+  "y": 18,
+  "z": -50,
+  "id": "minecraft:banner",
+  "_cx": -16,
+  "_cz": -4,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -241,
+  "y": 18,
+  "z": -53,
+  "id": "minecraft:banner",
+  "_cx": -16,
+  "_cz": -4,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -241,
+  "y": 19,
+  "z": -58,
+  "id": "minecraft:banner",
+  "_cx": -16,
+  "_cz": -4,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 18,
+  "z": -50,
+  "id": "minecraft:banner",
+  "_cx": -15,
+  "_cz": -4,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 18,
+  "z": -53,
+  "id": "minecraft:banner",
+  "_cx": -15,
+  "_cz": -4,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 19,
+  "z": -58,
+  "id": "minecraft:banner",
+  "_cx": -15,
+  "_cz": -4,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -241,
+  "y": 17,
+  "z": -47,
+  "id": "minecraft:banner",
+  "_cx": -16,
+  "_cz": -3,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -241,
+  "y": 17,
+  "z": -44,
+  "id": "minecraft:banner",
+  "_cx": -16,
+  "_cz": -3,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 17,
+  "z": -44,
+  "id": "minecraft:banner",
+  "_cx": -15,
+  "_cz": -3,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 17,
+  "z": -47,
+  "id": "minecraft:banner",
+  "_cx": -15,
+  "_cz": -3,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1278852,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ polished_diorite run item replace entity @a armor.chest with elytra",
+  "keepPacked": 0,
+  "x": -127,
+  "y": 27,
+  "z": -36,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_cx": -8,
+  "_cz": -3,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -219,
+  "y": 29,
+  "z": -30,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -219,
+  "y": 30,
+  "z": -30,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -219,
+  "y": 29,
+  "z": -32,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -219,
+  "y": 30,
+  "z": -31,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -219,
+  "y": 30,
+  "z": -32,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -196,
+  "y": 30,
+  "z": -31,
+  "id": "minecraft:shulker_box",
+  "_cx": -13,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -196,
+  "y": 29,
+  "z": -32,
+  "id": "minecraft:shulker_box",
+  "_cx": -13,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -196,
+  "y": 30,
+  "z": -32,
+  "id": "minecraft:shulker_box",
+  "_cx": -13,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -196,
+  "y": 29,
+  "z": -30,
+  "id": "minecraft:shulker_box",
+  "_cx": -13,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -196,
+  "y": 30,
+  "z": -30,
+  "id": "minecraft:shulker_box",
+  "_cx": -13,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -173,
+  "y": 29,
+  "z": -30,
+  "id": "minecraft:shulker_box",
+  "_cx": -11,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -173,
+  "y": 30,
+  "z": -30,
+  "id": "minecraft:shulker_box",
+  "_cx": -11,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -173,
+  "y": 30,
+  "z": -31,
+  "id": "minecraft:shulker_box",
+  "_cx": -11,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -173,
+  "y": 29,
+  "z": -32,
+  "id": "minecraft:shulker_box",
+  "_cx": -11,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -173,
+  "y": 30,
+  "z": -32,
+  "id": "minecraft:shulker_box",
+  "_cx": -11,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -150,
+  "y": 29,
+  "z": -30,
+  "id": "minecraft:shulker_box",
+  "_cx": -10,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -150,
+  "y": 30,
+  "z": -30,
+  "id": "minecraft:shulker_box",
+  "_cx": -10,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -150,
+  "y": 29,
+  "z": -32,
+  "id": "minecraft:shulker_box",
+  "_cx": -10,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -150,
+  "y": 30,
+  "z": -31,
+  "id": "minecraft:shulker_box",
+  "_cx": -10,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -150,
+  "y": 30,
+  "z": -32,
+  "id": "minecraft:shulker_box",
+  "_cx": -10,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -127,
+  "y": 29,
+  "z": -30,
+  "id": "minecraft:shulker_box",
+  "_cx": -8,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -127,
+  "y": 30,
+  "z": -30,
+  "id": "minecraft:shulker_box",
+  "_cx": -8,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -127,
+  "y": 30,
+  "z": -31,
+  "id": "minecraft:shulker_box",
+  "_cx": -8,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -127,
+  "y": 29,
+  "z": -32,
+  "id": "minecraft:shulker_box",
+  "_cx": -8,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -127,
+  "y": 30,
+  "z": -32,
+  "id": "minecraft:shulker_box",
+  "_cx": -8,
+  "_cz": -2,
+  "_region": "r.-1.-1.mca"
+ },
+ {
+  "auto": 0,
+  "powered": 0,
+  "LastExecution": 110345,
+  "SuccessCount": 1,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "/fill 3 0 10 13 2 10 air",
+  "keepPacked": 0,
+  "x": -2,
+  "y": -3,
+  "z": 5,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -1,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -285,
+  "y": 30,
+  "z": 19,
+  "id": "minecraft:shulker_box",
+  "_cx": -18,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -285,
+  "y": 29,
+  "z": 19,
+  "id": "minecraft:shulker_box",
+  "_cx": -18,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -285,
+  "y": 30,
+  "z": 20,
+  "id": "minecraft:shulker_box",
+  "_cx": -18,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -285,
+  "y": 30,
+  "z": 21,
+  "id": "minecraft:shulker_box",
+  "_cx": -18,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -285,
+  "y": 29,
+  "z": 21,
+  "id": "minecraft:shulker_box",
+  "_cx": -18,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 29,
+  "z": 19,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 30,
+  "z": 20,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 30,
+  "z": 21,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 29,
+  "z": 21,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 30,
+  "z": 19,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 30,
+  "z": 19,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 29,
+  "z": 19,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 30,
+  "z": 20,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 30,
+  "z": 21,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 29,
+  "z": 21,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 29,
+  "z": 21,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1290807,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ polished_diorite run item replace entity @a armor.chest with elytra",
+  "keepPacked": 0,
+  "x": -216,
+  "y": 27,
+  "z": 25,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_cx": -14,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 30,
+  "z": 19,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 30,
+  "z": 20,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 29,
+  "z": 19,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 30,
+  "z": 21,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 641153,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:orange_wool run effect give @a minecraft:jump_boost 1 9 true",
+  "keepPacked": 0,
+  "x": -55,
+  "y": 3,
+  "z": 17,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -4,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 641153,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:orange_wool run effect give @a minecraft:speed 1 11 true",
+  "keepPacked": 0,
+  "x": -55,
+  "y": 3,
+  "z": 18,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -4,
+  "_cz": 1,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1206480,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "gamemode adventure",
+  "keepPacked": 0,
+  "x": -387,
+  "y": -8,
+  "z": 45,
+  "id": "minecraft:command_block",
+  "LastOutput": "{\"extra\":[{\"color\":\"red\",\"extra\":[{\"translate\":\"permissions.requires.player\"}],\"text\":\"\"}],\"text\":\"[09:26:45] \"}",
+  "TrackOutput": 1,
+  "_cx": -25,
+  "_cz": 2,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1206480,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "/gamemode adventure",
+  "keepPacked": 0,
+  "x": -387,
+  "y": -8,
+  "z": 47,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -25,
+  "_cz": 2,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 47,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 2,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "GlowingText": 1,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -55,
+  "Text3": "{\"text\":\"ENTRY\"}",
+  "y": 2,
+  "Text2": "{\"text\":\"NO\"}",
+  "z": 47,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_cx": -4,
+  "_cz": 2,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -41,
+  "y": 1,
+  "Items": [],
+  "z": 47,
+  "CookingTimes": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "CookingTotalTimes": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "id": "minecraft:campfire",
+  "_cx": -3,
+  "_cz": 2,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -40,
+  "y": 12,
+  "z": 47,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -3,
+  "_cz": 2,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -38,
+  "y": 12,
+  "z": 47,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -3,
+  "_cz": 2,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "GlowingText": 1,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -2,
+  "Text3": "{\"text\":\"ENTRY\"}",
+  "y": 1,
+  "Text2": "{\"text\":\"NO\"}",
+  "z": 47,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_cx": -1,
+  "_cz": 2,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1206480,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:red_glazed_terracotta run effect give @a minecraft:speed 1 8 true",
+  "keepPacked": 0,
+  "x": -385,
+  "y": -8,
+  "z": 57,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -25,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1206480,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:pink_glazed_terracotta run effect give @a minecraft:jump_boost 1 4 true",
+  "keepPacked": 0,
+  "x": -385,
+  "y": -9,
+  "z": 56,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -25,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1206480,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:yellow_glazed_terracotta run effect give @a minecraft:speed 2 3 true",
+  "keepPacked": 0,
+  "x": -385,
+  "y": -8,
+  "z": 58,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -25,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1206480,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:magenta_glazed_terracotta run effect give @a minecraft:jump_boost 1 4 true",
+  "keepPacked": 0,
+  "x": -385,
+  "y": -10,
+  "z": 56,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -25,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1206480,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:pink_glazed_terracotta run effect give @a minecraft:speed 1 8 true",
+  "keepPacked": 0,
+  "x": -385,
+  "y": -9,
+  "z": 57,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -25,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1206480,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ yellow_carpet run effect give @a minecraft:speed 2 3 true",
+  "keepPacked": 0,
+  "x": -385,
+  "y": -8,
+  "z": 59,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -25,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1206480,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:magenta_glazed_terracotta run effect give @a minecraft:speed 1 8 true",
+  "keepPacked": 0,
+  "x": -385,
+  "y": -10,
+  "z": 57,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -25,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1206480,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "enchant @a minecraft:unbreaking 3",
+  "keepPacked": 0,
+  "x": -392,
+  "y": -8,
+  "z": 48,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -25,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1206480,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "enchant @a minecraft:riptide",
+  "keepPacked": 0,
+  "x": -392,
+  "y": -8,
+  "z": 49,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -25,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1206480,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ yellow_glazed_terracotta run setworldspawn",
+  "keepPacked": 0,
+  "x": -388,
+  "y": -8,
+  "z": 51,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_cx": -25,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1206480,
+  "SuccessCount": 1,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "title @a actionbar \"You are in 1st place\"",
+  "keepPacked": 0,
+  "x": -389,
+  "y": -8,
+  "z": 53,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -25,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1206480,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:lime_wool run effect give @a minecraft:jump_boost 1 6 true",
+  "keepPacked": 0,
+  "x": -385,
+  "y": -8,
+  "z": 55,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -25,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1206480,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:red_glazed_terracotta run effect give @a minecraft:jump_boost 1 4 true",
+  "keepPacked": 0,
+  "x": -385,
+  "y": -8,
+  "z": 56,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -25,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1206483,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:orange_wool run effect give @a minecraft:speed 1 11 true",
+  "keepPacked": 0,
+  "x": -381,
+  "y": 3,
+  "z": 57,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -24,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1206483,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:orange_wool run effect give @a minecraft:jump_boost 1 9 true",
+  "keepPacked": 0,
+  "x": -380,
+  "y": 3,
+  "z": 58,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -24,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 56,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 57,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 48,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 50,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 51,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 53,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 54,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 30,
+  "z": 53,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 30,
+  "z": 54,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 29,
+  "z": 53,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 30,
+  "z": 55,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 29,
+  "z": 55,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 30,
+  "z": 53,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 30,
+  "z": 54,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 29,
+  "z": 53,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 30,
+  "z": 55,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 29,
+  "z": 55,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 30,
+  "z": 54,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 29,
+  "z": 53,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 30,
+  "z": 55,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 29,
+  "z": 55,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1290796,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ polished_diorite run item replace entity @a armor.chest with elytra",
+  "keepPacked": 0,
+  "x": -216,
+  "y": 27,
+  "z": 49,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_cx": -14,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 30,
+  "z": 53,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -117,
+  "y": 0,
+  "Items": [],
+  "z": 59,
+  "id": "minecraft:barrel",
+  "_cx": -8,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -116,
+  "y": 3,
+  "Items": [],
+  "z": 62,
+  "CookingTimes": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "CookingTotalTimes": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "id": "minecraft:campfire",
+  "_cx": -8,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -116,
+  "y": 3,
+  "Items": [],
+  "z": 63,
+  "CookingTimes": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "CookingTotalTimes": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "id": "minecraft:campfire",
+  "_cx": -8,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -117,
+  "y": 0,
+  "Items": [],
+  "z": 61,
+  "id": "minecraft:barrel",
+  "_cx": -8,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -115,
+  "y": 0,
+  "Items": [],
+  "z": 59,
+  "id": "minecraft:barrel",
+  "_cx": -8,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -115,
+  "y": 0,
+  "Items": [],
+  "z": 61,
+  "id": "minecraft:barrel",
+  "_cx": -8,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -107,
+  "y": 0,
+  "Items": [],
+  "z": 59,
+  "id": "minecraft:barrel",
+  "_cx": -7,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -109,
+  "y": 0,
+  "Items": [],
+  "z": 61,
+  "id": "minecraft:barrel",
+  "_cx": -7,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -107,
+  "y": 0,
+  "Items": [],
+  "z": 61,
+  "id": "minecraft:barrel",
+  "_cx": -7,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -109,
+  "y": 0,
+  "Items": [],
+  "z": 59,
+  "id": "minecraft:barrel",
+  "_cx": -7,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "GlowingText": 1,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -56,
+  "Text3": "{\"text\":\"ENTRY\"}",
+  "y": 1,
+  "Text2": "{\"text\":\"NO\"}",
+  "z": 49,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_cx": -4,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -40,
+  "y": 12,
+  "z": 48,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -3,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -40,
+  "y": 12,
+  "z": 49,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -3,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -38,
+  "y": 12,
+  "z": 48,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -3,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -38,
+  "y": 12,
+  "z": 49,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -3,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 5,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 4,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 3,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 2,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 1,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 0,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 20,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 19,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 18,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 17,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 16,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 15,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 14,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 13,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 12,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 11,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 10,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 9,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 8,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 7,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -12,
+  "y": 6,
+  "z": 49,
+  "id": "minecraft:shulker_box",
+  "_cx": -1,
+  "_cz": 3,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 71,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "ls",
+    "Color": 0
+   },
+   {
+    "Pattern": "rs",
+    "Color": 0
+   },
+   {
+    "Pattern": "tt",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 4,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 73,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "ls",
+    "Color": 0
+   },
+   {
+    "Pattern": "rs",
+    "Color": 0
+   },
+   {
+    "Pattern": "ts",
+    "Color": 0
+   },
+   {
+    "Pattern": "bs",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 4,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 72,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "hh",
+    "Color": 0
+   },
+   {
+    "Pattern": "drs",
+    "Color": 0
+   },
+   {
+    "Pattern": "ls",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 4,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 75,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "cs",
+    "Color": 0
+   },
+   {
+    "Pattern": "ts",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 4,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 74,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "ls",
+    "Color": 0
+   },
+   {
+    "Pattern": "ts",
+    "Color": 0
+   },
+   {
+    "Pattern": "ms",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 4,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 77,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "ls",
+    "Color": 0
+   },
+   {
+    "Pattern": "bs",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 4,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 76,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "ts",
+    "Color": 0
+   },
+   {
+    "Pattern": "ls",
+    "Color": 0
+   },
+   {
+    "Pattern": "rs",
+    "Color": 0
+   },
+   {
+    "Pattern": "ms",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 4,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 78,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "ls",
+    "Color": 0
+   },
+   {
+    "Pattern": "hh",
+    "Color": 0
+   },
+   {
+    "Pattern": "ts",
+    "Color": 14
+   },
+   {
+    "Pattern": "bo",
+    "Color": 0
+   },
+   {
+    "Pattern": "hhb",
+    "Color": 14
+   },
+   {
+    "Pattern": "ls",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 4,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 69,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "ts",
+    "Color": 0
+   },
+   {
+    "Pattern": "ls",
+    "Color": 0
+   },
+   {
+    "Pattern": "rs",
+    "Color": 0
+   },
+   {
+    "Pattern": "bs",
+    "Color": 0
+   },
+   {
+    "Pattern": "ms",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 4,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -117,
+  "y": 0,
+  "Items": [],
+  "z": 64,
+  "id": "minecraft:barrel",
+  "_cx": -8,
+  "_cz": 4,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -117,
+  "y": 0,
+  "Items": [],
+  "z": 66,
+  "id": "minecraft:barrel",
+  "_cx": -8,
+  "_cz": 4,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -115,
+  "y": 0,
+  "Items": [],
+  "z": 64,
+  "id": "minecraft:barrel",
+  "_cx": -8,
+  "_cz": 4,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -115,
+  "y": 0,
+  "Items": [],
+  "z": 66,
+  "id": "minecraft:barrel",
+  "_cx": -8,
+  "_cz": 4,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 83,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 84,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 87,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 86,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 89,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 90,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 93,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 92,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 14,
+  "z": 83,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "bri",
+    "Color": 1
+   },
+   {
+    "Pattern": "ss",
+    "Color": 15
+   }
+  ],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 14,
+  "z": 85,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "bri",
+    "Color": 1
+   },
+   {
+    "Pattern": "ss",
+    "Color": 15
+   }
+  ],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 12,
+  "z": 83,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 14,
+  "z": 84,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 12,
+  "z": 85,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "bri",
+    "Color": 1
+   },
+   {
+    "Pattern": "ss",
+    "Color": 15
+   }
+  ],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 14,
+  "z": 87,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "bri",
+    "Color": 1
+   },
+   {
+    "Pattern": "ss",
+    "Color": 15
+   }
+  ],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 12,
+  "z": 84,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "bri",
+    "Color": 1
+   },
+   {
+    "Pattern": "ss",
+    "Color": 15
+   }
+  ],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 14,
+  "z": 86,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "bri",
+    "Color": 1
+   },
+   {
+    "Pattern": "ss",
+    "Color": 15
+   }
+  ],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 14,
+  "z": 89,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "bri",
+    "Color": 1
+   },
+   {
+    "Pattern": "ss",
+    "Color": 15
+   }
+  ],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 12,
+  "z": 87,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 12,
+  "z": 86,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "bri",
+    "Color": 1
+   },
+   {
+    "Pattern": "ss",
+    "Color": 15
+   }
+  ],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 14,
+  "z": 88,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "bri",
+    "Color": 1
+   },
+   {
+    "Pattern": "ss",
+    "Color": 15
+   }
+  ],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 12,
+  "z": 89,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "bri",
+    "Color": 1
+   },
+   {
+    "Pattern": "ss",
+    "Color": 15
+   }
+  ],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 14,
+  "z": 91,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 12,
+  "z": 88,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "bri",
+    "Color": 1
+   },
+   {
+    "Pattern": "ss",
+    "Color": 15
+   }
+  ],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 14,
+  "z": 90,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "bri",
+    "Color": 1
+   },
+   {
+    "Pattern": "ss",
+    "Color": 15
+   }
+  ],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 12,
+  "z": 91,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "bri",
+    "Color": 1
+   },
+   {
+    "Pattern": "ss",
+    "Color": 15
+   }
+  ],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 14,
+  "z": 93,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "bri",
+    "Color": 1
+   },
+   {
+    "Pattern": "ss",
+    "Color": 15
+   }
+  ],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 12,
+  "z": 90,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "bri",
+    "Color": 1
+   },
+   {
+    "Pattern": "ss",
+    "Color": 15
+   }
+  ],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 14,
+  "z": 92,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 12,
+  "z": 93,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "bri",
+    "Color": 1
+   },
+   {
+    "Pattern": "ss",
+    "Color": 15
+   }
+  ],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -366,
+  "y": 12,
+  "z": 92,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "bri",
+    "Color": 1
+   },
+   {
+    "Pattern": "ss",
+    "Color": 15
+   }
+  ],
+  "_cx": -23,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "CookTime": 0,
+  "keepPacked": 0,
+  "BurnTime": 0,
+  "x": -232,
+  "y": 4,
+  "Items": [],
+  "z": 88,
+  "id": "minecraft:blast_furnace",
+  "CookTimeTotal": 0,
+  "RecipesUsed": {},
+  "_cx": -15,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ yellow_glazed_terracotta run setworldspawn",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -2,
+  "z": 83,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 1,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "title @a actionbar \"You are in 1st place\"",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -2,
+  "z": 82,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "enchant @a minecraft:unbreaking 3",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -2,
+  "z": 85,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "enchant @a minecraft:riptide",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -2,
+  "z": 84,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "gamemode adventure",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -2,
+  "z": 87,
+  "id": "minecraft:command_block",
+  "LastOutput": "{\"extra\":[{\"color\":\"red\",\"extra\":[{\"translate\":\"permissions.requires.player\"}],\"text\":\"\"}],\"text\":\"[10:53:42] \"}",
+  "TrackOutput": 1,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "/gamemode adventure",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -2,
+  "z": 86,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:red_glazed_terracotta run effect give @a minecraft:jump_boost 1 4 true",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -2,
+  "z": 89,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:lime_wool run effect give @a minecraft:jump_boost 1 6 true",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -2,
+  "z": 88,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:pink_glazed_terracotta run effect give @a minecraft:speed 1 8 true",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -3,
+  "z": 90,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:yellow_glazed_terracotta run effect give @a minecraft:speed 2 3 true",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -2,
+  "z": 91,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:magenta_glazed_terracotta run effect give @a minecraft:jump_boost 1 4 true",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -4,
+  "z": 89,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:pink_glazed_terracotta run effect give @a minecraft:jump_boost 1 4 true",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -3,
+  "z": 89,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:red_glazed_terracotta run effect give @a minecraft:speed 1 8 true",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -2,
+  "z": 90,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:green_carpet run effect clear",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -2,
+  "z": 93,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:magenta_glazed_terracotta run effect give @a minecraft:speed 1 8 true",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -4,
+  "z": 90,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ yellow_carpet run effect give @a minecraft:speed 2 3 true",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -2,
+  "z": 92,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:orange_wool run effect give @a minecraft:jump_boost 1 9 true",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -3,
+  "z": 94,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294254,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:orange_wool run effect give @a minecraft:speed 1 11 true",
+  "keepPacked": 0,
+  "x": -208,
+  "y": -2,
+  "z": 94,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": -13,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "GlowingText": 1,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -91,
+  "Text3": "{\"text\":\"ENTRY\"}",
+  "y": 0,
+  "Text2": "{\"text\":\"NO\"}",
+  "z": 88,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_cx": -6,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "GlowingText": 1,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -91,
+  "Text3": "{\"text\":\"ENTRY\"}",
+  "y": 0,
+  "Text2": "{\"text\":\"NO\"}",
+  "z": 89,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_cx": -6,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -30,
+  "y": 2,
+  "z": 81,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -2,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -24,
+  "y": 2,
+  "z": 95,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -2,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -24,
+  "y": 2,
+  "z": 81,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -2,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -30,
+  "y": 2,
+  "z": 95,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -2,
+  "_cz": 5,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 103,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "ls",
+    "Color": 0
+   },
+   {
+    "Pattern": "rs",
+    "Color": 0
+   },
+   {
+    "Pattern": "tt",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 6,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 105,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "ls",
+    "Color": 0
+   },
+   {
+    "Pattern": "rs",
+    "Color": 0
+   },
+   {
+    "Pattern": "ts",
+    "Color": 0
+   },
+   {
+    "Pattern": "bs",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 6,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 104,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "hh",
+    "Color": 0
+   },
+   {
+    "Pattern": "drs",
+    "Color": 0
+   },
+   {
+    "Pattern": "ls",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 6,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 107,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "cs",
+    "Color": 0
+   },
+   {
+    "Pattern": "ts",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 6,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 106,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "ls",
+    "Color": 0
+   },
+   {
+    "Pattern": "ts",
+    "Color": 0
+   },
+   {
+    "Pattern": "ms",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 6,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 109,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "ls",
+    "Color": 0
+   },
+   {
+    "Pattern": "bs",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 6,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 108,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "ts",
+    "Color": 0
+   },
+   {
+    "Pattern": "ls",
+    "Color": 0
+   },
+   {
+    "Pattern": "rs",
+    "Color": 0
+   },
+   {
+    "Pattern": "ms",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 6,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 110,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "ls",
+    "Color": 0
+   },
+   {
+    "Pattern": "hh",
+    "Color": 0
+   },
+   {
+    "Pattern": "ts",
+    "Color": 14
+   },
+   {
+    "Pattern": "bo",
+    "Color": 0
+   },
+   {
+    "Pattern": "hhb",
+    "Color": 14
+   },
+   {
+    "Pattern": "ls",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 6,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -372,
+  "y": 18,
+  "z": 101,
+  "id": "minecraft:banner",
+  "Patterns": [
+   {
+    "Pattern": "ts",
+    "Color": 0
+   },
+   {
+    "Pattern": "ls",
+    "Color": 0
+   },
+   {
+    "Pattern": "rs",
+    "Color": 0
+   },
+   {
+    "Pattern": "ms",
+    "Color": 0
+   }
+  ],
+  "_cx": -24,
+  "_cz": 6,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 120,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 123,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 122,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 125,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 126,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 119,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 30,
+  "z": 121,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 30,
+  "z": 123,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 29,
+  "z": 121,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 30,
+  "z": 122,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 29,
+  "z": 123,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 29,
+  "z": 121,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 30,
+  "z": 122,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 30,
+  "z": 121,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 29,
+  "z": 123,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 30,
+  "z": 123,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 30,
+  "z": 121,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 30,
+  "z": 123,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 29,
+  "z": 121,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 30,
+  "z": 122,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 29,
+  "z": 123,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294236,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ polished_diorite run item replace entity @a armor.chest with elytra",
+  "keepPacked": 0,
+  "x": -216,
+  "y": 27,
+  "z": 127,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_cx": -14,
+  "_cz": 7,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 129,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 8,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -355,
+  "y": 5,
+  "z": 128,
+  "id": "minecraft:banner",
+  "Patterns": [],
+  "_cx": -23,
+  "_cz": 8,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 30,
+  "z": 155,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 9,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 29,
+  "z": 157,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 9,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 29,
+  "z": 155,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 9,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 30,
+  "z": 156,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 9,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -262,
+  "y": 30,
+  "z": 157,
+  "id": "minecraft:shulker_box",
+  "_cx": -17,
+  "_cz": 9,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 30,
+  "z": 157,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 9,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 29,
+  "z": 157,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 9,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 30,
+  "z": 155,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 9,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 29,
+  "z": 155,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 9,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -239,
+  "y": 30,
+  "z": 156,
+  "id": "minecraft:shulker_box",
+  "_cx": -15,
+  "_cz": 9,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 29,
+  "z": 155,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 9,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 30,
+  "z": 156,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 9,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 30,
+  "z": 157,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 9,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1294236,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ polished_diorite run item replace entity @a armor.chest with elytra",
+  "keepPacked": 0,
+  "x": -216,
+  "y": 27,
+  "z": 151,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_cx": -14,
+  "_cz": 9,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 30,
+  "z": 155,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 9,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": -216,
+  "y": 29,
+  "z": 157,
+  "id": "minecraft:shulker_box",
+  "_cx": -14,
+  "_cz": 9,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1234896,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "/gamemode adventure",
+  "keepPacked": 0,
+  "x": 11,
+  "y": -2,
+  "z": -4,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": -1,
+  "_region": "r.0.-1.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1234896,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "gamemode adventure",
+  "keepPacked": 0,
+  "x": 11,
+  "y": -2,
+  "z": -6,
+  "id": "minecraft:command_block",
+  "LastOutput": "{\"extra\":[{\"color\":\"red\",\"extra\":[{\"translate\":\"permissions.requires.player\"}],\"text\":\"\"}],\"text\":\"[10:03:57] \"}",
+  "TrackOutput": 1,
+  "_cx": 0,
+  "_cz": -1,
+  "_region": "r.0.-1.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1234896,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "enchant @a minecraft:riptide",
+  "keepPacked": 0,
+  "x": 6,
+  "y": -2,
+  "z": -2,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": -1,
+  "_region": "r.0.-1.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1234896,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "enchant @a minecraft:unbreaking 3",
+  "keepPacked": 0,
+  "x": 6,
+  "y": -2,
+  "z": -3,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": -1,
+  "_region": "r.0.-1.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1234896,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:gray_wool run item replace entity @a armor.chest with air",
+  "keepPacked": 0,
+  "x": 4,
+  "y": -2,
+  "z": -5,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_cx": 0,
+  "_cz": -1,
+  "_region": "r.0.-1.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": 2,
+  "y": 6,
+  "z": 10,
+  "id": "minecraft:shulker_box",
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 0,
+  "powered": 0,
+  "LastExecution": 110329,
+  "SuccessCount": 1,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "/title @a subtitle {\"text\":\">1<\",\"bold\":true,\"color\":\"green\"}",
+  "keepPacked": 0,
+  "x": 1,
+  "y": -3,
+  "z": 5,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 0,
+  "powered": 0,
+  "LastExecution": 110313,
+  "SuccessCount": 1,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "/title @a subtitle {\"text\":\">2<\",\"bold\":true,\"color\":\"yellow\"}",
+  "keepPacked": 0,
+  "x": 4,
+  "y": -3,
+  "z": 5,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": 2,
+  "y": 0,
+  "z": 10,
+  "id": "minecraft:shulker_box",
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 110297,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "gamemode adventure",
+  "keepPacked": 0,
+  "x": 7,
+  "y": -3,
+  "z": 3,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1234861,
+  "SuccessCount": 1,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "title @a actionbar \"You are in 1st place\"",
+  "keepPacked": 0,
+  "x": 9,
+  "y": -2,
+  "z": 2,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 110297,
+  "SuccessCount": 1,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "/title @a subtitle {\"text\":\">3<\",\"bold\":true,\"color\":\"red\"}",
+  "keepPacked": 0,
+  "x": 7,
+  "y": -3,
+  "z": 4,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 0,
+  "powered": 0,
+  "LastExecution": 110297,
+  "SuccessCount": 1,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "/title @a title {\"text\":\"Starting In\",\"color\":\"aqua\"}",
+  "keepPacked": 0,
+  "x": 7,
+  "y": -3,
+  "z": 5,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 0,
+  "powered": 0,
+  "LastExecution": 110295,
+  "SuccessCount": 1,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "item replace entity @a hotbar.0 with minecraft:trident 1",
+  "keepPacked": 0,
+  "x": 9,
+  "y": -2,
+  "z": 5,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1234861,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:yellow_concrete run effect clear @a",
+  "keepPacked": 0,
+  "x": 13,
+  "y": -2,
+  "z": 0,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": 14,
+  "y": 6,
+  "z": 10,
+  "id": "minecraft:shulker_box",
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1234861,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ yellow_glazed_terracotta run setworldspawn",
+  "keepPacked": 0,
+  "x": 10,
+  "y": -2,
+  "z": 0,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1234861,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:lime_wool run effect give @a minecraft:jump_boost 1 6 true",
+  "keepPacked": 0,
+  "x": 13,
+  "y": -2,
+  "z": 4,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1234861,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:red_glazed_terracotta run effect give @a minecraft:jump_boost 1 4 true",
+  "keepPacked": 0,
+  "x": 13,
+  "y": -2,
+  "z": 5,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1234861,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:red_glazed_terracotta run effect give @a minecraft:speed 1 8 true",
+  "keepPacked": 0,
+  "x": 13,
+  "y": -2,
+  "z": 6,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1234861,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:pink_glazed_terracotta run effect give @a minecraft:jump_boost 1 4 true",
+  "keepPacked": 0,
+  "x": 13,
+  "y": -3,
+  "z": 5,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1234861,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:yellow_glazed_terracotta run effect give @a minecraft:speed 2 3 true",
+  "keepPacked": 0,
+  "x": 13,
+  "y": -2,
+  "z": 7,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1234861,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:magenta_glazed_terracotta run effect give @a minecraft:jump_boost 1 4 true",
+  "keepPacked": 0,
+  "x": 13,
+  "y": -4,
+  "z": 5,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1234861,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:pink_glazed_terracotta run effect give @a minecraft:speed 1 8 true",
+  "keepPacked": 0,
+  "x": 13,
+  "y": -3,
+  "z": 6,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1234861,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ yellow_carpet run effect give @a minecraft:speed 2 3 true",
+  "keepPacked": 0,
+  "x": 13,
+  "y": -2,
+  "z": 8,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 1234861,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute as @a at @s if block ~ ~-1 ~ minecraft:magenta_glazed_terracotta run effect give @a minecraft:speed 1 8 true",
+  "keepPacked": 0,
+  "x": 13,
+  "y": -4,
+  "z": 6,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "keepPacked": 0,
+  "x": 14,
+  "y": 0,
+  "z": 10,
+  "id": "minecraft:shulker_box",
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "GlowingText": 1,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": 4,
+  "Text3": "{\"text\":\"\"}",
+  "y": 1,
+  "Text2": "{\"text\":\"D0CT WH0\"}",
+  "z": 63,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_cx": 0,
+  "_cz": 3,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "GlowingText": 1,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": 4,
+  "Text3": "{\"text\":\"\"}",
+  "y": 1,
+  "Text2": "{\"text\":\"D0CT WH0\"}",
+  "z": 71,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_cx": 0,
+  "_cz": 4,
+  "_region": "r.0.0.mca"
+ }
+]

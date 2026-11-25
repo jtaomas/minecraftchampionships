@@ -1,0 +1,124 @@
+x,y,z,kind,auto,condition_met,command
+1052,1,984,command_block,0,1,/fill 1070 5 1005 1064 5 1005 air
+1052,1,986,command_block,0,0,/fill 1070 5 1005 1064 5 1005 air
+1050,1,990,repeating_command_block,1,1,/effect give @a[level=6] minecraft:saturation 2 0 true
+1051,1,990,repeating_command_block,1,1,/effect give @a[level=5] minecraft:saturation 2 0 true
+1048,1,991,repeating_command_block,1,1,/clear @a[level=5]
+1050,1,991,repeating_command_block,1,1,/effect give @a[level=7] minecraft:saturation 2 0 true
+1051,1,991,repeating_command_block,1,1,/effect give @a[level=4] minecraft:saturation 2 0 true
+1053,1,991,repeating_command_block,1,1,"/kill @e[type=item,x=1044,y=28,z=978,dx=34,dy=10,dz=34]"
+1054,1,994,command_block,0,1,/fill 1059 18 1005 1062 17 1005 minecraft:black_stained_glass
+1044,1,995,command_block,0,1,/fill 1059 18 1005 1062 17 1005 minecraft:red_stained_glass
+1048,1,995,command_block,0,1,/fill 1059 18 1005 1062 17 1005 minecraft:yellow_stained_glass
+1052,1,995,command_block,0,1,/fill 1059 18 1005 1062 17 1005 minecraft:lime_stained_glass
+1049,1,997,command_block,0,1,/fill 1059 18 1005 1062 17 1005 air
+1052,2,984,chain_command_block,1,1,/setblock 1064 5 1005 minecraft:redstone_block
+1052,2,986,chain_command_block,1,0,/setblock 1066 5 1005 minecraft:redstone_block
+1064,2,988,repeating_command_block,1,1,/execute as @a[level=4] at @s if block ~ ~-1 ~ minecraft:chiseled_stone_bricks run xp set @s 5 levels
+1066,2,988,repeating_command_block,1,1,/execute as @a[level=4] at @s if block ~ ~-1 ~ minecraft:chiseled_polished_blackstone run xp set @s 7 levels
+1066,2,989,repeating_command_block,1,1,/execute as @a[level=7] at @s if block ~ ~-1 ~ minecraft:chiseled_polished_blackstone run fill 1049 28 999 1049 29 999 barrier
+1060,2,990,command_block,0,1,/bossbar remove minecraft:1
+1064,2,990,repeating_command_block,1,1,"/effect give @a[level=6,scores={death_parkourtag=0}] glowing 1 1 true"
+1066,2,990,repeating_command_block,1,1,/effect give @a[level=7] minecraft:strength 1 100 true
+1048,2,991,repeating_command_block,1,1,/clear @a[level=7]
+1056,2,992,command_block,0,1,/execute as @a[level=6] at @s run spawnpoint @s 1061 28 995
+1060,2,992,command_block,0,1,"/bossbar set minecraft:1 players @a[x=1057,y=15,z=979,dx=8,dy=5,dz=32]"
+1062,2,992,command_block,0,1,/bossbar set minecraft:1 style notched_6
+1064,2,992,repeating_command_block,1,1,"/execute as @a[level=7,scores={kill_parkourtag2=1}] at @s run summon firework_rocket 1069 38 1003 {LifeTime:20,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:0,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;1973019,11743532],FadeColors:[I;1973019,11743532]}]}}}}"
+1066,2,992,repeating_command_block,1,1,/scoreboard players set @a[level=4] kill_parkourtag2 0  
+1047,2,993,command_block,0,1,/fill 1050 2 1001 1050 2 1001 white_concrete
+1064,2,993,chain_command_block,1,1,"/execute as @a[level=7,scores={kill_parkourtag2=1}] at @s run scoreboard players set @s kill_parkourtag2 0"
+1066,2,993,repeating_command_block,1,1,/team join pve @a[level=4]
+1054,2,994,command_block,0,1,/fill 1062 17 984 1059 18 984 minecraft:black_stained_glass
+1056,2,994,command_block,0,1,/execute as @a[level=5] at @s run xp set @s 6 levels
+1060,2,994,command_block,0,1,/scoreboard players set fakeplayer timer_parkourtag 60
+1062,2,994,command_block,0,1,/fill 1050 2 1001 1050 2 1001 air
+1044,2,995,command_block,0,1,/fill 1062 17 984 1059 18 984 minecraft:red_stained_glass
+1048,2,995,command_block,0,1,/fill 1062 17 984 1059 18 984 minecraft:yellow_stained_glass
+1052,2,995,command_block,0,1,/fill 1062 17 984 1059 18 984 minecraft:lime_stained_glass
+1056,2,996,command_block,0,1,/tp @a[level=7] 1060 17 1007
+1060,2,996,command_block,0,1,/execute store result bossbar minecraft:1 value run scoreboard players remove fakeplayer timer_parkourtag 0
+1049,2,997,command_block,0,1,/fill 1062 17 984 1059 18 984 air
+1056,2,998,command_block,0,1,/fill 1070 5 991 1070 5 991 air
+1058,2,1000,command_block,0,1,/fill 1050 2 1001 1050 2 1001 air
+1054,2,1002,command_block,0,1,/execute store result bossbar minecraft:1 value run scoreboard players remove fakeplayer timer_parkourtag 1
+1053,3,984,command_block,0,1,/fill 1070 5 1005 1064 5 1005 air
+1053,3,986,command_block,0,1,/fill 1070 5 1005 1064 5 1005 air
+1064,3,988,repeating_command_block,1,1,/execute as @a[level=5] at @s if block ~ ~-1 ~ minecraft:chiseled_stone_bricks run tp @s 1064 1 985
+1066,3,988,repeating_command_block,1,1,/execute as @a[level=7] at @s if block ~ ~-1 ~ minecraft:chiseled_polished_blackstone run tp @s 1058 1 985
+1066,3,989,repeating_command_block,1,1,/execute as @a[level=7] at @s if block ~ ~-1 ~ minecraft:glowstone run fill 1049 28 999 1049 29 999 air
+1060,3,990,chain_command_block,1,1,/bossbar add 1 {'text':'Parkour Tag - Timer'}
+1064,3,992,repeating_command_block,1,1,"/execute as @a[level=7,scores={kill_parkourtag2=1}] at @s run summon firework_rocket 1052 38 1003 {LifeTime:20,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:0,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;1973019,14602026],FadeColors:[I;1973019,14602026]}]}}}}"
+1066,3,992,repeating_command_block,1,1,/scoreboard players set @a[level=4] death_parkourtag 0
+1047,3,993,chain_command_block,1,1,/title @a[level=6] times 0 20 0
+1066,3,993,repeating_command_block,1,1,/scoreboard players set @a[level=4] kill_parkourtag 0
+1056,3,994,chain_command_block,1,1,/tp @a[level=6] 1061 17 982
+1044,3,995,chain_command_block,1,1,/execute as @a[level=6] at @s run playsound minecraft:block.note_block.hat player @s
+1048,3,995,chain_command_block,1,1,/execute as @a[level=6] at @s run playsound minecraft:block.note_block.hat player @s
+1052,3,995,chain_command_block,1,1,/execute as @a[level=6] at @s run playsound minecraft:block.note_block.hat player @s
+1049,3,997,chain_command_block,1,1,/execute as @a[level=6] at @s run playsound minecraft:block.note_block.bell player @s
+1056,3,998,chain_command_block,1,1,/fill 1068 5 987 1068 5 987 air
+1058,3,1000,chain_command_block,1,1,/setblock 1057 6 1001 minecraft:redstone_block
+1053,4,984,chain_command_block,1,1,/setblock 1068 5 1005 minecraft:redstone_block
+1053,4,986,chain_command_block,1,1,/setblock 1070 5 1005 minecraft:redstone_block
+1060,4,990,chain_command_block,1,1,/bossbar set minecraft:1 max 60
+1064,4,992,repeating_command_block,1,1,"/execute as @a[level=7,scores={kill_parkourtag2=1}] at @s run summon firework_rocket 1052 38 986 {LifeTime:20,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:0,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;1973019,2437522],FadeColors:[I;1973019,2437522]}]}}}}"
+1047,4,993,chain_command_block,1,1,/title @a[level=7] times 0 20 0
+1044,4,995,chain_command_block,1,1,/execute as @a[level=7] at @s run playsound minecraft:block.note_block.hat player @s
+1048,4,995,chain_command_block,1,1,/execute as @a[level=7] at @s run playsound minecraft:block.note_block.hat player @s
+1052,4,995,chain_command_block,1,1,/execute as @a[level=7] at @s run playsound minecraft:block.note_block.hat player @s
+1049,4,997,chain_command_block,1,1,/execute as @a[level=7] at @s run playsound minecraft:block.note_block.bell player @s
+1068,5,983,repeating_command_block,1,1,/execute as @a if score fakeplayer timer_parkourtag matches 0 run fill 1068 5 987 1068 5 987 minecraft:redstone_block
+1069,5,983,chain_command_block,1,1,/execute as @a if score fakeplayer timer_parkourtag matches 0 run scoreboard players set @s timer_parkourtag -1
+1068,5,986,command_block,0,1,/setblock 1057 6 1001 air
+1070,5,990,command_block,0,1,/setblock 1057 6 1001 air
+1064,5,992,repeating_command_block,1,1,"/execute as @a[level=7,scores={kill_parkourtag2=1}] at @s run summon firework_rocket 1069 38 986 {LifeTime:20,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:2,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;1973019,4312372],FadeColors:[I;1973019,4312372]}]}}}}"
+1044,5,995,chain_command_block,1,1,"/title @a[level=6] subtitle {'text':'>3<','color':'red'}"
+1048,5,995,chain_command_block,1,1,"/title @a[level=6] subtitle {'text':'>2<','color':'yellow'}"
+1052,5,995,chain_command_block,1,1,"/title @a[level=6] subtitle {'text':'>1<','color':'green'}"
+1064,5,995,command_block,0,1,/bossbar remove minecraft:1
+1066,5,995,command_block,0,1,/fill 1050 2 1001 1050 2 1001 air
+1068,5,995,command_block,0,1,"/execute as @a[level=6,scores={death_parkourtag=0}] at @s run summon firework_rocket ~ ~1 ~ {LifeTime:20,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:0,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;11743532,2437522,8073150,4312372,14602026,15435844],FadeColors:[I;11743532,2437522,8073150,4312372,14602026,15435844]}]}}}}"
+1049,5,997,chain_command_block,1,1,
+1066,5,997,command_block,0,1,"/execute as @a[level=7] at @s run tellraw @s {'text':'[Parkour Tag] The Hunter wins!','color':'gold'}"
+1071,5,999,command_block,0,1,/tp @a[level=7] 1061 28 995
+1064,5,1001,repeating_command_block,0,1,"/execute as @a[level=7,scores={kill_parkourtag=4}] at @s run fill 1070 5 991 1070 5 991 minecraft:redstone_block"
+1066,5,1001,repeating_command_block,0,1,"/execute as @a[level=7,scores={kill_parkourtag=3}] at @s run fill 1070 5 991 1070 5 991 minecraft:redstone_block"
+1068,5,1001,repeating_command_block,0,1,"/execute as @a[level=7,scores={kill_parkourtag=2}] at @s run fill 1070 5 991 1070 5 991 minecraft:redstone_block"
+1070,5,1001,repeating_command_block,0,1,"/execute as @a[level=7,scores={kill_parkourtag=1}] at @s run fill 1070 5 991 1070 5 991 minecraft:redstone_block"
+1064,5,1003,repeating_command_block,0,1,"/execute as @a[level=7,scores={kill_parkourtag=4}] at @s run scoreboard players set @s timer_parkourtag -1"
+1066,5,1003,repeating_command_block,0,1,"/execute as @a[level=7,scores={kill_parkourtag=3}] at @s run scoreboard players set @s timer_parkourtag -1"
+1068,5,1003,repeating_command_block,0,1,"/execute as @a[level=7,scores={kill_parkourtag=2}] at @s run scoreboard players set @s timer_parkourtag -1"
+1070,5,1003,repeating_command_block,0,1,"/execute as @a[level=7,scores={kill_parkourtag=1}] at @s run scoreboard players set @s timer_parkourtag -1"
+1068,6,986,chain_command_block,1,1,/team join pve @a[level=6]
+1070,6,990,chain_command_block,1,1,/team join pve @a[level=6]
+1044,6,995,chain_command_block,1,1,"/title @a[level=7] subtitle {'text':'>3<','color':'red'}"
+1048,6,995,chain_command_block,1,1,"/title @a[level=7] subtitle {'text':'>2<','color':'yellow'}"
+1052,6,995,chain_command_block,1,1,"/title @a[level=7] subtitle {'text':'>1<','color':'green'}"
+1064,6,995,chain_command_block,1,1,/scoreboard players set @a[level=6] death_parkourtag 0
+1066,6,995,chain_command_block,1,1,/scoreboard players set @a[level=6] kill_parkourtag 0
+1068,6,995,chain_command_block,1,1,"/execute as @a[level=6] at @s run tellraw @s {'text':'[Parkour Tag] The Runners win!','color':'gold'}"
+1066,6,997,chain_command_block,1,1,"/execute as @a[level=6] at @s run tellraw @s {'text':'[Parkour Tag] The Hunter wins!','color':'gold'}}"
+1055,6,999,repeating_command_block,1,1,/execute as @a[level=6] at @s unless entity @a[level=7] run fill 1068 5 987 1068 5 987 minecraft:redstone_block
+1071,6,999,chain_command_block,1,1,/tp @a[level=6] 1061 28 995
+1054,6,1001,chain_command_block,1,1,/team join Parkour_Tag @a[level=6]
+1055,6,1001,repeating_command_block,0,1,/team empty Parkour_Tag
+1055,6,1003,repeating_command_block,1,1,/execute unless entity @a[level=7] run fill 1049 28 999 1049 29 999 air
+1044,7,995,chain_command_block,1,1,"/title @a[level=6] title {'text':'','color':'red'}"
+1048,7,995,chain_command_block,1,1,"/title @a[level=6] title {'text':'','color':'yellow'}"
+1052,7,995,chain_command_block,1,1,"/title @a[level=6] title {'text':'','color':'green'}"
+1064,7,995,chain_command_block,1,1,/scoreboard players set @a[level=7] death_parkourtag 0
+1066,7,995,chain_command_block,1,1,/fill 1070 5 1005 1064 5 1005 air
+1068,7,995,chain_command_block,1,1,"/execute as @a[level=7] at @s run tellraw @s {'text':'[Parkour Tag] The Runners win!','color':'gold'}"
+1066,7,997,chain_command_block,1,1,"/execute as @a[level=7] at @s run summon firework_rocket ~ ~1 ~ {LifeTime:20,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:1,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;11743532,2437522,8073150,4312372,14602026,15435844],FadeColors:[I;11743532,2437522,8073150,4312372,14602026,15435844]}]}}}}"
+1071,7,999,chain_command_block,1,1,/xp set @a[level=6] 4 levels
+1044,8,995,chain_command_block,1,1,"/title @a[level=7] title {'text':'','color':'red'}"
+1048,8,995,chain_command_block,1,1,"/title @a[level=7] title {'text':'','color':'yellow'}"
+1052,8,995,chain_command_block,1,1,"/title @a[level=7] title {'text':'','color':'green'}"
+1064,8,995,chain_command_block,1,1,/fill 1070 5 991 1070 5 991 air
+1066,8,995,chain_command_block,1,1,/scoreboard players set @a[level=7] kill_parkourtag 0
+1071,8,999,chain_command_block,1,1,/xp set @a[level=7] 4 levels
+1064,9,995,chain_command_block,1,1,/scoreboard players set fakeplayer timer_parkourtag -1
+1071,9,999,chain_command_block,1,1,/fill 1068 5 987 1068 5 987 air
+1050,12,979,command_block,0,1,/setblock 1048 12 981 minecraft:redstone_block
+1052,12,979,command_block,0,1,/setblock 1048 12 981 air

@@ -1,0 +1,64 @@
+block_state,count,share_percent,role,use,first_x,first_y,first_z
+minecraft:black_stained_glass,34374,20.9412,shell / void / finish,"Black glass: 7,216-block ceiling at y=29; 27,090 blocks in 10 horizontal layers at y=-62..-44 (the fake pit bottom); 68-block finish lip at x=59..60, y=-9. Transparent to skylight, so it tints the map dark without making it unlit.",-2,29,-8
+minecraft:light_blue_wool,32329,19.6954,shell,One-block-thick perimeter wall from y=-64 to y=29 (344 blocks per layer x 94 layers); reads as a blue horizon/sky from inside and hides the external base.,-3,-64,-9
+minecraft:cobblestone,22567,13.7482,road / structure / finish,"Main structural block: road-A slab, road-B tower, finish-pool tower, pool floor, park boulders, building bases.",12,-64,17
+minecraft:bricks,15650,9.5343,building / finish,"Building facades (15,650 total), the finish-pool tower and the pool side walls.",59,-64,17
+minecraft:gray_terracotta,10141,6.1781,building / road shoulder,Building walls and road shoulders; the most common neutral facade block.,14,-64,-8
+minecraft:quartz_block,7017,4.2749,road markings / trim,"White paint: 2:1 centre dashes on both roads, finish plaza slab, pool rim, building trim.",16,3,-2
+minecraft:light_gray_wool,5954,3.6273,building,Light facade bands on the surrounding buildings.,-2,-64,24
+minecraft:brown_wool,5953,3.6267,building,Warm building walls/roofs; wholly solid columns in the east block.,28,-2,-8
+minecraft:brown_terracotta,4409,2.686,building / roof,"Brown facade and roof bands, mainly the north and south building rows.",28,-64,-7
+minecraft:gray_wool,4225,2.5739,building / plaza,Building bands and the small south plaza at z=51.,44,-58,-1
+minecraft:shroomlight,2709,1.6504,lighting,"2,709-block hidden light grid at y=-64, under the pit's glass layers; gives the void a faint warm bottom.",14,-64,1
+minecraft:black_carpet,2709,1.6504,lighting,"2,709-block carpet over the shroomlight grid; hides the light source from below/above.",14,-63,1
+minecraft:light_gray_terracotta,2572,1.5669,building,"Neutral facade and trim, used heavily on the park-side blocks.",68,-64,9
+minecraft:end_stone_bricks,2137,1.3019,park / finish underlay,"Park path/rock accents (227 near the start), pool underlay and roof details.",-2,-12,23
+minecraft:green_concrete,1827,1.113,park,"The park's sculpted terrain/tree canopy west of the start (1,827 blocks, y -12..17).",-1,-12,30
+minecraft:blackstone,1653,1.007,road surface,Road-A and road-B asphalt; also dark accents on buildings.,20,-64,17
+minecraft:red_concrete,1306,0.7956,external banner,Red bands of the three 25-wide banners outside the south wall at z=83 (not reachable from the course).,29,-61,83
+minecraft:stone_bricks,990,0.6031,building,"Building trim, window surrounds and roof details.",62,-19,60
+minecraft:green_wool,966,0.5885,park,Park foliage/hedges and the small green planters around the start.,-1,2,20
+minecraft:polished_diorite,792,0.4825,building / trim,"Roof details, window sills, building trim.",42,-64,-1
+minecraft:white_concrete,675,0.4112,external banner,White bands of the three external banners at z=83 (675 blocks = 3 x 25 x 9).,29,-34,83
+minecraft:yellow_terracotta,624,0.3802,road markings,Yellow edge lines on both roads and the finish approach.,19,-64,17
+minecraft:black_wool,455,0.2772,start / accents,"Start trench walls, dark building accents, park shadows.",52,-11,-7
+minecraft:barrier,340,0.2071,gameplay / legacy,"156 blocks form the Pits start cage (x13..17, z25..46, y -2..1); the other 184 form a sealed legacy cage at x63..84, y -33..-29, z9..13 copied with the Industry base.",63,-33,10
+minecraft:black_concrete,276,0.1681,building,Dark window/trim blocks on the surrounding buildings.,-2,-13,25
+minecraft:light_blue_stained_glass,258,0.1572,building,Blue-tinted windows on the city blocks.,59,-55,20
+minecraft:spruce_planks,204,0.1243,park furniture / trim,Park benches/tables and building trim.,30,-61,2
+minecraft:red_sandstone,188,0.1145,park,Park path/rock accents; warm contrast to the green terrain.,11,-58,11
+minecraft:snow_block,174,0.106,park,Small snow patches on the park canopy (174 blocks in 3x3-ish clusters).,-1,18,23
+minecraft:light_blue_concrete,160,0.0975,building / pool tower,Light blue bands in the finish-pool tower and building accents.,60,-63,27
+minecraft:red_wool,94,0.0573,park,Flower/foliage accents in the park and along the south building row.,56,13,-7
+minecraft:white_wool,66,0.0402,park / trim,White accents in the park and building details.,58,-60,1
+minecraft:light_gray_concrete,58,0.0353,start,The start trench's west-wall filler at y=-2; only 58 blocks.,-2,12,35
+minecraft:diorite,47,0.0286,building / trim,Small trim blocks in the buildings.,17,2,-2
+minecraft:netherrack,34,0.0207,park,Dark red rock accents in the park.,10,8,34
+minecraft:sandstone,24,0.0146,park,Park path/step blocks.,13,-1,26
+"minecraft:smooth_stone_slab[waterlogged=false,type=bottom]",20,0.0122,park / steps,Park path edging and steps.,30,9,2
+"minecraft:sandstone_slab[waterlogged=false,type=bottom]",19,0.0116,park / steps,Park steps and path edging.,13,-1,27
+"minecraft:quartz_slab[waterlogged=false,type=double]",18,0.011,park / trim,Park shelter/table trim and steps.,28,3,3
+"minecraft:quartz_slab[waterlogged=false,type=top]",16,0.0097,park / trim,Park shelter/table trim and steps.,28,2,3
+"minecraft:quartz_slab[waterlogged=false,type=bottom]",16,0.0097,park / trim,Park shelter/table trim and steps.,28,6,3
+minecraft:gray_concrete,14,0.0085,start,The start sign wall's 14-block patch at y=-2.,13,-2,29
+"minecraft:sandstone_slab[waterlogged=false,type=top]",13,0.0079,park / steps,Park steps and path edging.,13,-2,27
+minecraft:glowstone,8,0.0049,lighting,"8 blocks in two lamp pairs (x30/39, y8, z5-6 and x32/41, y12, z65-66) in the north/south buildings.",30,8,5
+minecraft:polished_granite,8,0.0049,park,Park boulder/trim accents.,7,10,33
+minecraft:yellow_concrete,8,0.0049,park,Small yellow flower accents in the park.,7,15,34
+"minecraft:quartz_stairs[waterlogged=false,half=top,shape=straight,facing=east]",6,0.0037,park / trim,Park shelter/table trim.,29,4,3
+"minecraft:quartz_stairs[waterlogged=false,half=top,shape=straight,facing=west]",6,0.0037,park / trim,Park shelter/table trim.,30,4,3
+"minecraft:quartz_stairs[waterlogged=false,half=bottom,shape=straight,facing=west]",6,0.0037,park / trim,Park shelter/table trim.,29,5,3
+"minecraft:quartz_stairs[waterlogged=false,half=bottom,shape=straight,facing=east]",6,0.0037,park / trim,Park shelter/table trim.,30,5,3
+"minecraft:end_stone_brick_slab[waterlogged=false,type=top]",4,0.0024,park / trim,Park step/trim detail.,7,11,35
+"minecraft:sandstone_slab[waterlogged=false,type=double]",3,0.0018,park / steps,Park steps and path edging.,18,0,22
+"minecraft:sandstone_stairs[waterlogged=false,half=top,shape=straight,facing=east]",3,0.0018,park / steps,Park stairs.,10,12,33
+"minecraft:sandstone_stairs[waterlogged=false,half=bottom,shape=straight,facing=north]",2,0.0012,park / steps,Park stairs.,11,9,34
+"minecraft:polished_granite_slab[waterlogged=false,type=bottom]",2,0.0012,park,Park boulder/step detail.,9,10,33
+"minecraft:sandstone_stairs[waterlogged=false,half=top,shape=straight,facing=west]",2,0.0012,park / steps,Park stairs.,14,11,34
+"minecraft:polished_granite_slab[waterlogged=false,type=top]",2,0.0012,park,Park boulder/step detail.,9,12,33
+"minecraft:oak_wall_sign[waterlogged=false,facing=east]",1,0.0006,start,"The single clickable Start sign at 14,-1,36, facing east.",14,-1,36
+"minecraft:sandstone_stairs[waterlogged=false,half=bottom,shape=straight,facing=west]",1,0.0006,park / steps,Park stairs.,13,9,34
+"minecraft:sandstone_stairs[waterlogged=false,half=bottom,shape=straight,facing=south]",1,0.0006,park / steps,Park stairs.,14,9,35
+"minecraft:sandstone_stairs[waterlogged=false,half=bottom,shape=straight,facing=east]",1,0.0006,park / steps,Park stairs.,11,9,37
+"minecraft:sandstone_stairs[waterlogged=false,half=top,shape=straight,facing=south]",1,0.0006,park / steps,Park stairs.,14,11,37
+"minecraft:sandstone_stairs[waterlogged=false,half=top,shape=straight,facing=north]",1,0.0006,park / steps,Park stairs.,14,12,36

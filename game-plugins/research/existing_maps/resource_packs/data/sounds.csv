@@ -1,0 +1,16 @@
+event,declared_path,file_present,codec,seconds,map_trigger,triggers,status,confidence,notes
+acerace.start,acerace/start,no,,,none,0,broken,H,"Declared in sounds.json, but the file is absent AND sounds.json is invalid JSON, so the event cannot register."
+acerace.checkpoint,acerace/checkpoint,no,,,none,0,broken,H,Same as start: absent file plus invalid index.
+acerace.jumppad,acerace/jumppad,yes,OggVorbis,0.97,none,0,orphan,H,File exists; event unregistered because sounds.json is malformed. Same bytes are installed at block/bell/bell_use01-03.
+acerace.megajumppad,acerace/megajumppad,yes,OggVorbis,2.51,none,0,orphan,H,File exists; event unregistered. Same bytes at block/candle/extinguish1-3.
+acerace.speed,acerace/speed,yes,OggVorbis,2.32,none,0,orphan,H,File exists; event unregistered; not copied to any vanilla path.
+acerace.waterboost,acerace/waterboost,yes,OggVorbis,1.44,none,0,orphan,H,File exists; event unregistered; not copied to any vanilla path.
+block.bell.use,block/bell/bell_use01..03,3 of 3,OggVorbis,0.97,playsound at red/magenta/pink/yellow glazed pads,18,used,H,Vanilla event references only 01/02; 03 is orphaned.
+block.candle.extinguish,block/candle/extinguish1..3,3 of 3,OggVorbis,2.51,playsound at orange shulker mega-jump pads,6,used,H,
+block.cave_vines.break,block/cave_vines/break1..4,4 of 5,OggVorbis,0.35,playsound at lime shulker pads,6,partial,H,break5.ogg missing; 1 in 5 vanilla random picks stays vanilla.
+block.chain.break,block/chain/break1..4,4 of 4,OggVorbis,2.12,playsound at yellow glazed speed pads,6,used,H,
+block.chain.step,block/chain/step1..6,6 of 6,OggVorbis,2.11,playsound when cave_air below player (falling),6,used,H,
+block.brewing_stand.brew,block/brewing_stand/brew1..2,2 of 2,OggVorbis,12.91,"playsound master @a at start area (3,1,22)",1,used,H,
+block.azalea.break,block/azalea/break1..6,6 of 6,OggVorbis,1.14,none,0,unused,H,Replaces every azalea break sound but no command plays it.
+block.cherry_wood_trapdoor.open / .close,block/cherrywood_trapdoor/toggle1..3,3 of 3,OggOpus,310.52,none in staged maps (0 cherry trapdoors placed),0,unused,M,"Valid path for cherry trapdoors in 1.20.1/1.21.1. Files are Opus 5:10 music; Java sound playback expects Vorbis, so these will not decode normally."
+music_disc.far,records/far,1 of 1,OggVorbis,310.52,"playsound master @a at start area (-35,1,21)",1,used,H,"Tagged 'Ace Race (From ""MC Championship Season 2"")'; 174.46 s vanilla replaced by 310.52 s track."

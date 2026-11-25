@@ -1,0 +1,5 @@
+﻿p="data/build_commands.py"
+s=open(p,encoding="utf-8").read()
+s=s.replace('if 982<=x<=989 and y==10 and z==1: return "spawn_teleport"','if 982<=x<=989 and y==10 and z==1: return "spawn_teleport"\n    if 986<=x<=989 and y==10 and z==-1: return "start_trigger"\n    if x==951 and y==14 and z==1: return "fail_safe"\n    if x==949 and y==14 and 1<=z<=3: return "death_handling"\n    if x==947 and y==14 and z in (1,3,5): return "post_game"\n    if x in (959,961) and 11<=y<=12 and z==-6: return "countdown_kit"\n    if x==943 and y==10 and z==4: return "countdown_kit"\n    if x==975 and y==10 and -13<=z<=-10: return "border"')
+s=s.replace('if cat=="item_cleanup": return "kills dropped items"','if cat=="item_cleanup": return "kills dropped items"\n    if cat=="start_trigger": return "moves level-8 team players to level 9 (countdown)"\n    if cat=="fail_safe": return "teleports stranded players back to centre"\n    if cat=="death_handling": return "death score -> spectator + level 14, then reset score"\n    if cat=="post_game": return "clears winners / moves them to pve lobby team"')
+open(p,"w",encoding="utf-8").write(s)

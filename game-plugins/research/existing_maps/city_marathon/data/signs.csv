@@ -1,0 +1,8 @@
+id,x,y,z,block,rotation_facing,front_line1,front_line2,front_line3,front_line4,back_text,colour,glowing,click_event,evidence
+S1,-91,0,88,acacia_sign,rotation=12,,NO,ENTRY,,(1.19.2 signs have no back_text; all text is front),black,1,none,H
+S2,-91,0,89,acacia_sign,rotation=12,,NO,ENTRY,,(1.19.2 signs have no back_text; all text is front),black,1,none,H
+S3,-56,1,49,acacia_wall_sign,facing=west,,NO,ENTRY,,(1.19.2 signs have no back_text; all text is front),black,1,none,H
+S4,-55,2,47,acacia_sign,rotation=3,,NO,ENTRY,,(1.19.2 signs have no back_text; all text is front),black,1,none,H
+S5,-2,1,47,acacia_sign,rotation=13,,NO,ENTRY,,(1.19.2 signs have no back_text; all text is front),black,1,none,H
+S6,4,1,63,birch_wall_sign,facing=north,,D0CT WH0,,,(1.19.2 signs have no back_text; all text is front),black,1,none,H
+S7,4,1,71,birch_wall_sign,facing=south,,D0CT WH0,,,(1.19.2 signs have no back_text; all text is front),black,1,none,H

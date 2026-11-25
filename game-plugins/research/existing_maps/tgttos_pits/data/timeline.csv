@@ -1,0 +1,12 @@
+event,trigger,when,action,confidence
+join,player joins / world loads,-,loop gives kit every tick; default red tag; timer 00:00:00,H
+start,"click sign line 1 (14,-1,36)",t=0,tag @a add starting; everyone begins countdown,H
+countdown quiet,countdown 1..39,0-1.95 s,no title (2 s lead-in),H
+countdown 5..1,countdown 40..139,2.0-7.0 s,title 'Starting in' + 5/4/3/2/1 (1 s each),H
+GO,countdown 140,7.0 s,"GO!! title, tag playing, cage fill air, starting removed",H
+bridge 1,road A edge x25 -> road B x38,~1-4 s,12 concrete blocks over Pit 1; drop 4 to y=-7,M
+bridge 2,road B edge x46 -> finish lip x59,~1-4 s,12 concrete blocks over Pit 2; drop 2 to y=-9,M
+finish,punch any chicken (hit_chicken>=1),run time,"tag finished, spectator, time title, playing removed for all",H
+cleanup,finished=60,+3 s,remove 8 concrete colours in 31^3 boxes around recorded armor stands; kill stands,H
+reset,finished=140,+7 s,"tp all to start, refill 3 barrier walls, adventure, clear, timers 0, finished 0",H
+fall,feet y<=-41,next tick,"tp to 15,-2,36; timer keeps running; no checkpoint",H

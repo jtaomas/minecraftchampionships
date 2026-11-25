@@ -1,0 +1,5 @@
+type,x,y,z,role,confidence
+minecraft:armor_stand,2000.5,26.0,0.5,"border ring marker (spins via repeating tp, emits campfire smoke particles)",H
+minecraft:item_frame,2000.5,26.03,0.5,"border ring marker (spins via repeating tp, emits campfire smoke particles)",H
+minecraft:glow_item_frame,2000.97,26.5,0.5,"border ring marker (spins via repeating tp, emits campfire smoke particles)",H
+minecraft:small_fireball,2000.5,26.0,0.5,"border ring marker (spins via repeating tp, emits campfire smoke particles)",H

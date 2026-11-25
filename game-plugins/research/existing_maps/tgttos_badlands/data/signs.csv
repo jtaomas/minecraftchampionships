@@ -1,0 +1,2 @@
+x,y,z,block,facing,line1,line2,line3,line4,colour,glow,click_line,click_command,1_21_1_risk
+9,-41,31,oak_wall_sign,east,"{""clickEvent"":{""action"":""run_command"",""value"":""scoreboard players add @s start 1""},""text"":""""}","{""bold"":true,""color"":""green"",""text"":""Start""}","{""text"":""""}","{""text"":""""}",black,0,1,scoreboard players add @s start 1,Legacy Text1-4 upgrades to front_text.messages in 1.20+. clickEvent is on empty line 1; visible 'Start' is line 2 with no clickEvent. Verify the clickable hotspot in 1.21.1.

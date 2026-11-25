@@ -1,0 +1,154 @@
+{
+  "source_world": "C:\\Users\\LeonS\\AppData\\Local\\Temp\\opencode\\mcc_maps\\tgttos-pits-by-mickey-kat\\TGTTOS Pits - By Mickey_Kat",
+  "imported_world": "C:\\Users\\LeonS\\AppData\\Local\\Temp\\claude\\3ce71e194a20101d\\adb21d58-93cf-493d-abe5-7c5a160bc899\\scratchpad\\review\\mcc_tgttos_pits",
+  "review_server_root": "C:\\Users\\LeonS\\AppData\\Local\\Temp\\claude\\3ce71e194a20101d\\adb21d58-93cf-493d-abe5-7c5a160bc899\\scratchpad\\review",
+  "read_only": true,
+  "source": {
+    "level_name": "TGTTOS Pits - Practise map",
+    "data_version": 3117,
+    "spawn": [
+      15,
+      -2,
+      36
+    ],
+    "spawn_angle": 0.0,
+    "game_type": 1,
+    "difficulty": 0,
+    "allow_commands": 1,
+    "datapacks_enabled": [
+      "vanilla",
+      "Fabric Mods",
+      "file/Pits"
+    ],
+    "datapacks_disabled": [],
+    "gamerules": {
+      "commandBlockOutput": "false",
+      "doMobSpawning": "false",
+      "disableRaids": "true",
+      "doDaylightCycle": "false",
+      "doImmediateRespawn": "false",
+      "fallDamage": "false",
+      "keepInventory": "true",
+      "randomTickSpeed": "3",
+      "freezeDamage": "false",
+      "sendCommandFeedback": "false"
+    }
+  },
+  "imported": {
+    "level_name": "mcc_tgttos_pits",
+    "data_version": 3955,
+    "spawn": [
+      15,
+      -2,
+      36
+    ],
+    "spawn_angle": 0.0,
+    "game_type": 0,
+    "difficulty": 0,
+    "allow_commands": 1,
+    "datapacks_enabled": [
+      "vanilla",
+      "file/bukkit",
+      "paper"
+    ],
+    "datapacks_disabled": [
+      "bundle",
+      "trade_rebalance"
+    ],
+    "gamerules": {
+      "fallDamage": "false",
+      "doDaylightCycle": "false",
+      "doImmediateRespawn": "false",
+      "doMobSpawning": "false",
+      "disableRaids": "true",
+      "sendCommandFeedback": "false",
+      "commandBlockOutput": "false",
+      "keepInventory": "true",
+      "randomTickSpeed": "3",
+      "freezeDamage": "false"
+    }
+  },
+  "pack_path_relative": "datapacks\\Pits",
+  "pack_files_source": {
+    "pack.mcmeta": {
+      "bytes": 97,
+      "sha1": "f5d1af2a75261fdc3f35d7d1b50fa45bd8a783de"
+    },
+    "data/minecraft/tags/functions/load.json": {
+      "bytes": 53,
+      "sha1": "4fa744bd7f3d22dd509379b1b223d7ae8df84644"
+    },
+    "data/minecraft/tags/functions/tick.json": {
+      "bytes": 165,
+      "sha1": "f857536ad9bf5d42aa9b51ddccdaad729c5e8501"
+    },
+    "data/tgttos/functions/color.mcfunction": {
+      "bytes": 7491,
+      "sha1": "8863c00361be68ebb19ce9642eb1fad51fdae689"
+    },
+    "data/tgttos/functions/gamerules.mcfunction": {
+      "bytes": 420,
+      "sha1": "4b3beaa4e787ba32e62ba651e875b410c2b90941"
+    },
+    "data/tgttos/functions/load.mcfunction": {
+      "bytes": 906,
+      "sha1": "62e9f60b436ced76fe830910c6328fb498ddffd1"
+    },
+    "data/tgttos/functions/loop.mcfunction": {
+      "bytes": 35125,
+      "sha1": "ada9e90f3c7791d24cfb45d4ef27f3e19b962e32"
+    },
+    "data/tgttos/functions/respawn.mcfunction": {
+      "bytes": 147,
+      "sha1": "3d2eb7a808f52e31db115de8336ffe5248363ee4"
+    },
+    "data/tgttos/functions/start_timer.mcfunction": {
+      "bytes": 1374,
+      "sha1": "f55a4153c6941f850d52aa8e9b48da643b6b9811"
+    }
+  },
+  "pack_files_imported": {
+    "pack.mcmeta": {
+      "bytes": 97,
+      "sha1": "f5d1af2a75261fdc3f35d7d1b50fa45bd8a783de"
+    },
+    "data/minecraft/tags/functions/load.json": {
+      "bytes": 53,
+      "sha1": "4fa744bd7f3d22dd509379b1b223d7ae8df84644"
+    },
+    "data/minecraft/tags/functions/tick.json": {
+      "bytes": 165,
+      "sha1": "f857536ad9bf5d42aa9b51ddccdaad729c5e8501"
+    },
+    "data/tgttos/functions/color.mcfunction": {
+      "bytes": 7491,
+      "sha1": "8863c00361be68ebb19ce9642eb1fad51fdae689"
+    },
+    "data/tgttos/functions/gamerules.mcfunction": {
+      "bytes": 420,
+      "sha1": "4b3beaa4e787ba32e62ba651e875b410c2b90941"
+    },
+    "data/tgttos/functions/load.mcfunction": {
+      "bytes": 906,
+      "sha1": "62e9f60b436ced76fe830910c6328fb498ddffd1"
+    },
+    "data/tgttos/functions/loop.mcfunction": {
+      "bytes": 35125,
+      "sha1": "ada9e90f3c7791d24cfb45d4ef27f3e19b962e32"
+    },
+    "data/tgttos/functions/respawn.mcfunction": {
+      "bytes": 147,
+      "sha1": "3d2eb7a808f52e31db115de8336ffe5248363ee4"
+    },
+    "data/tgttos/functions/start_timer.mcfunction": {
+      "bytes": 1374,
+      "sha1": "f55a4153c6941f850d52aa8e9b48da643b6b9811"
+    }
+  },
+  "pack_files_byte_identical": true,
+  "notes": [
+    "Source has file/Pits enabled; imported world does not.",
+    "Imported level.dat is 1.21.1 DataVersion 3955, GameType 0 (survival).",
+    "Pack files are copied unchanged: old functions/tags paths and pack_format 10."
+  ]
+}

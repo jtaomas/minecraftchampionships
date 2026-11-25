@@ -1,0 +1,130 @@
+{
+  "checked": "2026-11-25",
+  "scope": "read-only verification of A12's import findings for mcc_tgttos_badlands; no edits, no port, no RCON",
+  "source_zip": {
+    "path": "C:\\Users\\LeonS\\Downloads\\EXISTING MCC RECREATIONS\\tgttos-badlands-by-mickeykat.zip",
+    "bytes": 3601701,
+    "level_dat_inside_zip": {
+      "DataVersion": 3120,
+      "LevelName": "TGTTOS Badlands Practise",
+      "GameType": 1,
+      "DataPacks": {
+        "Enabled": ["vanilla", "file/tgttos"],
+        "Disabled": []
+      }
+    },
+    "plural_pack_paths_inside_zip": true
+  },
+  "source": {
+    "world_dir": "C:\\Users\\LeonS\\AppData\\Local\\Temp\\opencode\\mcc_maps\\tgttos-badlands-by-mickeykat\\TGTTOS Badlands - By MickeyKat",
+    "level_dat": {
+      "DataVersion": 3120,
+      "LevelName": "TGTTOS Badlands Practise",
+      "GameType": 1,
+      "DataPacks": {
+        "Enabled": ["vanilla", "file/tgttos"],
+        "Disabled": []
+      },
+      "allowCommands": 1,
+      "Difficulty": 0,
+      "Spawn": [10, -42, 31]
+    },
+    "pack": {
+      "pack.mcmeta": "pack_format 10, description 'Made by Mickey_Kat'",
+      "function_folder": "data/tgttos/functions",
+      "tag_folder": "data/minecraft/tags/functions",
+      "functions": ["load.mcfunction", "loop.mcfunction"],
+      "tags": ["load.json -> tgttos:load", "tick.json -> tgttos:loop"],
+      "old_item_nbt_lines": [5, 6, 7],
+      "line_counts": {"load_total": 8, "loop_total": 130, "loop_nonempty": 113, "total_nonempty": 121}
+    }
+  },
+  "imported": {
+    "world_dir": "C:\\Users\\LeonS\\AppData\\Local\\Temp\\claude\\3ce71e194a20101d\\adb21d58-93cf-493d-abe5-7c5a160bc899\\scratchpad\\review\\mcc_tgttos_badlands",
+    "level_dat": {
+      "DataVersion": 3955,
+      "LevelName": "mcc_tgttos_badlands",
+      "GameType": 0,
+      "DataPacks": {
+        "Enabled": ["vanilla", "file/bukkit", "paper"],
+        "Disabled": ["bundle", "trade_rebalance"]
+      },
+      "allowCommands": 1,
+      "Difficulty": 0,
+      "Spawn": [10, -42, 31]
+    },
+    "multiverse_worlds_yml": {
+      "gamemode": "survival",
+      "difficulty": "peaceful",
+      "allow-flight": false,
+      "keep-spawn-in-memory": true
+    },
+    "gamerules_survived": {
+      "fallDamage": false,
+      "doDaylightCycle": false,
+      "doWeatherCycle": false,
+      "keepInventory": false,
+      "doImmediateRespawn": false,
+      "spawnRadius": 10,
+      "doMobSpawning": false,
+      "randomTickSpeed": 0,
+      "showDeathMessages": false,
+      "doTileDrops": false
+    },
+    "pack": {
+      "on_disk": true,
+      "folder": "datapacks/tgttos",
+      "pack.mcmeta": "pack_format 10, description 'Made by Mickey_Kat'",
+      "function_folder": "data/tgttos/functions",
+      "tag_folder": "data/minecraft/tags/functions",
+      "byte_identical_to_source": true,
+      "files_compared": ["pack.mcmeta", "data/minecraft/tags/functions/load.json", "data/minecraft/tags/functions/tick.json", "data/tgttos/functions/load.mcfunction", "data/tgttos/functions/loop.mcfunction"]
+    },
+    "sign": {
+      "x": 9, "y": -41, "z": 31,
+      "id": "minecraft:sign",
+      "front_text": {
+        "color": "black",
+        "has_glowing_text": 0,
+        "messages": [
+          "{\"clickEvent\":{\"action\":\"run_command\",\"value\":\"scoreboard players add @s start 1\"},\"text\":\"\"}",
+          "{\"bold\":true,\"color\":\"green\",\"text\":\"Start\"}",
+          "\"\"",
+          "\"\""
+        ]
+      },
+      "back_text_empty": true,
+      "is_waxed": 0,
+      "clickEvent_preserved": true,
+      "clickEvent_on_empty_line_1": true
+    },
+    "scoreboard_objectives": ["countdown", "start", "playtimeS", "hit_chicken", "playtimeT", "playing", "finished", "playtime", "spawntime"]
+  },
+  "a12_claims": {
+    "imported_level_dat_disabled": {
+      "claim": "the imported Badlands level.dat has the tgttos datapack disabled",
+      "precise_state": "file/tgttos is neither in DataPacks.Enabled nor DataPacks.Disabled; Enabled=[vanilla,file/bukkit,paper], Disabled=[bundle,trade_rebalance]. The pack is on disk but not loaded.",
+      "verdict": "CONFIRMED (with the precision that it is 'not enabled', not listed in Disabled)"
+    },
+    "source_enabled": {
+      "claim": "source archive had the pack enabled",
+      "state": "source zip level.dat (read directly): DataPacks.Enabled=[vanilla,file/tgttos], Disabled=[]; extracted source world matches",
+      "verdict": "CONFIRMED"
+    },
+    "pack_format_10": {
+      "claim": "pack.mcmeta is format 10, 1.21.1 expects 48",
+      "state": "source and imported pack.mcmeta both pack_format 10; 1.21.1 data pack format 48",
+      "verdict": "CONFIRMED"
+    },
+    "plural_folders": {
+      "claim": "pack uses data/.../functions + tags/functions; 1.21.1 expects function + tags/function",
+      "state": "source and imported both use data/tgttos/functions and data/minecraft/tags/functions; 1.21 renamed these to function and tags/function",
+      "verdict": "CONFIRMED"
+    },
+    "function_lines": {
+      "claim": "2 functions / 120 lines",
+      "state": "2 functions; load 8 lines + loop 130 lines = 138 total; non-empty 8 + 113 = 121. Files are byte-identical to source.",
+      "verdict": "CONFIRMED except the line count: 120 vs 121 non-empty (counting convention, no content difference)"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+objective,criteria,display,related_arena,note
+timer_skybattle,dummy,"{""text"":""timer_skybattle""}",MG-CMD-01 / MG-SB-01,
+timer_gladiators,dummy,"{""text"":""timer_gladiators""}",Unbuilt (Gladiators bay),Objective exists but no Gladiators commands/blocks.
+timer_themerace,dummy,"{""text"":""timer_themerace""}",Unbuilt (Theme Race bay),Objective exists but no Theme Race commands/blocks.
+death_themerace,deathCount,"{""text"":""death_themerace""}",Unbuilt (Theme Race bay),
+leave,minecraft.custom:minecraft.leave_game,"{""text"":""leave""}",MG-HUB-01,
+kill_sc_v,dummy,"{""text"":""kill_sc_v""}",MG-SC-01,
+position_tr,dummy,"{""text"":""position_tr""}",Unbuilt (Theme Race),Objective exists but no Theme Race commands/blocks.
+POINTS,dummy,"{""text"":""POINTS""}",MG-CMD-01 / MG-SB-01,
+kill_parkourtag,playerKillCount,"{""text"":""kill_parkourtag""}",MG-PT-01,
+dummy_event,dummy,"{""text"":""dummy_event""}",Global/misc,
+timer_parkourtag,dummy,"{""text"":""timer_parkourtag""}",MG-PT-01,
+death_gladiators,deathCount,"{""text"":""death_gladiators""}",Unbuilt (Gladiators bay),
+lobbyteleporter,minecraft.used:minecraft.carrot_on_a_stick,"{""text"":""lobbyteleporter""}",MG-HUB-01,used carrot_on_a_stick; drives lobby teleporter item.
+kill_sc_h,dummy,"{""text"":""kill_sc_h""}",MG-SC-01,
+health,health,"{""text"":""health""}",Global/misc,
+Super_Clash,dummy,"{""text"":""Super_Clash""}",MG-SC-01,
+team_detector,dummy,"{""text"":""team_detector""}",MG-HUB-01,
+kill_sc_vp,teamkill.green,"{""text"":""kill_sc_vp""}",MG-SC-01,"Criteria teamkill.green; villains join Super_Clash_V, not Green. Likely broken."
+kill_parkourtag2,playerKillCount,"{""text"":""kill_parkourtag2""}",MG-PT-01,
+kill_sc_hp,playerKillCount,"{""text"":""kill_sc_hp""}",MG-SC-01,playerKillCount; heroes' kills auto-increment.
+death_skybattle,deathCount,"{""text"":""death_skybattle""}",MG-CMD-01 / MG-SB-01,deathCount; drives spectator/XP reset.
+ironblock,minecraft.mined:minecraft.iron_block,"{""text"":""ironblock""}",MG-CMD-01 / MG-SB-01,mined iron_block; drives iron-block reward in Sky Battle.
+death_parkourtag,deathCount,"{""text"":""death_parkourtag""}",MG-PT-01,
+lap_counter,dummy,"{""text"":""lap_counter""}",Unbuilt (Theme Race),Objective exists but no Theme Race commands/blocks.
+kill_event,playerKillCount,"{""text"":""kill_event""}",Global/misc,
+death_event,deathCount,"{""text"":""death_event""}",Global/misc,

@@ -1,0 +1,961 @@
+[
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -143,
+  "Text3": "{\"text\":\"\"}",
+  "y": 175,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -142,
+  "Text3": "{\"text\":\"\"}",
+  "y": 176,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -141,
+  "Text3": "{\"text\":\"\"}",
+  "y": 177,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -140,
+  "Text3": "{\"text\":\"\"}",
+  "y": 178,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -142,
+  "Text3": "{\"text\":\"\"}",
+  "y": 175,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -141,
+  "Text3": "{\"text\":\"\"}",
+  "y": 176,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -140,
+  "Text3": "{\"text\":\"\"}",
+  "y": 177,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -143,
+  "Text3": "{\"text\":\"\"}",
+  "y": 177,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -142,
+  "Text3": "{\"text\":\"\"}",
+  "y": 178,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -143,
+  "Text3": "{\"text\":\"\"}",
+  "y": 176,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -142,
+  "Text3": "{\"text\":\"\"}",
+  "y": 177,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -141,
+  "Text3": "{\"text\":\"\"}",
+  "y": 178,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -139,
+  "Text3": "{\"text\":\"\"}",
+  "y": 175,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -140,
+  "Text3": "{\"text\":\"\"}",
+  "y": 174,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -141,
+  "Text3": "{\"text\":\"\"}",
+  "y": 175,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -140,
+  "Text3": "{\"text\":\"\"}",
+  "y": 176,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -139,
+  "Text3": "{\"text\":\"\"}",
+  "y": 177,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -142,
+  "Text3": "{\"text\":\"\"}",
+  "y": 174,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -140,
+  "Text3": "{\"text\":\"\"}",
+  "y": 175,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -139,
+  "Text3": "{\"text\":\"\"}",
+  "y": 176,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "GlowingText": 0,
+  "keepPacked": 0,
+  "Color": "black",
+  "Text4": "{\"text\":\"\"}",
+  "x": -141,
+  "Text3": "{\"text\":\"\"}",
+  "y": 174,
+  "Text2": "{\"text\":\"\"}",
+  "z": 176,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   -9,
+   11
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437899,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~-0.35 ~ minecraft:red_sandstone run item replace entity @a armor.chest with minecraft:air",
+  "keepPacked": 0,
+  "x": 12,
+  "y": 112,
+  "z": 12,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   0,
+   0
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437899,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~ ~-1 minecraft:diamond_block run item replace entity @p armor.chest with minecraft:elytra",
+  "keepPacked": 0,
+  "x": 14,
+  "y": 112,
+  "z": 12,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   0,
+   0
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437899,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~-0.35 ~ minecraft:water run item replace entity @a armor.chest with minecraft:air",
+  "keepPacked": 0,
+  "x": 12,
+  "y": 112,
+  "z": 14,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   0,
+   0
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437899,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~ ~-2 minecraft:diamond_block run item replace entity @p armor.chest with minecraft:elytra",
+  "keepPacked": 0,
+  "x": 15,
+  "y": 112,
+  "z": 12,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   0,
+   0
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437899,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~ ~-1 minecraft:diamond_block run item replace entity @p armor.chest with minecraft:elytra",
+  "keepPacked": 0,
+  "x": 14,
+  "y": 112,
+  "z": 14,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   0,
+   0
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437900,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~ ~-7 minecraft:diamond_block run item replace entity @p armor.chest with minecraft:elytra",
+  "keepPacked": 0,
+  "x": 20,
+  "y": 112,
+  "z": 12,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   1,
+   0
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437900,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~-0.35 ~ minecraft:red_concrete run item replace entity @a armor.chest with minecraft:air",
+  "keepPacked": 0,
+  "x": 22,
+  "y": 112,
+  "z": 12,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   1,
+   0
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437900,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "effect give @a minecraft:dolphins_grace 999999 1 true",
+  "keepPacked": 0,
+  "x": 20,
+  "y": 112,
+  "z": 14,
+  "id": "minecraft:command_block",
+  "LastOutput": "{\"extra\":[{\"color\":\"red\",\"extra\":[{\"translate\":\"argument.entity.notfound.entity\"}],\"text\":\"\"}],\"text\":\"[14:11:26] \"}",
+  "TrackOutput": 1,
+  "_chunk": [
+   1,
+   0
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437900,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~-0.35 ~ minecraft:gray_concrete run item replace entity @a armor.chest with minecraft:air",
+  "keepPacked": 0,
+  "x": 22,
+  "y": 112,
+  "z": 14,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   1,
+   0
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437900,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~ ~-3 minecraft:diamond_block run item replace entity @p armor.chest with minecraft:elytra",
+  "keepPacked": 0,
+  "x": 16,
+  "y": 112,
+  "z": 12,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   1,
+   0
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437900,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~ ~-4 minecraft:diamond_block run item replace entity @p armor.chest with minecraft:elytra",
+  "keepPacked": 0,
+  "x": 17,
+  "y": 112,
+  "z": 12,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   1,
+   0
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437900,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~ ~-5 minecraft:diamond_block run item replace entity @p armor.chest with minecraft:elytra",
+  "keepPacked": 0,
+  "x": 18,
+  "y": 112,
+  "z": 12,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   1,
+   0
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437900,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~-0.35 ~ minecraft:magenta_glazed_terracotta run effect give @p minecraft:speed 2 4 true",
+  "keepPacked": 0,
+  "x": 16,
+  "y": 112,
+  "z": 14,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   1,
+   0
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437900,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~ ~-6 minecraft:diamond_block run item replace entity @p armor.chest with minecraft:elytra",
+  "keepPacked": 0,
+  "x": 19,
+  "y": 112,
+  "z": 12,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   1,
+   0
+  ]
+ },
+ {
+  "auto": 0,
+  "powered": 0,
+  "LastExecution": 2425265,
+  "SuccessCount": 1,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "/title @a title {\"text\":\"Starting in\",\"color\":\"dark_aqua\"}",
+  "keepPacked": 0,
+  "x": 10,
+  "y": 111,
+  "z": 22,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_chunk": [
+   0,
+   1
+  ]
+ },
+ {
+  "auto": 0,
+  "powered": 0,
+  "LastExecution": 2425265,
+  "SuccessCount": 1,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "/title @a subtitle {\"text\":\">1<\",\"color\":\"green\"}",
+  "keepPacked": 0,
+  "x": 11,
+  "y": 111,
+  "z": 22,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_chunk": [
+   0,
+   1
+  ]
+ },
+ {
+  "auto": 0,
+  "powered": 0,
+  "LastExecution": 2425249,
+  "SuccessCount": 1,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "/title @a title {\"text\":\"Starting in\",\"color\":\"dark_aqua\"}",
+  "keepPacked": 0,
+  "x": 10,
+  "y": 111,
+  "z": 25,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_chunk": [
+   0,
+   1
+  ]
+ },
+ {
+  "auto": 0,
+  "powered": 0,
+  "LastExecution": 2425249,
+  "SuccessCount": 1,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "/title @a subtitle {\"text\":\">2<\",\"color\":\"yellow\"}",
+  "keepPacked": 0,
+  "x": 11,
+  "y": 111,
+  "z": 25,
+  "id": "minecraft:command_block",
+  "TrackOutput": 0,
+  "_chunk": [
+   0,
+   1
+  ]
+ },
+ {
+  "auto": 0,
+  "powered": 0,
+  "LastExecution": 2425233,
+  "SuccessCount": 1,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "/title @a title {\"text\":\"Starting in\",\"color\":\"dark_aqua\"}",
+  "keepPacked": 0,
+  "x": 10,
+  "y": 111,
+  "z": 28,
+  "id": "minecraft:command_block",
+  "LastOutput": "{\"extra\":[{\"translate\":\"commands.title.show.title.single\",\"with\":[{\"insertion\":\"AgnorGD\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"/tell AgnorGD \"},\"hoverEvent\":{\"action\":\"show_entity\",\"contents\":{\"type\":\"minecraft:player\",\"id\":\"9ed6d016-4235-458f-b5c9-59b56ef4900e\",\"name\":{\"text\":\"AgnorGD\"}}},\"extra\":[{\"text\":\"AgnorGD\"}],\"text\":\"\"}]}],\"text\":\"[08:46:52] \"}",
+  "TrackOutput": 1,
+  "_chunk": [
+   0,
+   1
+  ]
+ },
+ {
+  "auto": 0,
+  "powered": 0,
+  "LastExecution": 2425233,
+  "SuccessCount": 1,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "/title @a subtitle {\"text\":\">3<\",\"color\":\"red\"}",
+  "keepPacked": 0,
+  "x": 11,
+  "y": 111,
+  "z": 28,
+  "id": "minecraft:command_block",
+  "LastOutput": "{\"extra\":[{\"translate\":\"commands.title.show.subtitle.single\",\"with\":[{\"insertion\":\"AgnorGD\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"/tell AgnorGD \"},\"hoverEvent\":{\"action\":\"show_entity\",\"contents\":{\"type\":\"minecraft:player\",\"id\":\"9ed6d016-4235-458f-b5c9-59b56ef4900e\",\"name\":{\"text\":\"AgnorGD\"}}},\"extra\":[{\"text\":\"AgnorGD\"}],\"text\":\"\"}]}],\"text\":\"[08:46:52] \"}",
+  "TrackOutput": 1,
+  "_chunk": [
+   0,
+   1
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437900,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~-0.35 ~ minecraft:magenta_glazed_terracotta run setworldspawn",
+  "keepPacked": 0,
+  "x": 11,
+  "y": 112,
+  "z": 16,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   0,
+   1
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437900,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "/title @a actionbar {\"text\":\"You are in 1st place\",\"color\":\"white\"}",
+  "keepPacked": 0,
+  "x": 13,
+  "y": 112,
+  "z": 16,
+  "id": "minecraft:command_block",
+  "LastOutput": "{\"extra\":[{\"color\":\"red\",\"extra\":[{\"translate\":\"argument.entity.notfound.player\"}],\"text\":\"\"}],\"text\":\"[14:11:26] \"}",
+  "TrackOutput": 1,
+  "_chunk": [
+   0,
+   1
+  ]
+ },
+ {
+  "auto": 0,
+  "powered": 0,
+  "LastExecution": 2425281,
+  "SuccessCount": 1,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "/fill 28 115 24 6 117 24 air",
+  "keepPacked": 0,
+  "x": 10,
+  "y": 111,
+  "z": 19,
+  "id": "minecraft:command_block",
+  "LastOutput": "{\"extra\":[{\"translate\":\"commands.fill.success\",\"with\":[\"23\"]}],\"text\":\"[08:46:54] \"}",
+  "TrackOutput": 1,
+  "_chunk": [
+   0,
+   1
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437900,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~-0.35 ~ minecraft:red_concrete run effect give @p minecraft:levitation 2 23 true",
+  "keepPacked": 0,
+  "x": 15,
+  "y": 112,
+  "z": 16,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   0,
+   1
+  ]
+ },
+ {
+  "GlowingText": 1,
+  "keepPacked": 0,
+  "Color": "lime",
+  "Text4": "{\"text\":\"\"}",
+  "x": 6,
+  "Text3": "{\"text\":\"->\"}",
+  "y": 116,
+  "Text2": "{\"text\":\"START\"}",
+  "z": 29,
+  "Text1": "{\"text\":\"\"}",
+  "id": "minecraft:sign",
+  "_chunk": [
+   0,
+   1
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437899,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~-0.35 ~ minecraft:red_concrete run effect give @p minecraft:speed 2 30 true",
+  "keepPacked": 0,
+  "x": 16,
+  "y": 112,
+  "z": 16,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   1,
+   1
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437899,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~-0.35 ~ minecraft:orange_concrete run effect give @p minecraft:levitation 1 70 true",
+  "keepPacked": 0,
+  "x": 18,
+  "y": 112,
+  "z": 16,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   1,
+   1
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437899,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~-0.35 ~ minecraft:orange_concrete run effect give @p minecraft:speed 1 255 true",
+  "keepPacked": 0,
+  "x": 19,
+  "y": 112,
+  "z": 16,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   1,
+   1
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437899,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~-0.35 ~ minecraft:bedrock run kill @a",
+  "keepPacked": 0,
+  "x": 21,
+  "y": 112,
+  "z": 16,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   1,
+   1
+  ]
+ },
+ {
+  "auto": 1,
+  "powered": 0,
+  "LastExecution": 2437899,
+  "SuccessCount": 0,
+  "UpdateLastExecution": 1,
+  "conditionMet": 1,
+  "CustomName": "{\"text\":\"@\"}",
+  "Command": "execute at @a if block ~ ~-0.35 ~ minecraft:lime_stained_glass run kill @a",
+  "keepPacked": 0,
+  "x": 23,
+  "y": 112,
+  "z": 16,
+  "id": "minecraft:command_block",
+  "TrackOutput": 1,
+  "_chunk": [
+   1,
+   1
+  ]
+ }
+]

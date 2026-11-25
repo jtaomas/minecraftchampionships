@@ -1,0 +1,11 @@
+x,y,z,front_text,role,confidence
+2000,76,-3,{'text':'---------------'} / {'text':'Join team Yellow'} / {'text':''} / {'text':'---------------'},team join,H
+2000,71,-1,{'text':'---------------'} / {'text':'Press the button'} / {'text':'to start the game'} / {'text':'---------------'},start button,H
+1997,76,0,{'text':'---------------'} / {'text':'Join team Red'} / {'text':''} / {'text':'---------------'},team join,H
+1999,71,0,{'text':'---------------'} / {'text':'Press the button'} / {'text':'to start the game'} / {'text':'---------------'},start button,H
+1999,67,0,{'text':'Press when'} / {'text':'the game'} / {'text':'is bugged'} / {'text':''},bug reset,H
+2003,76,0,{'text':'---------------'} / {'text':'Join team Green'} / {'text':''} / {'text':'---------------'},team join,H
+2000,76,3,{'text':'---------------'} / {'text':'Join team Blue'} / {'text':''} / {'text':'---------------'},team join,H
+2000,71,1,{'text':'---------------'} / {'text':'Press the button'} / {'text':'to start the game'} / {'text':'---------------'},start button,H
+2001,71,0,{'text':'---------------'} / {'text':'Press the button'} / {'text':'to start the game'} / {'text':'---------------'},start button,H
+2000,67,1,{'text':'at 1000 10 10'} / {'text':'are all'} / {'text':'the command'} / {'text':'blocks'},command-room pointer,H

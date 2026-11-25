@@ -1,0 +1,7 @@
+function,path,lines,non_empty_lines,tag,role
+load,data/tgttos/functions/load.mcfunction,23,20,load tag,Creates 14 scoreboard objectives and initialises the per-player time scores.
+loop,data/tgttos/functions/loop.mcfunction,129,85,tick tag,"Main state machine: finish detection, spectator, cleanup anchors, timing, HUD, kit, block reset, round reset."
+color,data/tgttos/functions/color.mcfunction,111,83,tick tag,Colour picker tellraw menu + tag application; default red.
+start_timer,data/tgttos/functions/start_timer.mcfunction,25,15,tick tag,"7 s countdown titles, GO, opens cage, adds playing tag."
+gamerules,data/tgttos/functions/gamerules.mcfunction,16,14,tick tag,Re-applies 13 gamerules and difficulty every tick.
+respawn,data/tgttos/functions/respawn.mcfunction,3,2,tick tag,Stores each player's Y; below -41 teleports to the start.

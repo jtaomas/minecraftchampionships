@@ -1,0 +1,27 @@
+/fill 3 0 10 13 2 10 air
+/gamemode adventure
+/title @a subtitle {"bold":true,"color":"green","text":">1<"}
+/title @a subtitle {"bold":true,"color":"red","text":">3<"}
+/title @a subtitle {"bold":true,"color":"yellow","text":">2<"}
+/title @a title {"color":"aqua","text":"Starting In"}
+enchant @a minecraft:riptide
+enchant @a minecraft:unbreaking 3
+execute as @a at @s if block ~ ~-1 ~ minecraft:gray_wool run item replace entity @a armor.chest with air
+execute as @a at @s if block ~ ~-1 ~ minecraft:green_carpet run effect clear
+execute as @a at @s if block ~ ~-1 ~ minecraft:lime_wool run effect give @a minecraft:jump_boost 1 6 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:magenta_glazed_terracotta run effect give @a minecraft:jump_boost 1 4 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:magenta_glazed_terracotta run effect give @a minecraft:speed 1 8 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:orange_wool run effect give @a minecraft:jump_boost 1 9 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:orange_wool run effect give @a minecraft:speed 1 11 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:pink_glazed_terracotta run effect give @a minecraft:jump_boost 1 4 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:pink_glazed_terracotta run effect give @a minecraft:speed 1 8 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:red_glazed_terracotta run effect give @a minecraft:jump_boost 1 4 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:red_glazed_terracotta run effect give @a minecraft:speed 1 8 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:yellow_concrete run effect clear @a
+execute as @a at @s if block ~ ~-1 ~ minecraft:yellow_glazed_terracotta run effect give @a minecraft:speed 2 3 true
+execute as @a at @s if block ~ ~-1 ~ polished_diorite run item replace entity @a armor.chest with elytra
+execute as @a at @s if block ~ ~-1 ~ yellow_carpet run effect give @a minecraft:speed 2 3 true
+execute as @a at @s if block ~ ~-1 ~ yellow_glazed_terracotta run setworldspawn
+gamemode adventure
+item replace entity @a hotbar.0 with minecraft:trident 1
+title @a actionbar "You are in 1st place"

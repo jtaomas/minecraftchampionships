@@ -1,0 +1,286 @@
+﻿x,y,z,block,front_1,front_2,front_3,front_4,back_1,back_2,back_3,back_4,color,glowing,waxed,click_event
+41,7,-281,birch_sign,clear on calcite,,,,,,,,white,1,0,none
+42,7,-281,birch_sign,give trident on,yellow glazed,terracotta,,,,,,yellow,1,0,none
+43,7,-281,birch_sign,green glazed,terracotta,remove jump,boost,,,,,purple,1,0,none
+41,7,-280,birch_sign,give effect,water breathing,max infinite,,,,,,purple,1,0,none
+43,7,-280,birch_sign,give leather,depth strider 255,boots if red conc,is 5 blocks below,,,,,purple,1,0,none
+41,7,-279,birch_sign,remove elytra on,yellow glazed,terracotta,,,,,,yellow,1,0,none
+43,7,-279,birch_sign,give leather,depth strider 255,boots if red conc,is 4 blocks below,,,,,purple,1,0,none
+41,7,-278,birch_sign,remove elytra,in cave air,(checkpoints),,,,,,white,1,0,none
+42,7,-278,birch_sign,give conduit,power max,infinite,,,,,,purple,1,0,none
+43,7,-278,birch_sign,give leather,depth strider 255,boots if red conc,is 3 blocks below,,,,,purple,1,0,none
+41,7,-277,birch_sign,green glazed,terracotta,give slowness,effect,,,,,green,1,0,none
+42,7,-277,birch_sign,remove leather,boots in air,,,,,,,white,1,0,none
+43,7,-277,birch_sign,give leather,depth strider 255,boots if red conc,is 2 blocks below,,,,,purple,1,0,none
+41,7,-276,birch_sign,give effect,weakness max,infinite,,,,,,purple,1,0,none
+42,7,-276,birch_sign,give effect,saturation max,infinite,,,,,,purple,1,0,none
+43,7,-276,birch_sign,give leather,depth strider 255,boots if red conc,is 1 block below,,,,,purple,1,0,none
+41,7,-275,birch_sign,give effect,dolphins grace,infinite,,,,,,purple,1,0,none
+42,7,-275,birch_sign, green glazed,terracotta,slowness 1 sec,,,,,,green,1,0,none
+43,7,-275,birch_sign,kill all items,,,,,,,,gray,1,0,none
+41,7,-274,birch_sign,enchant,unbreaking 3,,,,,,,purple,1,0,none
+42,7,-274,birch_sign,green glazed,terracotta,remove speed,,,,,,green,1,0,none
+43,7,-274,birch_sign,kill at,y-50,DONT TOUCH DY,,,,,,gray,1,0,none
+41,7,-273,birch_sign,enchant,riptide,,,,,,,purple,1,0,none
+42,7,-273,birch_sign,lime shulker,box jump pad,jump boost,,,,,,lime,1,0,none
+43,7,-273,birch_sign,magenta glazed,terracotta,jump pad,jump boost,,,,,red,1,0,none
+41,7,-272,birch_sign,cave,air,set,world spawn,,,,,white,1,0,none
+42,7,-272,birch_sign,red glazed,terracotta jump,jump boost,,,,,,red,1,0,none
+43,7,-272,birch_sign,magenta glazed,terracotta jump,pad,speed,,,,,red,1,0,none
+41,7,-271,birch_sign,glowing,effect infinite,white,,,,,,white,1,0,none
+42,7,-271,birch_sign,red glazed,teracotta jump,pad speed,,,,,,red,1,0,none
+43,7,-271,birch_sign,pink glazed,terracotta jump,pad effect give,speed,,,,,red,1,0,none
+41,7,-270,birch_sign,lime shulker, box play,up pad (cavevine),(break1/2/3/4),,,,,lime,1,0,none
+42,7,-270,birch_sign,yellow glazed,terracotta,speed,,,,,,yellow,1,0,none
+43,7,-270,birch_sign,pink glazed,terracotta,jump boost,,,,,,red,1,0,none
+41,7,-269,birch_sign,orange shulker,box mega jump,speed,,,,,,orange,1,0,none
+42,7,-269,birch_sign,orange shulker,box mega jump,jump boost,,,,,,orange,1,0,none
+43,7,-269,birch_sign,orange shulker,box remove,trident,,,,,,orange,1,0,none
+41,7,-268,birch_sign,pink glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+42,7,-268,birch_sign,orange shulker,box play,mejupa (candle),(extimguish1/2/3),,,,,orange,1,0,none
+43,7,-268,birch_sign,set 0,xp points,,,,,,,lime,1,0,none
+41,7,-267,birch_sign,magenta glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+42,7,-267,birch_sign,cave air,play checkpoint,(chain),(place1/2/3/4......),,,,,white,1,0,none
+43,7,-267,birch_sign,set 0,xp levels,,,,,,,lime,1,0,none
+41,7,-266,birch_sign,red_glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+42,7,-266,birch_sign,yellow glazed,teracotta play,speed (chain),(break1/2/3/4),,,,,yellow,1,0,none
+-176,-37,-205,birch_sign,clear on calcite,,,,,,,,white,1,0,none
+-175,-37,-205,birch_sign,give trident on,yellow glazed,terracotta,,,,,,yellow,1,0,none
+-174,-37,-205,birch_sign,green glazed,terracotta,remove jump,boost,,,,,purple,1,0,none
+-176,-37,-204,birch_sign,give effect,water breathing,max infinite,,,,,,purple,1,0,none
+-174,-37,-204,birch_sign,give leather,depth strider 255,boots if red conc,is 5 blocks below,,,,,purple,1,0,none
+-176,-37,-203,birch_sign,remove elytra on,yellow glazed,terracotta,,,,,,yellow,1,0,none
+-174,-37,-203,birch_sign,give leather,depth strider 255,boots if red conc,is 4 blocks below,,,,,purple,1,0,none
+-176,-37,-202,birch_sign,remove elytra,in cave air,(checkpoints),,,,,,white,1,0,none
+-175,-37,-202,birch_sign,give conduit,power max,infinite,,,,,,purple,1,0,none
+-174,-37,-202,birch_sign,give leather,depth strider 255,boots if red conc,is 3 blocks below,,,,,purple,1,0,none
+-176,-37,-201,birch_sign,green glazed,terracotta,give slowness,effect,,,,,green,1,0,none
+-175,-37,-201,birch_sign,remove leather,boots in air,,,,,,,white,1,0,none
+-174,-37,-201,birch_sign,give leather,depth strider 255,boots if red conc,is 2 blocks below,,,,,purple,1,0,none
+-176,-37,-200,birch_sign,give effect,weakness max,infinite,,,,,,purple,1,0,none
+-175,-37,-200,birch_sign,give effect,saturation max,infinite,,,,,,purple,1,0,none
+-174,-37,-200,birch_sign,give leather,depth strider 255,boots if red conc,is 1 block below,,,,,purple,1,0,none
+-176,-37,-199,birch_sign,give effect,dolphins grace,infinite,,,,,,purple,1,0,none
+-175,-37,-199,birch_sign, green glazed,terracotta,slowness 1 sec,,,,,,green,1,0,none
+-174,-37,-199,birch_sign,kill all items,,,,,,,,gray,1,0,none
+-176,-37,-198,birch_sign,enchant,unbreaking 3,,,,,,,purple,1,0,none
+-175,-37,-198,birch_sign,green glazed,terracotta,remove speed,,,,,,green,1,0,none
+-174,-37,-198,birch_sign,kill at,y-50,DONT TOUCH DY,,,,,,gray,1,0,none
+-176,-37,-197,birch_sign,enchant,riptide,,,,,,,purple,1,0,none
+-175,-37,-197,birch_sign,lime shulker,box jump pad,jump boost,,,,,,lime,1,0,none
+-174,-37,-197,birch_sign,magenta glazed,terracotta,jump pad,jump boost,,,,,red,1,0,none
+-176,-37,-196,birch_sign,cave,air,set,world spawn,,,,,white,1,0,none
+-175,-37,-196,birch_sign,red glazed,terracotta jump,jump boost,,,,,,red,1,0,none
+-174,-37,-196,birch_sign,magenta glazed,terracotta jump,pad,speed,,,,,red,1,0,none
+-176,-37,-195,birch_sign,glowing,effect infinite,white,,,,,,white,1,0,none
+-175,-37,-195,birch_sign,red glazed,teracotta jump,pad speed,,,,,,red,1,0,none
+-174,-37,-195,birch_sign,pink glazed,terracotta jump,pad effect give,speed,,,,,red,1,0,none
+-176,-37,-194,birch_sign,lime shulker, box play,up pad (cavevine),(break1/2/3/4),,,,,lime,1,0,none
+-175,-37,-194,birch_sign,yellow glazed,terracotta,speed,,,,,,yellow,1,0,none
+-174,-37,-194,birch_sign,pink glazed,terracotta,jump boost,,,,,,red,1,0,none
+-176,-37,-193,birch_sign,orange shulker,box mega jump,speed,,,,,,orange,1,0,none
+-175,-37,-193,birch_sign,orange shulker,box mega jump,jump boost,,,,,,orange,1,0,none
+-174,-37,-193,birch_sign,orange shulker,box remove,trident,,,,,,orange,1,0,none
+-176,-37,-192,birch_sign,pink glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+-175,-37,-192,birch_sign,orange shulker,box play,mejupa (candle),(extimguish1/2/3),,,,,orange,1,0,none
+-174,-37,-192,birch_sign,set 0,xp points,,,,,,,lime,1,0,none
+-176,-37,-191,birch_sign,magenta glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+-175,-37,-191,birch_sign,cave air,play checkpoint,(chain),(place1/2/3/4......),,,,,white,1,0,none
+-174,-37,-191,birch_sign,set 0,xp levels,,,,,,,lime,1,0,none
+-176,-37,-190,birch_sign,red_glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+-175,-37,-190,birch_sign,yellow glazed,teracotta play,speed (chain),(break1/2/3/4),,,,,yellow,1,0,none
+-174,-37,-190,birch_sign,give elytra,on spruce,planks,,,,,,purple,1,0,none
+-3,-11,-137,birch_sign,clear on calcite,,,,,,,,white,1,0,none
+-2,-11,-137,birch_sign,give trident on,yellow glazed,terracotta,,,,,,yellow,1,0,none
+-1,-11,-137,birch_sign,green glazed,terracotta,remove jump,boost,,,,,purple,1,0,none
+-3,-11,-136,birch_sign,give effect,water breathing,max infinite,,,,,,purple,1,0,none
+-1,-11,-136,birch_sign,give leather,depth strider 255,boots if red conc,is 5 blocks below,,,,,purple,1,0,none
+-3,-11,-135,birch_sign,remove elytra on,yellow glazed,terracotta,,,,,,yellow,1,0,none
+-1,-11,-135,birch_sign,give leather,depth strider 255,boots if red conc,is 4 blocks below,,,,,purple,1,0,none
+-3,-11,-134,birch_sign,remove elytra,in cave air,(checkpoints),,,,,,white,1,0,none
+-2,-11,-134,birch_sign,give conduit,power max,infinite,,,,,,purple,1,0,none
+-1,-11,-134,birch_sign,give leather,depth strider 255,boots if red conc,is 3 blocks below,,,,,purple,1,0,none
+-3,-11,-133,birch_sign,green glazed,terracotta,give slowness,effect,,,,,green,1,0,none
+-2,-11,-133,birch_sign,remove leather,boots in air,,,,,,,white,1,0,none
+-1,-11,-133,birch_sign,give leather,depth strider 255,boots if red conc,is 2 blocks below,,,,,purple,1,0,none
+-3,-11,-132,birch_sign,give effect,weakness max,infinite,,,,,,purple,1,0,none
+-2,-11,-132,birch_sign,give effect,saturation max,infinite,,,,,,purple,1,0,none
+-1,-11,-132,birch_sign,give leather,depth strider 255,boots if red conc,is 1 block below,,,,,purple,1,0,none
+-3,-11,-131,birch_sign,give effect,dolphins grace,infinite,,,,,,purple,1,0,none
+-2,-11,-131,birch_sign, green glazed,terracotta,slowness 1 sec,,,,,,green,1,0,none
+-1,-11,-131,birch_sign,kill all items,,,,,,,,gray,1,0,none
+-3,-11,-130,birch_sign,enchant,unbreaking 3,,,,,,,purple,1,0,none
+-2,-11,-130,birch_sign,green glazed,terracotta,remove speed,,,,,,green,1,0,none
+-1,-11,-130,birch_sign,kill at,y-50,DONT TOUCH DY,,,,,,gray,1,0,none
+-3,-11,-129,birch_sign,enchant,riptide,,,,,,,purple,1,0,none
+-2,-11,-129,birch_sign,lime shulker,box jump pad,jump boost,,,,,,lime,1,0,none
+-1,-11,-129,birch_sign,magenta glazed,terracotta,jump pad,jump boost,,,,,red,1,0,none
+-3,-11,-128,birch_sign,cave,air,set,world spawn,,,,,white,1,0,none
+-2,-11,-128,birch_sign,red glazed,terracotta jump,jump boost,,,,,,red,1,0,none
+-1,-11,-128,birch_sign,magenta glazed,terracotta jump,pad,speed,,,,,red,1,0,none
+-3,-11,-127,birch_sign,glowing,effect infinite,white,,,,,,white,1,0,none
+-2,-11,-127,birch_sign,red glazed,teracotta jump,pad speed,,,,,,red,1,0,none
+-1,-11,-127,birch_sign,pink glazed,terracotta jump,pad effect give,speed,,,,,red,1,0,none
+-3,-11,-126,birch_sign,lime shulker, box play,up pad (cavevine),(break1/2/3/4),,,,,lime,1,0,none
+-2,-11,-126,birch_sign,yellow glazed,terracotta,speed,,,,,,yellow,1,0,none
+-1,-11,-126,birch_sign,pink glazed,terracotta,jump boost,,,,,,red,1,0,none
+-3,-11,-125,birch_sign,orange shulker,box mega jump,speed,,,,,,orange,1,0,none
+-2,-11,-125,birch_sign,orange shulker,box mega jump,jump boost,,,,,,orange,1,0,none
+-1,-11,-125,birch_sign,orange shulker,box remove,trident,,,,,,orange,1,0,none
+-3,-11,-124,birch_sign,pink glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+-2,-11,-124,birch_sign,orange shulker,box play,mejupa (candle),(extimguish1/2/3),,,,,orange,1,0,none
+-1,-11,-124,birch_sign,set 0,xp points,,,,,,,lime,1,0,none
+-3,-11,-123,birch_sign,magenta glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+-2,-11,-123,birch_sign,cave air,play checkpoint,(chain),(place1/2/3/4......),,,,,white,1,0,none
+-1,-11,-123,birch_sign,set 0,xp levels,,,,,,,lime,1,0,none
+-3,-11,-122,birch_sign,red_glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+-2,-11,-122,birch_sign,yellow glazed,teracotta play,speed (chain),(break1/2/3/4),,,,,yellow,1,0,none
+-2,-7,-18,birch_sign,clear on calcite,,,,,,,,white,1,0,none
+-1,-7,-18,birch_sign,give trident on,yellow glazed,terracotta,,,,,,yellow,1,0,none
+0,-7,-18,birch_sign,green glazed,terracotta,remove jump,boost,,,,,purple,1,0,none
+-2,-7,-17,birch_sign,give effect,water breathing,max infinite,,,,,,purple,1,0,none
+0,-7,-17,birch_sign,give leather,depth strider 255,boots if red conc,is 5 blocks below,,,,,purple,1,0,none
+-2,-7,-16,birch_sign,remove elytra on,yellow glazed,terracotta,,,,,,yellow,1,0,none
+0,-7,-16,birch_sign,give leather,depth strider 255,boots if red conc,is 4 blocks below,,,,,purple,1,0,none
+-2,-7,-15,birch_sign,remove elytra,in cave air,(checkpoints),,,,,,white,1,0,none
+-1,-7,-15,birch_sign,give conduit,power max,infinite,,,,,,purple,1,0,none
+0,-7,-15,birch_sign,give leather,depth strider 255,boots if red conc,is 3 blocks below,,,,,purple,1,0,none
+-2,-7,-14,birch_sign,green glazed,terracotta,give slowness,effect,,,,,green,1,0,none
+-1,-7,-14,birch_sign,remove leather,boots in air,,,,,,,white,1,0,none
+0,-7,-14,birch_sign,give leather,depth strider 255,boots if red conc,is 2 blocks below,,,,,purple,1,0,none
+-2,-7,-13,birch_sign,give effect,weakness max,infinite,,,,,,purple,1,0,none
+-1,-7,-13,birch_sign,give effect,saturation max,infinite,,,,,,purple,1,0,none
+0,-7,-13,birch_sign,give leather,depth strider 255,boots if red conc,is 1 block below,,,,,purple,1,0,none
+-2,-7,-12,birch_sign,give effect,dolphins grace,infinite,,,,,,purple,1,0,none
+-1,-7,-12,birch_sign, green glazed,terracotta,slowness 1 sec,,,,,,green,1,0,none
+0,-7,-12,birch_sign,kill all items,,,,,,,,gray,1,0,none
+-2,-7,-11,birch_sign,enchant,unbreaking 3,,,,,,,purple,1,0,none
+-1,-7,-11,birch_sign,green glazed,terracotta,remove speed,,,,,,green,1,0,none
+0,-7,-11,birch_sign,kill at,y-50,DONT TOUCH DY,,,,,,gray,1,0,none
+-2,-7,-10,birch_sign,enchant,riptide,,,,,,,purple,1,0,none
+-1,-7,-10,birch_sign,lime shulker,box jump pad,jump boost,,,,,,lime,1,0,none
+0,-7,-10,birch_sign,magenta glazed,terracotta,jump pad,jump boost,,,,,red,1,0,none
+-2,-7,-9,birch_sign,cave,air,set,world spawn,,,,,white,1,0,none
+-1,-7,-9,birch_sign,red glazed,terracotta jump,jump boost,,,,,,red,1,0,none
+0,-7,-9,birch_sign,magenta glazed,terracotta jump,pad,speed,,,,,red,1,0,none
+-2,-7,-8,birch_sign,glowing,effect infinite,white,,,,,,white,1,0,none
+-1,-7,-8,birch_sign,red glazed,teracotta jump,pad speed,,,,,,red,1,0,none
+0,-7,-8,birch_sign,pink glazed,terracotta jump,pad effect give,speed,,,,,red,1,0,none
+-2,-7,-7,birch_sign,lime shulker, box play,up pad (cavevine),(break1/2/3/4),,,,,lime,1,0,none
+-1,-7,-7,birch_sign,yellow glazed,terracotta,speed,,,,,,yellow,1,0,none
+0,-7,-7,birch_sign,pink glazed,terracotta,jump boost,,,,,,red,1,0,none
+-2,-7,-6,birch_sign,orange shulker,box mega jump,speed,,,,,,orange,1,0,none
+-1,-7,-6,birch_sign,orange shulker,box mega jump,jump boost,,,,,,orange,1,0,none
+0,-7,-6,birch_sign,orange shulker,box remove,trident,,,,,,orange,1,0,none
+-2,-7,-5,birch_sign,pink glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+-1,-7,-5,birch_sign,orange shulker,box play,mejupa (candle),(extimguish1/2/3),,,,,orange,1,0,none
+0,-7,-5,birch_sign,set 0,xp points,,,,,,,lime,1,0,none
+-2,-7,-4,birch_sign,magenta glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+-1,-7,-4,birch_sign,cave air,play checkpoint,(chain),(place1/2/3/4......),,,,,white,1,0,none
+0,-7,-4,birch_sign,set 0,xp levels,,,,,,,lime,1,0,none
+-2,-7,-3,birch_sign,red_glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+-1,-7,-3,birch_sign,yellow glazed,teracotta play,speed (chain),(break1/2/3/4),,,,,yellow,1,0,none
+-2,-7,-2,birch_sign,set time,,,,,,,,white,1,0,none
+-3,4,21,bamboo_wall_sign,"Finally, disable",water dripping,particles,,,,,,black,1,0,none
+-3,5,21,bamboo_wall_sign,& turn your,blocks and,jukebox/note,block vol up,,,,,black,1,0,none
+-3,5,22,bamboo_wall_sign,I recommend a,render distance,of 14 to match,the event,,,,,black,1,0,none
+-3,4,23,bamboo_wall_sign,animated,,-------------->,,,,,,black,1,0,none
+-3,5,23,bamboo_wall_sign,Also ensure that,your render and,simulation,distance are 4+,,,,,black,1,0,none
+-3,4,24,bamboo_wall_sign,"Then, check the",resource pack is,working. This,block should be,,,,,black,1,0,none
+-3,5,24,bamboo_wall_sign,Please ensure,that you are in,Minecraft version,1.20 or above,,,,,black,1,0,none
+-3,5,25,bamboo_wall_sign,,RESET,COURSE,,,,,,red,1,0,none
+-154,-50,179,birch_sign,clear on calcite,,,,,,,,white,1,0,none
+-153,-50,179,birch_sign,give trident on,yellow glazed,terracotta,,,,,,yellow,1,0,none
+-152,-50,179,birch_sign,green glazed,terracotta,remove jump,boost,,,,,purple,1,0,none
+-154,-50,180,birch_sign,give effect,water breathing,max infinite,,,,,,purple,1,0,none
+-153,-50,180,birch_sign,give effect,regeneration max,infinite,,,,,,purple,1,0,none
+-152,-50,180,birch_sign,give leather,depth strider 255,boots if red conc,is 5 blocks below,,,,,purple,1,0,none
+-154,-50,181,birch_sign,remove elytra on,yellow glazed,terracotta,,,,,,yellow,1,0,none
+-153,-50,181,birch_sign,give effect,saturation max,infinite,,,,,,purple,1,0,none
+-152,-50,181,birch_sign,give leather,depth strider 255,boots if red conc,is 4 blocks below,,,,,purple,1,0,none
+-154,-50,182,birch_sign,remove elytra,in cave air,(checkpoints),,,,,,white,1,0,none
+-153,-50,182,birch_sign,give conduit,power max,infinite,,,,,,purple,1,0,none
+-152,-50,182,birch_sign,give leather,depth strider 255,boots if red conc,is 3 blocks below,,,,,purple,1,0,none
+-154,-50,183,birch_sign,green glazed,terracotta,give slowness,effect,,,,,green,1,0,none
+-153,-50,183,birch_sign,remove leather,boots in air,,,,,,,white,1,0,none
+-152,-50,183,birch_sign,give leather,depth strider 255,boots if red conc,is 2 blocks below,,,,,purple,1,0,none
+-154,-50,184,birch_sign,give effect,weakness max,infinite,,,,,,purple,1,0,none
+-153,-50,184,birch_sign,give effect,saturation max,infinite,,,,,,purple,1,0,none
+-152,-50,184,birch_sign,give leather,depth strider 255,boots if red conc,is 1 block below,,,,,purple,1,0,none
+-154,-50,185,birch_sign,give effect,dolphins grace,infinite,,,,,,purple,1,0,none
+-153,-50,185,birch_sign, green glazed,terracotta,slowness 1 sec,,,,,,green,1,0,none
+-152,-50,185,birch_sign,kill all items,,,,,,,,gray,1,0,none
+-154,-50,186,birch_sign,enchant,unbreaking 3,,,,,,,purple,1,0,none
+-153,-50,186,birch_sign,green glazed,terracotta,remove speed,,,,,,green,1,0,none
+-152,-50,186,birch_sign,kill at,y-50,DONT TOUCH DY,,,,,,gray,1,0,none
+-154,-50,187,birch_sign,enchant,riptide,,,,,,,purple,1,0,none
+-153,-50,187,birch_sign,lime shulker,box jump pad,jump boost,,,,,,lime,1,0,none
+-152,-50,187,birch_sign,magenta glazed,terracotta,jump pad,jump boost,,,,,red,1,0,none
+-154,-50,188,birch_sign,cave,air,set,world spawn,,,,,white,1,0,none
+-153,-50,188,birch_sign,red glazed,terracotta jump,jump boost,,,,,,red,1,0,none
+-152,-50,188,birch_sign,magenta glazed,terracotta jump,pad,speed,,,,,red,1,0,none
+-154,-50,189,birch_sign,glowing,effect infinite,white,,,,,,white,1,0,none
+-153,-50,189,birch_sign,red glazed,teracotta jump,pad speed,,,,,,red,1,0,none
+-152,-50,189,birch_sign,pink glazed,terracotta jump,pad effect give,speed,,,,,red,1,0,none
+-154,-50,190,birch_sign,lime shulker, box play,up pad (cavevine),(break1/2/3/4),,,,,lime,1,0,none
+-153,-50,190,birch_sign,yellow glazed,terracotta,speed,,,,,,yellow,1,0,none
+-152,-50,190,birch_sign,pink glazed,terracotta,jump boost,,,,,,red,1,0,none
+-154,-50,191,birch_sign,orange shulker,box mega jump,speed,,,,,,orange,1,0,none
+-153,-50,191,birch_sign,orange shulker,box mega jump,jump boost,,,,,,orange,1,0,none
+-152,-50,191,birch_sign,orange shulker,box remove,trident,,,,,,orange,1,0,none
+-154,-50,192,birch_sign,pink glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+-153,-50,192,birch_sign,orange shulker,box play,mejupa (candle),(extimguish1/2/3),,,,,orange,1,0,none
+-152,-50,192,birch_sign,set 0,xp points,,,,,,,lime,1,0,none
+-154,-50,193,birch_sign,magenta glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+-153,-50,193,birch_sign,cave air,play checkpoint,(chain),(place1/2/3/4......),,,,,white,1,0,none
+-152,-50,193,birch_sign,set 0,xp levels,,,,,,,lime,1,0,none
+-154,-50,194,birch_sign,red_glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+-153,-50,194,birch_sign,yellow glazed,teracotta play,speed (chain),(break1/2/3/4),,,,,yellow,1,0,none
+27,-37,231,birch_sign,red_glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+28,-37,231,birch_sign,magenta glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+29,-37,231,birch_sign,pink glazed,teracotta play,jumppad (bell),(bell_use01/2/3...,,,,,red,1,0,none
+30,-37,231,birch_sign,orange shulker,box mega jump,speed,,,,,,orange,1,0,none
+31,-37,231,birch_sign,lime shulker, box play,up pad (cavevine),(break1/2/3/4),,,,,lime,1,0,none
+32,-37,231,birch_sign,glowing,effect infinite,white,,,,,,white,1,0,none
+33,-37,231,birch_sign,cave,air,set,world spawn,,,,,white,1,0,none
+34,-37,231,birch_sign,enchant,riptide,,,,,,,purple,1,0,none
+35,-37,231,birch_sign,enchant,unbreaking 3,,,,,,,purple,1,0,none
+36,-37,231,birch_sign,give effect,dolphins grace,infinite,,,,,,purple,1,0,none
+37,-37,231,birch_sign,give effect,weakness max,infinite,,,,,,purple,1,0,none
+38,-37,231,birch_sign,green glazed,terracotta,give slowness,effect,,,,,green,1,0,none
+39,-37,231,birch_sign,remove elytra,in cave air,(checkpoints),,,,,,white,1,0,none
+40,-37,231,birch_sign,remove elytra on,yellow glazed,terracotta,,,,,,yellow,1,0,none
+41,-37,231,birch_sign,give effect,water breathing,max infinite,,,,,,purple,1,0,none
+42,-37,231,birch_sign,clear on calcite,,,,,,,,white,1,0,none
+43,-37,231,birch_sign,clear on,andesite slab,,,,,,,white,1,0,none
+27,-37,232,birch_sign,yellow glazed,teracotta play,speed (chain),(break1/2/3/4),,,,,yellow,1,0,none
+28,-37,232,birch_sign,cave air,play checkpoint,(chain),(place1/2/3/4......),,,,,white,1,0,none
+29,-37,232,birch_sign,orange shulker,box play,mejupa (candle),(extimguish1/2/3),,,,,orange,1,0,none
+30,-37,232,birch_sign,orange shulker,box mega jump,jump boost,,,,,,orange,1,0,none
+31,-37,232,birch_sign,yellow glazed,terracotta,speed,,,,,,yellow,1,0,none
+32,-37,232,birch_sign,red glazed,teracotta jump,pad speed,,,,,,red,1,0,none
+33,-37,232,birch_sign,red glazed,terracotta jump,jump boost,,,,,,red,1,0,none
+34,-37,232,birch_sign,lime shulker,box jump pad,jump boost,,,,,,lime,1,0,none
+35,-37,232,birch_sign,green glazed,terracotta,remove speed,,,,,,green,1,0,none
+36,-37,232,birch_sign, green glazed,terracotta,slowness 1 sec,,,,,,green,1,0,none
+37,-37,232,birch_sign,give effect,saturation max,infinite,,,,,,purple,1,0,none
+38,-37,232,birch_sign,remove leather,boots in air,,,,,,,white,1,0,none
+39,-37,232,birch_sign,give conduit,power max,infinite,,,,,,purple,1,0,none
+40,-37,232,birch_sign,give effect,saturation max,infinite,,,,,,purple,1,0,none
+41,-37,232,birch_sign,give effect,regeneration max,infinite,,,,,,purple,1,0,none
+42,-37,232,birch_sign,give trident on,yellow glazed,terracotta,,,,,,yellow,1,0,none
+28,-37,233,birch_sign,set 0,xp levels,,,,,,,lime,1,0,none
+29,-37,233,birch_sign,set 0,xp points,,,,,,,lime,1,0,none
+30,-37,233,birch_sign,orange shulker,box remove,trident,,,,,,orange,1,0,none
+31,-37,233,birch_sign,pink glazed,terracotta,jump boost,,,,,,red,1,0,none
+32,-37,233,birch_sign,pink glazed,terracotta jump,pad effect give,speed,,,,,red,1,0,none
+33,-37,233,birch_sign,magenta glazed,terracotta jump,pad,speed,,,,,red,1,0,none
+34,-37,233,birch_sign,magenta glazed,terracotta,jump pad,jump boost,,,,,red,1,0,none
+35,-37,233,birch_sign,kill at,y-50,DONT TOUCH DY,,,,,,gray,1,0,none
+36,-37,233,birch_sign,kill all items,,,,,,,,gray,1,0,none
+37,-37,233,birch_sign,give leather,depth strider 255,boots if red conc,is 1 block below,,,,,purple,1,0,none
+38,-37,233,birch_sign,give leather,depth strider 255,boots if red conc,is 2 blocks below,,,,,purple,1,0,none
+39,-37,233,birch_sign,give leather,depth strider 255,boots if red conc,is 3 blocks below,,,,,purple,1,0,none
+40,-37,233,birch_sign,give leather,depth strider 255,boots if red conc,is 4 blocks below,,,,,purple,1,0,none
+41,-37,233,birch_sign,give leather,depth strider 255,boots if red conc,is 5 blocks below,,,,,purple,1,0,none
+42,-37,233,birch_sign,green glazed,terracotta,remove jump,boost,,,,,purple,1,0,none

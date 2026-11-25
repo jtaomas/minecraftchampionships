@@ -1,0 +1,14 @@
+element,exact_text,position,when_seen,notes,conf
+Countdown title,"Starting In",centre screen; custom cyan pixel font; 3 lines? single line,1:11-1:13,"Capital S and I; no ellipsis; overlaps the yellow number; no GO word observed",H
+Countdown number,"13 / 12 / 11",centre screen below the title; yellow blocky font,1:11-1:13,"Counts down by 1 per second; only 3 values shown before the cut; A1 world uses nine titles >1<..>9<, so this is a different countdown version",H
+Action bar,"You are in 1st place",just above the hotbar/health; white pixel font,throughout gameplay and during the countdown,"Static command-block string at (-51,1,29) per A1; fired once by the start chain, cleared only by reset; says 1st even while frozen on the start line",H
+Lap indicator,none,n/a,never,"No LAP text, no lap boxes, no lap time on screen",H
+Checkpoint indicator,none,n/a,never,"No CHECKPOINT n/N text; no checkpoint title/chat visible in the sampled frames",H
+Race clock/timer,none,n/a,never,"No mm:ss race clock or time-left clock",H
+Position/standings,none,n/a,never,"Only the action bar's '1st place'; no standings panel, no gaps",H
+Health,10 hearts,bottom left,gameplay,"Custom bright-red heart texture; full throughout",H
+Hunger,10 drumsticks,bottom right,gameplay,"Custom drumstick texture; full throughout",H
+Air,10 blue bubble rings,above hunger,water act (1:03-1:29),"Vanilla air bar with a custom blue-ring texture; confirms the player is submerged",H
+Hotbar,empty / hidden,bottom centre,most frames,"No item icons; a thin grey bar appears at the countdown but no slots/items; the black wing element occupies the bottom-right in flight/water",M
+Black wing element,none (graphic),bottom right,in water/elytra clips,"Black angular wing with 1-2 bright green chevrons; shifts with the camera; either a held custom glider item or a flight HUD widget",M
+Title cards,"Nearly a year in the making / 1:1 Working Ace Race Remake / With checkpoints, easy reset, music and SFX / and with custom animated textures",centre screen,Montage 0:14-1:29,"These are trailer titles, not HUD; the animated-textures title covers the route for ~9 s",H

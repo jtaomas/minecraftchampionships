@@ -1,0 +1,186 @@
+CB-14 943 14 -6 /execute as @a[level=13,gamemode=adventure] at @s if entity @a[level=13,team=Sky_Battle_Yellw] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run scoreboard players add Yellow POINTS 50
+CB-14 933 19 -1 /execute as @a[level=14] at @s run scoreboard players set @s timer_skybattle 0
+CB-14 933 20 -3 /clear @a[level=14]
+CB-14 934 13 -2 /scoreboard players add @a[level=13] timer_skybattle 1
+CB-14 933 20 -1 /scoreboard players set @a[level=14] death_skybattle 0
+CB-14 929 19 -3 /scoreboard players set @a death_skybattle 0
+CB-14 943 14 -5 /execute as @a[level=13,gamemode=adventure] at @s if entity @a[level=13,team=Sky_Battle_Yellw] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run fill 953 18 -3 953 18 -3 minecraft:redstone_block
+CB-14 934 12 -2 /scoreboard players add @a[level=12] timer_skybattle 1
+CB-14 929 18 -3 /kill @a[level=14]
+CB-14 934 11 -2 /scoreboard players add @a[level=11] timer_skybattle 1
+CB-14 943 14 -4 /execute as @a[level=13,gamemode=adventure] at @s if entity @a[level=13,team=Sky_Battle_Yellw,gamemode=adventure] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run summon firework_rocket ~ ~1 ~ {LifeTime:15,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:0,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;11743532,2437522,8073150,4312372,14602026,15435844],FadeColors:[I;11743532,2437522,8073150,4312372,14602026,15435844]}]}}}}
+CB-14 934 10 -2 /scoreboard players add @a[level=10] timer_skybattle 1
+CB-14 943 14 -8 /execute as @a[level=13] at @s if entity @a[level=13,team=Sky_Battle_Yellw] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run xp set @s 14 levels
+CB-14 943 14 -3 /execute if entity @a[level=13,team=Sky_Battle_Yellw,gamemode=adventure] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run tellraw @a {'text':'[Sky Battle] Team Yellow wins!','color':'yellow'}
+CB-14 943 14 -7 /execute as @a[level=13,gamemode=adventure] at @s if entity @a[level=13,team=Sky_Battle_Yellw] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Yellw] run gamemode spectator @s
+CB-14 959 10 -6 /title @a[level=9] times 0 20 0
+CB-14 959 14 -4 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^5
+CB-14 959 14 -6 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^5
+CB-14 959 14 -8 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^5
+CB-14 949 14 -4 /execute as @a[level=12,gamemode=adventure] at @s if entity @a[level=12,team=Sky_Battle_Green] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run summon firework_rocket ~ ~ ~ {LifeTime:20,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:2,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;11743532,2437522,8073150,4312372,14602026,15435844],FadeColors:[I;11743532,2437522,8073150,4312372,14602026,15435844]}]}}}}
+CB-14 947 14 -4 /execute as @a[level=10,gamemode=adventure] at @s if entity @a[level=10,team=Sky_Battle_Red] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run summon firework_rocket ~ ~1 ~ {LifeTime:20,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:0,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;11743532,2437522,8073150,4312372,14602026,15435844],FadeColors:[I;11743532,2437522,8073150,4312372,14602026,15435844]}]}}}}
+CB-14 949 14 -6 /execute as @a[level=12,gamemode=adventure] at @s if entity @a[level=12,team=Sky_Battle_Green] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run scoreboard players add Green POINTS 50
+CB-14 945 14 -4 /execute as @a[level=11,gamemode=adventure] at @s if entity @a[level=11,team=Sky_Battle_Blue] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run summon firework_rocket ~ ~1 ~ {LifeTime:15,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:0,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;11743532,2437522,8073150,4312372,14602026,15435844],FadeColors:[I;11743532,2437522,8073150,4312372,14602026,15435844]}]}}}}
+CB-14 949 14 -8 /execute as @a[level=12] at @s if entity @a[level=12,team=Sky_Battle_Green] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run xp set @s 14 levels
+CB-14 947 14 -6 /execute as @a[level=10,gamemode=adventure] at @s if entity @a[level=10,team=Sky_Battle_Red] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run scoreboard players add Red POINTS 50
+CB-14 947 14 -8 /execute as @a[level=10] at @s if entity @a[level=10,team=Sky_Battle_Red] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run xp set @s 14 levels
+CB-14 945 14 -6 /execute as @a[level=11,gamemode=adventure] at @s if entity @a[level=11,team=Sky_Battle_Blue] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run scoreboard players add Blue POINTS 50
+CB-14 945 14 -8 /execute as @a[level=11] at @s if entity @a[level=11,team=Sky_Battle_Blue] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run xp set @s 14 levels
+CB-14 953 19 -5 /execute as @a[level=14] at @s run playsound minecraft:block.bell.use player @s
+CB-14 959 14 -5 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^5
+CB-14 959 14 -7 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=5..50] minecraft:wither 1 1 true
+CB-14 949 14 -3 /execute if entity @a[level=12,team=Sky_Battle_Green,gamemode=adventure] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run tellraw @a {'text':'[Sky Battle] Team Green wins!','color':'dark_green'}
+CB-14 949 14 -5 /execute as @a[level=12,gamemode=adventure] at @s if entity @a[level=12,team=Sky_Battle_Green] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run fill 953 18 -3 953 18 -3 minecraft:redstone_block
+CB-14 947 14 -3 /execute if entity @a[level=10,team=Sky_Battle_Red,gamemode=adventure] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run tellraw @a {'text':'[Sky Battle] Team Red wins!','color':'red'}
+CB-14 953 18 -5 /stopsound @a[level=14] player minecraft:music_disc.blocks
+CB-14 945 14 -3 /execute if entity @a[level=11,team=Sky_Battle_Blue,gamemode=adventure] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run tellraw @a {'text':'[Sky Battle] Team Blue wins!','color':'blue'}
+CB-14 947 14 -5 /execute as @a[level=10,gamemode=adventure] at @s if entity @a[level=10,team=Sky_Battle_Red] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run fill 953 18 -3 953 18 -3 minecraft:redstone_block
+CB-14 949 14 -7 /execute as @a[level=12,gamemode=adventure] at @s if entity @a[level=12,team=Sky_Battle_Green] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Green] run gamemode spectator @s
+CB-14 945 14 -5 /execute as @a[level=11,gamemode=adventure] at @s if entity @a[level=11,team=Sky_Battle_Blue] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run fill 953 18 -3 953 18 -3 minecraft:redstone_block
+CB-14 947 14 -7 /execute as @a[level=10,gamemode=adventure] at @s if entity @a[level=10,team=Sky_Battle_Red] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Red] run gamemode spectator @s
+CB-14 945 14 -7 /execute as @a[level=11,gamemode=adventure] at @s if entity @a[level=11,team=Sky_Battle_Blue] unless entity @a[x=1800,y=-400,z=-200,dx=400,dy=457,dz=400,gamemode=adventure,team=!Sky_Battle_Blue] run gamemode spectator @s
+CB-14 959 11 -6 /execute as @a[level=9] at @s run scoreboard players set @s timer_skybattle 0
+CB-14 975 14 -6 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^50
+CB-14 973 14 -6 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^40
+CB-14 971 14 -6 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^30
+CB-14 969 14 -6 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^20
+CB-14 967 14 -6 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^15
+CB-14 965 14 -6 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^10
+CB-14 963 14 -6 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^8
+CB-14 961 14 -6 /execute as @e[type=glow_item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^6
+CB-14 975 14 -5 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^50
+CB-14 973 14 -5 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^40
+CB-14 971 14 -5 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^30
+CB-14 969 14 -5 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^20
+CB-14 967 14 -5 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^15
+CB-14 965 14 -5 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^10
+CB-14 963 14 -5 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^8
+CB-14 961 12 -6 /scoreboard players set @a[level=9] dummy_event 0
+CB-14 961 14 -5 /execute as @e[type=item_frame] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^6
+CB-14 961 11 -6 /scoreboard players set @a[level=9] death_event 0
+CB-14 975 14 -4 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^50
+CB-14 973 14 -4 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^40
+CB-14 971 14 -4 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^30
+CB-14 975 14 -8 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^50
+CB-14 969 14 -4 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^20
+CB-14 973 14 -8 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^40
+CB-14 967 10 -6 /spawnpoint @a[level=9] 2000 77 0
+CB-14 975 10 -14 /kill @e[type=item,x=1800,y=-400,z=-200,dx=400,dy=600,dz=400]
+CB-14 967 14 -4 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^15
+CB-14 971 14 -8 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^30
+CB-14 965 14 -4 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^10
+CB-14 969 14 -8 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^20
+CB-14 963 14 -4 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^8
+CB-14 967 14 -8 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^15
+CB-14 961 10 -6 /scoreboard players set @a[level=9] kill_event 0
+CB-14 961 14 -4 /execute as @e[type=minecraft:armor_stand] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^6
+CB-14 965 14 -8 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^10
+CB-14 963 14 -8 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^8
+CB-14 961 14 -8 /execute as @e[type=minecraft:small_fireball] at @s run particle minecraft:campfire_cosy_smoke ^ ^ ^6
+CB-14 975 14 -7 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=50..50] minecraft:wither 1 1 false
+CB-14 973 14 -7 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=40..50] minecraft:wither 1 1 true
+CB-14 971 14 -7 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=30..50] minecraft:wither 1 1 true
+CB-14 969 14 -7 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=20..50] minecraft:wither 1 1 true
+CB-14 967 14 -7 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=15..50] minecraft:wither 1 1 true
+CB-14 965 14 -7 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=10..50] minecraft:wither 1 1 true
+CB-14 963 14 -7 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=8..50] minecraft:wither 1 1 true
+CB-14 961 14 -7 /execute as @e[type=minecraft:armor_stand] at @s run effect give @e[distance=6..50] minecraft:wither 1 1 true
+CB-14 986 10 -1 /execute as @a[level=8,team=Sky_Battle_Red] at @s run xp set @s 9 levels
+CB-14 987 10 -1 /execute as @a[level=8,team=Sky_Battle_Blue] at @s run xp set @s 9 levels
+CB-14 988 10 -1 /execute as @a[level=8,team=Sky_Battle_Green] at @s run xp set @s 9 levels
+CB-14 989 10 -1 /execute as @a[level=8,team=Sky_Battle_Yellw] at @s run xp set @s 9 levels
+CB-14 978 23 -8 /kill @e[x=1800,y=-400,z=-200,dx=400,dy=600,dz=400,type=item]
+CB-15 1001 15 -8 /execute as @a[level=8] at @s if block ~ ~-1 ~ minecraft:red_concrete_powder run team join Sky_Battle_Red @s
+CB-15 1000 15 -8 /execute as @a[level=8,team=Sky_Battle_Red] at @s if block ~ ~-1 ~ minecraft:red_concrete_powder run tp @s 1998 70 0
+CB-15 1001 15 -10 /execute as @a[level=8] at @s if block ~ ~-1 ~ minecraft:blue_concrete_powder run team join Sky_Battle_Blue @s
+CB-15 1000 15 -10 /execute as @a[level=8,team=Sky_Battle_Blue] at @s if block ~ ~-1 ~ minecraft:blue_concrete_powder run tp @s 2000 70 2
+CB-15 998 15 -8 /execute as @a[level=10,team=Sky_Battle_Red] at @s run item replace entity @s weapon.offhand with red_wool{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete,red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta,red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta,smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone_wall]} 64
+CB-15 1001 15 -12 /execute as @a[level=8] at @s if block ~ ~-1 ~ minecraft:green_concrete_powder run team join Sky_Battle_Green @s
+CB-15 1000 15 -12 /execute as @a[level=8,team=Sky_Battle_Green] at @s if block ~ ~-1 ~ minecraft:green_concrete_powder run tp @s 2002 70 0
+CB-15 998 15 -10 /execute as @a[level=11,team=Sky_Battle_Blue] at @s run item replace entity @s weapon.offhand with blue_wool{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone_wall]} 64
+CB-15 1004 15 -16 /effect give @a[level=9] minecraft:saturation 2 0 true
+CB-15 1001 15 -14 /execute as @a[level=8] at @s if block ~ ~-1 ~ minecraft:yellow_concrete_powder run team join Sky_Battle_Yellw @s
+CB-15 1003 15 -16 /effect give @a[level=8] minecraft:saturation 2 0 true
+CB-15 1000 15 -14 /execute as @a[level=8,team=Sky_Battle_Yellw] at @s if block ~ ~-1 ~ minecraft:yellow_concrete_powder run tp @s 2000 70 -2
+CB-15 998 15 -12 /execute as @a[level=12,team=Sky_Battle_Green] at @s run item replace entity @s weapon.offhand with green_wool{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone_wall]} 64
+CB-15 1001 15 -16 /execute as @a at @s if score @s ironblock matches 1 run give @s iron_block 1
+CB-15 998 15 -14 /execute as @a[level=13,team=Sky_Battle_Yellw] at @s run item replace entity @s weapon.offhand with yellow_wool{CanPlaceOn:[red_wool,yellow_wool,green_wool,blue_wool,white_concrete,red_concrete,yellow_concrete,green_concrete,blue_concrete, red_terracotta,yellow_terracotta,green_terracotta,blue_terracotta, red_glazed_terracotta,yellow_glazed_terracotta,green_glazed_terracotta,blue_glazed_terracotta, smooth_quartz,smooth_quartz_stairs,cyan_wool,orange_wool,purple_wool,lime_wool,chain,gray_shulker_box,white_shulker_box,barrel,crafting_table,stripped_spruce_log,spruce_trapdoor,oak_trapdoor,spruce_fence,oak_fence,stone_bricks,stone_brick_stairs,oak_leaves,cobblestone_wall,polished_blackstone_wall]} 64
+CB-15 993 15 -14 /execute as @e[type=minecraft:armor_stand] at @s run effect give @a[distance=50..100] wither 1 1 true
+CB-15 1004 16 -13 /execute as @a[level=8] at @s if block ~ ~-1 ~ minecraft:green_stained_glass run team join Sky_Battle_Green
+CB-15 1003 16 -13 /execute as @a[level=8] at @s if block ~ ~-1 ~ minecraft:blue_stained_glass run team join Sky_Battle_Blue
+CB-15 1004 16 -14 /execute as @a[level=8] at @s if block ~ ~-1 ~ minecraft:yellow_stained_glass run team join Sky_Battle_Yellw
+CB-15 1003 16 -14 /execute as @a[level=8] at @s if block ~ ~-1 ~ minecraft:red_stained_glass run team join Sky_Battle_Red
+CB-15 1001 16 -16 /execute as @a at @s if score @s ironblock matches 1 run scoreboard players set @s ironblock 0
+CB-14 942 14 6 /xp set @a[team=Sky_Battle_Blue] 11 levels
+CB-14 942 13 6 /xp set @a[team=Sky_Battle_Yellw] 13 levels
+CB-14 942 12 6 /xp set @a[team=Sky_Battle_Green] 12 levels
+CB-14 943 10 4 /execute as @a[level=9] at @s run playsound minecraft:block.note_block.bell player @s
+CB-14 942 11 6 /xp set @a[team=Sky_Battle_Red] 10 levels
+CB-14 947 11 4 /title @a[level=9] subtitle {'text':'>1<','color':'green'}
+CB-14 951 11 4 /title @a[level=9] subtitle {'text':'>2<','color':'yellow'}
+CB-14 955 11 4 /title @a[level=9] subtitle {'text':'>3<','color':'red'}
+CB-14 945 18 1 /team empty Sky_Battle_Yellw
+CB-14 945 18 2 /team join Sky_Battle_Yellw @a[level=13]
+CB-14 947 18 1 /team empty Sky_Battle_Green
+CB-14 947 18 2 /team join Sky_Battle_Green @a[level=12]
+CB-14 949 18 1 /team empty Sky_Battle_Blue
+CB-14 949 18 2 /team join Sky_Battle_Blue @a[level=11]
+CB-14 951 18 1 /team empty Sky_Battle_Red
+CB-14 947 14 1 /team join pve @a[level=14]
+CB-14 951 18 2 /team join Sky_Battle_Red @a[level=10]
+CB-14 949 14 1 /execute as @a[x=1800,y=-500,z=-200,dx=400,dy=700,dz=400,scores={death_skybattle=1}] at @s run gamemode spectator
+CB-14 947 14 3 /clear @a[level=14]
+CB-14 949 14 2 /execute as @a[x=1800,y=-200,z=-500,dx=400,dy=700,dz=400,scores={death_skybattle=1}] at @s run xp set @s 14 levels
+CB-14 947 14 5 /effect clear @a[level=14]
+CB-14 949 14 3 /execute as @a[level=14,scores={death_skybattle=1}] at @s run scoreboard players set @s death_skybattle 0
+CB-14 947 12 4 /title @a[level=9] title {'text':'','color':'red'}
+CB-14 947 10 4 /execute as @a[level=9] at @s run playsound minecraft:block.note_block.hat player @s
+CB-14 951 12 4 /title @a[level=9] title {'text':'','color':'red'}
+CB-14 951 10 4 /execute as @a[level=9] at @s run playsound minecraft:block.note_block.hat player @s
+CB-14 947 10 8 /spawnpoint @a[team=Sky_Battle_Red] 1997 70 -1 -90
+CB-14 947 10 9 /spawnpoint @a[team=Sky_Battle_Blue] 1999 70 3 180
+CB-14 947 10 10 /spawnpoint @a[team=Sky_Battle_Green] 2003 70 1 90
+CB-14 955 12 4 /title @a[level=9] title {'text':'','color':'red'}
+CB-14 947 10 11 /spawnpoint @a[team=Sky_Battle_Yellw] 2001 70 -3 0
+CB-14 955 10 4 /execute as @a[level=9] at @s run playsound minecraft:block.note_block.hat player @s
+CB-14 959 10 4 /execute as @a[level=9,team=Sky_Battle_Blue] at @s run item replace entity @s weapon.offhand with blue_wool 64
+CB-14 968 10 2 /title @a[level=9] subtitle {'text':'>6<','color':'gray'}
+CB-14 973 14 2 /execute as @a[scores={timer_skybattle=50}] at @s run playsound minecraft:block.note_block.didgeridoo player @s
+CB-14 972 10 2 /title @a[level=9] subtitle {'text':'>7<','color':'gray'}
+CB-14 975 10 4 /title @a[level=9] subtitle {'text':'>8<','color':'gray'}
+CB-14 960 11 2 /title @a[level=9] title {'text':'','color':'red'}
+CB-14 964 11 2 /title @a[level=9] title {'text':'','color':'red'}
+CB-14 968 11 2 /title @a[level=9] title {'text':'','color':'red'}
+CB-14 972 11 2 /title @a[level=9] title {'text':'','color':'red'}
+CB-14 975 11 4 /title @a[level=9] title {'text':'','color':'red'}
+CB-14 960 12 2 /effect give @a[level=9] minecraft:hunger 2 255 true
+CB-14 965 14 1 /tellraw @a[scores={timer_skybattle=150}] {'text':'The border will keep shrinking!','color':'dark_gray'}
+CB-14 967 14 1 /tellraw @a[scores={timer_skybattle=130}] {'text':'The border will shrink with 5 blocks in 8 seconds!','color':'dark_gray'}
+CB-14 965 14 3 /execute as @a[scores={timer_skybattle=150}] at @s run scoreboard players set @s timer_skybattle 151
+CB-14 969 14 1 /tellraw @a[scores={timer_skybattle=110}] {'text':'The border will shrink with 10 blocks in 10 seconds!','color':'dark_gray'}
+CB-14 967 14 3 /execute as @a[scores={timer_skybattle=130}] at @s run scoreboard players set @s timer_skybattle 131
+CB-14 971 14 1 /tellraw @a[scores={timer_skybattle=80}] {'text':'The border will shrink with 10 blocks in 10 seconds!','color':'dark_gray'}
+CB-14 969 14 3 /execute as @a[scores={timer_skybattle=110}] at @s run scoreboard players set @s timer_skybattle 111
+CB-14 973 14 1 /tellraw @a[scores={timer_skybattle=50}] {'text':'The border will shrink with 10 blocks in 10 seconds!','color':'dark_gray'}
+CB-14 971 14 3 /execute as @a[scores={timer_skybattle=80}] at @s run scoreboard players set @s timer_skybattle 81
+CB-14 973 14 3 /execute as @a[scores={timer_skybattle=50}] at @s run scoreboard players set @s timer_skybattle 51
+CB-14 960 10 2 /title @a[level=9] subtitle {'text':'>4<','color':'gray'}
+CB-14 965 14 2 /execute as @a[scores={timer_skybattle=150}] at @s run playsound minecraft:block.note_block.didgeridoo player @s
+CB-14 960 10 4 /execute as @a[level=9,team=Sky_Battle_Red] at @s run item replace entity @s weapon.offhand with red_wool 64
+CB-14 967 14 2 /execute as @a[scores={timer_skybattle=130}] at @s run playsound minecraft:block.note_block.didgeridoo player @s
+CB-14 961 10 4 /execute as @a[level=9,team=Sky_Battle_Green] at @s run item replace entity @s weapon.offhand with green_wool 64
+CB-14 962 10 4 /execute as @a[level=9,team=Sky_Battle_Yellw] at @s run item replace entity @s weapon.offhand with yellow_wool 64
+CB-14 964 10 2 /title @a[level=9] subtitle {'text':'>5<','color':'gray'}
+CB-14 969 14 2 /execute as @a[scores={timer_skybattle=110}] at @s run playsound minecraft:block.note_block.didgeridoo player @s
+CB-14 971 14 2 /execute as @a[scores={timer_skybattle=80}] at @s run playsound minecraft:block.note_block.didgeridoo player @s
+CB-14 978 11 6 /title @a[level=9] title {'text':'','color':'red'}
+CB-14 982 10 1 /execute as @a[level=9,team=Sky_Battle_Red] at @s run tp @s 1970 23 0
+CB-14 978 10 6 /title @a[level=9] subtitle {'text':'>9<','color':'gray'}
+CB-14 983 10 1 /execute as @a[level=9,team=Sky_Battle_Blue] at @s run tp @s 2000 23 30
+CB-14 982 12 5 /execute as @a[level=9] at @s run playsound minecraft:block.note_block.hat player @s
+CB-14 984 10 1 /execute as @a[level=9,team=Sky_Battle_Green] at @s run tp @s 2030 23 0
+CB-14 985 10 1 /execute as @a[level=9,team=Sky_Battle_Yellw] at @s run tp @s 2000 23 -30
+CB-14 982 11 5 /title @a[level=9] title {'text':'','color':'red'}
+CB-14 986 10 1 /clear @a[level=9]
+CB-14 982 10 5 /title @a[level=9] subtitle {'text':'>10<','color':'gray'}
+CB-18 2001 66 -1 /kill @e[type=item,x=1993,y=69,z=-7,dx=14,dy=20,dz=14]

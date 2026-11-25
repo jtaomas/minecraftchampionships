@@ -1,0 +1,15 @@
+pack,texture,width,height,frames,frametime,frames_list,interpolate,purpose
+clouds2,assets/minecraft/textures/block/magenta_glazed_terracotta.png,16,112,7,2,,False,glazed pad
+clouds2,assets/minecraft/textures/block/pink_glazed_terracotta.png,16,112,7,2,,False,glazed pad
+clouds2,assets/minecraft/textures/block/purple_glazed_terracotta.png,16,112,7,2,,False,glazed pad
+clouds2,assets/minecraft/textures/block/red_glazed_terracotta.png,16,112,7,2,,False,glazed pad
+clouds2,assets/minecraft/textures/block/sea_lantern.png,16,80,5,5,,False,light
+clouds2,assets/minecraft/textures/block/yellow_glazed_terracotta.png,16,256,16,1,,False,glazed pad
+clouds2,assets/minecraft/textures/item/rotten_flesh.png,32,16,2,1,"[0, 1]",False,Energy item
+yeti_set_go,assets/minecraft/textures/block/magenta_glazed_terracotta.png,16,112,7,2,,False,glazed pad
+yeti_set_go,assets/minecraft/textures/block/pink_glazed_terracotta.png,16,112,7,2,,False,glazed pad
+yeti_set_go,assets/minecraft/textures/block/purple_glazed_terracotta.png,16,112,7,2,,False,glazed pad
+yeti_set_go,assets/minecraft/textures/block/red_glazed_terracotta.png,16,112,7,2,,False,glazed pad
+yeti_set_go,assets/minecraft/textures/block/yellow_glazed_terracotta.png,16,256,16,1,,False,glazed pad
+yeti_set_go,assets/minecraft/textures/item/rotten_flesh.png,32,16,2,1,"[0, 1]",False,Energy item
+space_race,Space Race Resource Pack/assets/minecraft/textures/block/sea_lantern.png,16,80,5,5,,False,light

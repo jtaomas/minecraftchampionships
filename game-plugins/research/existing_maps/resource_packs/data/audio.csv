@@ -1,0 +1,14 @@
+pack_file,bytes,codec,seconds,sample_rate,channels,bitrate,title,event,triggers_in_clouds2,vanilla_counterpart,note
+acerace/jumppad.ogg,13234,OggVorbis,0.974,44100,2,112000,,"acerace.jumppad (declared, never called)",0,1.19.2 minecraft_sounds_block_bell_bell_use01.ogg (2.49s OggVorbis),copy of bell_use; acerace event unregistered
+acerace/megajumppad.ogg,102174,OggVorbis,2.506,44100,2,499821,,"acerace.megajumppad (declared, never called)",0,1.19.2 minecraft_sounds_block_candle_extinguish1.ogg (0.86s OggVorbis),copy of candle extinguish
+acerace/speed.ogg,91848,OggVorbis,2.321,44100,2,499821,,"acerace.speed (declared, never called)",0,,not copied to any vanilla path
+acerace/waterboost.ogg,21112,OggVorbis,1.438,44100,2,112000,,"acerace.waterboost (declared, never called)",0,,not copied to any vanilla path
+block/bell/bell_use01.ogg,13234,OggVorbis,0.974,44100,2,112000,,block.bell.use,18,1.19.2 minecraft_sounds_block_bell_bell_use01.ogg (2.49s OggVorbis),jump pads (red/magenta/pink/yellow glazed)
+block/candle/extinguish1.ogg,102174,OggVorbis,2.506,44100,2,499821,,block.candle.extinguish,6,1.19.2 minecraft_sounds_block_candle_extinguish1.ogg (0.86s OggVorbis),mega-jump pads (orange shulker)
+block/cherrywood_trapdoor/toggle1.ogg,5278654,OggOpus,310.521,,2,135989,"Ace Race (From ""MC Championship Season 2"")",(no vanilla event uses this path),0,,"OggOpus, 5:10 track, unreachable"
+records/far.ogg,4959594,OggVorbis,310.52,44100,2,160000,"Ace Race (From ""MC Championship Season 2"")",music_disc.far,1,1.19.2 minecraft_sounds_records_far.ogg (174.46s OggVorbis),"5:10 Ace Race track, start area"
+block/cave_vines/break1.ogg,7275,OggVorbis,0.347,44100,2,112000,,block.cave_vines.break,6,1.19.2 minecraft_sounds_block_cave_vines_break1.ogg (0.39s OggVorbis),lime shulker pads; vanilla break5 absent
+block/chain/break1.ogg,27551,OggVorbis,2.117,44100,2,160000,,block.chain.break,6,1.19.2 minecraft_sounds_block_chain_break1.ogg (0.40s OggVorbis),yellow glazed pads
+block/chain/step1.ogg,32979,OggVorbis,2.112,44100,2,112000,,block.chain.step,6,1.19.2 minecraft_sounds_block_chain_step1.ogg (0.61s OggVorbis),falling (cave_air below)
+block/brewing_stand/brew1.ogg,145315,OggVorbis,12.91,44100,2,112000,,block.brewing_stand.brew,1,1.19.2 minecraft_sounds_block_brewing_stand_brew1.ogg (0.85s OggVorbis),"start sequence, 12.9s"
+block/azalea/break1.ogg,42363,OggVorbis,1.136,44100,2,499821,,block.azalea.break,0,1.19.2 minecraft_sounds_block_azalea_break1.ogg (1.37s OggVorbis),unused short chime

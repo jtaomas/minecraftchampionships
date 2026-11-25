@@ -1,0 +1,4 @@
+type,x,y,z,items,contents,note,confidence
+minecraft:barrel,1067,12,992,0,,Empty storage barrel; no loot.,H
+minecraft:lectern,1049,28,993,0,"written_book: ""Parkour Tag"" by daniellaur (guide)","Decorative lectern; holds a guide Book, no Items. Empty storage.",H
+minecraft:lectern,1049,28,996,0,"written_book: ""Parkour Tag"" by daniellaur (guide)","Decorative lectern; holds a guide Book, no Items. Empty storage.",H

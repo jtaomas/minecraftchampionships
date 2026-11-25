@@ -1,0 +1,26 @@
+{
+  "world": "TGTTOS Pits - By Mickey_Kat",
+  "version": "1.19.1 (DataVersion 3117)",
+  "chunks_present": 3254,
+  "occupied_chunks": 51,
+  "extents": {
+    "min": [-3, -64, -9],
+    "max": [117, 29, 83],
+    "size": [121, 94, 93]
+  },
+  "total_non_air_blocks": 164145,
+  "distinct_block_states": 63,
+  "per_region": {
+    "r.-1.-1.mca": [1050, 1],
+    "r.-1.0.mca": [8785, 6],
+    "r.0.-1.mca": [14417, 6],
+    "r.0.0.mca": [139893, 38],
+    "r.1.-1.mca": [0, 0],
+    "r.1.0.mca": [0, 0]
+  },
+  "signs": 1,
+  "containers": 0,
+  "other_block_entities": 0,
+  "command_blocks": 0,
+  "entities": 20
+}

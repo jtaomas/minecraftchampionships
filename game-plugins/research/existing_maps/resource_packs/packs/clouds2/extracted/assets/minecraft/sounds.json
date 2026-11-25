@@ -1,0 +1,32 @@
+{
+	"acerace.start" : {
+		"sounds":{
+			"acerace/start"
+		}
+	},
+	"acerace.checkpoint" : {
+		"sounds":{
+			"acerace/checkpoint"
+		}
+	},
+	"acerace.jumppad" : {
+		"sounds":{
+			"acerace/jumppad"
+		}
+	},
+	"acerace.megajumppad" : {
+		"sounds":{
+			"acerace/megajumppad"
+		}
+	},
+	"acerace.speed" : {
+		"sounds":{
+			"acerace/speed"
+		}
+	},
+	"acerace.waterboost" : {
+		"sounds":{
+			"acerace/waterboost"
+		}
+	}
+}

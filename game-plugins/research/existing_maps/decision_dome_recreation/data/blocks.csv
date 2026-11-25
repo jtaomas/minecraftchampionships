@@ -1,0 +1,86 @@
+﻿rank,block,count,share_percent,family,use,use_confidence
+1,gray_concrete,8953,44.64,concrete,"Drum shell (r26), flat base disk y26, pit wall, terrace inner ring, crown truss bands",H
+2,white_stained_glass,594,2.96,glass,"Pod window band, y58-60: 198 per layer x 3 layers, all 10 pods",H
+3,white_concrete,589,2.94,concrete,"Terrace outer rim (y68), north platform, gate frames, NW annex floor",H
+4,red_concrete,563,2.81,concrete,Red team pod; north red carpet; gatehouse red panels,H
+5,light_gray_terracotta,560,2.79,terracotta,Two drum stripes y33/y52 (160 each) + neutral band on all 10 pod crowns y72 (240),H
+6,blue_concrete,553,2.76,concrete,Blue team pod; NW annex/west gate trim,H
+7,yellow_concrete,546,2.72,concrete,Yellow team pod; crown top ring y78-80,H
+8,light_blue_concrete,535,2.67,concrete,Light-blue team pod; NW annex roof edge,H
+9,orange_concrete,530,2.64,concrete,Orange team pod; minor trim,H
+10,lime_concrete,502,2.50,concrete,Lime team pod,H
+11,pink_concrete,502,2.50,concrete,Pink team pod,H
+12,purple_concrete,502,2.50,concrete,Purple team pod,H
+13,green_concrete,502,2.50,concrete,Green team pod,H
+14,cyan_concrete,486,2.42,concrete,Cyan team pod,H
+15,smooth_quartz_slab,293,1.46,quartz,Dial wedge plates y58 (184); NW annex roof y73 (79); north/gate trim,H
+16,white_stained_glass_pane,254,1.27,glass,North platform and NW annex glazing,H
+17,black_concrete,161,0.80,concrete,"Gatehouse frames/posts only, y61-72",H
+18,cyan_terracotta,148,0.74,terracotta,Cyan pod band (8 layers),H
+19,light_blue_terracotta,146,0.73,terracotta,Light-blue pod band (8 layers),H
+20,gold_block,144,0.72,gold,"Crown: 8 gold-capped pillars, 3x3 x 4 tall (y69-72)",H
+21,barrier,140,0.70,barrier,"Invisible inner safety rail, r24-25, y71 (140 blocks)",H
+22,red_terracotta,138,0.69,terracotta,Red pod band + gatehouse band,H
+23,orange_terracotta,132,0.66,terracotta,Orange pod band,H
+24,yellow_terracotta,132,0.66,terracotta,Yellow pod band + crown accents,H
+25,pink_terracotta,132,0.66,terracotta,Pink pod band,H
+26,green_terracotta,132,0.66,terracotta,Green pod band,H
+27,blue_terracotta,130,0.65,terracotta,Blue pod band,H
+28,lime_terracotta,122,0.61,terracotta,Lime pod band,H
+29,purple_terracotta,122,0.61,terracotta,Purple pod band,H
+30,quartz_slab,115,0.57,quartz,Tunnel floors y67; crown cross y73-74; gate trim,H
+31,polished_diorite,86,0.43,diorite/stone,Gatehouse pillars/frames (y66-72),H
+32,lime_stained_glass_pane,72,0.36,glass,Lime pod crown window band y65/67/68,H
+33,orange_stained_glass_pane,72,0.36,glass,Orange pod crown window band,H
+34,yellow_stained_glass_pane,72,0.36,glass,Yellow pod crown window band,H
+35,red_stained_glass_pane,72,0.36,glass,Red pod crown window band,H
+36,pink_stained_glass_pane,72,0.36,glass,Pink pod crown window band,H
+37,purple_stained_glass_pane,72,0.36,glass,Purple pod crown window band,H
+38,green_stained_glass_pane,72,0.36,glass,Green pod crown window band,H
+39,cyan_stained_glass_pane,72,0.36,glass,Cyan pod crown window band,H
+40,light_blue_stained_glass_pane,72,0.36,glass,Light-blue pod crown window band,H
+41,blue_stained_glass_pane,70,0.35,glass,Blue pod crown window band,H
+42,light_gray_carpet,62,0.31,carpet,NW annex floor y69 (62),H
+43,chain,60,0.30,metal,Gatehouse hanging chains (56) + crown suspension (4),H
+44,polished_andesite_slab,50,0.25,slabs/stairs,Outer stepped lip y66 (50),H
+45,polished_diorite_stairs,48,0.24,diorite/stone,Gatehouse pillar caps/steps y67-72,H
+46,iron_trapdoor,44,0.22,door,Gatehouse/NW roof and awning detail (y71-73),M
+47,stone_slab,38,0.19,diorite/stone,"NW annex trim/steps (y69,72)",H
+48,light_gray_stained_glass_pane,38,0.19,glass,Gatehouse window strips y62-72,H
+49,smooth_red_sandstone_slab,36,0.18,slabs/stairs,Crown top ring y78 (36),H
+50,yellow_wool,36,0.18,wool,Crown top ring y79 (36),H
+51,red_nether_brick_slab,32,0.16,slabs/stairs,North carpet edging/steps y69-71,H
+52,polished_andesite_stairs,26,0.13,slabs/stairs,Outer stepped lip y66 (26),H
+53,lime_stained_glass,24,0.12,glass,Lime pod glass band y69,H
+54,orange_stained_glass,24,0.12,glass,Orange pod glass band y69,H
+55,yellow_stained_glass,24,0.12,glass,Yellow pod glass band y69,H
+56,red_stained_glass,24,0.12,glass,Red pod glass band y69,H
+57,pink_stained_glass,24,0.12,glass,Pink pod glass band y69,H
+58,purple_stained_glass,24,0.12,glass,Purple pod glass band y69,H
+59,green_stained_glass,24,0.12,glass,Green pod glass band y69,H
+60,cyan_stained_glass,24,0.12,glass,Cyan pod glass band y69,H
+61,light_blue_stained_glass,24,0.12,glass,Light-blue pod glass band y69,H
+62,blue_stained_glass,24,0.12,glass,Blue pod glass band y69,H
+63,smooth_quartz_stairs,22,0.11,quartz,Tunnel-to-terrace steps y68; NW annex steps y69,H
+64,light_blue_wool,20,0.10,wool,NW annex roof trim y73/75,H
+65,sea_lantern,18,0.09,light,"Lighting: 16 on NW annex roof, 2 on north landing (18 total)",H
+66,player_head,17,0.08,head,"17 trophy heads in NW annex: 9 chicken, 5 zombie, 3 pale/unidentified",H
+67,white_wall_banner,16,0.08,banner,"16 white banners with black patterns, NW annex diagonal wall",H
+68,quartz_stairs,12,0.06,quartz,Crown cross/truss detail y73-74,H
+69,lime_wool,10,0.05,wool,Lime pod band accents y57/61,H
+70,purple_wool,10,0.05,wool,Purple pod band accents y57/61,H
+71,gray_carpet,9,0.04,carpet,NW annex floor accent y70,H
+72,gray_wool,8,0.04,wool,NW annex floor/wall accent,H
+73,netherite_block,8,0.04,accent,NW annex wall accents (4 posts x 2),H
+74,redstone_block,8,0.04,accent,8 red 'jewels' on crown top y82,H
+75,orange_wall_banner,5,0.02,banner,NW annex banners (4 at y72 + 1 at y70),H
+76,oak_leaves,4,0.02,plant/apiary,NW annex apiary foliage,H
+77,iron_door,4,0.02,door,"2x2 SE service door, x19-20 z37-38 y69-70",H
+78,stone,3,0.01,diorite/stone,NW annex detail y69,H
+79,beehive,2,0.01,plant/apiary,NW annex apiary (2),H
+80,chain_command_block,1,0.00,logic,Egg/glow station: chain block under the north plate,H
+81,command_block,1,0.00,logic,Egg/glow station: impulse block under the north plate,H
+82,acacia_pressure_plate,1,0.00,logic,"Only input: plate at (-3,71,-19) on the red carpet",H
+83,yellow_wall_banner,1,0.00,banner,NW annex banner (y70),H
+84,green_wall_banner,1,0.00,banner,NW annex banner (y70),H
+85,cyan_wall_banner,1,0.00,banner,NW annex banner (y70),H

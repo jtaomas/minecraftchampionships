@@ -1,0 +1,29 @@
+/fill 16 -1 7 26 1 7 air
+/gamemode adventure
+/title @a subtitle {"bold":true,"color":"green","text":">1<"}
+/title @a subtitle {"bold":true,"color":"red","text":">3<"}
+/title @a subtitle {"bold":true,"color":"yellow","text":">2<"}
+/title @a title {"color":"aqua","text":"Starting In"}
+enchant @a minecraft:riptide
+enchant @a minecraft:riptide 2
+enchant @a minecraft:unbreaking 3
+execute as @a at @s if block ~ ~-1 ~ lime_wool run effect give @a minecraft:jump_boost 1 7 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:lime_wool run effect give @a minecraft:jump_boost 1 6 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:lodestone run item replace entity @a armor.chest with minecraft:elytra
+execute as @a at @s if block ~ ~-1 ~ minecraft:magenta_glazed_terracotta run effect give @a minecraft:jump_boost 1 4 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:magenta_glazed_terracotta run effect give @a minecraft:speed 1 7 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:magenta_glazed_terracotta run effect give @a minecraft:speed 1 8 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:pink_glazed_terracotta run effect give @a minecraft:jump_boost 1 4 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:pink_glazed_terracotta run effect give @a minecraft:speed 1 7 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:pink_glazed_terracotta run effect give @a minecraft:speed 1 8 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:red_glazed_terracotta run effect give @a minecraft:jump_boost 1 4 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:red_glazed_terracotta run effect give @a minecraft:speed 1 7 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:red_glazed_terracotta run effect give @a minecraft:speed 1 8 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:stone run item replace entity @a armor.chest with minecraft:air
+execute as @a at @s if block ~ ~-1 ~ minecraft:yellow_glazed_terracotta run effect give @a minecraft:speed 2 3 true
+execute as @a at @s if block ~ ~-1 ~ minecraft:yellow_glazed_terracotta run item replace entity @a armor.chest with minecraft:air
+execute as @a at @s if block ~ ~-1 ~ yellow_carpet run effect give @a minecraft:speed 2 3 true
+execute as @a at @s if block ~ ~-1 ~ yellow_glazed_terracotta run setworldspawn
+gamemode adventure
+item replace entity @a hotbar.0 with minecraft:trident 1
+title @a actionbar "You are in 1st place"

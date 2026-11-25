@@ -1,0 +1,17 @@
+{
+ "chunks_region": 4464,
+ "chunks_entities": 6,
+ "bbox_exact": [
+  11,
+  -61,
+  -5,
+  141,
+  11,
+  99
+ ],
+ "total_solid_blocks": 122276,
+ "distinct_block_states": 91,
+ "distinct_base_blocks": 39,
+ "block_entity_count": 1,
+ "entity_count": 0
+}

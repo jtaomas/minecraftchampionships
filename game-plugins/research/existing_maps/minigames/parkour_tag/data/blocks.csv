@@ -1,0 +1,69 @@
+block,count,share_pct,category,palette_role,use,light_source,confidence
+minecraft:gray_concrete,1849,22.08,structure,,"Bowl/outer shell, gallery deck, command room",,H
+minecraft:cyan_terracotta,1073,12.81,structure,primary,"Arena walls, start towers, trim",,H
+minecraft:stone_bricks,708,8.45,structure,primary,"Arena walls, start-room trim, stair blocks",,H
+minecraft:smooth_quartz,609,7.27,structure,accent,"Gallery trim, start-room floor, seating accents",,H
+minecraft:white_concrete,509,6.08,structure,accent,"Gallery rim, command-room floor, start pads",,H
+minecraft:dead_horn_coral_block,441,5.27,floor,primary,Main arena floor (pink) and start-room floors,,H
+minecraft:barrier,401,4.79,barrier,invisible,Invisible roof over the arena (y27) and role-lock pad,,H
+minecraft:brick_slab,379,4.53,platform,accent,SW/NE/centre upper perches + NW decorative roof,,H
+minecraft:black_concrete,328,3.92,structure,,"Bowl rim, banner frame, dark trim",,H
+minecraft:deepslate_bricks,298,3.56,structure,,"SW/SE room walls, lower ledges",,H
+minecraft:red_concrete,251,3.0,accent,,"Banner letters, small jump pads, trim",,H
+minecraft:waxed_copper_block,151,1.8,route,accent,"Copper ledges, pipes, NE reactor, walls",,H
+minecraft:smooth_quartz_stairs,147,1.76,stairs,,"Gallery seating, start-room stairs",,H
+minecraft:waxed_exposed_copper,137,1.64,route,,Copper ledges/pipes,,H
+minecraft:waxed_weathered_copper,106,1.27,route,,Copper ledges/pipes,,H
+minecraft:redstone_wire,101,1.21,machine,,Command-room wiring,,H
+minecraft:iron_trapdoor,93,1.11,route,,Grated catwalk surfaces at y11-20,,H
+minecraft:repeater,86,1.03,machine,,Delays in the command/clock circuit,,H
+minecraft:stone_brick_stairs,66,0.79,stairs,,"Arena climbing steps, SE grandstand edge",,H
+minecraft:waxed_oxidized_copper,57,0.68,route,,Green oxidized copper trim,,H
+minecraft:chain_command_block,52,0.62,machine,,Sequenced commands,,H
+minecraft:smooth_quartz_slab,49,0.59,platform,,"Gallery trim, small ledges",,H
+minecraft:spruce_stairs,38,0.45,stairs,,"Start-room benches, SE grandstand",,H
+minecraft:command_block,36,0.43,machine,,Impulse/one-shot commands,,H
+minecraft:repeating_command_block,35,0.42,machine,,"Always-on loops (timer, effects, win checks)",,H
+minecraft:blue_ice,34,0.41,route,,NW ice rink (slippery fast lane),,H
+minecraft:light,29,0.35,lighting,,Invisible light sources (29),yes,H
+minecraft:terracotta,28,0.33,accent,,Bowl trim,,H
+minecraft:birch_wall_sign,25,0.3,sign,,All 25 signs,,H
+minecraft:deepslate_tiles,21,0.25,route,,Central deepslate tile island at y12,,H
+minecraft:tinted_glass,20,0.24,structure,,Command-room glass,,H
+minecraft:oak_slab,20,0.24,platform,,Small half-block pads,,H
+minecraft:polished_deepslate_wall,16,0.19,structure,,Start-room/room walls,,H
+minecraft:obsidian,15,0.18,route,,Slime-pad frame at the south floor,,H
+minecraft:stone_brick_wall,15,0.18,structure,,Low walls,,H
+minecraft:polished_deepslate_stairs,15,0.18,stairs,,NE/SE room details,,H
+minecraft:ladder,15,0.18,route,,Vertical connectors (15),,H
+minecraft:spruce_slab,14,0.17,platform,,"Start-room benches, SE grandstand",,H
+minecraft:deepslate_brick_stairs,12,0.14,stairs,,SW/NE room details,,H
+minecraft:sticky_piston,10,0.12,machine,,Item/role-lock mechanisms; some decorative,,H
+minecraft:iron_door,10,0.12,hiding,,"Closet/room doors (SW, SE, start rooms)",,H
+minecraft:slime_block,8,0.1,route,,"Bounce pads (2x2 south floor, 2x2 y13 centre)",,H
+minecraft:red_terracotta,7,0.08,accent,,Bowl trim,,H
+minecraft:stone_brick_slab,7,0.08,platform,,Small ledges,,H
+minecraft:birch_button,4,0.05,machine,,Four runner-count buttons in the waiting lobby,,H
+minecraft:redstone_block,4,0.05,machine,,Pulse sources,,H
+minecraft:soul_lantern,4,0.05,lighting,,Warm accent lights,yes,H
+minecraft:spruce_trapdoor,4,0.05,route,,Start-room bench details,,H
+minecraft:iron_block,4,0.05,structure,,Start-room door frames,,H
+minecraft:bookshelf,4,0.05,decor,,Command-room decoration,,H
+minecraft:deepslate_tile_slab,4,0.05,platform,,Central nook details,,H
+minecraft:piston_head,3,0.04,machine,,Piston mechanism,,H
+minecraft:waxed_cut_copper_stairs,3,0.04,route,,Copper stair trim,,H
+minecraft:stone_pressure_plate,2,0.02,machine,,Two plates at 1060/1061 11 1001,,H
+minecraft:polished_deepslate_slab,2,0.02,platform,,Small ledges,,H
+minecraft:potted_cornflower,2,0.02,decor,,Command-room decoration,,H
+minecraft:deepslate_brick_slab,2,0.02,platform,,Small ledges,,H
+minecraft:lectern,2,0.02,container,,"Decorative instruction lecterns at 1049 28 993/996 (written guide ""Parkour Tag""; no Items)",,H
+minecraft:glowstone,1,0.01,lighting,,Glowstone pad in the waiting lobby,yes,H
+minecraft:sea_lantern,1,0.01,lighting,,Command-room light,yes,H
+minecraft:barrel,1,0.01,container,,Empty storage barrel at 1067 12 992 (Items: []),,H
+minecraft:piston,1,0.01,machine,,Piston mechanism,,H
+minecraft:polished_blackstone_pressure_plate,1,0.01,trigger,,SE-room pressure plate at 1070 14 1003,,H
+minecraft:raw_gold_block,1,0.01,decor,,Decorative gold block at 1061 15 990,,H
+minecraft:waxed_exposed_cut_copper_stairs,1,0.01,route,,NE copper stair trim,,H
+minecraft:chiseled_stone_bricks,1,0.01,route,,Runner role pad at 1049 27 990,,H
+minecraft:chiseled_polished_blackstone,1,0.01,route,,Hunter role pad at 1049 27 999,,H
+minecraft:infested_stone_bricks,1,0.01,decor,,Hidden infested stone brick in the gallery step at 1047 28 993,,H

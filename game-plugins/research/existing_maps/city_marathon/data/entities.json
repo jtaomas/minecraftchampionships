@@ -1,0 +1,1718 @@
+[
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 4,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   90.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:anvil",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -292.03125,
+   1.5,
+   66.5
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:item_frame",
+  "TileX": -293,
+  "Invisible": 1,
+  "UUID": [
+   772271505,
+   -1935849966,
+   -2014617746,
+   1644971551
+  ],
+  "TileZ": 66,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 5,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   270.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:anvil",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -296.96875,
+   1.5,
+   66.5
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:item_frame",
+  "TileX": -297,
+  "Invisible": 1,
+  "UUID": [
+   -2021153200,
+   2060011322,
+   -1376495712,
+   -612397726
+  ],
+  "TileZ": 66,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 5,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   270.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:anvil",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -296.96875,
+   1.5,
+   77.5
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:item_frame",
+  "TileX": -297,
+  "Invisible": 1,
+  "UUID": [
+   -434148765,
+   1887260470,
+   -1594978127,
+   1151926187
+  ],
+  "TileZ": 77,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 4,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   90.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:anvil",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -292.03125,
+   1.5,
+   77.5
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:item_frame",
+  "TileX": -293,
+  "Invisible": 1,
+  "UUID": [
+   1276618291,
+   -1943977454,
+   -1972336091,
+   1762508269
+  ],
+  "TileZ": 77,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 4,
+  "ItemRotation": 2,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   90.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:light_gray_stained_glass_pane",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -457.03125,
+   4.5,
+   87.5
+  ],
+  "Fire": -1,
+  "TileY": 4,
+  "id": "minecraft:glow_item_frame",
+  "TileX": -458,
+  "Invisible": 1,
+  "UUID": [
+   -28258634,
+   675628146,
+   -1223720010,
+   -1220750623
+  ],
+  "TileZ": 87,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 4,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   90.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:light_gray_stained_glass_pane",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -457.03125,
+   4.5,
+   89.5
+  ],
+  "Fire": -1,
+  "TileY": 4,
+  "id": "minecraft:glow_item_frame",
+  "TileX": -458,
+  "Invisible": 1,
+  "UUID": [
+   1639998530,
+   -1091155456,
+   -1929715450,
+   1661188013
+  ],
+  "TileZ": 89,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 4,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   90.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:red_concrete",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -457.03125,
+   4.5,
+   88.5
+  ],
+  "Fire": -1,
+  "TileY": 4,
+  "id": "minecraft:glow_item_frame",
+  "TileX": -458,
+  "Invisible": 1,
+  "UUID": [
+   112567050,
+   371083984,
+   -1574626645,
+   -1425691834
+  ],
+  "TileZ": 88,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 5,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   270.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:light_gray_stained_glass_pane",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -381.96875,
+   5.5,
+   89.5
+  ],
+  "Fire": -1,
+  "TileY": 5,
+  "id": "minecraft:glow_item_frame",
+  "TileX": -382,
+  "Invisible": 1,
+  "UUID": [
+   100565272,
+   -2012854324,
+   -2139851380,
+   -1350611086
+  ],
+  "TileZ": 89,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 5,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   270.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:red_concrete",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -381.96875,
+   5.5,
+   88.5
+  ],
+  "Fire": -1,
+  "TileY": 5,
+  "id": "minecraft:glow_item_frame",
+  "TileX": -382,
+  "Invisible": 1,
+  "UUID": [
+   -1209412904,
+   232408791,
+   -1938611893,
+   -1600818132
+  ],
+  "TileZ": 88,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 5,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   270.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:light_gray_stained_glass_pane",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -381.96875,
+   5.5,
+   87.5
+  ],
+  "Fire": -1,
+  "TileY": 5,
+  "id": "minecraft:glow_item_frame",
+  "TileX": -382,
+  "Invisible": 1,
+  "UUID": [
+   1613122215,
+   1008093432,
+   -2035622985,
+   1111189865
+  ],
+  "TileZ": 87,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 5,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   270.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:anvil",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -296.96875,
+   1.5,
+   88.5
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:item_frame",
+  "TileX": -297,
+  "Invisible": 1,
+  "UUID": [
+   -1483574088,
+   1236880765,
+   -1794496688,
+   1814144658
+  ],
+  "TileZ": 88,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 3,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   0.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:anvil",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -273.5,
+   1.5,
+   86.03125
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:item_frame",
+  "TileX": -274,
+  "Invisible": 1,
+  "UUID": [
+   -105655739,
+   418465546,
+   -1292970047,
+   -187962760
+  ],
+  "TileZ": 86,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 2,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   180.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:anvil",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -273.5,
+   1.5,
+   90.96875
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:item_frame",
+  "TileX": -274,
+  "Invisible": 1,
+  "UUID": [
+   987084481,
+   -975288110,
+   -2056919396,
+   -1304543494
+  ],
+  "TileZ": 90,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 3,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   0.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:anvil",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -284.5,
+   1.5,
+   86.03125
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:item_frame",
+  "TileX": -285,
+  "Invisible": 1,
+  "UUID": [
+   -1363012437,
+   688669887,
+   -1849909464,
+   756923772
+  ],
+  "TileZ": 86,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 2,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   180.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:anvil",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -284.5,
+   1.5,
+   90.96875
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:item_frame",
+  "TileX": -285,
+  "Invisible": 1,
+  "UUID": [
+   881911445,
+   -738178023,
+   -1490433696,
+   -1217773998
+  ],
+  "TileZ": 90,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 3,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   0.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:anvil",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -262.5,
+   1.5,
+   86.03125
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:item_frame",
+  "TileX": -263,
+  "Invisible": 1,
+  "UUID": [
+   805803115,
+   -2118824520,
+   -1994298412,
+   1979214691
+  ],
+  "TileZ": 86,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 2,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   180.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:anvil",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -262.5,
+   1.5,
+   90.96875
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:item_frame",
+  "TileX": -263,
+  "Invisible": 1,
+  "UUID": [
+   -961093101,
+   1537165113,
+   -1080375170,
+   -890133063
+  ],
+  "TileZ": 90,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 3,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   0.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:anvil",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -240.5,
+   1.5,
+   86.03125
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:item_frame",
+  "TileX": -241,
+  "Invisible": 1,
+  "UUID": [
+   -1431673564,
+   1915701446,
+   -1984909722,
+   -125932759
+  ],
+  "TileZ": 86,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 2,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   180.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:anvil",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -240.5,
+   1.5,
+   90.96875
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:item_frame",
+  "TileX": -241,
+  "Invisible": 1,
+  "UUID": [
+   1923807127,
+   -1957736869,
+   -1665632867,
+   -775242663
+  ],
+  "TileZ": 90,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 3,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   0.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:anvil",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -251.5,
+   1.5,
+   86.03125
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:item_frame",
+  "TileX": -252,
+  "Invisible": 1,
+  "UUID": [
+   1329991289,
+   53888261,
+   -1344745629,
+   601636239
+  ],
+  "TileZ": 86,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 2,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   180.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:anvil",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -251.5,
+   1.5,
+   90.96875
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:item_frame",
+  "TileX": -252,
+  "Invisible": 1,
+  "UUID": [
+   1244012091,
+   2119713210,
+   -1510904701,
+   -1115556385
+  ],
+  "TileZ": 90,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 5,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   270.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:lime_stained_glass_pane",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -21.96875,
+   4.5,
+   95.5
+  ],
+  "Fire": -1,
+  "TileY": 4,
+  "id": "minecraft:glow_item_frame",
+  "TileX": -22,
+  "Invisible": 1,
+  "UUID": [
+   1305102279,
+   -916829184,
+   -1079044131,
+   1429948466
+  ],
+  "TileZ": 95,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 5,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   270.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:red_stained_glass_pane",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -21.96875,
+   6.5,
+   95.5
+  ],
+  "Fire": -1,
+  "TileY": 6,
+  "id": "minecraft:item_frame",
+  "TileX": -22,
+  "Invisible": 1,
+  "UUID": [
+   -901613584,
+   380913100,
+   -1860023454,
+   98018708
+  ],
+  "TileZ": 95,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 5,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   270.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:orange_stained_glass_pane",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -21.96875,
+   5.5,
+   95.5
+  ],
+  "Fire": -1,
+  "TileY": 5,
+  "id": "minecraft:item_frame",
+  "TileX": -22,
+  "Invisible": 1,
+  "UUID": [
+   -1001373405,
+   145834646,
+   -1651304454,
+   -520198398
+  ],
+  "TileZ": 95,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 4,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   90.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:lime_stained_glass_pane",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -31.03125,
+   4.5,
+   81.5
+  ],
+  "Fire": -1,
+  "TileY": 4,
+  "id": "minecraft:glow_item_frame",
+  "TileX": -32,
+  "Invisible": 1,
+  "UUID": [
+   -1394958320,
+   -2076751143,
+   -2126795453,
+   -1050376972
+  ],
+  "TileZ": 81,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 4,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   90.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:orange_stained_glass_pane",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -31.03125,
+   5.5,
+   81.5
+  ],
+  "Fire": -1,
+  "TileY": 5,
+  "id": "minecraft:item_frame",
+  "TileX": -32,
+  "Invisible": 1,
+  "UUID": [
+   863678433,
+   1078872842,
+   -1990016636,
+   559895730
+  ],
+  "TileZ": 81,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 4,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   90.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:red_stained_glass_pane",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -31.03125,
+   6.5,
+   81.5
+  ],
+  "Fire": -1,
+  "TileY": 6,
+  "id": "minecraft:item_frame",
+  "TileX": -32,
+  "Invisible": 1,
+  "UUID": [
+   524301635,
+   108545419,
+   -1426554126,
+   -852999382
+  ],
+  "TileZ": 81,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 4,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   90.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:lime_stained_glass_pane",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -31.03125,
+   4.5,
+   95.5
+  ],
+  "Fire": -1,
+  "TileY": 4,
+  "id": "minecraft:glow_item_frame",
+  "TileX": -32,
+  "Invisible": 1,
+  "UUID": [
+   1237995120,
+   -1931197764,
+   -1389659600,
+   -575162189
+  ],
+  "TileZ": 95,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 5,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   270.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:lime_stained_glass_pane",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -21.96875,
+   4.5,
+   81.5
+  ],
+  "Fire": -1,
+  "TileY": 4,
+  "id": "minecraft:glow_item_frame",
+  "TileX": -22,
+  "Invisible": 1,
+  "UUID": [
+   960815041,
+   -563067423,
+   -1407187152,
+   1713299070
+  ],
+  "TileZ": 81,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 5,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   270.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:red_stained_glass_pane",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -21.96875,
+   6.5,
+   81.5
+  ],
+  "Fire": -1,
+  "TileY": 6,
+  "id": "minecraft:item_frame",
+  "TileX": -22,
+  "Invisible": 1,
+  "UUID": [
+   -1005310043,
+   1080246876,
+   -1118439436,
+   878070626
+  ],
+  "TileZ": 81,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 5,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   270.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:orange_stained_glass_pane",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -21.96875,
+   5.5,
+   81.5
+  ],
+  "Fire": -1,
+  "TileY": 5,
+  "id": "minecraft:item_frame",
+  "TileX": -22,
+  "Invisible": 1,
+  "UUID": [
+   -677186978,
+   666193067,
+   -1159339265,
+   2018130009
+  ],
+  "TileZ": 81,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 4,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   90.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:orange_stained_glass_pane",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -31.03125,
+   5.5,
+   95.5
+  ],
+  "Fire": -1,
+  "TileY": 5,
+  "id": "minecraft:item_frame",
+  "TileX": -32,
+  "Invisible": 1,
+  "UUID": [
+   1530607258,
+   -1824308127,
+   -2146787130,
+   -694612057
+  ],
+  "TileZ": 95,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 4,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   90.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:red_stained_glass_pane",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -31.03125,
+   6.5,
+   95.5
+  ],
+  "Fire": -1,
+  "TileY": 6,
+  "id": "minecraft:item_frame",
+  "TileX": -32,
+  "Invisible": 1,
+  "UUID": [
+   -1204601185,
+   -241414446,
+   -2098357418,
+   1782391535
+  ],
+  "TileZ": 95,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 4,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   90.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:anvil",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -292.03125,
+   1.5,
+   110.5
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:item_frame",
+  "TileX": -293,
+  "Invisible": 1,
+  "UUID": [
+   1969625704,
+   1181436240,
+   -1660199875,
+   -225606838
+  ],
+  "TileZ": 110,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 5,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   270.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:anvil",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   -296.96875,
+   1.5,
+   110.5
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:item_frame",
+  "TileX": -297,
+  "Invisible": 1,
+  "UUID": [
+   -850163023,
+   -276607178,
+   -2020186005,
+   -1108648105
+  ],
+  "TileZ": 110,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.-1.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 2,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   180.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:red_stained_glass",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   5.5,
+   1.5,
+   63.96875
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:glow_item_frame",
+  "TileX": 5,
+  "Invisible": 1,
+  "UUID": [
+   676371605,
+   -1262272124,
+   -1448898558,
+   1170573946
+  ],
+  "TileZ": 63,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 2,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   180.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:red_stained_glass",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   3.5,
+   1.5,
+   63.96875
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:glow_item_frame",
+  "TileX": 3,
+  "Invisible": 1,
+  "UUID": [
+   -187571457,
+   1609450575,
+   -2051362589,
+   528689961
+  ],
+  "TileZ": 63,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 3,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   0.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:yellow_stained_glass",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   5.5,
+   1.5,
+   71.03125
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:glow_item_frame",
+  "TileX": 5,
+  "Invisible": 1,
+  "UUID": [
+   -1778139429,
+   -1919531873,
+   -1313471117,
+   282806386
+  ],
+  "TileZ": 71,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ },
+ {
+  "Motion": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "Facing": 3,
+  "ItemRotation": 0,
+  "Invulnerable": 0,
+  "Air": 300,
+  "OnGround": 0,
+  "PortalCooldown": 0,
+  "Rotation": [
+   0.0,
+   0.0
+  ],
+  "FallDistance": 0.0,
+  "Item": {
+   "id": "minecraft:yellow_stained_glass",
+   "Count": 1
+  },
+  "ItemDropChance": 1.0,
+  "Pos": [
+   3.5,
+   1.5,
+   71.03125
+  ],
+  "Fire": -1,
+  "TileY": 1,
+  "id": "minecraft:glow_item_frame",
+  "TileX": 3,
+  "Invisible": 1,
+  "UUID": [
+   -8225254,
+   -1168031143,
+   -1931693141,
+   -497260748
+  ],
+  "TileZ": 71,
+  "Fixed": 0,
+  "_cx": 0,
+  "_cz": 0,
+  "_region": "r.0.0.mca"
+ }
+]

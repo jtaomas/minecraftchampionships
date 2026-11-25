@@ -1,0 +1,9 @@
+{
+    "values": [
+        "tgttos:loop",
+        "tgttos:color",
+        "tgttos:start_timer",
+        "tgttos:gamerules",
+        "tgttos:respawn"
+    ]
+}

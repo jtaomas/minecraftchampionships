@@ -1,0 +1,2 @@
+﻿type,x,y,z,tags,items,armor,note
+minecraft:marker,26.0,-6.0,132.0,refresh_worldspawn,0,0,Refresh datapack spawn marker (datapack not shipped)

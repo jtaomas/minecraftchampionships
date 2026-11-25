@@ -1,0 +1,11 @@
+beat,start_s,end_s,screen_s,what_happens,hud_text,evidence,type,conf
+Start/countdown,11,13.4,2.4,"Title 'Starting In' + yellow 13/12/11 over the green-hedge start apron; cut before release","Starting In; 13, 12, 11; You are in 1st place","frames/01_countdown_12s.png; frames/05b_hud_detail_65s.png",gameplay,H
+First speed pad,16,16.2,0.2,"First-person runs over yellow chevron pads on the start straight toward the stone arch","You are in 1st place","frames/02_start_straight_16s.png",gameplay,H
+First jump pad (read),89.2,93.1,3.9,"Red spiral launch pads on white/black platforms at a tunnel mouth; player stands between them; no launch arc shown","none (HUD hidden)","frames/09_launch_pads_98s.png",cinematic,M
+First jump pad (POV),98.267,99.967,1.7,"First-person approach to red spiral pads on a grass hill; black/green arrow points at the white structure","You are in 1st place","frames/09_launch_pads_98s.png",gameplay,H
+First elytra (ring),58.9,63.4,4.5,"Giant yellow 2D ring in the sky; a tiny elytra player threads the centre; freecam","none","frames/04_elytra_ring_63s.png",cinematic,H
+Elytra/fall,19.8,24.5,4.7,"Player elytra-falls past a giant black/green creeper statue; no respawn; cut to trailer","none","frames/03_fall_creeper_23s.png",cinematic,H
+Water/riptide act,63.4,89.2,25.8,"Submerged blue tunnel; red beams/gates; prismarine/coral cave; 10 air bubbles; black wing element bottom-right","You are in 1st place; 10 air bubbles","frames/05_water_tunnel_hud_65s.png; frames/06_water_tunnel_67s.png; frames/07_animated_cave_80s.png",gameplay,H
+Checkpoint / lap gate,172.9,176.3,3.4,"Green hedge arch with black/white checkerboard banner and two giant pink flowers; checkered apron beyond; no checkpoint counter or title; A1: L13 pen gate at z=29, line z=20","You are in 1st place","frames/15_finish_arch_176s.png",gameplay,H
+Failure / respawn,21,24.5,3.5,"Fall off a floating island, tracked by freecam; no death screen, no respawn, no chat; the video cuts away","none","frames/03_fall_creeper_23s.png",cinematic,L
+Finish,202.6,203.4,0.8,"High third-person view of the checkered finish apron (red/white/black), green arrow, player with elytra; no gate, burst, chat or title; A1: no finish detection; cut to logo","none","frames/17_finish_apron_203s.png",cinematic,H

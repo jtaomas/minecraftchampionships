@@ -1,0 +1,15 @@
+objective,criteria,display,default,role
+hit_chicken,minecraft.custom:minecraft.damage_dealt_resisted,hit_chicken,0,finish detection: increments when the player's damage is resisted by a chicken
+playing,dummy,playing,0,tag proxy: 1 = timer running; removed at first finish
+countdown,dummy,countdown,0,"ticks since Start sign click; 40..140 = 5..1, >=140 = GO"
+spawntime,dummy,spawntime,0,ticks alive while playing; every 20 spawns a cleanup armor stand
+playtimeMi1,dummy,playtimeMi1,0,minutes ones / timer digit
+playtimeMi2,dummy,playtimeMi2,0,minutes tens / timer digit
+playtimeSe1,dummy,playtimeSe1,0,seconds ones
+playtimeSe2,dummy,playtimeSe2,0,seconds tens
+playtimeMs1,dummy,playtimeMs1,0,"hundredths (0 or 5), +5 per tick"
+playtimeMs2,dummy,playtimeMs2,0,tenths of a second
+finished,dummy,finished,0,"ticks since finish; 60 = cleanup, 140 = reset"
+respawn,dummy,respawn,0,last stored feet Y (truncated); <=-41 teleports to start
+color,trigger,color,0,player-triggered colour menu; /trigger color
+selectColor,dummy,selectColor,0,"selected colour id: 1 red, 2 orange, 4 lime, 6 cyan, 7 aqua, 8 blue, 9 purple, 10 pink"

@@ -1,0 +1,14 @@
+metric,value,type,notes,conf
+video_runtime,234.97 s,measured,ffprobe duration,H
+gameplay_footage,192.4 s,measured,0:11.0-3:23.4 video time; includes title cards and freecam,H
+countdown_shown,2.4 s,measured,13->11 only; full countdown not shown,H
+countdown_cut_to_first_pads,2.6 s,measured,0:13.4-0:16.0; no GO title,H
+water_act,25.8 s,measured,1:03.4-1:29.2 screen time,H
+castle_rainbow_act,24.0 s,measured,1:35.0-1:59.0 screen time,H
+flight_water_screen_time,54 s,measured,sum of elytra/water clips; some may be riptide,M
+full_lap,2:20-2:50,estimate,MCC reference 2:17-2:25 + edit density; not shown in video,L
+lap_count,1,single lap,A1 world dossier: single-lap loop; no timer/lap/finish,H
+full_race,2:20-2:50,estimate,single-lap world; the race is the lap; not shown,L
+elytra_uptime_per_lap,30-40 s,estimate,two long glide sections; not measurable,L
+pad_uptime_per_lap,10-15 s,estimate,six speed beats + three launch beats; not measurable,L
+checkpoint_cadence,not measurable,no data,no checkpoint HUD/crossing in the video; A1 world has checkpoint bands but no counter,H

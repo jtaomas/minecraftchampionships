@@ -1,0 +1,14 @@
+id,stage,name,x,y,z,gate_axis,gate_width,what_it_grants_or_clears,role,confidence
+CP-0,hub,main-hub pad,-212,10,975,n/a,0,"Orange carpet, XP level 4; command tp 1061 28 995",one-way entry,H
+CP-1,arrival,gallery arrival,1061,28,995,n/a,0,Stadium walkway / spectator deck; respawn point for runners,arrival + runner respawn,H
+CP-2,role,runner role pad,1049,27,990,n/a,1,Chiseled stone bricks; level 4 -> 5 -> tp 1064 1 985,runner select,H
+CP-3,role,hunter role pad,1049,27,999,n/a,1,Chiseled polished blackstone; level 4 -> 7 -> tp 1058 1 985; barrier locks the pad,hunter select,H
+CP-4,waiting,runner lobby spot,1064,1,985,n/a,0,Underground waiting lobby; four count buttons at 1057 1/3 984/986,pre-round hold,H
+CP-5,waiting,hunter lobby spot,1058,1,985,n/a,0,Underground waiting lobby; glowstone pad 1058 0 982 unlocks the hunter pad,pre-round hold,H
+CP-6,start,runner start gate,1061,17,982,z,4,North start room; door 1059..1062 y17..18 z984; opens when countdown ends,runner spawn,H
+CP-7,start,hunter start gate,1060,17,1007,z,4,South start room; door 1059..1062 y17..18 z1005; opens when countdown ends,hunter spawn,H
+CP-8,timer,timer start,1060,2,994,n/a,0,fakeplayer timer_parkourtag = 60; bossbar 1 max 60,round clock,H
+CP-9,win,timer expiry trigger,1068,5,983,n/a,0,timer=0 -> redstone 1068 5 987 -> Runners win,runner win,H
+CP-10,win,kill-threshold trigger,1064,5,1001,n/a,0,kill_parkourtag = armed runner count -> redstone 1070 5 991 -> Hunter win,hunter win,H
+CP-11,win,hunter-absent trigger,1055,6,999,n/a,0,level 6 exists and no level 7 -> Runners win,runner win on hunter disconnect,H
+CP-12,reset,post-round reset,1071,9,999,n/a,0,"All players -> 1061 28 995, XP level 4",reset,H

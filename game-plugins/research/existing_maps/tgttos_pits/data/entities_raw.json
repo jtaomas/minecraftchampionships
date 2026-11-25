@@ -1,0 +1,182 @@
+[
+  {
+    "id": "minecraft:chicken",
+    "x": 63.786222833578286,
+    "y": -10.0,
+    "z": 28.143362608712515,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(0), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(-0.04660165835146092), 'Operation': Int(1), 'UUID': IntArray([Int(-1972079503), Int(-400670617), Int(-1608705268), Int(1354083840)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': St"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 67.17724323115044,
+    "y": -10.0,
+    "z": 19.65857670748965,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(859), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(-0.017044267026062095), 'Operation': Int(1), 'UUID': IntArray([Int(-762571279), Int(367413705), Int(-1861890905), Int(-447666193)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': S"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 67.41059844478262,
+    "y": -10.0,
+    "z": 19.200000002980232,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(0), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(0.0032781616019530837), 'Operation': Int(1), 'UUID': IntArray([Int(-155514470), Int(-790999109), Int(-1642884270), Int(-2054191957)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': S"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 67.63180577281774,
+    "y": -10.0,
+    "z": 19.832697678287566,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(0), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(0.060278874528776075), 'Operation': Int(1), 'UUID': IntArray([Int(75794758), Int(-1805958040), Int(-1923390360), Int(894452605)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': Strin"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 66.63730505377158,
+    "y": -10.0,
+    "z": 26.959041601796525,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(0), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(0.03622628623624609), 'Operation': Int(1), 'UUID': IntArray([Int(-2080756627), Int(-1427815077), Int(-2086317265), Int(1237193964)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': St"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 66.06685325067568,
+    "y": -10.0,
+    "z": 31.079433332277432,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(0), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(-0.028493883553306634), 'Operation': Int(1), 'UUID': IntArray([Int(656789147), Int(-1609612814), Int(-1701475277), Int(-426217661)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': St"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 66.93372519503471,
+    "y": -10.0,
+    "z": 19.200000002980232,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(4431), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(0.012525615798299543), 'Operation': Int(1), 'UUID': IntArray([Int(1194365859), Int(-44482460), Int(-1451387654), Int(2019864152)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': S"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 67.4967959522168,
+    "y": -10.0,
+    "z": 24.789809679161024,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(0), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(0.0717803744243243), 'Operation': Int(1), 'UUID': IntArray([Int(-2002716174), Int(-96844423), Int(-1881253110), Int(-544913225)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': Strin"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 67.50325533907285,
+    "y": -10.0,
+    "z": 26.912527759332836,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(0), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(-0.026990921059010197), 'Operation': Int(1), 'UUID': IntArray([Int(-738154678), Int(-1509470680), Int(-1979126432), Int(1924116778)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': S"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 66.605808140741,
+    "y": -10.0,
+    "z": 27.77448806335693,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(0), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(-0.020121572211719736), 'Operation': Int(1), 'UUID': IntArray([Int(-1281734621), Int(-2146284563), Int(-1887286199), Int(-8315667)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': St"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 64.48507607768688,
+    "y": -10.0,
+    "z": 29.69831537619632,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(9258), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(0.03659707032713655), 'Operation': Int(1), 'UUID': IntArray([Int(-869405836), Int(676022082), Int(-1997881393), Int(-31118197)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': Str"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 67.09414836759657,
+    "y": -10.0,
+    "z": 27.294631179619014,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(0), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(-0.030812157555062968), 'Operation': Int(1), 'UUID': IntArray([Int(-359018373), Int(10175731), Int(-2062261954), Int(1007001955)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': Stri"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 67.39857595411321,
+    "y": -10.0,
+    "z": 30.125866699853926,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(0), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(0.007721876425513922), 'Operation': Int(1), 'UUID': IntArray([Int(-1291912243), Int(2000177223), Int(-1718609845), Int(-2145328477)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': S"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 67.00753738152821,
+    "y": -10.0,
+    "z": 22.682293966903305,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(0), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(-0.05151382549700886), 'Operation': Int(1), 'UUID': IntArray([Int(-510385836), Int(-732345319), Int(-1105195786), Int(-1179873878)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': St"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 65.06094165320717,
+    "y": -10.0,
+    "z": 45.93120119043077,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(4567), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(-0.00027520721641954144), 'Operation': Int(1), 'UUID': IntArray([Int(-663715810), Int(1646477939), Int(-1706295607), Int(368483642)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name'"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 64.9116235100011,
+    "y": -10.0,
+    "z": 41.91764282024893,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(0), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(-0.045863764743716354), 'Operation': Int(1), 'UUID': IntArray([Int(1412181198), Int(1713193809), Int(-1601272810), Int(1413825151)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': St"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 65.93593255641825,
+    "y": -10.0,
+    "z": 45.028626570220574,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(0), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(-0.012016584797715156), 'Operation': Int(1), 'UUID': IntArray([Int(1668508041), Int(-1590671599), Int(-1820162134), Int(-1163427900)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': "
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 66.25074612224351,
+    "y": -10.0,
+    "z": 46.13089234329639,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(0), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(-0.01267087418315245), 'Operation': Int(1), 'UUID': IntArray([Int(1910439026), Int(-1387510066), Int(-1154687392), Int(576078429)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': Str"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 61.514423964932384,
+    "y": -10.0,
+    "z": 52.55544232456041,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(789), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(0.02030018364644091), 'Operation': Int(1), 'UUID': IntArray([Int(637772011), Int(-1834335937), Int(-1165749401), Int(-1432321732)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': S"
+  },
+  {
+    "id": "minecraft:chicken",
+    "x": 61.97827678797196,
+    "y": -10.0,
+    "z": 52.457031917614955,
+    "tags": [],
+    "custom_name": "",
+    "raw": "Compound({'IsChickenJockey': Byte(0), 'Brain': Compound({'memories': Compound({})}), 'HurtByTimestamp': Int(0), 'Attributes': List[Compound]([Compound({'Base': Double(16.0), 'Modifiers': List[Compound]([Compound({'Amount': Double(-0.02247088221781777), 'Operation': Int(1), 'UUID': IntArray([Int(-342601093), Int(1662341028), Int(-1443195760), Int(1080314926)]), 'Name': String('Random spawn bonus')})]), 'Name': String('minecraft:generic.follow_range')}), Compound({'Base': Double(0.25), 'Name': Str"
+  }
+]

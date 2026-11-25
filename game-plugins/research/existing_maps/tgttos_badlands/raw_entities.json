@@ -1,0 +1,2970 @@
+[
+ {
+  "file": "r.0.-1.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 0,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.00844761434716122,
+       "Operation": 1,
+       "UUID": [
+        1286623696,
+        2109294306,
+        -1271975284,
+        -471570408
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 103.61695098876953,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    1195155081,
+    262422892,
+    -1704276407,
+    -780989978
+   ],
+   "Age": 0,
+   "Motion": [
+    0.000116694526621259,
+    -0.11417476267513058,
+    -0.04952749176906671
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 0,
+   "Rotation": [
+    181.5013427734375,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 2196,
+   "Pos": [
+    222.8854372104421,
+    -114.36540271426881,
+    -48.012694086302844
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 1472,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.04650540590430477,
+       "Operation": 1,
+       "UUID": [
+        2121533674,
+        1131302667,
+        -2088994904,
+        626452649
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    1006476327,
+    244272677,
+    -1635706619,
+    867635819
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.0
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    228.51858520507812,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 1861,
+   "Pos": [
+    241.2944839647747,
+    -1.0,
+    12.823509647505784
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 396,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.008479767432522566,
+       "Operation": 1,
+       "UUID": [
+        -2007682770,
+        -2089860715,
+        -1579312975,
+        -302745522
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    -172377914,
+    -733855100,
+    -1643190512,
+    -1950118889
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.0
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    223.28054809570312,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 2565,
+   "Pos": [
+    241.242487265131,
+    -1.0,
+    11.200000002980232
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 0,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.026911929183541825,
+       "Operation": 1,
+       "UUID": [
+        -71571880,
+        92554275,
+        -2120893894,
+        -1945630012
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    -679205137,
+    1614889769,
+    -1306509183,
+    68700041
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.0
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    189.544921875,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 2620,
+   "Pos": [
+    240.76250000298023,
+    -0.40625,
+    11.711090576872985
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 111,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.011203798739650876,
+       "Operation": 1,
+       "UUID": [
+        809049936,
+        1114718697,
+        -2006182189,
+        -1684309896
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    1634483633,
+    -1942860920,
+    -1234245367,
+    -823465415
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.0
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    354.574951171875,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 386,
+   "Pos": [
+    241.34024718417618,
+    -1.0,
+    14.986336934630174
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 0,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.08194794041867123,
+       "Operation": 1,
+       "UUID": [
+        -91999771,
+        -1739240156,
+        -1333151966,
+        1887076370
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    1562938874,
+    7621598,
+    -2145028511,
+    1009768099
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.0
+   ],
+   "Health": 4.0,
+   "LeftHanded": 1,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    178.8837890625,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 7223,
+   "Pos": [
+    241.79999999701977,
+    -1.0,
+    15.419121837958452
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 1341,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.003256888212976562,
+       "Operation": 1,
+       "UUID": [
+        583853578,
+        -153008944,
+        -1282541927,
+        -1718148480
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    1832617423,
+    -425180550,
+    -1886173140,
+    -582619858
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.0
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    179.71804809570312,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 8414,
+   "Pos": [
+    241.177523550846,
+    -1.0,
+    12.071379327968927
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 28683,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": 0.012978533997977425,
+       "Operation": 1,
+       "UUID": [
+        545035932,
+        -33732800,
+        -1339170822,
+        -849782444
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    -23342534,
+    -1628942541,
+    -1894201391,
+    801980446
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.0
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    163.33120727539062,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 153,
+   "Pos": [
+    241.79999999701977,
+    -1.0,
+    12.994789490313096
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 25247,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.012142423467221043,
+       "Operation": 1,
+       "UUID": [
+        -263109248,
+        409552446,
+        -1704212913,
+        -1555962473
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    785022149,
+    -807908761,
+    -1465576730,
+    -1190167954
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.0
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    186.28964233398438,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 5136,
+   "Pos": [
+    241.46247181555876,
+    -1.0,
+    20.79788832126164
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 315,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": 0.07973396472827786,
+       "Operation": 1,
+       "UUID": [
+        1200383859,
+        1662340552,
+        -1929413477,
+        2079602011
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    1923460126,
+    1833520696,
+    -1474177249,
+    -1796165879
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.0
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    8.342483520507812,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 2104,
+   "Pos": [
+    241.79999999701977,
+    -1.0,
+    25.75996503322563
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 1693,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": 0.03024416078710964,
+       "Operation": 1,
+       "UUID": [
+        -1769385995,
+        -89439523,
+        -1631031127,
+        1293273359
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    1880550873,
+    113853543,
+    -1772839949,
+    -943535317
+   ],
+   "Age": 0,
+   "Motion": [
+    0.028157589823370167,
+    -0.0784000015258789,
+    -0.041302891816857944
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    359.6708984375,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 9018,
+   "Pos": [
+    241.79999999701977,
+    -1.0,
+    31.245743642457395
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 450,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.07352690638593258,
+       "Operation": 1,
+       "UUID": [
+        -783232656,
+        792219546,
+        -1130667968,
+        -745438134
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    2012611878,
+    1443187073,
+    -1799958851,
+    -4438475
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.0
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    359.2773742675781,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 2840,
+   "Pos": [
+    241.4929661937956,
+    -1.0,
+    19.17378359505179
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 347,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": 0.04219763460114638,
+       "Operation": 1,
+       "UUID": [
+        505145700,
+        -60406845,
+        -1183733892,
+        1080262443
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    566598728,
+    1527530291,
+    -2107771686,
+    1661631015
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.0
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    206.5804443359375,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 147,
+   "Pos": [
+    240.8749924849306,
+    -1.0,
+    31.28390509600731
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 369,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.03057195308343817,
+       "Operation": 1,
+       "UUID": [
+        1180772072,
+        602423936,
+        -2077971088,
+        3934548
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    -1994401120,
+    1914915301,
+    -1898766436,
+    1744009119
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0003847426941009704,
+    -0.0784000015258789,
+    -0.07365403452775938
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    180.66397094726562,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 2084,
+   "Pos": [
+    241.4867876721189,
+    -1.0,
+    28.56599727322494
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 446,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": 0.10341280478565423,
+       "Operation": 1,
+       "UUID": [
+        -1026685807,
+        703154780,
+        -1965277126,
+        -1268501027
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    1068722669,
+    -1511175972,
+    -1638664045,
+    -481742133
+   ],
+   "Age": 0,
+   "Motion": [
+    -0.055808609940897716,
+    -0.0784000015258789,
+    -0.020874548842818596
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    180.86956787109375,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 7935,
+   "Pos": [
+    241.4828600606068,
+    -1.0,
+    31.555569399145618
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 26545,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.0022117548643244443,
+       "Operation": 1,
+       "UUID": [
+        -191687954,
+        -322551370,
+        -1161585295,
+        2137910190
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    1437065734,
+    1076708080,
+    -1404407589,
+    1279317956
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0002898385606675038,
+    -0.0784000015258789,
+    0.07341984381573632
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    0.37567138671875,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 6616,
+   "Pos": [
+    241.5038970383964,
+    -1.0,
+    46.30961126522775
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 482,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": 0.028624581662944043,
+       "Operation": 1,
+       "UUID": [
+        1456216814,
+        -830127484,
+        -2034051287,
+        -197758309
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    1364110204,
+    -522305166,
+    -1882239578,
+    -282939105
+   ],
+   "Age": 0,
+   "Motion": [
+    -0.04850824887233614,
+    -0.0784000015258789,
+    -0.020358259885558113
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    185.9326171875,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 5549,
+   "Pos": [
+    241.34057501056114,
+    -1.0,
+    38.141928741050194
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 358,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": 0.003973594064176452,
+       "Operation": 1,
+       "UUID": [
+        -6632605,
+        -1317516981,
+        -2064637334,
+        -958291354
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    -1139997427,
+    -2126757541,
+    -1084261099,
+    1520407517
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    -0.041383933075558314
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    7.823829650878906,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 5963,
+   "Pos": [
+    241.79999999701977,
+    -1.0,
+    37.70932237986374
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 276,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.005715087076473608,
+       "Operation": 1,
+       "UUID": [
+        -557522422,
+        -2033565039,
+        -1603987484,
+        -1448271125
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    1170407303,
+    -1810150750,
+    -1509509924,
+    -476744580
+   ],
+   "Age": 0,
+   "Motion": [
+    -0.01027611512449065,
+    -0.0784000015258789,
+    0.05067060290031869
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    11.467247009277344,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 294,
+   "Pos": [
+    241.76900545877322,
+    -1.0,
+    35.17394054250607
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 0,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": 0.03351248825066643,
+       "Operation": 1,
+       "UUID": [
+        -100525051,
+        -2056896126,
+        -2043792395,
+        1776369892
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    -923879465,
+    -131841805,
+    -1352600428,
+    -787056327
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.0
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    1.4420318603515625,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 5490,
+   "Pos": [
+    241.79248518634355,
+    -1.0,
+    33.93799369222139
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 339,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.03442072901435379,
+       "Operation": 1,
+       "UUID": [
+        -1615982125,
+        -1792392939,
+        -1673343428,
+        -1122968471
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    -1219483510,
+    -941800868,
+    -1316773141,
+    -430597694
+   ],
+   "Age": 0,
+   "Motion": [
+    -0.0003058698602136227,
+    -0.0784000015258789,
+    0.004422738921577966
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    0.03231048583984375,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 3431,
+   "Pos": [
+    241.5003286679917,
+    -1.0,
+    45.93067379585698
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 371,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.040675930052598605,
+       "Operation": 1,
+       "UUID": [
+        126821308,
+        1820082535,
+        -1143511105,
+        1953623043
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    397797421,
+    193151928,
+    -1080949193,
+    -428604352
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.0
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    190.46533203125,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 6939,
+   "Pos": [
+    241.4295339644925,
+    -1.0,
+    47.849333021832464
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 433,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.012904400147768003,
+       "Operation": 1,
+       "UUID": [
+        -1129415707,
+        845761407,
+        -1318002355,
+        113731120
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    2047551403,
+    831735337,
+    -1075926067,
+    2040284229
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.0
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    196.42251586914062,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 2101,
+   "Pos": [
+    240.76250000298023,
+    -0.40625,
+    49.65144104792877
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 372,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": 0.0003397093302055007,
+       "Operation": 1,
+       "UUID": [
+        1001259025,
+        1921794783,
+        -1688959047,
+        1146123423
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    1553354157,
+    1862749325,
+    -1459375729,
+    -1641313976
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.0
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    347.1640930175781,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 397,
+   "Pos": [
+    241.79999999701977,
+    -1.0,
+    51.79999999701977
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 326,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.031620776101155025,
+       "Operation": 1,
+       "UUID": [
+        761826240,
+        -1925035922,
+        -1904062436,
+        1671054952
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    1214669889,
+    1020481157,
+    -1894760891,
+    -1761949006
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.002388800743659198
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    1.174072265625,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 6017,
+   "Pos": [
+    241.3679821682547,
+    -1.0,
+    51.472847779012945
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 364,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": 0.06445777230704694,
+       "Operation": 1,
+       "UUID": [
+        -1974453767,
+        106185402,
+        -2138826692,
+        1952929471
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    1145823079,
+    571950040,
+    -1814074921,
+    1323009751
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.0
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    348.75799560546875,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 8693,
+   "Pos": [
+    240.95966324121363,
+    -1.0,
+    51.79999999701977
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 0,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.017529955390361163,
+       "Operation": 1,
+       "UUID": [
+        -327886427,
+        -101560396,
+        -1608252197,
+        1415043113
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    -1729630818,
+    116539955,
+    -1348420896,
+    -1598204454
+   ],
+   "Age": 0,
+   "Motion": [
+    0.0,
+    -0.0784000015258789,
+    0.0
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    4.7673797607421875,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 9343,
+   "Pos": [
+    241.79999999701977,
+    -1.0,
+    50.917434734343146
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ },
+ {
+  "file": "r.0.0.mca",
+  "chunk": [
+   0,
+   0
+  ],
+  "nbt": {
+   "IsChickenJockey": 0,
+   "Brain": {
+    "memories": {}
+   },
+   "HurtByTimestamp": 350,
+   "Attributes": [
+    {
+     "Base": 0.25,
+     "Name": "minecraft:generic.movement_speed"
+    },
+    {
+     "Base": 16.0,
+     "Modifiers": [
+      {
+       "Amount": -0.004856118230019006,
+       "Operation": 1,
+       "UUID": [
+        1528794104,
+        -932558871,
+        -1803485250,
+        564905190
+       ],
+       "Name": "Random spawn bonus"
+      }
+     ],
+     "Name": "minecraft:generic.follow_range"
+    }
+   ],
+   "Invulnerable": 0,
+   "FallFlying": 0,
+   "ForcedAge": 0,
+   "PortalCooldown": 0,
+   "AbsorptionAmount": 0.0,
+   "FallDistance": 0.0,
+   "InLove": 0,
+   "DeathTime": 0,
+   "HandDropChances": [
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "PersistenceRequired": 0,
+   "id": "minecraft:chicken",
+   "UUID": [
+    -1778613144,
+    1532117806,
+    -1916993338,
+    885472111
+   ],
+   "Age": 0,
+   "Motion": [
+    0.02928567642798135,
+    -0.0784000015258789,
+    -0.12535007957135758
+   ],
+   "Health": 4.0,
+   "LeftHanded": 0,
+   "Air": 300,
+   "OnGround": 1,
+   "Rotation": [
+    189.08914184570312,
+    0.0
+   ],
+   "HandItems": [
+    {},
+    {}
+   ],
+   "ArmorDropChances": [
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967,
+    0.08500000089406967
+   ],
+   "EggLayTime": 2413,
+   "Pos": [
+    241.38224819328389,
+    -1.0,
+    50.341736453967556
+   ],
+   "Fire": -1,
+   "ArmorItems": [
+    {},
+    {},
+    {},
+    {}
+   ],
+   "CanPickUpLoot": 0,
+   "HurtTime": 0,
+   "ActiveEffects": [
+    {
+     "Ambient": 0,
+     "ShowIcon": 0,
+     "ShowParticles": 0,
+     "Duration": 20,
+     "Id": 11,
+     "Amplifier": 5
+    }
+   ]
+  }
+ }
+]

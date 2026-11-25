@@ -1,0 +1,94 @@
+container_id,x,y,z,slot,item,count,source_nbt
+SB-C01,1965,24,0,3,crossbow,1,Damage 0
+SB-C01,1965,24,0,4,arrow,1,-
+SB-C01,1965,24,0,5,bow,1,Damage 0
+SB-C01,1965,24,0,12,arrow,1,-
+SB-C01,1965,24,0,13,stick,4,-
+SB-C01,1965,24,0,14,arrow,1,-
+SB-C01,1965,24,0,21,bow,1,Damage 0
+SB-C01,1965,24,0,22,arrow,1,-
+SB-C01,1965,24,0,23,crossbow,1,Damage 0
+SB-C02,2035,24,0,3,crossbow,1,Damage 0
+SB-C02,2035,24,0,4,arrow,1,-
+SB-C02,2035,24,0,5,bow,1,Damage 0
+SB-C02,2035,24,0,12,arrow,1,-
+SB-C02,2035,24,0,13,stick,4,-
+SB-C02,2035,24,0,14,arrow,1,-
+SB-C02,2035,24,0,21,bow,1,Damage 0
+SB-C02,2035,24,0,22,arrow,1,-
+SB-C02,2035,24,0,23,crossbow,1,Damage 0
+SB-C03,2000,24,35,3,crossbow,1,Damage 0
+SB-C03,2000,24,35,4,arrow,1,-
+SB-C03,2000,24,35,5,bow,1,Damage 0
+SB-C03,2000,24,35,12,arrow,1,-
+SB-C03,2000,24,35,13,stick,4,-
+SB-C03,2000,24,35,14,arrow,1,-
+SB-C03,2000,24,35,21,bow,1,Damage 0
+SB-C03,2000,24,35,22,arrow,1,-
+SB-C03,2000,24,35,23,crossbow,1,Damage 0
+SB-C04,2000,24,-35,3,crossbow,1,Damage 0
+SB-C04,2000,24,-35,4,arrow,1,-
+SB-C04,2000,24,-35,5,bow,1,Damage 0
+SB-C04,2000,24,-35,12,arrow,1,-
+SB-C04,2000,24,-35,13,stick,4,-
+SB-C04,2000,24,-35,14,arrow,1,-
+SB-C04,2000,24,-35,21,bow,1,Damage 0
+SB-C04,2000,24,-35,22,arrow,1,-
+SB-C04,2000,24,-35,23,crossbow,1,Damage 0
+SB-C05,1974,26,-26,3,cobweb,1,CanPlaceOn 38
+SB-C05,1974,26,-26,4,iron_axe,1,Damage 0
+SB-C05,1974,26,-26,5,cobweb,1,CanPlaceOn 38
+SB-C05,1974,26,-26,12,fishing_rod,1,Damage 0
+SB-C05,1974,26,-26,13,splash_potion,1,potion=regeneration
+SB-C05,1974,26,-26,14,fishing_rod,1,Damage 0
+SB-C05,1974,26,-26,21,cobweb,1,CanPlaceOn 38
+SB-C05,1974,26,-26,22,spyglass,1,-
+SB-C05,1974,26,-26,23,cobweb,1,CanPlaceOn 38
+SB-C06,1974,26,26,3,cobweb,1,CanPlaceOn 38
+SB-C06,1974,26,26,4,iron_axe,1,Damage 0
+SB-C06,1974,26,26,5,cobweb,1,CanPlaceOn 38
+SB-C06,1974,26,26,12,fishing_rod,1,Damage 0
+SB-C06,1974,26,26,13,splash_potion,1,potion=regeneration
+SB-C06,1974,26,26,14,fishing_rod,1,Damage 0
+SB-C06,1974,26,26,21,cobweb,1,CanPlaceOn 38
+SB-C06,1974,26,26,22,spyglass,1,-
+SB-C06,1974,26,26,23,cobweb,1,CanPlaceOn 38
+SB-C07,2026,26,-26,3,cobweb,1,CanPlaceOn 38
+SB-C07,2026,26,-26,4,iron_axe,1,Damage 0
+SB-C07,2026,26,-26,5,cobweb,1,CanPlaceOn 38
+SB-C07,2026,26,-26,12,fishing_rod,1,Damage 0
+SB-C07,2026,26,-26,13,splash_potion,1,potion=regeneration
+SB-C07,2026,26,-26,14,fishing_rod,1,Damage 0
+SB-C07,2026,26,-26,21,cobweb,1,CanPlaceOn 38
+SB-C07,2026,26,-26,22,spyglass,1,-
+SB-C07,2026,26,-26,23,cobweb,1,CanPlaceOn 38
+SB-C08,2026,26,26,3,cobweb,1,CanPlaceOn 38
+SB-C08,2026,26,26,4,iron_axe,1,Damage 0
+SB-C08,2026,26,26,5,cobweb,1,CanPlaceOn 38
+SB-C08,2026,26,26,12,fishing_rod,1,Damage 0
+SB-C08,2026,26,26,13,splash_potion,1,potion=regeneration
+SB-C08,2026,26,26,14,fishing_rod,1,Damage 0
+SB-C08,2026,26,26,21,cobweb,1,CanPlaceOn 38
+SB-C08,2026,26,26,22,spyglass,1,-
+SB-C08,2026,26,26,23,cobweb,1,CanPlaceOn 38
+SB-C09,1974,14,-26,11,ender_pearl,1,-
+SB-C09,1974,14,-26,13,splash_potion,1,potion=strong_leaping
+SB-C09,1974,14,-26,15,ender_pearl,1,-
+SB-C10,1974,14,26,11,ender_pearl,1,-
+SB-C10,1974,14,26,13,splash_potion,1,potion=strong_leaping
+SB-C10,1974,14,26,15,ender_pearl,1,-
+SB-C11,2026,14,-26,11,ender_pearl,1,-
+SB-C11,2026,14,-26,13,splash_potion,1,potion=strong_leaping
+SB-C11,2026,14,-26,15,ender_pearl,1,-
+SB-C12,2026,14,26,11,ender_pearl,1,-
+SB-C12,2026,14,26,13,splash_potion,1,potion=strong_leaping
+SB-C12,2026,14,26,15,ender_pearl,1,-
+SB-C13,2000,29,0,3,cobweb,2,CanPlaceOn 38
+SB-C13,2000,29,0,4,arrow,2,-
+SB-C13,2000,29,0,5,cobweb,2,CanPlaceOn 38
+SB-C13,2000,29,0,12,ender_pearl,1,-
+SB-C13,2000,29,0,13,trident,1,Loyalty I; Damage 0
+SB-C13,2000,29,0,14,ender_pearl,1,-
+SB-C13,2000,29,0,21,cobweb,2,CanPlaceOn 38
+SB-C13,2000,29,0,22,arrow,2,-
+SB-C13,2000,29,0,23,cobweb,2,CanPlaceOn 38

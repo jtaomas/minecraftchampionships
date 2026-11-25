@@ -1,0 +1,60 @@
+block,count,share_pct,group,use,confidence
+barrier,34751,72.588,barrier,"invisible envelope: walls x1948/2052, z-52/52, roof y56, lobby cage",H
+white_concrete,4545,9.494,neutral_stone,"gift-box base/ribbon, gallery trim, canopy edge, island foundation",H
+stone_bricks,1231,2.571,neutral_stone,"gallery floor, inner lip, mid plus, fence caps",H
+red_concrete,984,2.055,team_colour,Red team gift box + Red canopy quadrant,H
+yellow_concrete,725,1.514,team_colour,Yellow team gift box + Yellow canopy quadrant,H
+green_concrete,725,1.514,team_colour,Green team gift box + Green canopy quadrant,H
+blue_concrete,570,1.191,team_colour,Blue team gift box + Blue canopy quadrant,H
+blue_terracotta,360,0.752,team_colour,Blue canopy underside / seat band,H
+red_terracotta,359,0.75,team_colour,Red canopy underside / seat band,H
+yellow_terracotta,359,0.75,team_colour,Yellow canopy underside / seat band,H
+green_terracotta,359,0.75,team_colour,Green canopy underside / seat band,H
+gray_wool,287,0.599,container_utility,sky-lobby lantern body and roof pads,H
+smooth_quartz,256,0.535,neutral_stone,gift-box ribbon cross and canopy trim,H
+oak_fence,240,0.501,wood_foliage,outer colonnade under the canopy rim,H
+orange_wool,223,0.466,container_utility,NW balloon envelope,H
+cyan_wool,223,0.466,container_utility,SW balloon envelope,H
+lime_wool,223,0.466,container_utility,NE balloon envelope,H
+purple_wool,223,0.466,container_utility,SE balloon envelope,H
+cobblestone_wall,164,0.343,neutral_stone,gallery floor edge trim,H
+oak_leaves,138,0.288,wood_foliage,hedge/foliage on the outer colonnade,H
+oak_trapdoor,100,0.209,wood_foliage,balloon crate + basket details,H
+smooth_quartz_stairs,95,0.198,neutral_stone,outer rim stair trim at y25,H
+spruce_fence,80,0.167,wood_foliage,balloon crate corners,H
+green_glazed_terracotta,79,0.165,team_colour,Green gift-box lid pattern,H
+red_glazed_terracotta,78,0.163,team_colour,Red gift-box lid pattern,H
+yellow_glazed_terracotta,78,0.163,team_colour,Yellow gift-box lid pattern,H
+blue_glazed_terracotta,78,0.163,team_colour,Blue gift-box lid pattern,H
+chain,61,0.127,container_utility,central drop from lobby to mid; balloon hanging chains; mid stem,H
+gold_block,48,0.1,container_utility,sky-lobby lantern cap/frame,H
+stripped_spruce_log,45,0.094,wood_foliage,balloon masts and lobby stem,H
+stone_brick_wall,24,0.05,neutral_stone,gallery edge posts,H
+spruce_trapdoor,20,0.042,wood_foliage,balloon basket details,H
+spruce_fence_gate,20,0.042,wood_foliage,balloon basket rail,H
+raw_gold_block,20,0.042,container_utility,sky-lobby lantern cap,H
+birch_wall_sign,10,0.021,wood_foliage,team-join and control signs,H
+iron_block,8,0.017,container_utility,gift-box ribbon knots; mineable iron caches,H
+stone_brick_stairs,8,0.017,neutral_stone,mid plus / gallery trim,H
+red_stained_glass,6,0.013,team_colour,sky-lobby team bays,H
+yellow_stained_glass,6,0.013,team_colour,sky-lobby team bays,H
+blue_stained_glass,6,0.013,team_colour,sky-lobby team bays,H
+polished_blackstone_wall,6,0.013,neutral_stone,central chain collars,H
+green_stained_glass,6,0.013,team_colour,sky-lobby team bays,H
+crafting_table,5,0.01,container_utility,team island + mid crafting station,H
+barrel,5,0.01,container_utility,loot containers (balloon bottoms + mid),H
+spruce_slab,5,0.01,wood_foliage,balloon crate shelf,H
+campfire,5,0.01,container_utility,balloon/mid smoke plume,H
+stone_button,5,0.01,neutral_stone,sky-lobby control buttons,H
+white_shulker_box,4,0.008,container_utility,team spawn loot containers,H
+chest,4,0.008,container_utility,balloon crate loot containers,H
+light,4,0.008,container_utility,invisible light blocks in sky lobby,H
+command_block,2,0.004,container_utility,sky-lobby start/reset command blocks,H
+red_concrete_powder,1,0.002,team_colour,Red team join pad in lobby,H
+polished_blackstone,1,0.002,neutral_stone,mid chain collar,H
+yellow_concrete_powder,1,0.002,team_colour,Yellow team join pad in lobby,H
+blue_concrete_powder,1,0.002,team_colour,Blue team join pad in lobby,H
+lectern,1,0.002,container_utility,sky-lobby arrival lectern,H
+repeating_command_block,1,0.002,container_utility,sky-lobby item-cleanup command block,H
+green_wool,1,0.002,team_colour,single green wool accent in lobby floor,H
+green_concrete_powder,1,0.002,team_colour,Green team join pad in lobby,H

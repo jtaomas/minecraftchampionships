@@ -1,0 +1,4 @@
+order,name,x,y,z,gate_axis_width,what_it_grants,what_it_clears,notes
+0,start / respawn,73,-33,11,"box 22x5x5 (x63-84, y-33..-29, z9-13)","1 spawn point, centre of a 20x3 quartz tray","click sign -> 'starting'; 140 ticks later -> 'playing', barriers removed; fall y<=-58 -> tp back here",
+1,finish pen,73,-39,93,"trench 31x11 (x58-88, z88-98), floor y=-40","24 chickens x61-87, z89-97",punch any chicken with Resistance V -> hit_chicken stat -> finished,
+,MID-COURSE CHECKPOINTS,,,,,none,,no checkpoint/region system exists in the Industry datapack

@@ -1,0 +1,2 @@
+order,type,x,y,z,gate_axis,width,grants_or_clears,evidence
+none,none,,,,,,"No checkpoints. The datapack has no checkpoint objective/entity/region; the world has no checkpoint gate, banner, beacon or sign other than the start sign.",H: load.mcfunction + loop.mcfunction + 1 sign + 0 command blocks

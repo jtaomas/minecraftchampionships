@@ -1,0 +1,4 @@
+pack,pack_format,description,supported_formats,root_pack_mcmeta,archive_root_ok
+clouds2,15,§c Ace Race Resource Pack,,True,True
+space_race,6,Space Race Textures.,,False,False
+yeti_set_go,9,§c Ace Race Animation Example,,True,True

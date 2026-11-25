@@ -1,0 +1,16 @@
+team,display,color,allow_friendly_fire,relation
+Super_Clash_H,"{""text"":""Super_Clash_H""}",,0,MG-SC-01 heroes
+Gladiators,"{""text"":""Gladiators""}",,0,Unbuilt Gladiators
+Blue,"{""text"":""Blue""}",,1,Legacy/global
+Sky_Battle_Red,"{""text"":""Sky_Battle_Red""}",,0,MG-SB-01 red
+Parkour_Tag,"{""text"":""Parkour_Tag""}",,0,MG-PT-01
+Red,"{""text"":""Red""}",,1,Legacy/global
+Yellow,"{""text"":""Yellow""}",,1,Legacy/global
+Super_Clash_V,"{""text"":""Super_Clash_V""}",,0,MG-SC-01 villains
+Sky_Race,"{""text"":""Sky_Race""}",,1,MG-SR-RED-01 / MG-SR-ORG-01
+Theme_Race,"{""text"":""Theme_Race""}",,0,Unbuilt Theme Race
+Sky_Battle_Blue,"{""text"":""Sky_Battle_Blue""}",,0,MG-SB-01 blue
+Sky_Battle_Green,"{""text"":""Sky_Battle_Green""}",,0,MG-SB-01 green
+Sky_Battle_Yellw,"{""text"":""Sky_Battle_Yellw""}",,0,MG-SB-01 yellow
+pve,"{""text"":""pve""}",,0,Hub/lobby neutral
+Green,"{""text"":""Green""}",,1,Legacy/global

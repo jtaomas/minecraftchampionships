@@ -1,0 +1,6 @@
+map,item,display_name,lore,custom_model_data,model_override,trigger,evidence,confidence,notes
+clouds2,minecraft:rotten_flesh,Energy,,,models/item/rotten_flesh.json + animated texture,none found,lang item.minecraft.rotten_flesh='Energy'; no give/container/entity/playerdata reference,H,"Only custom-named item in either pack's lang. Likely a server-plugin item, not map-supplied."
+space_race,minecraft:carrot_on_a_stick,Restart Attempt,,,textures/item/carrot_on_a_stick.png (red gem),saved playerdata only,playerdata/00000000-...dat Inventory[1],H,No command block or datapack grants or tests this item; likely a hub/lobby hotbar item.
+space_race,minecraft:trident,Trident,,,none (vanilla model),saved playerdata only,playerdata/00000000-...dat Inventory[0],H,"Yellow name, italic false."
+space_race,minecraft:acacia_sign,,,,textures/item/acacia_sign.png (fully transparent),saved playerdata only,playerdata/00000000-...dat Inventory[23]; texture alpha=0,H,Invisible item icon; builder hotbar item.
+clouds2,minecraft:leather_boots,,,,none (vanilla),item replace ... armor.feet over red_terracotta,"30 command blocks (6 pads x 5 layers) give white boots, depth_strider 255, HideFlags:1",H,"No custom name, lore or model; not a pack asset."

@@ -1,0 +1,6272 @@
+[
+ {
+  "x": -175,
+  "y": -37,
+  "z": -193,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box mega jump\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -174,
+  "y": -37,
+  "z": -195,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"pad effect give\"}",
+   "{\"text\":\"speed\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -176,
+  "y": -37,
+  "z": -193,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box mega jump\"}",
+   "{\"text\":\"speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -174,
+  "y": -37,
+  "z": -193,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box remove\"}",
+   "{\"text\":\"trident\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -175,
+  "y": -37,
+  "z": -197,
+  "front": [
+   "{\"text\":\"lime shulker\"}",
+   "{\"text\":\"box jump pad\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -174,
+  "y": -37,
+  "z": -199,
+  "front": [
+   "{\"text\":\"kill all items\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "gray",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -176,
+  "y": -37,
+  "z": -197,
+  "front": [
+   "{\"text\":\"enchant\"}",
+   "{\"text\":\"riptide\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -175,
+  "y": -37,
+  "z": -195,
+  "front": [
+   "{\"text\":\"red glazed\"}",
+   "{\"text\":\"teracotta jump\"}",
+   "{\"text\":\"pad speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -176,
+  "y": -37,
+  "z": -195,
+  "front": [
+   "{\"text\":\"glowing\"}",
+   "{\"text\":\"effect infinite\"}",
+   "{\"text\":\"white\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -174,
+  "y": -37,
+  "z": -197,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"jump pad\"}",
+   "{\"text\":\"jump boost\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -175,
+  "y": -37,
+  "z": -201,
+  "front": [
+   "{\"text\":\"remove leather\"}",
+   "{\"text\":\"boots in air\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -174,
+  "y": -37,
+  "z": -203,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 4 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -176,
+  "y": -37,
+  "z": -201,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"give slowness\"}",
+   "{\"text\":\"effect\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -175,
+  "y": -37,
+  "z": -199,
+  "front": [
+   "{\"text\":\" green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"slowness 1 sec\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -176,
+  "y": -37,
+  "z": -199,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"dolphins grace\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -174,
+  "y": -37,
+  "z": -201,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 2 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -176,
+  "y": -37,
+  "z": -205,
+  "front": [
+   "{\"text\":\"clear on calcite\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -175,
+  "y": -37,
+  "z": -205,
+  "front": [
+   "{\"text\":\"give trident on\"}",
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -174,
+  "y": -37,
+  "z": -205,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"remove jump\"}",
+   "{\"text\":\"boost\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -176,
+  "y": -37,
+  "z": -203,
+  "front": [
+   "{\"text\":\"remove elytra on\"}",
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -174,
+  "y": -37,
+  "z": -194,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -175,
+  "y": -37,
+  "z": -194,
+  "front": [
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -174,
+  "y": -37,
+  "z": -198,
+  "front": [
+   "{\"text\":\"kill at\"}",
+   "{\"text\":\"y-50\"}",
+   "{\"text\":\"DONT TOUCH DY\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "gray",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -176,
+  "y": -37,
+  "z": -196,
+  "front": [
+   "{\"text\":\"cave\"}",
+   "{\"text\":\"air\"}",
+   "{\"text\":\"set\"}",
+   "{\"text\":\"world spawn\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -175,
+  "y": -37,
+  "z": -198,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"remove speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -174,
+  "y": -37,
+  "z": -196,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"pad\"}",
+   "{\"text\":\"speed\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -176,
+  "y": -37,
+  "z": -194,
+  "front": [
+   "{\"text\":\"lime shulker\"}",
+   "{\"text\":\" box play\"}",
+   "{\"text\":\"up pad (cavevine)\"}",
+   "{\"text\":\"(break1/2/3/4)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -175,
+  "y": -37,
+  "z": -196,
+  "front": [
+   "{\"text\":\"red glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -174,
+  "y": -37,
+  "z": -202,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 3 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -176,
+  "y": -37,
+  "z": -200,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"weakness max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -175,
+  "y": -37,
+  "z": -202,
+  "front": [
+   "{\"text\":\"give conduit\"}",
+   "{\"text\":\"power max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -176,
+  "y": -37,
+  "z": -198,
+  "front": [
+   "{\"text\":\"enchant\"}",
+   "{\"text\":\"unbreaking 3\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -174,
+  "y": -37,
+  "z": -200,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 1 block below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -175,
+  "y": -37,
+  "z": -200,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"saturation max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -176,
+  "y": -37,
+  "z": -204,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"water breathing\"}",
+   "{\"text\":\"max infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -176,
+  "y": -37,
+  "z": -202,
+  "front": [
+   "{\"text\":\"remove elytra\"}",
+   "{\"text\":\"in cave air\"}",
+   "{\"text\":\"(checkpoints)\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -174,
+  "y": -37,
+  "z": -204,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 5 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -174,
+  "y": -37,
+  "z": -190,
+  "front": [
+   "{\"text\":\"give elytra\"}",
+   "{\"text\":\"on spruce\"}",
+   "{\"text\":\"planks\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -174,
+  "y": -37,
+  "z": -191,
+  "front": [
+   "{\"text\":\"set 0\"}",
+   "{\"text\":\"xp levels\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -175,
+  "y": -37,
+  "z": -190,
+  "front": [
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"speed (chain)\"}",
+   "{\"text\":\"(break1/2/3/4)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -176,
+  "y": -37,
+  "z": -192,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -175,
+  "y": -37,
+  "z": -191,
+  "front": [
+   "{\"text\":\"cave air\"}",
+   "{\"text\":\"play checkpoint\"}",
+   "{\"text\":\"(chain)\"}",
+   "{\"text\":\"(place1/2/3/4......)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -176,
+  "y": -37,
+  "z": -190,
+  "front": [
+   "{\"text\":\"red_glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -174,
+  "y": -37,
+  "z": -192,
+  "front": [
+   "{\"text\":\"set 0\"}",
+   "{\"text\":\"xp points\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -176,
+  "y": -37,
+  "z": -191,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -175,
+  "y": -37,
+  "z": -192,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box play\"}",
+   "{\"text\":\"mejupa (candle)\"}",
+   "{\"text\":\"(extimguish1/2/3)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -11,
+  "z": -129,
+  "front": [
+   "{\"text\":\"lime shulker\"}",
+   "{\"text\":\"box jump pad\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -11,
+  "z": -129,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"jump pad\"}",
+   "{\"text\":\"jump boost\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -11,
+  "z": -131,
+  "front": [
+   "{\"text\":\" green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"slowness 1 sec\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -11,
+  "z": -131,
+  "front": [
+   "{\"text\":\"kill all items\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "gray",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": -11,
+  "z": -129,
+  "front": [
+   "{\"text\":\"enchant\"}",
+   "{\"text\":\"riptide\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -11,
+  "z": -133,
+  "front": [
+   "{\"text\":\"remove leather\"}",
+   "{\"text\":\"boots in air\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": -11,
+  "z": -131,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"dolphins grace\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -11,
+  "z": -133,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 2 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -11,
+  "z": -137,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"remove jump\"}",
+   "{\"text\":\"boost\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -11,
+  "z": -137,
+  "front": [
+   "{\"text\":\"give trident on\"}",
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -11,
+  "z": -135,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 4 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": -11,
+  "z": -133,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"give slowness\"}",
+   "{\"text\":\"effect\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": -11,
+  "z": -135,
+  "front": [
+   "{\"text\":\"remove elytra on\"}",
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": -11,
+  "z": -137,
+  "front": [
+   "{\"text\":\"clear on calcite\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -11,
+  "z": -130,
+  "front": [
+   "{\"text\":\"kill at\"}",
+   "{\"text\":\"y-50\"}",
+   "{\"text\":\"DONT TOUCH DY\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "gray",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -11,
+  "z": -132,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 1 block below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": -11,
+  "z": -130,
+  "front": [
+   "{\"text\":\"enchant\"}",
+   "{\"text\":\"unbreaking 3\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -11,
+  "z": -130,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"remove speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": -11,
+  "z": -132,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"weakness max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -11,
+  "z": -134,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 3 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -11,
+  "z": -132,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"saturation max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": -11,
+  "z": -134,
+  "front": [
+   "{\"text\":\"remove elytra\"}",
+   "{\"text\":\"in cave air\"}",
+   "{\"text\":\"(checkpoints)\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -11,
+  "z": -136,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 5 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -11,
+  "z": -134,
+  "front": [
+   "{\"text\":\"give conduit\"}",
+   "{\"text\":\"power max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": -11,
+  "z": -136,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"water breathing\"}",
+   "{\"text\":\"max infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -11,
+  "z": -123,
+  "front": [
+   "{\"text\":\"cave air\"}",
+   "{\"text\":\"play checkpoint\"}",
+   "{\"text\":\"(chain)\"}",
+   "{\"text\":\"(place1/2/3/4......)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -11,
+  "z": -123,
+  "front": [
+   "{\"text\":\"set 0\"}",
+   "{\"text\":\"xp levels\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -11,
+  "z": -125,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box mega jump\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": -11,
+  "z": -123,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -11,
+  "z": -125,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box remove\"}",
+   "{\"text\":\"trident\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -11,
+  "z": -127,
+  "front": [
+   "{\"text\":\"red glazed\"}",
+   "{\"text\":\"teracotta jump\"}",
+   "{\"text\":\"pad speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -11,
+  "z": -127,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"pad effect give\"}",
+   "{\"text\":\"speed\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": -11,
+  "z": -125,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box mega jump\"}",
+   "{\"text\":\"speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": -11,
+  "z": -127,
+  "front": [
+   "{\"text\":\"glowing\"}",
+   "{\"text\":\"effect infinite\"}",
+   "{\"text\":\"white\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": -11,
+  "z": -122,
+  "front": [
+   "{\"text\":\"red_glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -11,
+  "z": -124,
+  "front": [
+   "{\"text\":\"set 0\"}",
+   "{\"text\":\"xp points\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -11,
+  "z": -122,
+  "front": [
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"speed (chain)\"}",
+   "{\"text\":\"(break1/2/3/4)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -11,
+  "z": -126,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": -11,
+  "z": -124,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -11,
+  "z": -124,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box play\"}",
+   "{\"text\":\"mejupa (candle)\"}",
+   "{\"text\":\"(extimguish1/2/3)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -11,
+  "z": -128,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"pad\"}",
+   "{\"text\":\"speed\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": -11,
+  "z": -126,
+  "front": [
+   "{\"text\":\"lime shulker\"}",
+   "{\"text\":\" box play\"}",
+   "{\"text\":\"up pad (cavevine)\"}",
+   "{\"text\":\"(break1/2/3/4)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -11,
+  "z": -126,
+  "front": [
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": -11,
+  "z": -128,
+  "front": [
+   "{\"text\":\"cave\"}",
+   "{\"text\":\"air\"}",
+   "{\"text\":\"set\"}",
+   "{\"text\":\"world spawn\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -11,
+  "z": -128,
+  "front": [
+   "{\"text\":\"red glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -7,
+  "z": -18,
+  "front": [
+   "{\"text\":\"give trident on\"}",
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -7,
+  "z": -17,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"water breathing\"}",
+   "{\"text\":\"max infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -7,
+  "z": -18,
+  "front": [
+   "{\"text\":\"clear on calcite\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -7,
+  "z": -3,
+  "front": [
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"speed (chain)\"}",
+   "{\"text\":\"(break1/2/3/4)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -7,
+  "z": -3,
+  "front": [
+   "{\"text\":\"red_glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -7,
+  "z": -5,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box play\"}",
+   "{\"text\":\"mejupa (candle)\"}",
+   "{\"text\":\"(extimguish1/2/3)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -7,
+  "z": -5,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -7,
+  "z": -7,
+  "front": [
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -7,
+  "z": -7,
+  "front": [
+   "{\"text\":\"lime shulker\"}",
+   "{\"text\":\" box play\"}",
+   "{\"text\":\"up pad (cavevine)\"}",
+   "{\"text\":\"(break1/2/3/4)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -7,
+  "z": -9,
+  "front": [
+   "{\"text\":\"red glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -7,
+  "z": -9,
+  "front": [
+   "{\"text\":\"cave\"}",
+   "{\"text\":\"air\"}",
+   "{\"text\":\"set\"}",
+   "{\"text\":\"world spawn\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -7,
+  "z": -11,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"remove speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -7,
+  "z": -11,
+  "front": [
+   "{\"text\":\"enchant\"}",
+   "{\"text\":\"unbreaking 3\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -7,
+  "z": -13,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"saturation max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -7,
+  "z": -13,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"weakness max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -7,
+  "z": -15,
+  "front": [
+   "{\"text\":\"give conduit\"}",
+   "{\"text\":\"power max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -7,
+  "z": -15,
+  "front": [
+   "{\"text\":\"remove elytra\"}",
+   "{\"text\":\"in cave air\"}",
+   "{\"text\":\"(checkpoints)\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -7,
+  "z": -2,
+  "front": [
+   "{\"text\":\"set time\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -7,
+  "z": -4,
+  "front": [
+   "{\"text\":\"cave air\"}",
+   "{\"text\":\"play checkpoint\"}",
+   "{\"text\":\"(chain)\"}",
+   "{\"text\":\"(place1/2/3/4......)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -7,
+  "z": -4,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -7,
+  "z": -6,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box mega jump\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -7,
+  "z": -6,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box mega jump\"}",
+   "{\"text\":\"speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -7,
+  "z": -8,
+  "front": [
+   "{\"text\":\"red glazed\"}",
+   "{\"text\":\"teracotta jump\"}",
+   "{\"text\":\"pad speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -7,
+  "z": -8,
+  "front": [
+   "{\"text\":\"glowing\"}",
+   "{\"text\":\"effect infinite\"}",
+   "{\"text\":\"white\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -7,
+  "z": -10,
+  "front": [
+   "{\"text\":\"lime shulker\"}",
+   "{\"text\":\"box jump pad\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -7,
+  "z": -10,
+  "front": [
+   "{\"text\":\"enchant\"}",
+   "{\"text\":\"riptide\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -7,
+  "z": -12,
+  "front": [
+   "{\"text\":\" green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"slowness 1 sec\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -7,
+  "z": -12,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"dolphins grace\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -1,
+  "y": -7,
+  "z": -14,
+  "front": [
+   "{\"text\":\"remove leather\"}",
+   "{\"text\":\"boots in air\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -7,
+  "z": -14,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"give slowness\"}",
+   "{\"text\":\"effect\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -2,
+  "y": -7,
+  "z": -16,
+  "front": [
+   "{\"text\":\"remove elytra on\"}",
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": 5,
+  "z": 21,
+  "front": [
+   "{\"text\":\"& turn your\"}",
+   "{\"text\":\"blocks and\"}",
+   "{\"text\":\"jukebox/note\"}",
+   "{\"text\":\"block vol up\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "black",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": 5,
+  "z": 22,
+  "front": [
+   "{\"text\":\"I recommend a\"}",
+   "{\"text\":\"render distance\"}",
+   "{\"text\":\"of 14 to match\"}",
+   "{\"text\":\"the event\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "black",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": 4,
+  "z": 21,
+  "front": [
+   "{\"text\":\"Finally, disable\"}",
+   "{\"text\":\"water dripping\"}",
+   "{\"text\":\"particles\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "black",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": 5,
+  "z": 23,
+  "front": [
+   "{\"text\":\"Also ensure that\"}",
+   "{\"text\":\"your render and\"}",
+   "{\"text\":\"simulation\"}",
+   "{\"text\":\"distance are 4+\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "black",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": 4,
+  "z": 23,
+  "front": [
+   "{\"text\":\"animated\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"-------------->\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "black",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": 5,
+  "z": 24,
+  "front": [
+   "{\"text\":\"Please ensure\"}",
+   "{\"text\":\"that you are in\"}",
+   "{\"text\":\"Minecraft version\"}",
+   "{\"text\":\"1.20 or above\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "black",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": 4,
+  "z": 24,
+  "front": [
+   "{\"text\":\"Then, check the\"}",
+   "{\"text\":\"resource pack is\"}",
+   "{\"text\":\"working. This\"}",
+   "{\"text\":\"block should be\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "black",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -3,
+  "y": 5,
+  "z": 25,
+  "front": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"RESET\"}",
+   "{\"text\":\"COURSE\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -152,
+  "y": -50,
+  "z": 180,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 5 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -154,
+  "y": -50,
+  "z": 182,
+  "front": [
+   "{\"text\":\"remove elytra\"}",
+   "{\"text\":\"in cave air\"}",
+   "{\"text\":\"(checkpoints)\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -153,
+  "y": -50,
+  "z": 182,
+  "front": [
+   "{\"text\":\"give conduit\"}",
+   "{\"text\":\"power max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -154,
+  "y": -50,
+  "z": 180,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"water breathing\"}",
+   "{\"text\":\"max infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -153,
+  "y": -50,
+  "z": 180,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"regeneration max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -154,
+  "y": -50,
+  "z": 186,
+  "front": [
+   "{\"text\":\"enchant\"}",
+   "{\"text\":\"unbreaking 3\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -152,
+  "y": -50,
+  "z": 184,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 1 block below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -153,
+  "y": -50,
+  "z": 186,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"remove speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -152,
+  "y": -50,
+  "z": 182,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 3 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -154,
+  "y": -50,
+  "z": 184,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"weakness max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -153,
+  "y": -50,
+  "z": 184,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"saturation max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -152,
+  "y": -50,
+  "z": 188,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"pad\"}",
+   "{\"text\":\"speed\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -154,
+  "y": -50,
+  "z": 190,
+  "front": [
+   "{\"text\":\"lime shulker\"}",
+   "{\"text\":\" box play\"}",
+   "{\"text\":\"up pad (cavevine)\"}",
+   "{\"text\":\"(break1/2/3/4)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -153,
+  "y": -50,
+  "z": 190,
+  "front": [
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -154,
+  "y": -50,
+  "z": 188,
+  "front": [
+   "{\"text\":\"cave\"}",
+   "{\"text\":\"air\"}",
+   "{\"text\":\"set\"}",
+   "{\"text\":\"world spawn\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -152,
+  "y": -50,
+  "z": 186,
+  "front": [
+   "{\"text\":\"kill at\"}",
+   "{\"text\":\"y-50\"}",
+   "{\"text\":\"DONT TOUCH DY\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "gray",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -153,
+  "y": -50,
+  "z": 188,
+  "front": [
+   "{\"text\":\"red glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -152,
+  "y": -50,
+  "z": 190,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -154,
+  "y": -50,
+  "z": 179,
+  "front": [
+   "{\"text\":\"clear on calcite\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -153,
+  "y": -50,
+  "z": 181,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"saturation max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -152,
+  "y": -50,
+  "z": 181,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 4 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -154,
+  "y": -50,
+  "z": 183,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"give slowness\"}",
+   "{\"text\":\"effect\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -153,
+  "y": -50,
+  "z": 179,
+  "front": [
+   "{\"text\":\"give trident on\"}",
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -154,
+  "y": -50,
+  "z": 181,
+  "front": [
+   "{\"text\":\"remove elytra on\"}",
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -152,
+  "y": -50,
+  "z": 179,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"remove jump\"}",
+   "{\"text\":\"boost\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -153,
+  "y": -50,
+  "z": 185,
+  "front": [
+   "{\"text\":\" green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"slowness 1 sec\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -152,
+  "y": -50,
+  "z": 185,
+  "front": [
+   "{\"text\":\"kill all items\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "gray",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -154,
+  "y": -50,
+  "z": 187,
+  "front": [
+   "{\"text\":\"enchant\"}",
+   "{\"text\":\"riptide\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -153,
+  "y": -50,
+  "z": 183,
+  "front": [
+   "{\"text\":\"remove leather\"}",
+   "{\"text\":\"boots in air\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -152,
+  "y": -50,
+  "z": 183,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 2 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -154,
+  "y": -50,
+  "z": 185,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"dolphins grace\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -153,
+  "y": -50,
+  "z": 189,
+  "front": [
+   "{\"text\":\"red glazed\"}",
+   "{\"text\":\"teracotta jump\"}",
+   "{\"text\":\"pad speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -152,
+  "y": -50,
+  "z": 189,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"pad effect give\"}",
+   "{\"text\":\"speed\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -154,
+  "y": -50,
+  "z": 191,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box mega jump\"}",
+   "{\"text\":\"speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -153,
+  "y": -50,
+  "z": 187,
+  "front": [
+   "{\"text\":\"lime shulker\"}",
+   "{\"text\":\"box jump pad\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -152,
+  "y": -50,
+  "z": 187,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"jump pad\"}",
+   "{\"text\":\"jump boost\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -154,
+  "y": -50,
+  "z": 189,
+  "front": [
+   "{\"text\":\"glowing\"}",
+   "{\"text\":\"effect infinite\"}",
+   "{\"text\":\"white\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -153,
+  "y": -50,
+  "z": 191,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box mega jump\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -152,
+  "y": -50,
+  "z": 191,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box remove\"}",
+   "{\"text\":\"trident\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -154,
+  "y": -50,
+  "z": 194,
+  "front": [
+   "{\"text\":\"red_glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -152,
+  "y": -50,
+  "z": 192,
+  "front": [
+   "{\"text\":\"set 0\"}",
+   "{\"text\":\"xp points\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -153,
+  "y": -50,
+  "z": 193,
+  "front": [
+   "{\"text\":\"cave air\"}",
+   "{\"text\":\"play checkpoint\"}",
+   "{\"text\":\"(chain)\"}",
+   "{\"text\":\"(place1/2/3/4......)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -152,
+  "y": -50,
+  "z": 193,
+  "front": [
+   "{\"text\":\"set 0\"}",
+   "{\"text\":\"xp levels\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -153,
+  "y": -50,
+  "z": 194,
+  "front": [
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"speed (chain)\"}",
+   "{\"text\":\"(break1/2/3/4)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -154,
+  "y": -50,
+  "z": 192,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -154,
+  "y": -50,
+  "z": 193,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": -153,
+  "y": -50,
+  "z": 192,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box play\"}",
+   "{\"text\":\"mejupa (candle)\"}",
+   "{\"text\":\"(extimguish1/2/3)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 43,
+  "y": 7,
+  "z": -274,
+  "front": [
+   "{\"text\":\"kill at\"}",
+   "{\"text\":\"y-50\"}",
+   "{\"text\":\"DONT TOUCH DY\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "gray",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 42,
+  "y": 7,
+  "z": -274,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"remove speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": 7,
+  "z": -274,
+  "front": [
+   "{\"text\":\"enchant\"}",
+   "{\"text\":\"unbreaking 3\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 43,
+  "y": 7,
+  "z": -276,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 1 block below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": 7,
+  "z": -280,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"water breathing\"}",
+   "{\"text\":\"max infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 42,
+  "y": 7,
+  "z": -276,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"saturation max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": 7,
+  "z": -276,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"weakness max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 43,
+  "y": 7,
+  "z": -278,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 3 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 42,
+  "y": 7,
+  "z": -278,
+  "front": [
+   "{\"text\":\"give conduit\"}",
+   "{\"text\":\"power max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": 7,
+  "z": -278,
+  "front": [
+   "{\"text\":\"remove elytra\"}",
+   "{\"text\":\"in cave air\"}",
+   "{\"text\":\"(checkpoints)\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 43,
+  "y": 7,
+  "z": -280,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 5 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 43,
+  "y": 7,
+  "z": -275,
+  "front": [
+   "{\"text\":\"kill all items\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "gray",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 42,
+  "y": 7,
+  "z": -275,
+  "front": [
+   "{\"text\":\" green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"slowness 1 sec\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": 7,
+  "z": -273,
+  "front": [
+   "{\"text\":\"enchant\"}",
+   "{\"text\":\"riptide\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 42,
+  "y": 7,
+  "z": -273,
+  "front": [
+   "{\"text\":\"lime shulker\"}",
+   "{\"text\":\"box jump pad\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 43,
+  "y": 7,
+  "z": -273,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"jump pad\"}",
+   "{\"text\":\"jump boost\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 43,
+  "y": 7,
+  "z": -281,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"remove jump\"}",
+   "{\"text\":\"boost\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": 7,
+  "z": -279,
+  "front": [
+   "{\"text\":\"remove elytra on\"}",
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 42,
+  "y": 7,
+  "z": -281,
+  "front": [
+   "{\"text\":\"give trident on\"}",
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": 7,
+  "z": -281,
+  "front": [
+   "{\"text\":\"clear on calcite\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 43,
+  "y": 7,
+  "z": -277,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 2 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": 7,
+  "z": -275,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"dolphins grace\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 42,
+  "y": 7,
+  "z": -277,
+  "front": [
+   "{\"text\":\"remove leather\"}",
+   "{\"text\":\"boots in air\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 43,
+  "y": 7,
+  "z": -279,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 4 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": 7,
+  "z": -277,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"give slowness\"}",
+   "{\"text\":\"effect\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 42,
+  "y": 7,
+  "z": -267,
+  "front": [
+   "{\"text\":\"cave air\"}",
+   "{\"text\":\"play checkpoint\"}",
+   "{\"text\":\"(chain)\"}",
+   "{\"text\":\"(place1/2/3/4......)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": 7,
+  "z": -266,
+  "front": [
+   "{\"text\":\"red_glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 43,
+  "y": 7,
+  "z": -268,
+  "front": [
+   "{\"text\":\"set 0\"}",
+   "{\"text\":\"xp points\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 42,
+  "y": 7,
+  "z": -266,
+  "front": [
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"speed (chain)\"}",
+   "{\"text\":\"(break1/2/3/4)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 43,
+  "y": 7,
+  "z": -267,
+  "front": [
+   "{\"text\":\"set 0\"}",
+   "{\"text\":\"xp levels\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 42,
+  "y": 7,
+  "z": -271,
+  "front": [
+   "{\"text\":\"red glazed\"}",
+   "{\"text\":\"teracotta jump\"}",
+   "{\"text\":\"pad speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 43,
+  "y": 7,
+  "z": -272,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"pad\"}",
+   "{\"text\":\"speed\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": 7,
+  "z": -270,
+  "front": [
+   "{\"text\":\"lime shulker\"}",
+   "{\"text\":\" box play\"}",
+   "{\"text\":\"up pad (cavevine)\"}",
+   "{\"text\":\"(break1/2/3/4)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 43,
+  "y": 7,
+  "z": -271,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"pad effect give\"}",
+   "{\"text\":\"speed\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 42,
+  "y": 7,
+  "z": -270,
+  "front": [
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": 7,
+  "z": -269,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box mega jump\"}",
+   "{\"text\":\"speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 42,
+  "y": 7,
+  "z": -269,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box mega jump\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": 7,
+  "z": -268,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 43,
+  "y": 7,
+  "z": -270,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 43,
+  "y": 7,
+  "z": -269,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box remove\"}",
+   "{\"text\":\"trident\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 42,
+  "y": 7,
+  "z": -268,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box play\"}",
+   "{\"text\":\"mejupa (candle)\"}",
+   "{\"text\":\"(extimguish1/2/3)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": 7,
+  "z": -267,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": 7,
+  "z": -272,
+  "front": [
+   "{\"text\":\"cave\"}",
+   "{\"text\":\"air\"}",
+   "{\"text\":\"set\"}",
+   "{\"text\":\"world spawn\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": 7,
+  "z": -271,
+  "front": [
+   "{\"text\":\"glowing\"}",
+   "{\"text\":\"effect infinite\"}",
+   "{\"text\":\"white\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 42,
+  "y": 7,
+  "z": -272,
+  "front": [
+   "{\"text\":\"red glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 0,
+  "y": -7,
+  "z": -17,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 5 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 0,
+  "y": -7,
+  "z": -18,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"remove jump\"}",
+   "{\"text\":\"boost\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 0,
+  "y": -7,
+  "z": -4,
+  "front": [
+   "{\"text\":\"set 0\"}",
+   "{\"text\":\"xp levels\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 0,
+  "y": -7,
+  "z": -5,
+  "front": [
+   "{\"text\":\"set 0\"}",
+   "{\"text\":\"xp points\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 0,
+  "y": -7,
+  "z": -6,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box remove\"}",
+   "{\"text\":\"trident\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 0,
+  "y": -7,
+  "z": -7,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 0,
+  "y": -7,
+  "z": -8,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"pad effect give\"}",
+   "{\"text\":\"speed\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 0,
+  "y": -7,
+  "z": -9,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"pad\"}",
+   "{\"text\":\"speed\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 0,
+  "y": -7,
+  "z": -10,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"jump pad\"}",
+   "{\"text\":\"jump boost\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 0,
+  "y": -7,
+  "z": -11,
+  "front": [
+   "{\"text\":\"kill at\"}",
+   "{\"text\":\"y-50\"}",
+   "{\"text\":\"DONT TOUCH DY\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "gray",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 0,
+  "y": -7,
+  "z": -12,
+  "front": [
+   "{\"text\":\"kill all items\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "gray",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 0,
+  "y": -7,
+  "z": -13,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 1 block below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 0,
+  "y": -7,
+  "z": -14,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 2 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 0,
+  "y": -7,
+  "z": -15,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 3 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 0,
+  "y": -7,
+  "z": -16,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 4 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 27,
+  "y": -37,
+  "z": 231,
+  "front": [
+   "{\"text\":\"red_glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 30,
+  "y": -37,
+  "z": 232,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box mega jump\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 29,
+  "y": -37,
+  "z": 233,
+  "front": [
+   "{\"text\":\"set 0\"}",
+   "{\"text\":\"xp points\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 31,
+  "y": -37,
+  "z": 231,
+  "front": [
+   "{\"text\":\"lime shulker\"}",
+   "{\"text\":\" box play\"}",
+   "{\"text\":\"up pad (cavevine)\"}",
+   "{\"text\":\"(break1/2/3/4)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 28,
+  "y": -37,
+  "z": 233,
+  "front": [
+   "{\"text\":\"set 0\"}",
+   "{\"text\":\"xp levels\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 29,
+  "y": -37,
+  "z": 232,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box play\"}",
+   "{\"text\":\"mejupa (candle)\"}",
+   "{\"text\":\"(extimguish1/2/3)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 30,
+  "y": -37,
+  "z": 231,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box mega jump\"}",
+   "{\"text\":\"speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 28,
+  "y": -37,
+  "z": 232,
+  "front": [
+   "{\"text\":\"cave air\"}",
+   "{\"text\":\"play checkpoint\"}",
+   "{\"text\":\"(chain)\"}",
+   "{\"text\":\"(place1/2/3/4......)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 29,
+  "y": -37,
+  "z": 231,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 28,
+  "y": -37,
+  "z": 231,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"jumppad (bell)\"}",
+   "{\"text\":\"(bell_use01/2/3...\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 27,
+  "y": -37,
+  "z": 232,
+  "front": [
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"teracotta play\"}",
+   "{\"text\":\"speed (chain)\"}",
+   "{\"text\":\"(break1/2/3/4)\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 31,
+  "y": -37,
+  "z": 233,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 31,
+  "y": -37,
+  "z": 232,
+  "front": [
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 30,
+  "y": -37,
+  "z": 233,
+  "front": [
+   "{\"text\":\"orange shulker\"}",
+   "{\"text\":\"box remove\"}",
+   "{\"text\":\"trident\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "orange",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 34,
+  "y": -37,
+  "z": 232,
+  "front": [
+   "{\"text\":\"lime shulker\"}",
+   "{\"text\":\"box jump pad\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "lime",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 33,
+  "y": -37,
+  "z": 232,
+  "front": [
+   "{\"text\":\"red glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"jump boost\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 32,
+  "y": -37,
+  "z": 232,
+  "front": [
+   "{\"text\":\"red glazed\"}",
+   "{\"text\":\"teracotta jump\"}",
+   "{\"text\":\"pad speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 38,
+  "y": -37,
+  "z": 232,
+  "front": [
+   "{\"text\":\"remove leather\"}",
+   "{\"text\":\"boots in air\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 37,
+  "y": -37,
+  "z": 232,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"saturation max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 36,
+  "y": -37,
+  "z": 232,
+  "front": [
+   "{\"text\":\" green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"slowness 1 sec\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 35,
+  "y": -37,
+  "z": 232,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"remove speed\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 42,
+  "y": -37,
+  "z": 232,
+  "front": [
+   "{\"text\":\"give trident on\"}",
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": -37,
+  "z": 232,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"regeneration max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 40,
+  "y": -37,
+  "z": 232,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"saturation max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 39,
+  "y": -37,
+  "z": 232,
+  "front": [
+   "{\"text\":\"give conduit\"}",
+   "{\"text\":\"power max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 35,
+  "y": -37,
+  "z": 231,
+  "front": [
+   "{\"text\":\"enchant\"}",
+   "{\"text\":\"unbreaking 3\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 33,
+  "y": -37,
+  "z": 233,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"pad\"}",
+   "{\"text\":\"speed\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 34,
+  "y": -37,
+  "z": 231,
+  "front": [
+   "{\"text\":\"enchant\"}",
+   "{\"text\":\"riptide\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 32,
+  "y": -37,
+  "z": 233,
+  "front": [
+   "{\"text\":\"pink glazed\"}",
+   "{\"text\":\"terracotta jump\"}",
+   "{\"text\":\"pad effect give\"}",
+   "{\"text\":\"speed\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 33,
+  "y": -37,
+  "z": 231,
+  "front": [
+   "{\"text\":\"cave\"}",
+   "{\"text\":\"air\"}",
+   "{\"text\":\"set\"}",
+   "{\"text\":\"world spawn\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 32,
+  "y": -37,
+  "z": 231,
+  "front": [
+   "{\"text\":\"glowing\"}",
+   "{\"text\":\"effect infinite\"}",
+   "{\"text\":\"white\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 37,
+  "y": -37,
+  "z": 233,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 1 block below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 39,
+  "y": -37,
+  "z": 231,
+  "front": [
+   "{\"text\":\"remove elytra\"}",
+   "{\"text\":\"in cave air\"}",
+   "{\"text\":\"(checkpoints)\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 38,
+  "y": -37,
+  "z": 231,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"give slowness\"}",
+   "{\"text\":\"effect\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "green",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 36,
+  "y": -37,
+  "z": 233,
+  "front": [
+   "{\"text\":\"kill all items\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "gray",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 37,
+  "y": -37,
+  "z": 231,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"weakness max\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 35,
+  "y": -37,
+  "z": 233,
+  "front": [
+   "{\"text\":\"kill at\"}",
+   "{\"text\":\"y-50\"}",
+   "{\"text\":\"DONT TOUCH DY\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "gray",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 36,
+  "y": -37,
+  "z": 231,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"dolphins grace\"}",
+   "{\"text\":\"infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 34,
+  "y": -37,
+  "z": 233,
+  "front": [
+   "{\"text\":\"magenta glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"jump pad\"}",
+   "{\"text\":\"jump boost\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "red",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": -37,
+  "z": 233,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 5 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 43,
+  "y": -37,
+  "z": 231,
+  "front": [
+   "{\"text\":\"clear on\"}",
+   "{\"text\":\"andesite slab\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 40,
+  "y": -37,
+  "z": 233,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 4 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 42,
+  "y": -37,
+  "z": 231,
+  "front": [
+   "{\"text\":\"clear on calcite\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "white",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 41,
+  "y": -37,
+  "z": 231,
+  "front": [
+   "{\"text\":\"give effect\"}",
+   "{\"text\":\"water breathing\"}",
+   "{\"text\":\"max infinite\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 39,
+  "y": -37,
+  "z": 233,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 3 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 38,
+  "y": -37,
+  "z": 233,
+  "front": [
+   "{\"text\":\"give leather\"}",
+   "{\"text\":\"depth strider 255\"}",
+   "{\"text\":\"boots if red conc\"}",
+   "{\"text\":\"is 2 blocks below\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 40,
+  "y": -37,
+  "z": 231,
+  "front": [
+   "{\"text\":\"remove elytra on\"}",
+   "{\"text\":\"yellow glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "yellow",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ },
+ {
+  "x": 42,
+  "y": -37,
+  "z": 233,
+  "front": [
+   "{\"text\":\"green glazed\"}",
+   "{\"text\":\"terracotta\"}",
+   "{\"text\":\"remove jump\"}",
+   "{\"text\":\"boost\"}"
+  ],
+  "back": [
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}",
+   "{\"text\":\"\"}"
+  ],
+  "color": "purple",
+  "glow": true,
+  "back_color": "black",
+  "back_glow": false,
+  "waxed": false
+ }
+]

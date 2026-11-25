@@ -1,0 +1,95 @@
+y,blocks,top_materials
+93,7560,black_stained_glass=7216; light_blue_wool=344
+92,348,light_blue_wool=344; snow_block=4
+91,356,light_blue_wool=344; snow_block=12
+90,352,light_blue_wool=344; snow_block=8
+89,346,light_blue_wool=344; snow_block=2
+88,354,light_blue_wool=344; snow_block=10
+87,358,light_blue_wool=344; snow_block=14
+86,352,light_blue_wool=344; snow_block=6; light_gray_concrete=2
+85,351,light_blue_wool=344; snow_block=4; light_gray_concrete=3
+84,354,light_blue_wool=344; snow_block=6; light_gray_concrete=3; light_gray_wool=1
+83,363,light_blue_wool=344; snow_block=14; light_gray_wool=3; light_gray_concrete=2
+82,357,light_blue_wool=344; light_gray_wool=6; snow_block=4; light_gray_concrete=3
+81,390,light_blue_wool=344; green_concrete=27; green_wool=13; light_gray_wool=3; snow_block=2; light_gray_concrete=1
+80,399,light_blue_wool=344; green_concrete=38; green_wool=6; yellow_concrete=4; snow_block=4; light_gray_wool=2
+79,413,light_blue_wool=344; green_concrete=55; yellow_concrete=4; black_concrete=4; green_wool=3; light_gray_wool=2
+78,398,light_blue_wool=344; green_concrete=46; black_concrete=4; light_gray_wool=2; green_wool=2
+77,400,light_blue_wool=344; end_stone_bricks=20; green_concrete=17; smooth_stone_slab=10; snow_block=4; gray_terracotta=2
+76,415,light_blue_wool=344; green_concrete=18; snow_block=16; end_stone_bricks=6; sandstone_stairs=5; sandstone_slab=5
+75,434,light_blue_wool=344; green_concrete=21; red_wool=18; snow_block=16; green_wool=12; gray_terracotta=10
+74,602,light_blue_wool=344; brown_wool=143; green_wool=35; green_concrete=20; black_wool=16; gray_terracotta=14
+73,685,light_blue_wool=344; brown_wool=143; green_wool=47; gray_terracotta=30; green_concrete=25; gray_wool=18
+72,597,light_blue_wool=344; green_wool=61; gray_terracotta=36; brown_terracotta=29; green_concrete=28; netherrack=22
+71,695,light_blue_wool=344; gray_wool=82; green_wool=58; green_concrete=51; gray_terracotta=50; brown_terracotta=29
+70,718,light_blue_wool=344; green_concrete=104; green_wool=59; gray_terracotta=54; light_gray_wool=48; black_wool=32
+69,845,light_blue_wool=344; green_concrete=144; brown_terracotta=96; green_wool=93; gray_terracotta=62; light_gray_wool=24
+68,919,light_blue_wool=344; green_concrete=168; black_wool=111; green_wool=104; gray_terracotta=52; brown_terracotta=49
+67,1051,light_blue_wool=344; green_concrete=182; brown_terracotta=152; green_wool=111; gray_wool=102; gray_terracotta=50
+66,1119,light_blue_wool=344; quartz_block=208; green_concrete=197; green_wool=105; brown_wool=63; gray_terracotta=50
+65,1087,light_blue_wool=344; green_concrete=193; gray_terracotta=179; brown_wool=83; green_wool=80; barrier=46
+64,932,light_blue_wool=344; green_concrete=166; gray_terracotta=88; brown_wool=63; green_wool=58; barrier=49
+63,915,light_blue_wool=344; quartz_block=130; gray_terracotta=81; brown_wool=67; green_concrete=63; gray_wool=41
+62,980,light_blue_wool=344; brown_wool=271; gray_terracotta=86; gray_wool=48; green_concrete=34; barrier=32
+61,1274,light_blue_wool=344; blackstone=164; cobblestone=102; gray_terracotta=97; quartz_block=97; yellow_terracotta=76
+60,1241,cobblestone=442; light_blue_wool=344; gray_terracotta=98; brown_wool=62; brown_terracotta=57; green_concrete=40
+59,1215,cobblestone=442; light_blue_wool=344; gray_terracotta=102; brown_wool=60; brown_terracotta=53; light_gray_terracotta=36
+58,1194,cobblestone=410; light_blue_wool=344; gray_terracotta=94; brown_wool=60; brown_terracotta=59; gray_wool=41
+57,1796,cobblestone=410; light_blue_wool=344; blackstone=249; gray_terracotta=244; polished_diorite=130; yellow_terracotta=80
+56,1636,cobblestone=706; light_blue_wool=344; gray_terracotta=135; light_gray_wool=88; brown_terracotta=63; brown_wool=60
+55,1897,cobblestone=706; light_blue_wool=344; quartz_block=312; gray_terracotta=128; black_stained_glass=68; brown_wool=64
+54,1467,cobblestone=414; light_blue_wool=344; quartz_block=211; gray_terracotta=134; brown_wool=60; light_gray_wool=52
+53,1688,cobblestone=652; light_blue_wool=344; bricks=142; gray_terracotta=127; quartz_block=68; brown_wool=60
+52,1822,bricks=380; cobblestone=355; light_blue_wool=344; end_stone_bricks=227; gray_terracotta=127; quartz_block=69
+51,1811,cobblestone=355; light_blue_wool=344; bricks=334; black_concrete=198; gray_terracotta=130; light_gray_wool=94
+50,1730,cobblestone=355; light_blue_wool=344; bricks=334; light_gray_wool=215; gray_terracotta=135; quartz_block=65
+49,1746,cobblestone=355; light_blue_wool=344; bricks=334; gray_wool=157; gray_terracotta=136; light_gray_wool=98
+48,1637,bricks=380; light_blue_wool=344; cobblestone=315; gray_terracotta=127; light_gray_wool=101; quartz_block=66
+47,1637,bricks=380; light_blue_wool=344; cobblestone=315; gray_terracotta=127; light_gray_wool=97; gray_wool=73
+46,1718,quartz_block=446; light_blue_wool=344; cobblestone=315; gray_terracotta=130; stone_bricks=100; light_gray_wool=94
+45,1667,cobblestone=553; light_blue_wool=344; bricks=142; gray_terracotta=131; light_gray_wool=98; quartz_block=66
+44,1667,bricks=380; light_blue_wool=344; cobblestone=315; gray_terracotta=168; light_gray_wool=98; quartz_block=65
+43,1635,light_blue_wool=344; bricks=334; cobblestone=315; gray_terracotta=163; light_gray_wool=105; quartz_block=66
+42,1635,light_blue_wool=344; bricks=334; cobblestone=315; gray_terracotta=153; light_gray_wool=97; gray_wool=79
+41,1686,light_blue_wool=344; bricks=334; cobblestone=315; gray_terracotta=156; light_gray_wool=90; gray_wool=74
+40,1912,bricks=380; light_blue_wool=344; cobblestone=315; end_stone_bricks=227; gray_terracotta=163; light_gray_wool=98
+39,1743,bricks=380; light_blue_wool=344; cobblestone=315; gray_terracotta=164; light_gray_wool=98; brown_wool=95
+38,1796,quartz_block=445; light_blue_wool=344; cobblestone=315; gray_terracotta=159; light_gray_wool=104; brown_wool=89
+37,1777,cobblestone=553; light_blue_wool=344; gray_terracotta=153; bricks=142; light_gray_wool=100; brown_wool=90
+36,1777,bricks=380; light_blue_wool=344; cobblestone=315; gray_terracotta=153; light_gray_wool=90; brown_wool=90
+35,1781,light_blue_wool=342; bricks=334; cobblestone=315; gray_terracotta=154; brown_wool=96; light_gray_wool=94
+34,1813,light_blue_wool=342; bricks=334; cobblestone=315; gray_terracotta=153; light_gray_wool=98; brown_wool=94
+33,1780,light_blue_wool=343; bricks=334; cobblestone=315; gray_terracotta=147; light_gray_wool=104; brown_wool=95
+32,1812,bricks=380; light_blue_wool=343; cobblestone=315; gray_terracotta=145; light_gray_wool=100; brown_wool=94
+31,1812,bricks=380; light_blue_wool=343; cobblestone=315; gray_terracotta=149; light_gray_wool=94; brown_wool=90
+30,1797,quartz_block=446; light_blue_wool=344; cobblestone=315; gray_terracotta=162; light_gray_wool=94; brown_wool=93
+29,1763,cobblestone=553; light_blue_wool=344; gray_terracotta=162; bricks=142; brown_wool=95; light_gray_wool=94
+28,1763,bricks=380; light_blue_wool=344; cobblestone=315; gray_terracotta=155; light_gray_wool=104; brown_wool=95
+27,1731,light_blue_wool=344; bricks=334; cobblestone=315; gray_terracotta=149; light_gray_wool=100; brown_wool=95
+26,1731,light_blue_wool=344; bricks=334; cobblestone=315; gray_terracotta=157; brown_wool=95; light_gray_wool=94
+25,1731,light_blue_wool=344; bricks=334; cobblestone=315; gray_terracotta=166; light_gray_wool=98; brown_wool=93
+24,1763,bricks=380; light_blue_wool=344; cobblestone=315; gray_terracotta=159; light_gray_wool=94; brown_wool=90
+23,1763,bricks=380; light_blue_wool=344; cobblestone=315; gray_terracotta=156; light_gray_wool=98; brown_wool=94
+22,1763,quartz_block=446; light_blue_wool=344; cobblestone=315; gray_terracotta=154; light_gray_wool=98; brown_wool=95
+21,1763,cobblestone=553; light_blue_wool=344; gray_terracotta=156; bricks=142; brown_wool=95; light_gray_wool=94
+20,4472,black_stained_glass=2709; bricks=380; light_blue_wool=344; cobblestone=315; gray_terracotta=162; light_gray_wool=100
+19,1731,light_blue_wool=344; bricks=334; cobblestone=315; gray_terracotta=161; light_gray_wool=100; brown_wool=91
+18,4440,black_stained_glass=2709; light_blue_wool=344; bricks=334; cobblestone=315; gray_terracotta=156; light_gray_wool=98
+17,1743,light_blue_wool=344; bricks=334; cobblestone=315; gray_terracotta=154; brown_wool=95; light_gray_wool=94
+16,4472,black_stained_glass=2709; bricks=380; light_blue_wool=344; cobblestone=315; gray_terracotta=156; brown_wool=95
+15,1763,bricks=380; light_blue_wool=344; cobblestone=315; gray_terracotta=159; light_gray_wool=98; brown_wool=96
+14,4472,black_stained_glass=2709; quartz_block=446; light_blue_wool=344; cobblestone=315; gray_terracotta=166; light_gray_wool=98
+13,1763,cobblestone=553; light_blue_wool=344; gray_terracotta=163; bricks=142; light_gray_wool=102; brown_wool=91
+12,4472,black_stained_glass=2709; bricks=380; light_blue_wool=344; cobblestone=315; gray_terracotta=150; light_gray_wool=96
+11,1751,light_blue_wool=344; bricks=334; cobblestone=315; gray_terracotta=151; brown_wool=95; light_gray_wool=92
+10,4467,black_stained_glass=2709; light_blue_wool=344; bricks=334; cobblestone=315; gray_terracotta=159; light_gray_wool=98
+9,1759,light_blue_wool=344; bricks=334; cobblestone=315; gray_terracotta=162; light_gray_wool=98; brown_wool=95
+8,4478,black_stained_glass=2709; bricks=380; light_blue_wool=344; cobblestone=315; gray_terracotta=163; light_gray_wool=102
+7,1770,bricks=380; light_blue_wool=344; cobblestone=315; gray_terracotta=155; light_gray_wool=98; brown_wool=90
+6,4480,black_stained_glass=2709; quartz_block=446; light_blue_wool=344; cobblestone=315; gray_terracotta=156; brown_wool=91
+5,1772,cobblestone=553; light_blue_wool=344; gray_terracotta=162; bricks=142; brown_wool=97; light_gray_wool=94
+4,4481,black_stained_glass=2709; bricks=380; light_blue_wool=344; cobblestone=315; gray_terracotta=158; light_gray_wool=100
+3,1765,bricks=348; light_blue_wool=344; cobblestone=315; gray_terracotta=156; light_gray_wool=102; brown_wool=95
+2,4424,black_stained_glass=2709; bricks=348; light_blue_wool=344; cobblestone=315; gray_terracotta=162; light_gray_wool=100
+1,4424,black_carpet=2709; bricks=348; light_blue_wool=344; cobblestone=315; gray_terracotta=165; light_gray_wool=98
+0,4431,shroomlight=2709; bricks=380; light_blue_wool=344; cobblestone=315; gray_terracotta=161; light_gray_wool=98

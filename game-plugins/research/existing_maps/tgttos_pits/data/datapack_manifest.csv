@@ -1,0 +1,10 @@
+part,path,lines,non_empty_lines,bytes
+pack.mcmeta,pack.mcmeta,6,6,91
+load tag,data/minecraft/tags/functions/load.json,5,5,48
+tick tag,data/minecraft/tags/functions/tick.json,9,9,156
+load,data/tgttos/functions/load.mcfunction,23,20,883
+loop,data/tgttos/functions/loop.mcfunction,129,85,34996
+color,data/tgttos/functions/color.mcfunction,111,83,7380
+start_timer,data/tgttos/functions/start_timer.mcfunction,25,15,1349
+gamerules,data/tgttos/functions/gamerules.mcfunction,16,14,404
+respawn,data/tgttos/functions/respawn.mcfunction,3,2,144

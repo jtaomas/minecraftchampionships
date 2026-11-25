@@ -1,0 +1,34 @@
+﻿asset,what_it_is,used_by_in_map,notes
+pack.mcmeta,"pack_format 15 (1.20.1), description 'Ace Race Resource Pack'",whole pack,loads in 1.20.1; 1.21.1 flags format 15 as old
+assets/minecraft/textures/block/yellow_glazed_terracotta.png,16-frame animated yellow/orange chevron arrow (frametime 1),all yellow glazed pads: wayfinding arrows + checkpoints,arrows point against block facing; verified by facing field vs route direction
+assets/minecraft/textures/block/red_glazed_terracotta.png,7-frame animated red stripes (frametime 2),red glazed jump+speed pads,pad readability
+assets/minecraft/textures/block/magenta_glazed_terracotta.png,7-frame animated concentric square (frametime 2),magenta glazed jump+speed pads,pad readability
+assets/minecraft/textures/block/pink_glazed_terracotta.png,7-frame animated L-corner stripes (frametime 2),pink glazed jump+speed pads,pad readability
+assets/minecraft/textures/block/purple_glazed_terracotta.png,7-frame animated L-corner stripes (frametime 2),purple glazed blocks (decor in crater),unused by commands
+assets/minecraft/models/block/*_glazed_terracotta.json,cube_all parent: removes vanilla oriented pattern,all glazed terracotta,"makes every pad read as a flat colour tile, independent of placement rotation"
+assets/minecraft/textures/block/*_terracotta.png,152-byte flat-colour 16x16 textures (16 colours),"all terracotta terrain, rainbow arch at z=161",the rainbow is terracotta bands; the pack flattens them to clean colour
+assets/minecraft/textures/block/sea_lantern.png,5-frame animated white lamp (frametime 5),sea lanterns (6 blocks),light source
+assets/minecraft/textures/block/glowstone.png,custom glowstone texture,glowstone (not present in map block list),unused
+assets/minecraft/textures/block/diorite.png,flat diorite,diorite terrain (222 blocks),palette flattening
+assets/minecraft/textures/block/oak_planks.png,flat oak planks,oak planks (1189 blocks),palette flattening
+assets/minecraft/textures/block/red_nether_bricks.png,flat red nether bricks,red nether brick decor (131+118),palette flattening
+assets/minecraft/textures/block/red_stained_glass.png,custom red glass,start-box reset wall at z=29,reset visual
+assets/minecraft/textures/block/soul_sand.png,flat soul sand,bubble elevator bases (448),water elevators
+assets/minecraft/textures/item/rotten_flesh.png + .mcmeta,2-frame animated 'Energy' item,item.minecraft.rotten_flesh renamed 'Energy' in lang,no command uses rotten flesh; dead asset in this download
+assets/minecraft/models/item/rotten_flesh.json,generated item model,'Energy' item,dead asset in this download
+assets/minecraft/sounds.json,declares acerace.start / checkpoint / jumppad / megajumppad / speed / waterboost,custom sound events,start + checkpoint OGGs are MISSING; no command plays any acerace.* event
+assets/minecraft/sounds/acerace/jumppad.ogg,custom jump-pad sound,"declared, never played by any command",unused
+assets/minecraft/sounds/acerace/megajumppad.ogg,custom mega-jump sound,"declared, never played",unused
+assets/minecraft/sounds/acerace/speed.ogg,custom speed sound,"declared, never played",unused
+assets/minecraft/sounds/acerace/waterboost.ogg,custom water boost sound,"declared, never played",unused
+assets/minecraft/sounds/block/bell/bell_use01-03.ogg,replaces vanilla bell,red/magenta/pink glazed pads: playsound block.bell.use,jump-pad sound
+assets/minecraft/sounds/block/cave_vines/break1-4.ogg,replaces cave vines break,lime shulker pads: playsound block.cave_vines.break,jump-pad sound
+assets/minecraft/sounds/block/candle/extinguish1-3.ogg,replaces candle extinguish,orange shulker mega jump: playsound block.candle.extinguish,mega-jump sound
+assets/minecraft/sounds/block/chain/break1-4.ogg + step1-6.ogg,replaces chain sounds,checkpoint (cave_air) and green pads,checkpoint/trap sounds
+assets/minecraft/sounds/block/brewing_stand/brew1-2.ogg,replaces brewing stand,start gate: playsound block.brewing_stand.brew,start sound
+assets/minecraft/sounds/block/azalea/break1-6.ogg,replaces azalea break,not referenced by any command,unused
+assets/minecraft/sounds/block/cherrywood_trapdoor/toggle1-3.ogg,replaces cherry trapdoor,not referenced by any command,path renamed in 1.20.5+; likely unused in 1.21
+assets/minecraft/sounds/records/far.ogg,replaces music disc far,start countdown: playsound music_disc.far,5 MB music; countdown theme
+assets/minecraft/lang/en_us.json,full 1.20.1 en_us copy (5155 keys); only deliberate override found: item.minecraft.rotten_flesh = 'Energy',item naming,safe to drop except the 'Energy' rename
+assets/minecraft/textures/block/AnimPad.psd,author's layered source file for the animated pad,source art,licensing/source leak risk; do not ship
+pack.png,pack icon,pack list,cosmetic

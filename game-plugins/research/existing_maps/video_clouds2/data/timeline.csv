@@ -1,0 +1,40 @@
+start_s,end_s,start_tc,end_tc,beat,type,camera,hud,notes,conf
+0,11,0:00,0:11,Intro cards,title/cards,n/a,none,"Discord screenshots; 'Okay, I'll finish it!'",H
+11,13.4,0:11,0:13,Countdown (dark take),gameplay,first-person,"Starting In; 13/12/11; You are in 1st place; hearts/hunger","Green hedge; checkered apron; MCC banner; title overlaps number",H
+13.4,19.8,0:13,0:20,Start straight (post-cut),gameplay,first-person,"You are in 1st place; hearts/hunger","Bright take; stone arch; yellow speed pads; no GO title",H
+19.8,24.5,0:20,0:24,Fall/creeper spectacle,cinematic,freecam/tracking,none,"Player falls past a giant black/green creeper; no respawn",H
+24.5,32.8,0:24,0:32,Trailer montage,cinematic,n/a,none,"Aerial shots; 'Nearly a year in the making'",H
+32.8,37.9,0:33,0:38,Title card,title,n/a,none,"1:1 Working Ace Race Remake",H
+37.9,48.4,0:38,0:48,Trailer montage,cinematic,n/a,none,"Start/castle/route shots",H
+48.4,58.9,0:48,0:59,Feature card + aerial,cinematic,n/a,none,"With checkpoints, easy reset, music and SFX",H
+58.9,63.4,0:59,1:03,Elytra ring,cinematic,freecam,none,"Giant yellow 2D ring; player tiny at centre",H
+63.4,70.5,1:03,1:10,Water tunnel descent,gameplay,first-person,"You are in 1st place; 10 air bubbles","Blue water; red beams; black wing item bottom-right",H
+70.5,79.6,1:10,1:20,Dark cave/tunnel,gameplay,first/third,"You are in 1st place; bubbles","Dark; columns; white ramp; player ahead",M
+79.6,89.2,1:20,1:29,Animated cave,gameplay,first-person,"You are in 1st place; bubbles","'and with custom animated textures'; prismarine/coral",H
+89.2,93.1,1:29,1:33,Red launch pads,cinematic,freecam,none,"Red spiral pads at tunnel mouth; player between them",H
+93.1,94.6,1:33,1:35,Blue tube jump,cinematic,freecam,none,"Green platform; blue glass tube; red rims",H
+94.6,98.3,1:35,1:38,Castle aerial,cinematic,freecam,none,"Red roofs; brown bridge; yellow pads",H
+98.3,100,1:38,1:40,Launch pad POV,gameplay,first-person,"You are in 1st place","Red pads on grass; black/green arrow; white structure ahead",H
+100,107.3,1:40,1:47,Castle aerial,cinematic,freecam,none,"Red roofs; yellow pads; player with blue item",H
+107.3,110,1:47,1:50,Sandstone corridor,gameplay,first-person,"You are in 1st place","Under sandstone overhang; blue causeway ahead",H
+110,117.8,1:50,1:58,Rainbow bridge,cinematic,freecam,none,"Rainbow; blue causeway; red/yellow pads",H
+117.8,119,1:58,1:59,Vertical climb,gameplay,first-person,"You are in 1st place","Looking up; sandstone arch; teal beam",H
+119,122,1:59,2:02,Water garden aerial,cinematic,freecam,none,"Water pool; grass pads; yellow pads",H
+122,126.9,2:02,2:07,Alley/arch,gameplay,first-person,"You are in 1st place","Narrow white wall; green arch; red pad",H
+126.9,132,2:07,2:12,Arch/void,cinematic,freecam,none,"Orange/yellow arch; void; player looking down",H
+132,136,2:12,2:16,Ice/water section,cinematic,freecam,none,"Blue/white ice; red/blue rings; rainbow",H
+136,140.1,2:16,2:20,Slot climb,gameplay,first-person,"You are in 1st place","Squeeze between white wall and blue glass",H
+140.1,143.9,2:20,2:24,Island underside,cinematic,freecam,none,"Floating island; red pad; player elytra",H
+143.9,148.2,2:24,2:28,Pink launch,gameplay,first-person,"You are in 1st place","Red spiral pad on magenta; blue/yellow canyon",H
+148.2,153.3,2:28,2:33,Island hop,cinematic,freecam,none,"Yellow pads on islands; elytra",H
+153.3,161.4,2:33,2:41,Cave/island POV,gameplay,first-person,"You are in 1st place","White cave; blue ledge; green top",M
+161.4,166.5,2:41,2:46,Island aerial,cinematic,freecam,none,"Island cluster; brick tower; red banner",H
+166.5,169.5,2:46,2:49,Red pad / arch sculpture,gameplay,first-person,"You are in 1st place","Red pad; black/green ring sculpture",H
+169.5,172.9,2:49,2:52,Grass climb,gameplay,first-person,"You are in 1st place","Yellow pads up a grass slope",H
+172.9,176.3,2:52,2:56,Finish arch,gameplay,first-person,"You are in 1st place","Green hedge arch; checkerboard; pink flowers",H
+176.3,184.9,2:56,3:04,Water garden / castle aerial,cinematic,freecam,none,"Pool; pink/green pads; red spiral; castle",H
+184.9,190,3:05,3:10,Final approach,gameplay,first-person,"You are in 1st place","White alley; wood fence; green arch",H
+190,199.6,3:10,3:20,Final alley/water,gameplay,first-person,"You are in 1st place","Moss alley; white slope; yellow pads",H
+199.6,202.6,3:20,3:23,Water crossing,gameplay,first-person,"You are in 1st place","Grass pads over blue pool; rainbow",H
+202.6,203.4,3:23,3:23,Finish apron,cinematic,high third-person,none,"Checkered floor; green arrow; player",H
+203.4,234.97,3:23,3:55,Outro,title,n/a,none,"ACE RACE logo; Download now",H

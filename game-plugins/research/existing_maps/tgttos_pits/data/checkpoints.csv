@@ -1,0 +1,9 @@
+order,type,name,x,y,z,gate_axis,width,what_it_grants_or_clears,confidence,evidence
+1,start_button,Start sign,14,-1,36,east,1,tags all players 'starting'; begins the 7 s countdown,H,sign NBT Text1 clickEvent; start_timer.mcfunction
+2,start_gate,Cage east exit,17,-2,36,z,22,opens at GO; step out onto Road A (y=-3),H,"barrier shell x13/x17,z25/z46; start_timer fill"
+3,start_gate,Cage north exit,15,-2,25,x,4,opens at GO; 2-high corridor z21-24 into the park,H,barrier shell; column probe x15 z21-25
+4,start_gate,Cage south exit,15,-2,46,x,4,opens at GO; 2-high corridor z47-50 to the south plaza,H,barrier shell; column probe x15 z47-51
+5,pit,Pit 1,31,-3,36,x,12,no checkpoint: falling below y=-41 teleports to start,H,respawn.mcfunction; surface/platform scan
+6,pit,Pit 2,52,-7,36,x,12,no checkpoint: falling below y=-41 teleports to start,H,respawn.mcfunction; surface/platform scan
+7,finish,Chicken pool,64,-11,36,x,7,"punch any of 20 chickens -> finished tag, spectator, time title",H,loop.mcfunction finish block; entities/*.mca
+8,reset,Round reset,15,-2,36,-,0,"7 s after first finish: tp all to start, refill barriers, clear kit, reset timer",H,loop.mcfunction finished=140 block

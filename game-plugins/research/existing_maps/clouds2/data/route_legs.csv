@@ -1,0 +1,15 @@
+﻿leg,name,from,to,approx_blocks,theme,mechanics
+1,L0 START,"start pen (5,4,24.5)","start line (5,4,20)",5,lime hedge + checkered banner + glass pen,"start button, 9 s countdown, gate opens, trident, adventure mode"
+2,L1 GARDEN,start line z=20,garden z=-10,30,"grass, hedges, flower beds",chevron arrows point north; first checkpoints
+3,L2 FARM,garden z=-10,farm z=-50,40,"crop rows, packed mud, terracotta",checkpoint bands at z=-17 and z=-37
+4,L3 SKY ISLANDS,farm z=-50,high islands z=-140,90,"snow/calcite islands, waterfalls","jump pads, slow traps at z=-62, first big climbs"
+5,L4 HIGH ISLANDS,z=-140,planet approach z=-215,75,"snow peaks, ice, prismarine",pads climb y=3 to y=18; checkered gate at z=-145
+6,L5 PLANET,z=-215,planet rim z=-256,45,"circular waterfall, gold hangings","elytra at z=-234, mega jump at (-38,25), drop into the pool"
+7,L6 WATER TUNNEL,"(-88,-5,-256)","(-240,-5,-256)",150,"blue glass tube, red ribs, vines",swim west (dolphins grace global); no fall risk
+8,L7 RUIN + CRATER,"(-240,-5,-256)","crater (-160,-25,-190)",110,"stone ruin, snow terraces, mud-brick crater village",pad chain south; checkpoints on every terrace
+9,L8 RING FLIGHT,"crater (-158,-19,-161)","village (-150,-57,75)",250,"open sky, ring hoops, yellow bolt markers",elytra; fly south through 5 rings + 3 bolts
+10,L9 VILLAGE + RAINBOW,village z=75,terraces z=210,140,"desert village, parrot, rainbow arch at z=161",elytra in village; rainbow gate; long terrace descent
+11,L10 BOTTOM,terraces z=210,bottom platforms z=265,90,"vine path, blue pool, blue diving boards",eastbound pads at y=-29..-42
+12,L11 CASTLE,bottom x=-13,castle north gate z=201,110,"flower bridge, wooden castle, checkered gate",5 stacked elytra pads; climb y=-40 to y=-8
+13,L12 ARCHES + CORAL,castle z=201,coral z=60,150,"white platforms, orange arches, coral pools",northbound; arches at z=169 and z=145
+14,L13 FINISH,coral z=60,start line z=20,45,"chevron corridor, green ground",finish from the south; no detection command

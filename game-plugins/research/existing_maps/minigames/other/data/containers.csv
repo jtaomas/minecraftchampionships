@@ -1,0 +1,13 @@
+arena,x,y,z,block,items,empty,loot,contents,evidence
+MG-HUB-01,-210,23,925,minecraft:barrel,0,true,false,,A14 ../../_qa/data/minigames_container_by_arena.csv; items=0
+MG-HUB-01,-208,26,907,minecraft:barrel,0,true,false,,A14 ../../_qa/data/minigames_container_by_arena.csv; items=0
+MG-HUB-01,-207,35,912,minecraft:campfire,0,true,false,,A14 ../../_qa/data/minigames_container_by_arena.csv; items=0
+MG-HUB-01,-204,26,906,minecraft:chest,0,true,false,,A14 ../../_qa/data/minigames_container_by_arena.csv; items=0
+MG-HUB-01,-203,24,908,minecraft:shulker_box,0,true,false,,A14 ../../_qa/data/minigames_container_by_arena.csv; items=0
+MG-HUB-01,-200,26,905,minecraft:barrel,0,true,false,,A14 ../../_qa/data/minigames_container_by_arena.csv; items=0
+MG-HUB-01,-198,24,907,minecraft:chest,0,true,false,,A14 ../../_qa/data/minigames_container_by_arena.csv; items=0
+MG-HUB-01,-197,26,905,minecraft:shulker_box,0,true,false,,A14 ../../_qa/data/minigames_container_by_arena.csv; items=0
+MG-SC-01,4960,20,-20,minecraft:barrel,0,true,false,,A14 ../../_qa/data/minigames_container_by_arena.csv; items=0
+MG-SC-01,4963,20,-19,minecraft:barrel,0,true,false,,A14 ../../_qa/data/minigames_container_by_arena.csv; items=0
+MG-SC-01,5000,21,-5,minecraft:lectern,0,true,false,,A14 ../../_qa/data/minigames_container_by_arena.csv; items=0
+MG-SR-HUB-01,20005,41,20000,minecraft:lectern,0,true,false,,A14 ../../_qa/data/minigames_container_by_arena.csv; items=0

@@ -1,0 +1,9 @@
+{
+ "-55,2,47": "acacia_sign[rotation=3,waterlogged=false]",
+ "-2,1,47": "acacia_sign[rotation=13,waterlogged=false]",
+ "-56,1,49": "acacia_wall_sign[facing=west,waterlogged=false]",
+ "-91,0,88": "acacia_sign[rotation=12,waterlogged=false]",
+ "-91,0,89": "acacia_sign[rotation=12,waterlogged=false]",
+ "4,1,63": "birch_wall_sign[facing=north,waterlogged=false]",
+ "4,1,71": "birch_wall_sign[facing=south,waterlogged=false]"
+}

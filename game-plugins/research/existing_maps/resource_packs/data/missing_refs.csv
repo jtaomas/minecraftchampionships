@@ -1,0 +1,20 @@
+ref,kind,where,expected,actual,severity,impact,confidence
+sounds.json,invalid_json,clouds2 assets/minecraft/sounds.json,valid JSON with sounds arrays,"uses { ""acerace/start"" } instead of [ ""acerace/start"" ]",high,The pack's sound index is rejected; all six acerace.* events fail to register (vanilla events remain if the loader keeps them).,H (parse) / M (effect)
+acerace.start,missing_file,sounds.json -> acerace/start,assets/minecraft/sounds/acerace/start.ogg,absent,high,Would be silent even if the index were fixed.,H
+acerace.checkpoint,missing_file,sounds.json -> acerace/checkpoint,assets/minecraft/sounds/acerace/checkpoint.ogg,absent,high,Would be silent even if the index were fixed.,H
+block.cave_vines.break,missing_file,sounds.json vanilla -> block/cave_vines/break5,break5.ogg,only break1-4 shipped,low,20% of vanilla random picks fall back to the vanilla crack.,H
+block.bell.use,orphan_file,assets/minecraft/sounds/block/bell/bell_use03.ogg,not referenced by vanilla sounds.json,"present, 13 KB",low,Wasted file; no audible effect.,H
+block.azalea.break,unused_override,assets/minecraft/sounds/block/azalea/break1-6.ogg,some playsound,no command uses this event,low,Unused custom chime; possibly intended as checkpoint sound.,M
+block.cherry_wood_trapdoor.open/.close,wrong_codec,block/cherrywood_trapdoor/toggle1-3.ogg,"Ogg Vorbis, short click","OggOpus, 310.52 s music, 5.27 MB each",high,Any cherry trapdoor in a world with this pack active cannot decode normally; if a future client supports Opus it would play a 5:10 track.,M
+records/far,licensing,assets/minecraft/sounds/records/far.ogg,short custom sound or licensed music,"310.52 s track titled 'Ace Race (From ""MC Championship Season 2"")'",high,Cannot redistribute without MCC/Noxcrew permission; adds 4.96 MB.,H
+cherrywood track,duplicate,records/far.ogg vs block/cherrywood_trapdoor/toggle1-3.ogg,one encode,same title/duration in Vorbis + three Opus copies,high,20.75 MB of the 21.2 MB pack is the same 5:10 track in two codecs.,M
+resources.zip.zip,wrong_archive_root,Space_Race/Space Race/resources.zip.zip,"pack.mcmeta at zip root, file named resources.zip",wrapper folder 'Space Race Resource Pack/' and double .zip extension,high,Pack is not auto-detected by the world or a resource-pack slot as-is.,H
+GUI widgets/icons/etc.,removed_texture,"space_race gui/widgets.png, icons.png, recipe_button.png, options_background.png, accessibility.png",referenced by 1.21.1,files removed in 1.20.2+ GUI sprite split,medium,"5 of 8 GUI overrides do nothing in 1.21.1; only inventory, recipe_book, book remain live.",H
+pack_format,version_mismatch,clouds2 15 / yeti 9 / space_race 6,34 for 1.21.1,15/9/6,medium,Clients show 'made for an older version' and may require manual enable; no hard crash expected.,M
+en_us.json,stale_language,clouds2 + yeti assets/minecraft/lang/en_us.json,1.21.1 language keys,"1.19-era file: 305 keys short of 1.19.2, 27 obsolete extras",low,Missing keys fall back to built-in en_us; only the Energy rename matters.,H
+AnimPad.psd,source_file,clouds2 + yeti textures/block/AnimPad.psd,not shipped,"32x32 Photoshop CS6 source, 6 frames, 29 KB",low,No client effect; leaks author source and increases size slightly.,H
+desktop.ini,junk_file,space_race textures/block/desktop.ini,not shipped,56-byte Windows LocalizedFileNames stub,low,No effect; evidence the pack was zipped from a Windows folder.,H
+purple glazed terracotta,unused_asset,clouds2 + yeti,some placement,0 placed in both maps,low,Animated model/texture never seen.,H
+glowstone,unused_asset,clouds2 + yeti,some placement,"0 placed in both maps (8 in TGTTOS Pits, no pack)",low,White glowstone texture never seen in the pack's own worlds.,H
+Energy / rotten flesh,unused_asset,clouds2 + yeti,given by map,no command/container/entity/playerdata reference,medium,Only custom-named item in the packs is not distributed by these maps.,H
+5 GUI + 20 block textures,unused_asset,space_race,visible in map,"0 placements for acacia_planks, birch_planks, crimson_planks, dark_oak_planks, blackstone_top",low,Assets present but not seen in the staged Space Race world.,H
