@@ -1,5 +1,6 @@
 package com.mcm.games.hungergames;
 
+import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.mcm.api.McmGame;
 import com.mcm.api.McmGameContext;
 import com.mcm.api.Waits;
@@ -24,9 +25,12 @@ import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Firework;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -42,11 +46,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.world.EntitiesLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -81,7 +87,7 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     private static final int IMPORTED_CHEST_SCAN_CAP = 140;
     private static final int CHUNKS_SCANNED_PER_TICK = 24;
     private static final Set<String> SKIPPED_WORLD_ENTRIES = Set.of(
-            "uid.dat", "session.lock", "map.yml", "level.dat_old", "playerdata", "stats"
+            "uid.dat", "session.lock", "map.yml", "level.dat_old", "playerdata", "stats", "entities"
     );
     private static final Set<Material> PLACEABLE_BLOCKS = Set.of(
             Material.OAK_PLANKS, Material.COBBLESTONE, Material.COBWEB, Material.FIRE
@@ -397,6 +403,9 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             for (int i = idx[0]; i < end; i++) {
                 int[] coord = chunks.get(i);
                 Chunk chunk = loaded.getChunkAt(coord[0], coord[1]);
+                for (Entity ent : chunk.getEntities()) {
+                    purgeUnsafeLegacyEntity(ent);
+                }
                 for (BlockState state : chunk.getTileEntities()) {
                     if (state instanceof Chest chest) {
                         double dist = Math.hypot(chest.getX() - imp.centerX(), chest.getZ() - imp.centerZ());
@@ -1256,6 +1265,33 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             playerPlacedBlocks.add(e.getBlock().getLocation());
         } else {
             e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onEntityAddToWorld(EntityAddToWorldEvent e) {
+        if (e.getWorld().getName().startsWith("mcc_hg_")) {
+            purgeUnsafeLegacyEntity(e.getEntity());
+        }
+    }
+
+    @EventHandler
+    public void onEntitiesLoad(EntitiesLoadEvent e) {
+        if (!e.getWorld().getName().startsWith("mcc_hg_")) return;
+        for (Entity entity : e.getEntities()) {
+            purgeUnsafeLegacyEntity(entity);
+        }
+    }
+
+    private static void purgeUnsafeLegacyEntity(Entity entity) {
+        if (entity == null || entity instanceof Player) return;
+        if (entity instanceof Fireball || entity instanceof Mob || entity instanceof ArmorStand) {
+            entity.remove();
+            return;
+        }
+        Vector v = entity.getVelocity();
+        if (!Double.isFinite(v.getX()) || !Double.isFinite(v.getY()) || !Double.isFinite(v.getZ())) {
+            entity.remove();
         }
     }
 }
