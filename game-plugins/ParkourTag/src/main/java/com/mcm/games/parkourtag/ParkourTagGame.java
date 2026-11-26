@@ -62,8 +62,8 @@ public final class ParkourTagGame implements McmGame, Listener {
     static final int SPACING = 120;
     static final int WAIT_X = -80, WAIT_Y = 100, WAIT_Z = 20;
 
-    private static final int MIN_ROUNDS = 4;
-    private static final int MAX_ROUNDS = 4;
+    private static final int MIN_ROUNDS = 12;
+    private static final int MAX_ROUNDS = 12;
     private static final int ROUND_SECONDS = 60;
     private static final int PREP_SECONDS = 5;
     private static final int HUNTER_DELAY_SECONDS = 3;
@@ -179,6 +179,9 @@ public final class ParkourTagGame implements McmGame, Listener {
     // map: one per game, picked at random among the finished maps
     private static final Map<String, List<ArenaBuilder.Placement>> PARSED = new HashMap<>();
     private PtMap map;
+    /** All four maps, one block of arenas each; 3 rounds per map per game. */
+    private final java.util.List<PtMap> maps = new java.util.ArrayList<>();
+    private static final int ROUNDS_PER_MAP = 3;
     private int spacing = SPACING;
     private String forcedMap;
 
@@ -228,13 +231,23 @@ public final class ParkourTagGame implements McmGame, Listener {
         }
 
         map = chooseMap();
-        spacing = Math.max(SPACING, Math.max(map.sizeX(), map.sizeZ()) + 40);
-        List<ArenaBuilder.Placement> placements = PtOverlay.merge(map, placements(map));   // + Map Edit overlay (core /mcm mapedit)
-        int[] cb = PtOverlay.box(map);
-        for (int i = 0; i < arenaCount; i++) {
-            int ox = i * spacing;
-            builder.clear(world, ox + cb[0], BASE_Y + cb[1], cb[2], ox + cb[3], BASE_Y + cb[4], cb[5]);
-            builder.build(world, ox, BASE_Y, 0, placements);
+        maps.clear();
+        maps.add(map);
+        for (PtMap other : mapRotation()) if (other != map) maps.add(other);
+        int widest = 0;
+        for (PtMap m : maps) widest = Math.max(widest, Math.max(m.sizeX(), m.sizeZ()));
+        spacing = Math.max(SPACING, widest + 40);
+        for (int mi = 0; mi < maps.size(); mi++) {
+            PtMap m = maps.get(mi);
+            // + Map Edit overlay (core /mcm mapedit)
+            List<ArenaBuilder.Placement> placements = PtOverlay.merge(m, placements(m));
+            int[] cb = PtOverlay.box(m);
+            for (int i = 0; i < arenaCount; i++) {
+                int idx = mi * arenaCount + i;
+                int ox = idx * spacing;
+                builder.clear(world, ox + cb[0], BASE_Y + cb[1], cb[2], ox + cb[3], BASE_Y + cb[4], cb[5]);
+                builder.build(world, ox, BASE_Y, 0, placements);
+            }
         }
         phase = Phase.BUILDING;
         buildWaitSeconds = 0;
@@ -243,7 +256,8 @@ public final class ParkourTagGame implements McmGame, Listener {
         });
 
         StringBuilder sb = new StringBuilder("§6§lParkour Tag §7- ");
-        sb.append(sides.size()).append(" side(s), ").append(schedule.size()).append(" round(s). §7Map: §f").append(map.displayName());
+        sb.append(sides.size()).append(" side(s), ").append(schedule.size()).append(" round(s), ").append(ROUNDS_PER_MAP).append(" per map. §7Maps: §f");
+        for (int i = 0; i < maps.size(); i++) { if (i > 0) sb.append("§7, §f"); sb.append(maps.get(i).displayName()); }
         ctx.broadcast(sb.toString());
         ctx.broadcast("§7Each round your side's §cHunter§7 chases the other side's runners while their hunter chases you. Hit a runner to tag them!");
         updateSidebar();
@@ -292,10 +306,11 @@ public final class ParkourTagGame implements McmGame, Listener {
             } catch (Throwable ignored) { }
         }
         if (world != null && Bukkit.getWorld(world.getUID()) != null && plugin.isEnabled()) {
-            if (map != null) {
-                int[] cb = PtOverlay.box(map);
+            for (int mi = 0; mi < maps.size(); mi++) {
+                PtMap m = maps.get(mi);
+                int[] cb = PtOverlay.box(m);
                 for (int i = 0; i < arenaCount; i++) {
-                    int ox = i * spacing;
+                    int ox = (mi * arenaCount + i) * spacing;
                     builder.clear(world, ox + cb[0], BASE_Y + cb[1], cb[2], ox + cb[3], BASE_Y + cb[4], cb[5]);
                 }
             }
@@ -376,6 +391,21 @@ public final class ParkourTagGame implements McmGame, Listener {
     List<ArenaBuilder.Placement> basePlacements(PtMap m) { return placements(m); }
 
     private Location waitSpot() { return new Location(world, WAIT_X + 0.5, WAIT_Y + 1, WAIT_Z + 0.5); }
+
+
+    /** The other finished maps, shuffled, for the 3-round blocks after the first. */
+    private java.util.List<PtMap> mapRotation() {
+        java.util.List<PtMap> rest = new java.util.ArrayList<>();
+        for (PtMap m : Maps.all()) if (m.finished() && m != map) rest.add(m);
+        java.util.Collections.shuffle(rest, random);
+        return rest;
+    }
+
+    /** Which map block rounds 0-2, 3-5, 6-8, 9-11 use. */
+    private int mapBlockForRound(int r) {
+        int block = Math.min(maps.size() - 1, Math.max(0, r / ROUNDS_PER_MAP));
+        return block;
+    }
 
     private Location arenaOrigin(int arena) { return new Location(world, arena * spacing, BASE_Y, 0); }
 
@@ -748,7 +778,7 @@ public final class ParkourTagGame implements McmGame, Listener {
         liveElapsed = 0;
 
         Round round = schedule.get(r);
-        int arena = 0;
+        int arena = mapBlockForRound(r) * arenaCount;
         for (Side[] pair : round.pairs()) {
             Side a = pair[0], b = pair[1];
             List<UUID> ma = onlineMembers(a), mb = onlineMembers(b);
@@ -784,7 +814,7 @@ public final class ParkourTagGame implements McmGame, Listener {
                 roles.put(u, Role.BYE);
                 clearPlayer(p);
                 p.setGameMode(GameMode.SPECTATOR);
-                p.teleport(spectatorSpot(0));
+                p.teleport(spectatorSpot(mapBlockForRound(r) * arenaCount));
                 title(p, "§7Round " + (r + 1), "§7Your side has a bye this round - spectate!");
             }
         }
@@ -794,7 +824,7 @@ public final class ParkourTagGame implements McmGame, Listener {
                 roles.put(p.getUniqueId(), Role.BYE);
                 clearPlayer(p);
                 p.setGameMode(GameMode.SPECTATOR);
-                p.teleport(spectatorSpot(0));
+                p.teleport(spectatorSpot(mapBlockForRound(r) * arenaCount));
             }
         }
 
