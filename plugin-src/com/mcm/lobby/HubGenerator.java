@@ -22,8 +22,9 @@ public final class HubGenerator {
      *     gold/white/yellow crown truss in place of the orrery, white concourse and warm team lighting.
      * v6: the downloaded Decision Dome recreation placed 1:1 inside our shell (pit, ten team cages, dial, crown),
      *     joined by a paved ring with two low tiers; the red-carpet corridor runs from the tunnel onto its terrace.
+     * v7: Minecraft Championships branding across plaza, 10 framed team booths, flush guide runners, wayfinding signs.
      */
-    public static final int VERSION = 6;
+    public static final int VERSION = 7;
     static final int SEA = HubLayout.SEA;
     static final int OCEAN = 330;      // ocean half-extent
     static final int ISLAND_R = 172;   // nominal coast radius

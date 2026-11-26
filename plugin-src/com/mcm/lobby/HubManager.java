@@ -28,6 +28,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
+import java.util.function.IntFunction;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
@@ -42,10 +43,24 @@ public final class HubManager implements Listener, McmLobby.Venue {
     private static final String TAG = "mcm_hub";
     private static final String MARKER = "mcm_hub_built.txt";
 
+    private static final Color[] PAD_COLORS = {
+            Color.fromRGB(255, 65, 65), Color.fromRGB(255, 155, 45), Color.fromRGB(255, 225, 55),
+            Color.fromRGB(115, 240, 65), Color.fromRGB(35, 175, 55), Color.fromRGB(35, 185, 195),
+            Color.fromRGB(85, 210, 255), Color.fromRGB(65, 105, 255), Color.fromRGB(175, 70, 240),
+            Color.fromRGB(255, 125, 200)
+    };
+    private static final ChatColor[] PAD_CHAT = {
+            ChatColor.RED, ChatColor.GOLD, ChatColor.YELLOW, ChatColor.GREEN, ChatColor.DARK_GREEN,
+            ChatColor.DARK_AQUA, ChatColor.AQUA, ChatColor.BLUE, ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE
+    };
+    private static final String[] TEAM_NAMES = {"Red", "Orange", "Yellow", "Lime", "Green", "Cyan", "Aqua", "Blue", "Purple", "Pink"};
+    private static final String[] TEAM_CODES = {"§c", "§6", "§e", "§a", "§2", "§3", "§b", "§9", "§5", "§d"};
+
     private final JavaPlugin plugin;
     private final Supplier<List<String>> leaderboardLines;
     private final BiConsumer<Player, Integer> teamJoin;
     private final BooleanSupplier intermission;
+    private final IntFunction<String> teamPadText;
 
     private World world;
     private HubLayout layout;
@@ -54,6 +69,7 @@ public final class HubManager implements Listener, McmLobby.Venue {
     private McmBuild.BuildQueue queue;
     private final List<BukkitTask> tasks = new ArrayList<>();
     private TextDisplay board;
+    private final List<TextDisplay> teamDisplays = new ArrayList<>();
     private final List<Entity> entities = new ArrayList<>();
     private final List<Entity> voteEntities = new ArrayList<>();
     private final String[] podState = new String[10];
@@ -61,10 +77,16 @@ public final class HubManager implements Listener, McmLobby.Venue {
     private final Map<String, BlockData> dataCache = new HashMap<>();
 
     public HubManager(JavaPlugin plugin, Supplier<List<String>> leaderboardLines, BiConsumer<Player, Integer> teamJoin, BooleanSupplier intermission) {
+        this(plugin, leaderboardLines, teamJoin, intermission, null);
+    }
+
+    public HubManager(JavaPlugin plugin, Supplier<List<String>> leaderboardLines, BiConsumer<Player, Integer> teamJoin,
+                      BooleanSupplier intermission, IntFunction<String> teamPadText) {
         this.plugin = plugin;
         this.leaderboardLines = leaderboardLines;
         this.teamJoin = teamJoin;
         this.intermission = intermission;
+        this.teamPadText = teamPadText;
         java.util.Arrays.fill(podState, "normal");
     }
 
@@ -279,6 +301,7 @@ public final class HubManager implements Listener, McmLobby.Venue {
     private void removeTagged() {
         for (Entity e : entities) if (e != null && e.isValid()) e.remove();
         entities.clear();
+        teamDisplays.clear();
         board = null;
         if (world == null) return;
         for (Entity e : world.getEntities()) if (e.getScoreboardTags().contains(TAG)) e.remove();
@@ -292,7 +315,7 @@ public final class HubManager implements Listener, McmLobby.Venue {
             d.setBillboard(bb);
             d.setAlignment(TextDisplay.TextAlignment.CENTER);
             d.setShadowed(true);
-            d.setBackgroundColor(Color.fromARGB(110, 10, 12, 40));
+            d.setBackgroundColor(Color.fromARGB(135, 10, 12, 40));
             d.setViewRange(4.0f);
             d.setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(scale, scale, scale), new AxisAngle4f()));
             d.text(McmFx.text(legacy));
@@ -301,22 +324,52 @@ public final class HubManager implements Listener, McmLobby.Venue {
         return td;
     }
 
+    public void refreshDisplays() {
+        if (!ready) return;
+        updateBoard();
+        updateTeamDisplays();
+    }
+
     private void spawnDisplays() {
         removeTagged();
         for (int i = 0; i < layout.labels.size(); i++) {
             double[] p = layout.labels.get(i);
-            text(p[0], p[1], p[2], layout.labelText.get(i), 2.2f, Display.Billboard.VERTICAL, (float) p[3]);
+            Display.Billboard bb = p[3] != 0 ? Display.Billboard.FIXED : Display.Billboard.VERTICAL;
+            TextDisplay lbl = text(p[0], p[1], p[2], layout.labelText.get(i), 2.1f, bb, (float) p[3]);
+            lbl.setLineWidth(380);
         }
         double[] lb = layout.leaderboard;
-        board = text(lb[0], lb[1] - 4.5, lb[2], "§7Loading standings...", 1.6f, Display.Billboard.VERTICAL, (float) lb[3]);
-        board.setLineWidth(400);
-        String[] names = {"Red", "Orange", "Yellow", "Lime", "Green", "Cyan", "Aqua", "Blue", "Purple", "Pink"};
-        String[] codes = {"§c", "§6", "§e", "§a", "§2", "§3", "§b", "§9", "§5", "§d"};
-        for (int i = 0; i < layout.teamPads.size() && i < names.length; i++) {
+        board = text(lb[0] + 0.15, lb[1] - 0.5, lb[2], "§7Loading standings...", 1.3f, Display.Billboard.FIXED, (float) lb[3]);
+        board.setBackgroundColor(Color.fromARGB(190, 10, 14, 34));
+        board.setLineWidth(460);
+        for (int i = 0; i < layout.teamPads.size() && i < TEAM_NAMES.length; i++) {
             double[] p = layout.teamPads.get(i);
-            text(p[0], p[1] + 1.6, p[2], codes[i] + "§l" + names[i] + "\n§7step to join", 0.9f, Display.Billboard.CENTER, 0f);
+            String label = teamPadLabelText(i);
+            TextDisplay td = text(p[0], p[1] + 3.8, p[2], label, 1.15f, Display.Billboard.VERTICAL, 0f);
+            td.setBackgroundColor(Color.fromARGB(165, 10, 12, 34));
+            td.setLineWidth(240);
+            teamDisplays.add(td);
         }
-        updateBoard();
+        refreshDisplays();
+    }
+
+    private String teamPadLabelText(int i) {
+        if (teamPadText != null) {
+            try {
+                String txt = teamPadText.apply(i);
+                if (txt != null && !txt.isBlank()) return txt;
+            } catch (Throwable ignored) {}
+        }
+        return TEAM_CODES[i] + "§l" + TEAM_NAMES[i] + "\n§e▶ STEP TO JOIN";
+    }
+
+    private void updateTeamDisplays() {
+        for (int i = 0; i < teamDisplays.size(); i++) {
+            TextDisplay td = teamDisplays.get(i);
+            if (td != null && td.isValid()) {
+                td.text(McmFx.text(teamPadLabelText(i)));
+            }
+        }
     }
 
     private void updateBoard() {
@@ -329,8 +382,26 @@ public final class HubManager implements Listener, McmLobby.Venue {
     private void startAmbience() {
         for (BukkitTask t : tasks) t.cancel();
         tasks.clear();
-        // leaderboard refresh
-        tasks.add(Bukkit.getScheduler().runTaskTimer(plugin, this::updateBoard, 40L, 40L));
+        // leaderboard + team booth label refresh
+        tasks.add(Bukkit.getScheduler().runTaskTimer(plugin, this::refreshDisplays, 40L, 40L));
+        // shimmering team booth particle rings
+        tasks.add(Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+            double phase = 0;
+            @Override public void run() {
+                if (world.getPlayers().isEmpty() || layout == null) return;
+                phase += 0.45;
+                for (int i = 0; i < layout.teamPads.size() && i < PAD_COLORS.length; i++) {
+                    double[] p = layout.teamPads.get(i);
+                    Particle.DustOptions dust = new Particle.DustOptions(PAD_COLORS[i], 1.15f);
+                    for (int k = 0; k < 2; k++) {
+                        double ang = phase + k * Math.PI;
+                        world.spawnParticle(Particle.DUST,
+                                p[0] + Math.cos(ang) * 1.35, p[1] + 0.25, p[2] + Math.sin(ang) * 1.35,
+                                1, 0.04, 0.05, 0.04, 0, dust, false);
+                    }
+                }
+            }
+        }, 20L, 8L));
         // searchlight beams (particle shafts sweeping across the night sky)
         tasks.add(Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
             long t = 0;
@@ -353,7 +424,7 @@ public final class HubManager implements Listener, McmLobby.Venue {
         }, 20L, 3L));
         // ambient fireworks during intermissions: config mcc-hub.ambient-fireworks-per-minute (default 3, 0 = off;
         // was ~13/min). Real events (game wins, the podium, the vote reveal) fire their own shows independently.
-        final double perMinute = Math.max(0, plugin.getConfig().getDouble("mcc-hub.ambient-fireworks-per-minute", 3.0));
+        final double perMinute = Math.max(0, plugin.getConfig().getDouble("mcc-hub.ambient-fireworks-per-minute", 5.0));
         if (perMinute > 0) tasks.add(Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             if (world.getPlayers().isEmpty() || !intermission.getAsBoolean()) return;
             ThreadLocalRandom r = ThreadLocalRandom.current();
@@ -384,7 +455,14 @@ public final class HubManager implements Listener, McmLobby.Venue {
                 Long last = padCooldown.get(e.getPlayer().getUniqueId());
                 if (last != null && now - last < 2500) return;
                 padCooldown.put(e.getPlayer().getUniqueId(), now);
-                try { teamJoin.accept(e.getPlayer(), i); } catch (Throwable t) { plugin.getLogger().log(Level.WARNING, "[hub] team pad", t); }
+                try {
+                    teamJoin.accept(e.getPlayer(), i);
+                    if (i < PAD_CHAT.length) {
+                        McmFx.teamFirework(new Location(world, p[0], p[1] + 5.5, p[2]), PAD_CHAT[i], false);
+                    }
+                    e.getPlayer().playSound(to, Sound.ENTITY_PLAYER_LEVELUP, 0.8f, 1.4f);
+                    refreshDisplays();
+                } catch (Throwable t) { plugin.getLogger().log(Level.WARNING, "[hub] team pad", t); }
                 return;
             }
         }
