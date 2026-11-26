@@ -1,0 +1,22 @@
+id,section,count,plan_size_blocks,height_blocks,radius_from_disc_centre,material_cues,confidence,primary_source
+GAL,D blueprint gallery disc,1,66 diameter,0,0,"blue concrete, white lane lines, MCC block lettering",M,S4 3:04 / S5 2:46
+FAN,giant fan,1,20-24 diameter,flush,20-25 offset,"grey metal grille, wooden blades, floor flush",M,S5 2:46
+PLT,blueprint plinth,7,7x7 base,1 riser,12-28,"grey stone base, build on top, floating text",M,S4 3:04
+GOLD-P,gold plinth,1,7x7 base,1 riser,20-30,"gold/yellow riser, 7-star build",M,S4 3:04
+PAD-SP,speed pad on disc,8,2x2,flush,25-31,"red/orange spiral, flush",H,S5 2:50
+PAV,lower colour pavilion,8,14x9 deck,2 deck / 7 roof,76,"dark floor, charcoal wall, glass cases, MCC banners",M,S5 2:52
+PAV-SIGN,pavilion sign,8,10-14 wide,3-4 letters,72 inward facing,"block letters on colour field (ORANGE, RED, LIME, BLACK, WHITE, BLUE, PURPLE, AQUA)",H,S4 5:06
+PAD-L,roof launch pad,8,3x3,8,80 outer edge,"dark pad + coloured target ring",M,S4 4:54
+BR,bridge disc-pavilion,8,3x10-14,0,55-70,"white/quartz, no rail",M,S5 2:46
+ISL,upper category island,8,40-52 across,18-26 thick,126,"grass/dirt lip, stone underside + stalactites, block piles",M,S4 4:30
+ISL-SIGN,upper island sign,8,8-14 wide,3-4 letters,126,"hung from dome truss: LOGS, SAND, STONE, ORES, NETHER, BRICKS, COPPER, GARDEN",H,S4 4:30
+DOME,dome canopy,1,300 diameter,55-65 apex,0,"yellow trusses, tinted glass, red ring ornament",M,S4 4:30
+HALL,build hall,1,62x44,14,portal-linked,"white pilasters, red panels, purple banners",M,S4 3:36
+PLOT,regular build plot,3,15x15,1 curb,portal-linked,"white curb, black corners, grey apron, 7x7 checker build zone",M,S4 4:36
+GOLD-BP,gold build plot,1,9x9 dais,2,portal-linked,"yellow terracotta dais, hazard canopy, green pads",H,S4 4:12
+CHEST,colour-coded chest,5,1x1,1,portal-linked,"orange chests, colour-name labels",H,S4 3:36
+CRAFT,crafting table,2,1x1,1,portal-linked,oak crafting table,H,S1 Build Area
+STONE-C,stonecutter,1-2,1x1,1,portal-linked,stonecutter,H,S1 Build Area
+SMELT,smelting bank,2,8-10 wide,2,portal-linked,"furnace rows, lava buckets, fuel chest",H,S4 3:36
+PORTAL,team portal,1,5x5,4,portal-linked,"emerald columns, blue bed, chains",H,S4 3:25
+SPAWN,return pad,1,6x6,0,portal-linked,"glowstone/sea lantern ring",L,S4 3:36

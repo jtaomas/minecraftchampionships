@@ -1,0 +1,104 @@
+{
+  "id": "ghostin",
+  "name": "Ghostin'",
+  "debut": "MCC AF",
+  "stars": 4,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-ghostin'.jpg",
+  "floor": [
+    "qqqqqqq",
+    "qqqqqqq",
+    "qqqqqqq",
+    "qqqqqqq",
+    "qqqqqqq",
+    "qqqqqqq",
+    "qqqqqqq"
+  ],
+  "palette": {
+    "q": "minecraft:quartz_block",
+    "G": "minecraft:light_gray_concrete",
+    "W": "minecraft:white_stained_glass",
+    "K": "minecraft:black_concrete",
+    "Y": "minecraft:yellow_concrete_powder",
+    "O": "minecraft:orange_concrete",
+    "R": "minecraft:red_concrete",
+    "M": "minecraft:magenta_carpet",
+    "L": "minecraft:light_gray_stained_glass",
+    "w": "minecraft:white_concrete"
+  },
+  "layers": [
+    [
+      "GGGGGGG",
+      "Y.....G",
+      "Y..M..G",
+      "Y.M.M.G",
+      "Y..M..G",
+      "Y.....G",
+      "Y.....G"
+    ],
+    [
+      "GGGGGGG",
+      "Y.....G",
+      "Y.WWW.G",
+      "Y.WWW.G",
+      "Y.WWW.G",
+      "Y.....G",
+      "Y.....G"
+    ],
+    [
+      "GGGGGGG",
+      "Y.....G",
+      "O.WWW.R",
+      "O.WWW.G",
+      "O.WWW.R",
+      "Y.....G",
+      "Y.....G"
+    ],
+    [
+      "GGGGGGG",
+      "Y.....G",
+      "O.WWW.R",
+      "O.WWW.R",
+      "O.KWK.R",
+      "Y.....G",
+      "Y.....G"
+    ],
+    [
+      "GGGGGGG",
+      "Y.....G",
+      "O.WWW.R",
+      "O.WWW.G",
+      "O.WWW.R",
+      "Y.....G",
+      "Y.....G"
+    ],
+    [
+      "GGGGGGG",
+      "Y.....G",
+      "R.....R",
+      "R.....G",
+      "R.....R",
+      "Y.....G",
+      "Y.....G"
+    ],
+    [
+      "GwLLLwG",
+      "Y.....G",
+      "R.....R",
+      "R.....G",
+      "R.....R",
+      "Y.....G",
+      "Y.....G"
+    ]
+  ],
+  "guessed": [
+    "the render is a close interior shot, so the room's far wall, ceiling and the front edge are hidden; built as a 7x7x7 room open to the front",
+    "ghost read as a 3x3x4 box of white stained glass floating one block above the floor, with 1x1 black concrete eyes in the front glass at layer 4",
+    "window in the back wall taken as a 3-pane light gray stained glass strip with a white concrete frame",
+    "east wall letter H and the red shape on the west wall drawn from the visible red/orange shapes; exact layout estimated",
+    "west wall is mostly yellow with an orange pumpkin patch; the wall pattern is partly hidden",
+    "magenta floor tiles drawn as a symmetric diamond of small carpets; the render's spread is wider and partly hidden",
+    "the player figure standing in front of the ghost is an entity; left out",
+    "ghost hovers with air underneath because it is a ghost; the sheet's wavy hem is simplified to a box"
+  ]
+}

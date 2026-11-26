@@ -4,7 +4,7 @@
 # Usage: sh tools/a/render.sh [mapId ...]      (NORENDER=1 skips the PNGs; default: all three maps)
 cd "$(dirname "$0")/../.."
 OUT=tools/a/out
-J=/c/Users/USER/Desktop/java/bin
+J=/c/Users/LeonS/Desktop/java/bin
 SEED=${SEED:-live}   # each map's in-game seed (MapRegistry fixedSeed); feedback 3
 rm -rf "$OUT/classes"; mkdir -p "$OUT/classes" previews
 "$J/javac" -encoding UTF-8 -d "$OUT/classes" src/main/java/com/mcm/games/tgttos/model/*.java \
@@ -18,7 +18,7 @@ done
 "$J/java" -Xmx3g -cp "$OUT/classes" PreviewMain "$OUT" "$SEED" $SEL
 RC=$?
 [ -n "$NORENDER" ] && exit $RC
-R=/c/Users/USER/Desktop/Mcc/tools/render_preview.py
+R=/c/Users/LeonS/Desktop/Mcc/tools/render_preview.py
 V=tools/a/view.py
 for id in $IDS; do
   python "$R" "$OUT/$id.mcmdump.gz" "previews/${id}_top.png" --top &

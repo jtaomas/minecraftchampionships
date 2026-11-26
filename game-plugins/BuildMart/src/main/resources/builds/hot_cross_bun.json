@@ -1,0 +1,59 @@
+{
+  "id": "hot_cross_bun",
+  "name": "Hot Cross Bun",
+  "debut": "MCC 4",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Hot_Cross_Bun.png",
+  "floor": [
+    "ccccccc",
+    "ccccccc",
+    "ccccccc",
+    "ccccccc",
+    "ccccccc",
+    "ccccccc",
+    "ccccccc"
+  ],
+  "palette": {
+    "c": "minecraft:white_concrete",
+    "w": "minecraft:stripped_oak_log[axis=x]",
+    "1": "minecraft:spruce_button[face=floor,facing=north,powered=false]",
+    "2": "minecraft:stone_button[face=floor,facing=north,powered=false]",
+    "3": "minecraft:bamboo_button[face=floor,facing=north,powered=false]"
+  },
+  "layers": [
+    [
+      ".......",
+      ".wwcww.",
+      ".wwcww.",
+      ".ccccc.",
+      ".wwcww.",
+      ".wwcww.",
+      "......."
+    ],
+    [
+      ".......",
+      ".wwcww.",
+      ".wwcww.",
+      ".ccccc.",
+      ".wwcww.",
+      ".wwcww.",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..1.2..",
+      ".......",
+      "..2.3..",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the bun is read as a 5x5 loaf two blocks tall, split by a one-block white-concrete cross through both courses",
+    "the four small toppings are read as buttons (spruce, stone, stone, bamboo from their colours); they could be candles or small mushrooms",
+    "the bun wood is stripped oak logs laid along x (long wavy grain on top and sides)",
+    "back/side faces of the loaf hidden by perspective; filled symmetrically"
+  ]
+}

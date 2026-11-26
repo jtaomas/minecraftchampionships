@@ -128,6 +128,28 @@ dumps and renders `previews/<theme>_iso_a0.png` (full), `_iso_a2.png` (other ang
 Defaults, not researched (adjust after playtesting): `centre-tool-efficiency: 0` - plain vanilla centre tool, so centre
 blocks mine at normal vanilla speed; set 1-5 to make them faster.
 
+## Imported arenas (private maps)
+Third-party arenas live **only on the server**, never in git or the jar: one folder per arena under
+`plugins/McmBattleBox/imported-arenas/<id>/` with `map.yml` + `blocks.mcmi.gz` (gzip, big-endian: `"MCMI"`, int version 1,
+int palette size, UTF block states, int block count, then `short x, y, z, int palette index` in arena-local
+coordinates, |x| and |z| <= 48). The files are untrusted: states are validated, command/structure/spawner/TNT blocks are
+dropped, nothing is ever executed. Arenas load at plugin enable (restart to pick up new ones). With
+`prefer-imported-maps: true` (default) rounds rotate over the imported arenas only; `false` mixes in the generated themes.
+
+`map.yml` keys: `id`, `name`, `credit` + `license` (shown in `/bb themes` and as a line in chat each round),
+`size`, `floor_y`, `centre: [x, y, z]` (the pad's cell layer; for a pad of width `w` it spans `x - w/2 .. x - w/2 + w - 1`),
+`centre_size: [w, d]` (optional, default `[3, 3]`; 1..12 per side), `spawn_a`, `spawn_b` (standing position of the first
+player; the others stand on the 3x3 around it), optional `gates_a` / `gates_b` (lists of `[x1,y1,z1,x2,y2,z2]` boxes, at
+most 8 boxes of 600 blocks) and `blocks`. A gate box is **not** stored in the block file: the plugin fills it with the side's
+team stained glass every round and the fight start drops it with the usual particles and sounds. Arenas without gates keep
+the old behaviour (players are frozen on their spawn during the kit phase). The centre pad (any size) starts filled with the
+neutral block; a side wins by filling every cell with its colour, exactly like the 3x3 pad.
+
+Imported so far (all "private use only, no licence given"): `bb7_neon`, `bb7_fortress`, `bb7_copper`, `bb7_woods`,
+`bb7_desert`, `bb7_lighthouse` (BattleBox Recreation 7), `bbnew_sky` (Battle Box New, 4x4 pad) and `bbmcbe_skypark`
+(MCC BattleBox MCBE, converted from Bedrock). Converter scripts: `tools/import/` (paths point at a local temp folder).
+Force one with `/bb theme <id>` (next game), `/mcm map <id>` (next round) or `/bb arena <id>` (admin preview).
+
 ## Known limitations
 - The sidebar is global, so the per-player matchup is shown in the action bar.
 - With more than 10 sides, the 9-round cap means not every pair meets.

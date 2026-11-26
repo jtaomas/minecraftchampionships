@@ -60,6 +60,12 @@ public final class TgttosPlugin extends JavaPlugin {
         PluginCommand cmd = getCommand("tg");
         if (cmd != null) { cmd.setExecutor(this); cmd.setTabCompleter(this); }
         McmApi.registerGame(this, game);
+        Overlays.init(this);
+        try {
+            McmApi.registerMapEditable(this, game.id(), new TgttosEdit(this));   // core /mcm mapedit (Map Edit core; older cores skip it)
+        } catch (Throwable t) {
+            getLogger().info("Map Edit is not available on this core (" + t.getClass().getSimpleName() + ").");
+        }
     }
 
     @Override

@@ -72,6 +72,8 @@ final class Ob {
 
     /** Section cut from a community map ({@link ImportedCourse}); its credit line is shown to players. */
     boolean imported;
+    /** Pasted from a replica world (not a built-in or mechanic obstacle): alternative walkable paths of the original are warnings, not errors. */
+    boolean replica;
     String credit = "";
 
     // ------------------------------------------------------------------ frame
@@ -80,7 +82,7 @@ final class Ob {
     int wz(int x, int z) { return oz + Bs.rz(x, z, q); }
     int wy(int y) { return oy + y; }
 
-    void set(int x, int y, int z, String s) { w.set(wx(x, z), wy(y), wz(x, z), s == null ? null : Bs.rot(Bs.full(s), q)); }
+    void set(int x, int y, int z, String s) { w.cur = id; w.set(wx(x, z), wy(y), wz(x, z), s == null ? null : Bs.rot(Bs.full(s), q)); }
 
     void soft(int x, int y, int z, String s) { if (air(x, y, z)) set(x, y, z, s); }
 
@@ -171,6 +173,19 @@ final class Ob {
         n.note = "timed " + on + "/" + period + "t phase " + phase;
         route.add(n);
         return n;
+    }
+
+    /** Timed blocks that are scenery only (same rhythm, not on the route): no route node. */
+    void timedScenery(String state, int period, int on, int phase, int warn, String warnState, int[]... cells) {
+        List<CourseModel.BlockPos> ps = new ArrayList<>();
+        String ws = Bs.rot(Bs.full(state), q);
+        for (int[] c : cells) {
+            int X = wx(c[0], c[2]), Y = wy(c[1]), Z = wz(c[0], c[2]);
+            w.set(X, Y, Z, null);
+            ps.add(new CourseModel.BlockPos(X, Y, Z));
+            timedPreview.put(W.key(X, Y, Z), ws);
+        }
+        timed.add(new CourseModel.Timed(id, ps, ws, period, on, phase, warn, warnState == null ? null : Bs.full(warnState), null));
     }
 
     /** Completion pad: 3x3 pad blocks centred on local (x, y, z), registered as the last route node. */

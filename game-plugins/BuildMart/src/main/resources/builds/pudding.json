@@ -1,0 +1,60 @@
+{
+  "id": "pudding",
+  "name": "\"\"\"Pudding\"\"\"",
+  "debut": "MCC 19",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Pudding.png",
+  "floor": [
+    "ddddddd",
+    "ddddddd",
+    "ddddddd",
+    "ddddddd",
+    "ddddddd",
+    "ddddddd",
+    "ddddddd"
+  ],
+  "palette": {
+    "d": "minecraft:dirt",
+    "w": "minecraft:white_concrete",
+    "b": "minecraft:water",
+    "L": "minecraft:stripped_spruce_log[axis=x]",
+    "R": "minecraft:redstone_block"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      ".......",
+      "..wwwww",
+      "..wwwww",
+      ".bwwwww",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..wwwww",
+      "....LR.",
+      "....LR.",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "....LR.",
+      "....LR.",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the white slab is read as a white-concrete plate one block high with a raised back rim; plate extent estimated",
+    "pudding is a 2x2x2 block split into a two-wide brown half and a one-wide red half",
+    "the blue cube is read as water; it could be a glass of water / ice decoration",
+    "brown read as stripped spruce logs (long grain on top and sides), red as redstone block",
+    "the rim continues behind the pudding where hidden"
+  ]
+}

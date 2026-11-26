@@ -1,0 +1,94 @@
+{
+  "id": "rocket_spleef",
+  "name": "Rocket Spleef",
+  "debut": "MCC 20",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Rocket_Spleef.png",
+  "floor": [
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg"
+  ],
+  "palette": {
+    "g": "minecraft:gray_concrete",
+    "c": "minecraft:black_carpet",
+    "o": "minecraft:orange_concrete",
+    "y": "minecraft:yellow_concrete"
+  },
+  "layers": [
+    [
+      ".......",
+      "ccccccc",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".ooyoo.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".yyoyy.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "..yoy..",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the two floating shapes are read as a stylised firework/rocket: a five-wide flame bar below, a five-wide body and a three-wide nose above it",
+    "the floating parts hover with nothing below them in the render; reproduced at the heights shown",
+    "the thin dark line on the platform is read as a row of black carpet one row in from the back",
+    "all shapes are one block deep (front-to-back) as the render gives no depth cue"
+  ]
+}

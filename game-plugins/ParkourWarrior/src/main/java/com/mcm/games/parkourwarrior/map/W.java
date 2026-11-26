@@ -40,9 +40,116 @@ final class W {
     static int kz(long k) { return (int) ((k >> 20) & 0xFFFFF) << 12 >> 12; }
     static int ky(long k) { return (int) (k & 0xFFFFF) << 12 >> 12; }
 
+    /** Overlap tracking: who wrote each cell (current owner = {@link #cur}, set by Ob.set / the frame builders). */
+    String cur = "?";
+    private final java.util.Map<Long, Integer> own = new java.util.HashMap<>();
+    private final java.util.List<String> ownerNames = new java.util.ArrayList<>();
+    private final java.util.Map<String, int[]> overlapAt = new java.util.TreeMap<>();   // "A x B" -> {count, x, y, z}
+
+    private int ownerId(String n) {
+        int i = ownerNames.indexOf(n);
+        if (i < 0) { ownerNames.add(n); i = ownerNames.size() - 1; }
+        return i;
+    }
+
+    /** "ownerA x ownerB" -> {blocks of A overwritten by B, first x, y, z}. */
+    java.util.Map<String, int[]> overlaps() { return overlapAt; }
+
+    /**
+     * Replica scenery that touches (26-neighbourhood) a block of another owner: such a prop would clip through it. Returns
+     * cell -> owner for every connected scenery component of a replica obstacle that holds no route cell and touches another
+     * owner; pass 2 leaves those out, so props are dropped whole, never cut. Route components are kept (junction platforms).
+     */
+    java.util.Map<String, java.util.Set<Long>> decorConflicts() {
+        java.util.Map<String, java.util.Set<Long>> out = new java.util.HashMap<>();
+        java.util.Map<Integer, java.util.List<Long>> byOwner = new java.util.HashMap<>();
+        for (java.util.Map.Entry<Long, Integer> e : own.entrySet()) byOwner.computeIfAbsent(e.getValue(), k -> new java.util.ArrayList<>()).add(e.getKey());
+        for (Ob o : obs) {
+            if (!o.replica) continue;
+            int id = ownerNames.indexOf(o.id);
+            if (id < 0) continue;
+            java.util.List<Long> cells = byOwner.getOrDefault(id, java.util.List.of());
+            java.util.Set<Long> mine = new HashSet<>(cells);
+            java.util.Set<Long> route = new HashSet<>(o.safe);
+            for (Ob.Node n : o.route) for (int[] c : n.cells) route.add(key(c[0], c[1], c[2]));
+            java.util.Set<Long> seen = new HashSet<>();
+            for (long start : cells) {
+                if (!seen.add(start)) continue;
+                java.util.ArrayDeque<Long> q = new java.util.ArrayDeque<>();
+                java.util.List<Long> comp = new ArrayList<>();
+                q.add(start);
+                boolean hasRoute = false, touches = false;
+                while (!q.isEmpty()) {
+                    long c = q.poll();
+                    comp.add(c);
+                    int cx = kx(c), cy = ky(c), cz = kz(c);
+                    // route cells stand on the block below: protect the block under and the two above
+                    for (int dy = -1; dy <= 2 && !hasRoute; dy++) if (route.contains(key(cx, cy + dy, cz))) hasRoute = true;
+                    for (int dx = -1; dx <= 1; dx++) for (int dy = -1; dy <= 1; dy++) for (int dz = -1; dz <= 1; dz++) {
+                        if (dx == 0 && dy == 0 && dz == 0) continue;
+                        long n = key(cx + dx, cy + dy, cz + dz);
+                        if (mine.contains(n)) { if (seen.add(n)) q.add(n); continue; }
+                        Integer ow = own.get(n);
+                        if (ow != null && ow != id && !Bs.isAir(b.get(cx + dx, cy + dy, cz + dz))) touches = true;
+                    }
+                }
+                if (!hasRoute && touches) for (long c : comp) out.computeIfAbsent(o.id, k -> new HashSet<>()).add(c);
+            }
+            // route protection: route cells +-1 and the support column under them stay
+            java.util.Set<Long> prot = new HashSet<>();
+            for (long rc : route) for (int dx = -1; dx <= 1; dx++) for (int dy = -8; dy <= 2; dy++) for (int dz = -1; dz <= 1; dz++)
+                prot.add(key(kx(rc) + dx, ky(rc) + dy, kz(rc) + dz));
+            // cell-level yield: where this replica obstacle and another owner wrote different blocks into one cell
+            for (java.util.Map.Entry<Long, String[]> e : conflicts.entrySet()) {
+                String prev = e.getValue()[0], curO = e.getValue()[1];
+                boolean prevRep = isReplica(prev), curRep = isReplica(curO);
+                boolean skip = (o.id.equals(curO) && curRep) || (o.id.equals(prev) && prevRep && !curRep);
+                String other = o.id.equals(curO) ? prev : curO;
+                boolean bypass = !isObstacle(other) || o.id.equals(curO);   // a frame provides the floor itself / the earlier section wins the shared platform
+                if (skip && (bypass || !prot.contains(e.getKey()))) out.computeIfAbsent(o.id, k -> new HashSet<>()).add(e.getKey());
+            }
+            // halo: a replica block next to a frame block (hub, fork, shrine, spur end, backdrop) is left out too
+            for (java.util.Map.Entry<Long, Integer> e : own.entrySet()) {
+                String on = ownerNames.get(e.getValue());
+                if (isObstacle(on) || on.equals("?")) continue;
+                int fx = kx(e.getKey()), fy = ky(e.getKey()), fz = kz(e.getKey());
+                for (int dx = -1; dx <= 1; dx++) for (int dy = -1; dy <= 1; dy++) for (int dz = -1; dz <= 1; dz++) {
+                    long n = key(fx + dx, fy + dy, fz + dz);
+                    if (mine.contains(n) && !prot.contains(n)) out.computeIfAbsent(o.id, k -> new HashSet<>()).add(n);
+                }
+            }
+        }
+        return out;
+    }
+
+    private boolean isReplica(String id) { for (Ob o : obs) if (o.id.equals(id)) return o.replica; return false; }
+    private boolean isObstacle(String id) { for (Ob o : obs) if (o.id.equals(id)) return true; return false; }
+
+    /** Pass 2 of an imported-map build: cells of replica scenery that touched another structure in pass 1 are not written. */
+    java.util.Map<String, java.util.Set<Long>> skipOwner;
+    /** Frame decor that must not cut into what is already built (spur ends, shrines): only air is written. */
+    boolean softMode;
+    private final java.util.Map<Long, String[]> conflicts = new java.util.HashMap<>();
+
     void set(int x, int y, int z, String s) {
+        if (softMode && s != null && !Bs.isAir(s) && !Bs.isAir(b.get(x, y, z))) return;
+        if (skipOwner != null && s != null && !Bs.isAir(s)) { java.util.Set<Long> so = skipOwner.get(cur); if (so != null && so.contains(key(x, y, z))) return; }
         if (s != null && Bs.id(s).equals("pearlescent_froglight")) padCells.add(key(x, y, z));
         else padCells.remove(key(x, y, z));
+        if (s != null && !Bs.isAir(s) && !Bs.id(s).equals("pearlescent_froglight")) {
+            long k = key(x, y, z);
+            int me = ownerId(cur);
+            Integer prev = own.put(k, me);
+            if (prev != null && prev != me) {
+                String old = b.get(x, y, z);
+                if (old != null && !Bs.isAir(old) && !Bs.id(old).equals("pearlescent_froglight") && !Bs.full(s).equals(old)) {
+                    conflicts.put(key(x, y, z), new String[]{ownerNames.get(prev), cur});
+                    String pair = ownerNames.get(prev) + " x " + cur;
+                    int[] v = overlapAt.get(pair);
+                    if (v == null) overlapAt.put(pair, new int[]{1, x, y, z}); else v[0]++;
+                }
+            }
+        }
         b.set(x, y, z, s == null ? null : Bs.full(s));
     }
 

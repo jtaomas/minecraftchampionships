@@ -1,0 +1,73 @@
+{
+  "id": "gamer_room",
+  "name": "Gamer Room",
+  "debut": "MCC R",
+  "stars": 3,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Gamer_Room.png",
+  "floor": [
+    "ggggggg",
+    "ggggggg",
+    "gbbbbgg",
+    "gbbbbgg",
+    "gbbbbgg",
+    "gbbbbgg",
+    "ggggggg"
+  ],
+  "palette": {
+    "g": "minecraft:gray_concrete",
+    "b": "minecraft:blue_wool",
+    "s": "minecraft:spruce_planks",
+    "B": "minecraft:black_concrete",
+    "P": "minecraft:smooth_sandstone",
+    "w": "minecraft:white_concrete"
+  },
+  "layers": [
+    [
+      ".s.s.s.",
+      "..P....",
+      ".......",
+      "ss...ss",
+      "ss...ww",
+      ".......",
+      "......."
+    ],
+    [
+      ".sss.ss",
+      "..P....",
+      ".......",
+      "ss...ss",
+      "ss.....",
+      ".......",
+      "......."
+    ],
+    [
+      "..B....",
+      ".......",
+      ".......",
+      "ss.....",
+      "ss.....",
+      ".......",
+      "......."
+    ],
+    [
+      "..B....",
+      ".......",
+      ".......",
+      "ss.....",
+      "ss.....",
+      ".......",
+      "......."
+    ]
+  ],
+  "status": "approximate",
+  "guessed": [
+    "the room's back wall is the stage backdrop, not part of the build; the desks stand on the back row",
+    "desk depth (1 block) and the exact leg positions are read from the render; the right desk is 2 wide with one leg",
+    "the cream block is read as a 2-tall smooth sandstone PC tower in front of the monitor; quartz/white concrete also possible",
+    "the monitor is a 1-wide, 2-tall black concrete screen standing on the left desk",
+    "the two small grey marks on the wardrobe's side (handles/fans) are left out; too small to read as a block",
+    "the wardrobe is filled as a 2x2x4 spruce cabinet; its back and right side are hidden",
+    "the right-hand white seat with a spruce back is modelled as a 2-wide sofa facing the camera; the backrest orientation is a guess",
+    "blue rug read as flush blue wool in the floor (4 wide x 4 deep, cells estimated from the floor warp)"
+  ]
+}

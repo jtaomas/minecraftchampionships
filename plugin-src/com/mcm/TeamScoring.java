@@ -135,7 +135,8 @@ public class TeamScoring {
     /**
      * Awards MCC coins that are already multiplied (may be fractional or negative). Fractions are carried per
      * player so nothing is lost to rounding (two awards of 7.5 credit 15); a player's total never drops below 0.
-     * Prints "+N coins (reason)" (or "-N coins") to the player. Returns the whole coins credited now.
+     * Prints the MCC chat line "[+N coin] reason" ("[-N coin]" for negatives) and plays the ding (see CoinFeedback).
+     * Returns the whole coins credited now.
      */
     public int addCoins(UUID id, double coins, String reason) {
         if (coins == 0 || Double.isNaN(coins) || Double.isInfinite(coins)) return 0;
@@ -146,16 +147,7 @@ public class TeamScoring {
         int after = Math.max(0, before + whole);
         playerPoints.put(id, after);
         Player p = Bukkit.getServer() == null ? null : Bukkit.getPlayer(id);
-        if (p != null) {
-            String amt = com.mcm.api.McmCoins.format(Math.abs(coins));
-            if (coins > 0) {
-                p.sendMessage(ChatColor.GOLD + "+" + amt + " coins " + ChatColor.GRAY + "(" + reason + ")");
-                if (!com.mcm.api.McmFx.packSound(p, coins >= 40 ? "mcc.ui.coins_big" : "mcc.ui.coins_small", 0.8f, 1f))
-                    p.playSound(p.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.6f, 1.3f);
-            } else {
-                p.sendMessage(ChatColor.RED + "-" + amt + " coins " + ChatColor.GRAY + "(" + reason + ")");
-            }
-        }
+        if (p != null) CoinFeedback.award(p, coins, reason);
         return after - before;
     }
 
@@ -164,11 +156,7 @@ public class TeamScoring {
         if (pts <= 0) return;
         playerPoints.merge(id, pts, Integer::sum);
         Player p = Bukkit.getServer() == null ? null : Bukkit.getPlayer(id);
-        if (p != null) {
-            p.sendMessage(ChatColor.GOLD + "+" + pts + " coins " + ChatColor.GRAY + "(" + reason + ")");
-            if (!com.mcm.api.McmFx.packSound(p, pts >= 40 ? "mcc.ui.coins_big" : "mcc.ui.coins_small", 0.8f, 1f))
-                p.playSound(p.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.6f, 1.3f);
-        }
+        if (p != null) CoinFeedback.award(p, pts, reason);
     }
 
     /**

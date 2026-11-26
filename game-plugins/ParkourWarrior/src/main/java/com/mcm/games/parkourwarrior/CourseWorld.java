@@ -168,6 +168,11 @@ final class CourseWorld {
 
     /** Log contract problems (missing ids, hubs, finishes); the game still runs with what exists. */
     static void validate(CourseModel m, java.util.logging.Logger log) {
+        if (m.linear != null) {      // a replica imported 1:1: one line of sections, no hubs / bonus paths / endings
+            if (m.linear.checkpoints.size() + 1 != m.linear.sectionCount() || m.linear.finish == null)
+                log.warning("Parkour Warrior: linear course has " + m.linear.checkpoints.size() + " checkpoints for " + m.linear.sectionCount() + " sections (finish " + (m.linear.finish != null) + ")");
+            return;
+        }
         List<String> missing = new ArrayList<>();
         for (int s = 1; s <= 5; s++) {
             for (int i = 1; i <= 3; i++) {
@@ -194,15 +199,53 @@ final class CourseWorld {
      * Make sure the course for these settings is generated and placed, then run {@code ready} (main thread).
      * {@code force} regenerates even if the same course is already placed.
      */
-    void prepare(Settings s, boolean force, Runnable ready) {
+    void prepare(Settings s, boolean force, Runnable ready) { prepare(s, CLASSIC, force, ready); }
+
+    static final String CLASSIC = "classic";
+
+    /** Folder holding the private imported maps (one sub-folder with a course.txt per map; never in git or the jar). */
+    java.io.File mapsRoot(Settings s) {
+        java.io.File f = new java.io.File(s.mapsFolder);
+        return f.isAbsolute() ? f : new java.io.File(plugin.getDataFolder(), s.mapsFolder);
+    }
+
+    /** Map ids that can be built now: classic plus every maps/<id>/course.txt, in pool order when a pool is set. */
+    List<String> availableMaps(Settings s) {
+        List<String> found = new ArrayList<>();
+        found.add(CLASSIC);
+        java.io.File[] dirs = mapsRoot(s).listFiles(java.io.File::isDirectory);
+        if (dirs != null) {
+            java.util.Arrays.sort(dirs);
+            for (java.io.File d : dirs) if (new java.io.File(d, "course.txt").isFile()) found.add(d.getName().toLowerCase(java.util.Locale.ROOT));
+        }
+        if (s.mapPool.isEmpty()) return found;
+        List<String> out = new ArrayList<>();
+        for (String id : s.mapPool) if (found.contains(id) && !out.contains(id)) out.add(id);
+        return out.isEmpty() ? List.of(CLASSIC) : out;
+    }
+
+    /** Built map id (classic, mcc6, ...). */
+    String mapId() { return builtMap; }
+
+    private String builtMap = CLASSIC, pendingMap = CLASSIC;
+    /** The Map Edit overlay applied to the placed course (its cells are wiped when the course is replaced). */
+    private com.mcm.api.McmMapOverlay placedOverlay;
+    private MoverRuntime movers;
+
+    MoverRuntime movers() { return movers; }
+
+    void prepare(Settings s, String mapId, boolean force, Runnable ready) {
         if (world == null) ensureWorld();
         if (world == null) { plugin.getLogger().severe("Parkour Warrior: world missing"); state = State.FAILED; return; }
-        String key = s.generator + "|" + s.seed + "|" + s.offX + "," + s.offY + "," + s.offZ;
+        final String map = mapId == null ? CLASSIC : mapId.toLowerCase(java.util.Locale.ROOT);
+        final java.io.File importDir = CLASSIC.equals(map) ? null : new java.io.File(mapsRoot(s), map);
+        String key = s.generator + "|" + s.seed + "|" + s.offX + "," + s.offY + "," + s.offZ + "|" + map;
         if (!force && state == State.READY && key.equals(builtKey)) { if (ready != null) ready.run(); return; }
         if (!force && busy() && key.equals(pendingKey)) { if (ready != null) waiting.add(ready); return; }
         cancelBuild();
         if (ready != null) waiting.add(ready);
         pendingKey = key;
+        pendingMap = map;
         state = State.GENERATING;
         final int gen = ++generation;
         final String mode = s.generator;
@@ -211,7 +254,10 @@ final class CourseWorld {
             String[] used = {"?"};
             CourseModel m;
             try {
-                m = generate(mode, seed, new java.io.File(plugin.getDataFolder(), "imported"), plugin.getLogger(), used);
+                m = generate(mode, seed, importDir, plugin.getLogger(), used);
+                if (m != null && importDir != null && !map.equals(m.mapId)) {
+                    plugin.getLogger().warning("Parkour Warrior: map '" + map + "' could not be loaded from " + importDir + " (no usable course.txt); built the classic course");
+                }
             } catch (Throwable t) {
                 plugin.getLogger().log(Level.SEVERE, "Parkour Warrior: course generation crashed", t);
                 m = null;
@@ -222,6 +268,7 @@ final class CourseWorld {
                 if (gen != generation) return;
                 if (fm == null) { state = State.FAILED; waiting.clear(); return; }
                 generatorUsed = used[0];
+                builtMap = importDir != null && map.equals(fm.mapId) ? map : CLASSIC;
                 place(fm, s, key, gen);
             });
         });
@@ -233,6 +280,7 @@ final class CourseWorld {
         queue = new McmBuild.BuildQueue(plugin, s.blocksPerTick);
         McmBuild.BuildQueue q = queue;
         removeLabels();
+        if (movers != null) { movers.stop(); movers = null; }
         // wipe the previously placed course
         if (model != null) {
             final CourseModel old = model;
@@ -240,6 +288,7 @@ final class CourseWorld {
             BlockData air = Material.AIR.createBlockData();
             old.blocks.forEach((x, y, z, b) -> q.set(w, x + ox, y + oy, z + oz, air));
             for (CourseModel.Timed t : old.timed) for (CourseModel.BlockPos p : t.positions()) q.set(w, p.x() + ox, p.y() + oy, p.z() + oz, air);
+            PwOverlays.wipe(q, w, placedOverlay, ox, oy, oz);   // blocks the previous course had added with a Map Edit overlay
         }
         model = m;
         offX = s.offX; offY = s.offY; offZ = s.offZ;
@@ -250,11 +299,15 @@ final class CourseWorld {
             timedState[i] = -1;
             for (CourseModel.BlockPos p : t.positions()) q.set(w, p.x() + offX, p.y() + offY, p.z() + offZ, data(t.blockState()));
         }
+        placedOverlay = PwOverlays.place(plugin, q, w, builtMap, offX, offY, offZ, this::data);   // Map Edit overlay (core /mcm mapedit) on top
         long total = q.total();
         q.then(() -> {
             if (gen != generation) return;
             state = State.READY;
             builtKey = key;
+            if (movers != null) movers.stop();
+            movers = new MoverRuntime(world, m, offX, offY, offZ, this::data);
+            applySigns(m, world, offX, offY, offZ);
             plugin.getLogger().info("Parkour Warrior: course placed (" + generatorUsed + ", seed " + m.seed + ", " + total + " block ops, "
                     + m.obstacles.size() + " obstacles, " + m.timed.size() + " timed groups)");
             List<Runnable> r = new ArrayList<>(waiting);
@@ -264,6 +317,26 @@ final class CourseWorld {
             }
         });
         q.start();
+    }
+
+    /** Write the text of a linear course's signs (the block strings carry no text); front side, waxed. */
+    void applySigns(CourseModel m, World w, int ox, int oy, int oz) {
+        if (m == null || m.linear == null || w == null) return;
+        int n = 0;
+        for (CourseModel.SignText st : m.linear.signs) {
+            try {
+                org.bukkit.block.BlockState bs = w.getBlockAt(st.x() + ox, st.y() + oy, st.z() + oz).getState();
+                if (!(bs instanceof org.bukkit.block.Sign sign)) continue;
+                org.bukkit.block.sign.SignSide side = sign.getSide(org.bukkit.block.sign.Side.FRONT);
+                for (int i = 0; i < 4 && i < st.lines().size(); i++) side.line(i, net.kyori.adventure.text.Component.text(st.lines().get(i)));
+                sign.setWaxed(true);
+                sign.update(true, false);
+                n++;
+            } catch (Throwable t) {
+                plugin.getLogger().warning("Parkour Warrior: sign at " + st.x() + "," + st.y() + "," + st.z() + ": " + t);
+            }
+        }
+        if (n > 0) plugin.getLogger().info("Parkour Warrior: wrote the text of " + n + " signs");
     }
 
     private void cancelBuild() {
@@ -349,6 +422,7 @@ final class CourseWorld {
     void spawnLabels() {
         removeLabels();
         if (model == null || world == null) return;
+        final Settings lblSettings = Settings.load(plugin.getConfig(), plugin.getLogger());
         for (Obstacle o : model.obstacles) {
             if (o.label() == null) continue;
             String color = switch (o.kind()) {
@@ -357,8 +431,8 @@ final class CourseWorld {
                 case ENDING -> o.ending() == CourseModel.Difficulty.EASY ? "§a" : o.ending() == CourseModel.Difficulty.MEDIUM ? "§6" : "§c";
             };
             String sub = switch (o.kind()) {
-                case MAIN -> "§8Stone medal";
-                case BONUS -> o.index() == 1 ? "§6Bronze medal" : o.index() == 2 ? "§7Silver medal" : "§eGold medal";
+                case MAIN -> "§6+" + Scoring.coins(lblSettings, o) + " coins";
+                case BONUS -> "§6+" + Scoring.coins(lblSettings, o) + " coins §8(bonus " + o.index() + "/3)";
                 case ENDING -> "§8" + cap(o.ending().name()) + " ending " + o.index() + "/2";
             };
             String code = o.kind() == CourseModel.Kind.ENDING ? o.ending().name().charAt(0) + "-" + o.index() : o.id();

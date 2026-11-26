@@ -1,0 +1,45 @@
+{
+  "id": "rainbow_castle",
+  "name": "Rainbow Castle",
+  "debut": "MCC PARTY 2",
+  "stars": 4,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-RainbowCastle.png",
+  "floor": [
+    "ccccccc",
+    "ccccccc",
+    "ccccccc",
+    "ccccccc",
+    "ccccccc",
+    "ccccccc",
+    "ccccccc"
+  ],
+  "palette": {
+    "c": "minecraft:cobblestone",
+    "w": "minecraft:smooth_stone",
+    "G": "minecraft:gold_block",
+    "m": "minecraft:magenta_concrete",
+    "r": "minecraft:red_concrete",
+    "o": "minecraft:orange_concrete",
+    "y": "minecraft:yellow_concrete",
+    "l": "minecraft:lime_concrete",
+    "n": "minecraft:cyan_concrete",
+    "b": "minecraft:blue_concrete",
+    "p": "minecraft:purple_concrete"
+  },
+  "layers": [
+    ["wwwwwww", "w.....w", "w.....w", "w..w..w", "w.....w", "w.....w", "www.www"],
+    ["wwwwwww", "w.....w", "w.....w", "w..w..w", "w.....w", "w.....w", "wwwwwww"],
+    ["wwwwwww", "w.....w", "w.....w", "w..G..w", "w.....w", "w.....w", "wwwwwww"],
+    ["ppmm.rr", "ppmm.rr", "bb...oo", "bb...oo", ".......", "nnll.yy", "nnll.yy"],
+    ["ppmm.rr", "ppmm.rr", "bb...oo", "bb...oo", ".......", "nnll.yy", "nnll.yy"]
+  ],
+  "guessed": [
+    "castle read as a 7x7 smooth stone ring wall (3 tall, gate gap at the front centre) with eight 2x2 coloured tower caps on top",
+    "tower order taken from the render: magenta at the back, red/orange/yellow down the right side, green/cyan/blue/purple up the left side",
+    "the gold block sits on a 2-block stone pedestal in the middle of the courtyard; the courtyard interior is otherwise air",
+    "the front gate is a 1-wide, 2-tall gap in the ring wall under the green tower",
+    "hidden tower backs, courtyard floor inside the walls and the wall's far side assumed symmetric",
+    "wall material read as smooth stone (light grey with a faint grain); towers as concrete (flat saturated colours)"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "id": "easter_bunny",
+  "name": "Easter Bunny",
+  "debut": "MCC 4",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Easter_Bunny.png",
+  "floor": [
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg"
+  ],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "o": "minecraft:oak_planks",
+    "s": "minecraft:sandstone",
+    "w": "minecraft:white_concrete",
+    "b": "minecraft:black_concrete"
+  },
+  "layers": [
+    [".......", ".......", ".ooooo.", ".ooooo.", ".ooooo.", ".ossso.", ".ossso."],
+    [".......", ".......", ".ooooo.", ".ooooo.", ".wbobw.", ".......", "......."],
+    ["oo...oo", ".o...o.", ".ooooo.", ".ooooo.", ".......", ".......", "......."]
+  ],
+  "guessed": [
+    "the bunny lies on the grass with its face up: sandstone muzzle at the front (rows 5-6), a lower ledge with the eyes behind it, forehead one block higher at the back",
+    "the eyes are inlaid on the top face of the ledge (white concrete outside, black concrete pupil toward the centre, oak bridge in the middle)",
+    "ears run back from the forehead's corners over the back rows; their far tips overhang the back edge (supported at their base)",
+    "head depth/back and the area between the ears are hidden in the render; filled by symmetry",
+    "thin red line between grass and quartz rim taken as the plot's red carpet, not part of the build"
+  ]
+}

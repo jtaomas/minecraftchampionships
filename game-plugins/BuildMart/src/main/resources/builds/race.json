@@ -1,0 +1,86 @@
+{
+  "id": "race",
+  "name": "Race!",
+  "debut": "MCC 8",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Race!.png",
+  "floor": [
+    "ooooooo",
+    "ooooooo",
+    "rooooor",
+    "kwkwkwk",
+    "ooooooo",
+    "rooooor",
+    "ooooooo"
+  ],
+  "palette": {
+    "o": "minecraft:orange_concrete_powder",
+    "r": "minecraft:red_concrete",
+    "k": "minecraft:black_concrete",
+    "w": "minecraft:white_concrete",
+    "s": "minecraft:stone"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      "s.s.s.s",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "s.s.s.s",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..sss..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...s...",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...s...",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..sss..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the central stone shape is read as a standing figure (3-wide head/shoulders, 1-wide body, two legs) faced by a 1-deep stone plane",
+    "the two side blocks are 1 x 1 x 2 stone posts standing at the track edges",
+    "the track: orange concrete powder lanes with a black/white start line and red concrete corner patches; the exact red patch positions are inferred",
+    "the stone material could be andesite instead of stone"
+  ]
+}

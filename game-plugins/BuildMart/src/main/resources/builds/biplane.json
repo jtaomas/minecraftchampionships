@@ -1,0 +1,77 @@
+{
+  "id": "biplane",
+  "name": "Biplane",
+  "debut": "MCC 20",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Biplane.png",
+  "floor": [
+    "ccccccc",
+    "ccccccc",
+    "ccccccc",
+    "ccccccc",
+    "ccccccc",
+    "ccccccc",
+    "ccccccc"
+  ],
+  "palette": {
+    "c": "minecraft:cyan_concrete",
+    "w": "minecraft:white_concrete",
+    "p": "minecraft:spruce_planks",
+    "f": "minecraft:spruce_fence"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      ".......",
+      "...w...",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "ppppppp",
+      "ppppppp",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "...w...",
+      "...w...",
+      "fffwfff",
+      "...w...",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "...w...",
+      "ppppppp",
+      "ppppppp",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "...w...",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the render is a very low front view of a biplane in flight over a cyan 'sky' floor; the plane is read as nose-south with a white support pillar under the fuselage",
+    "wings read as 7 wide x 2 deep spruce planks, upper and lower, with spruce fence interplane struts at every block; render tone is spruce (wiki notes oak fences/trapdoors in some events)",
+    "white central column read as a 1x1 white concrete support pillar plus 1-wide fuselage and tail fin; exact z placement of the fuselage/pillar estimated",
+    "propeller, cockpit, tailplane and landing gear are not visible in the render and were left out",
+    "floor read as cyan concrete (could be cyan wool)"
+  ]
+}

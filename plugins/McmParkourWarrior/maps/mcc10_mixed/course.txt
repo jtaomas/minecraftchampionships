@@ -1,0 +1,231 @@
+# Parkour Warrior imported map mcc10: private third-party data, loaded from the server's maps folder, never committed
+map mcc10_mixed
+mapcredit MCC 10 replica by TryHardOfDoom
+credit TH MCC 10 replica by TryHardOfDoom
+zone 1 Warm-Up Run
+zone 2 Rising Islands
+zone 3 Sky Gauntlet
+zone 4 High Wire
+zone 5 Final Ascent
+builtin M1-1 ledges mesa 2
+builtin M1-2 checker mesa 3
+classic M1-3 M1-1
+builtin M2-1 beams garden 3
+classic M3-2 M3-2
+classic M4-1 M4-2
+builtin M4-3 conveyor garden 1
+builtin M5-1 press ice 1
+builtin M5-2 barrels ice 1
+classic M5-3 M2-3
+classic B1-3 B3-3
+classic B2-1 B4-1
+classic B2-3 B1-3
+classic B3-2 B3-1
+classic B3-3 B5-3
+classic B4-2 B4-3
+classic B4-3 B2-3
+classic B5-1 E-MEDIUM-2
+classic B5-2 B3-2
+classic E-EASY-1 E-EASY-1
+classic E-EASY-2 E-EASY-2
+builtin E-MEDIUM-2 bars jungle 3
+builtin E-HARD-2 doors jungle 2
+section M2-2 s2-1.mcmi.gz S21 The Double Jumps
+  base 0 0 0
+  origin 97 10 38
+  end 85 12 84
+  turn 0
+  credit TH
+  crop 75 0 36 107 127 90
+  set 89 12 84 minecraft:grass_block
+  set 89 11 84 minecraft:grass_block
+  set 89 10 84 minecraft:grass_block
+  set 89 12 85 minecraft:grass_block
+  set 90 12 84 minecraft:grass_block
+end
+section M2-3 s2-3.mcmi.gz S23 The Switchback
+  base 0 0 0
+  origin 56 12 83
+  end 20 20 123
+  turn 0
+  credit TH
+  crop 8 0 81 67 127 128
+  set 40 15 85 minecraft:jungle_planks
+  set 40 17 86 minecraft:jungle_planks
+  set 41 17 85 minecraft:jungle_planks
+  set 35 19 85 minecraft:grass_block
+  set 35 18 85 minecraft:grass_block
+  set 35 17 85 minecraft:grass_block
+  set 35 19 86 minecraft:grass_block
+  set 28 20 88 minecraft:jungle_planks
+  set 28 19 88 minecraft:jungle_planks
+  set 28 18 88 minecraft:jungle_planks
+  set 28 20 89 minecraft:jungle_planks
+  set 29 20 88 minecraft:jungle_planks
+  set 26 19 91 minecraft:jungle_planks
+  set 26 18 91 minecraft:jungle_planks
+  set 26 17 91 minecraft:jungle_planks
+  set 26 19 92 minecraft:jungle_planks
+  set 27 19 91 minecraft:jungle_planks
+  set 23 19 93 minecraft:jungle_planks
+  set 23 18 93 minecraft:jungle_planks
+  set 23 17 93 minecraft:jungle_planks
+  set 23 19 94 minecraft:jungle_planks
+  set 24 19 93 minecraft:jungle_planks
+  set 20 21 116 minecraft:dirt_path
+  set 20 20 116 minecraft:dirt_path
+  set 20 19 116 minecraft:dirt_path
+  set 20 21 117 minecraft:dirt_path
+  set 21 21 116 minecraft:dirt_path
+  set 20 20 119 minecraft:dirt_path
+  set 20 19 119 minecraft:dirt_path
+  set 20 18 119 minecraft:dirt_path
+  set 20 20 120 minecraft:dirt_path
+  set 21 20 119 minecraft:dirt_path
+end
+section M3-1 s3-2.mcmi.gz S32 The Holey Moley
+  base 0 0 0
+  origin 9 17 146
+  end 8 20 188
+  turn 0
+  credit TH
+  crop -2 0 144 20 127 193
+end
+section M3-3 s4-1.mcmi.gz S41 The Ladder Hop
+  base 0 0 0
+  origin 23 23 226
+  end 23 26 259
+  turn 0
+  credit TH
+  crop 11 0 224 38 127 264
+  set 27 26 239 minecraft:dark_prismarine
+  set 27 25 239 minecraft:dark_prismarine
+  set 27 24 239 minecraft:dark_prismarine
+  set 27 26 240 minecraft:dark_prismarine
+  set 28 26 239 minecraft:dark_prismarine
+  set 26 26 242 minecraft:dark_prismarine
+  set 26 25 242 minecraft:dark_prismarine
+  set 26 24 242 minecraft:dark_prismarine
+  set 26 26 243 minecraft:dark_prismarine
+  set 27 26 242 minecraft:dark_prismarine
+  set 26 26 244 minecraft:dark_prismarine
+  set 26 25 244 minecraft:dark_prismarine
+  set 26 24 244 minecraft:dark_prismarine
+  set 26 26 245 minecraft:dark_prismarine
+  set 27 26 244 minecraft:dark_prismarine
+  set 27 25 252 minecraft:nether_wart
+  set 27 24 252 minecraft:nether_wart
+  set 27 23 252 minecraft:nether_wart
+  set 27 25 253 minecraft:nether_wart
+  set 28 25 252 minecraft:nether_wart
+  set 25 25 254 minecraft:nether_wart
+  set 25 24 254 minecraft:nether_wart
+  set 25 23 254 minecraft:nether_wart
+  set 25 25 255 minecraft:nether_wart
+  set 26 25 254 minecraft:nether_wart
+end
+section M4-2 s5-1.mcmi.gz S51 The Fish Bones
+  base 0 0 0
+  origin -34 27 306
+  end -65 31 296
+  turn 3
+  credit TH
+  crop -70 0 286 -32 127 318
+  set -63 28 303 minecraft:gray_stained_glass_pane
+  set -64 28 303 minecraft:gray_stained_glass_pane
+  set -64 30 300 minecraft:gray_stained_glass_pane
+  set -64 29 300 minecraft:gray_stained_glass_pane
+  set -64 28 300 minecraft:gray_stained_glass_pane
+  set -65 30 300 minecraft:gray_stained_glass_pane
+  set -64 30 301 minecraft:gray_stained_glass_pane
+end
+section B1-1 s1-3.mcmi.gz S13 The Pillar Path
+  base 0 0 0
+  origin 47 15 29
+  end 97 10 38
+  turn 1
+  credit TH
+  crop 45 0 12 102 127 48
+  tag MEDIUM
+end
+section B1-2 s1-2.mcmi.gz S12 The Switchsteps
+  base 0 0 0
+  origin 19 15 28
+  end 47 15 29
+  turn 1
+  credit TH
+  crop 17 0 17 53 127 41
+  tag HARD
+end
+section B2-2 s2-2.mcmi.gz S22 The Narrow Ledge
+  base 0 0 0
+  origin 85 12 84
+  end 56 12 83
+  turn 3
+  credit TH
+  crop 50 0 71 87 127 98
+  tag HARD
+end
+section B3-1 s3-1.mcmi.gz S31 The Double Weaver
+  base 0 0 0
+  origin 20 20 123
+  end 9 17 146
+  turn 0
+  credit TH
+  crop -1 0 121 30 127 151
+  set 18 21 129 minecraft:spruce_trapdoor
+  set 18 20 129 minecraft:spruce_trapdoor
+  set 18 19 129 minecraft:spruce_trapdoor
+  set 18 21 130 minecraft:spruce_trapdoor
+  set 19 21 129 minecraft:spruce_trapdoor
+  set 17 22 132 minecraft:spruce_trapdoor
+  set 17 21 132 minecraft:spruce_trapdoor
+  set 17 20 132 minecraft:spruce_trapdoor
+  set 17 22 133 minecraft:spruce_trapdoor
+  set 18 22 132 minecraft:spruce_trapdoor
+  set 14 19 136 minecraft:spruce_trapdoor
+  set 14 18 136 minecraft:spruce_trapdoor
+  set 14 17 136 minecraft:spruce_trapdoor
+  set 14 19 137 minecraft:spruce_trapdoor
+  set 15 19 136 minecraft:spruce_trapdoor
+  set 12 18 140 minecraft:spruce_trapdoor
+  set 12 17 140 minecraft:spruce_trapdoor
+  set 12 16 140 minecraft:spruce_trapdoor
+  set 12 18 141 minecraft:spruce_trapdoor
+  set 13 18 140 minecraft:spruce_trapdoor
+  tag MEDIUM
+end
+section B4-1 s5-2.mcmi.gz S52 The Anchors
+  base 0 0 0
+  origin -65 31 296
+  end -64 32 256
+  turn 2
+  credit TH
+  crop -76 0 251 -51 127 298
+  tag MEDIUM
+end
+section B5-3 s7-3.mcmi.gz S73 The Ladder Flip
+  base 0 0 0
+  origin -38 20 130
+  end -38 22 90
+  turn 2
+  credit TH
+  crop -50 0 84 -25 127 132
+  tag HARD
+end
+section E-MEDIUM-1 s8-1.mcmi.gz S81 Take the L
+  base 0 0 0
+  origin -38 22 90
+  end -37 22 53
+  turn 2
+  credit TH
+  crop -51 0 48 -27 127 92
+end
+section E-HARD-1 s7-1.mcmi.gz S71 The Sneaky Jumper
+  base 0 0 0
+  origin -73 23 180
+  end -38 23 174
+  turn 1
+  credit TH
+  crop -75 0 164 -33 127 192
+end

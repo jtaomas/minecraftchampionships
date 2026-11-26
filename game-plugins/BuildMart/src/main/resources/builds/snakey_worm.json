@@ -1,0 +1,61 @@
+{
+  "id": "snakey_worm",
+  "name": "Snakey Worm",
+  "debut": "MCC 16",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Snakey_Worm.png",
+  "floor": [
+    "eeeeeee",
+    "eeeeeee",
+    "eeeeeee",
+    "eeeeeee",
+    "eeeeeee",
+    "eeeeeee",
+    "eeeeeee"
+  ],
+  "palette": {
+    "e": "minecraft:end_stone",
+    "O": "minecraft:orange_concrete",
+    "G": "minecraft:green_concrete",
+    "K": "minecraft:black_concrete",
+    "c": "minecraft:chain[axis=x]",
+    "u": "minecraft:stone_button[face=wall,facing=south]"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      ".......",
+      "..KGO..",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "...G...",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "ccOGK..",
+      "..u....",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "worm read as three stacked bars: bottom (black/green/orange), green neck, top (orange/green/black); all on the centre row",
+    "the chain read as 2 horizontal chain blocks (axis=x) coming out of the orange head",
+    "eye read as a stone button on the orange head's front face",
+    "floor read as end stone (pale speckled yellow)",
+    "the small top faces of orange/green visible behind the bottom bar are read as the bar's own top face; a deeper second row was not added"
+  ]
+}

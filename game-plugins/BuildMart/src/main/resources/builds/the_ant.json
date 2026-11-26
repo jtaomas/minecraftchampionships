@@ -1,0 +1,73 @@
+{
+  "id": "the_ant",
+  "name": "The Ant",
+  "debut": "MCC P22",
+  "stars": 5,
+  "status": "approximate",
+  "gold": true,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-The_Ant.png",
+  "floor": [
+    "ggggggg",
+    "gdddddg",
+    "gdddddg",
+    "ggggggg",
+    "gdddddg",
+    "gdddddg",
+    "ggggggg"
+  ],
+  "palette": {
+    "g": "minecraft:gold_block",
+    "d": "minecraft:coarse_dirt",
+    "b": "minecraft:blackstone",
+    "l": "minecraft:stripped_spruce_log[axis=x]",
+    "n": "minecraft:netherrack",
+    "f": "minecraft:oak_fence",
+    "e": "minecraft:stone_button[face=wall,facing=south,powered=false]"
+  },
+  "layers": [
+    [
+      ".......",
+      ".l.ll..",
+      ".......",
+      ".......",
+      ".l.ll..",
+      "....n..",
+      "......."
+    ],
+    [
+      ".......",
+      ".l.ll..",
+      ".bbbbb.",
+      ".bbbbb.",
+      ".l.ll..",
+      "....n..",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".bb..b.",
+      ".bb..b.",
+      ".....e.",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".....f.",
+      ".....f.",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "ant is built facing east: two-wide two-high abdomen, thorax, and a head that rises a block above the body, with six leg columns",
+    "far-side legs hidden behind the body; mirrored from the visible side",
+    "the eye is a light-grey block on the head's south face, modelled as a stone button",
+    "the antenna is modelled as a two-post oak fence rising from the head; the render shows a small bracket sticking out east and is hard to read",
+    "the dark maroon block at the front-right is read as netherrack, two blocks tall",
+    "floor border read as gold blocks (golden build) around a coarse-dirt centre with a gold path strip"
+  ]
+}

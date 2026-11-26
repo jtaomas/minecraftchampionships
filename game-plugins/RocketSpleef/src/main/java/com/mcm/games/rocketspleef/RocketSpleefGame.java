@@ -640,9 +640,8 @@ public final class RocketSpleefGame implements McmGame, Listener {
         Hit h = lastHit.get(victimId);
         Player killer = h != null && System.currentTimeMillis() - h.timeMs() <= cfg.killCreditMs ? Bukkit.getPlayer(h.by()) : null;
         if (killer != null) {
-            if (cfg.ptsElimination > 0) coins(h.by(), cfg.ptsElimination, "Elimination");
+            if (cfg.ptsElimination > 0) killCoins(h.by(), cfg.ptsElimination, victimId, vName);
             ctx.broadcast("§c" + vName + " §7was eliminated by §a" + killer.getName());
-            killer.playSound(killer.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1.2f);
         } else {
             ctx.broadcast("§c" + vName + " §7fell off the map and eliminated themselves!");
         }
@@ -659,6 +658,13 @@ public final class RocketSpleefGame implements McmGame, Listener {
         ctx.addCoins(id, coins, reason);
         Player p = Bukkit.getPlayer(id);
         plugin.getLogger().info("[coins] " + (p != null ? p.getName() : id) + " +" + coins + " x" + ctx.coinMultiplier() + " " + reason);
+    }
+
+    private void killCoins(UUID killer, double coins, UUID victimId, String victimName) {
+        String reason = "You eliminated " + victimName;
+        ctx.addKillCoins(killer, coins, victimId, victimName, reason);
+        Player p = Bukkit.getPlayer(killer);
+        plugin.getLogger().info("[coins] " + (p != null ? p.getName() : killer) + " +" + coins + " x" + ctx.coinMultiplier() + " " + reason);
     }
 
     private void endRound(boolean timeRanOut) {

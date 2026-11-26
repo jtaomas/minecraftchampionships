@@ -6,7 +6,7 @@
 cd "$(dirname "$0")/../.."
 OUT=tools/b/out
 CL=tools/b/out_cq/classes
-J=/c/Users/USER/Desktop/java/bin
+J=/c/Users/LeonS/Desktop/java/bin
 rm -rf "$CL"; mkdir -p "$CL" "$OUT" previews
 B=src/main/java/com/mcm/games/race/maps/b
 "$J/javac" -encoding UTF-8 -d "$CL" src/main/java/com/mcm/games/race/model/*.java $B/util/*.java \
@@ -14,7 +14,7 @@ B=src/main/java/com/mcm/games/race/maps/b
 "$J/java" -Xmx3g -cp "$CL" CanalQuarryMain "$OUT" "$@"
 RC=$?
 [ -n "$NORENDER" ] && exit $RC
-R=/c/Users/USER/Desktop/Mcc/tools/render_preview.py
+R=/c/Users/LeonS/Desktop/Mcc/tools/render_preview.py
 V=tools/b/views.py
 IDS="$@"; [ -z "$IDS" ] && IDS="frozen_canal"
 for id in $IDS; do

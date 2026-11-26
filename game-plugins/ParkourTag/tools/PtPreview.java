@@ -110,7 +110,7 @@ public final class PtPreview {
             StringBuilder rep = new StringBuilder(m.id() + ": " + g.count() + " blocks, size " + sx + "x" + sy + "x" + sz + "\n");
             g.writeDump(new File(out, m.id() + "_full.mcmdump.gz"), (x, y, z, b) -> !b.contains("barrier"));
             // pit view: no barriers, nothing above the stands' first rows
-            g.writeDump(new File(out, m.id() + "_pit.mcmdump.gz"), (x, y, z, b) -> !b.contains("barrier") && y < 16);
+            g.writeDump(new File(out, m.id() + "_pit.mcmdump.gz"), (x, y, z, b) -> !b.contains("barrier") && m.pitKeep(x, y, z, b));
 
             for (Cage c : m.cages()) for (int[] d : c.doorCells()) g.set(d[0], d[1], d[2], "air");   // doors open (round live)
             // graph over the containment box (the pit and the cages): standable cells inside the barrier ring
@@ -141,6 +141,15 @@ public final class PtPreview {
             boolean aToB = fromA.contains(cageSpots.get(1)), bToA = fromB.contains(cageSpots.get(0));
             rep.append("  cage A -> cage B: ").append(aToB).append(" (").append(dist(cageSpots.get(0), Set.of(cageSpots.get(1)), graph)).append(" moves), cage B -> cage A: ")
                     .append(bToA).append(" (").append(dist(cageSpots.get(1), Set.of(cageSpots.get(0)), graph)).append(" moves)\n");
+            // roof-only route: cage A to cage B using only cells with feet y >= 4 (no street contact)
+            Map<P, List<P>> roofG = new HashMap<>();
+            for (Map.Entry<P, List<P>> e : graph.entrySet()) {
+                if (e.getKey().y < 4) continue;
+                List<P> l = new ArrayList<>();
+                for (P n : e.getValue()) if (n.y >= 4) l.add(n);
+                roofG.put(e.getKey(), l);
+            }
+            rep.append("  roof-only (feet y>=4) cage A -> cage B: ").append(dist(cageSpots.get(0), Set.of(cageSpots.get(1)), roofG)).append(" moves (-1 = none)\n");
             // heights reached: how many distinct standing heights and per-height cell counts
             TreeMap<Integer, Integer> byY = new TreeMap<>();
             for (P p : fromA) byY.merge(p.y, 1, Integer::sum);
@@ -153,7 +162,7 @@ public final class PtPreview {
                 if (p.x < box[0] || p.x > box[2] || p.z < box[1] || p.z > box[3]) continue;
                 pitCells++;
                 if (fromA.contains(p)) { pitReached++; continue; }
-                String below = g.get(p.x, p.y - 1, p.z).replace("minecraft:", "");
+                String below = String.valueOf(g.get(p.x, p.y - 1, p.z)).replace("minecraft:", "");
                 unreached.merge(below + "@y" + p.y, 1, Integer::sum);
             }
             rep.append("  play area: ").append(pitReached).append("/").append(pitCells).append(" standable cells reachable\n");

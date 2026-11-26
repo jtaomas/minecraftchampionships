@@ -41,6 +41,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
 
     private static final int MAIN_SECONDS = 300;      // normal round length
     private static final int OVERDRIVE_SECONDS = 60;  // extremely fast walls, then hard end
+    private static final int SINGLE_WALL_SECONDS = 120; // owner: one wall at a time (no doubles, no sandwiches) until 2:00
     private static final int COUNTDOWN_SECONDS = 5;
     private static final int[] INTERVAL_BY_LEVEL = {6, 5, 5, 4, 4, 3, 3, 3, 2, 2}; // ticks per cell, levels 1..10
     // MCC coins (base x1.0, config coins.*; the core applies the event multiplier). See game-plugins/COINS.md.
@@ -101,6 +102,9 @@ public final class HoleInTheWallGame implements McmGame, Listener {
 
     // ------------------------------------------------------------------ McmGame
 
+    boolean isRunning() { return state != State.IDLE; }
+    Arena arena() { return arena; }
+
     @Override public String id() { return "hitw"; }
     @Override public String displayName() { return "Hole in the Wall"; }
     @Override public Material icon() { return Material.LIME_CONCRETE; }
@@ -132,6 +136,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         }
         arena.clear();
         arena.build();
+        HitwEdit.applyOverlay(plugin, w);   // saved Map Edit overlay (core /mcm mapedit)
 
         // spawn positions: one spot per side around the centre, team-coloured pads
         Map<String, List<Player>> sides = context.sides();
@@ -287,6 +292,12 @@ public final class HoleInTheWallGame implements McmGame, Listener {
             else if (sec == 205) warnShrink(1);
             else if (sec == 210) shrink(1);
             else if (sec == MAIN_SECONDS) startOverdrive();
+            if (sec == SINGLE_WALL_SECONDS - 30 || sec == SINGLE_WALL_SECONDS - 10) warnDoubleWalls(SINGLE_WALL_SECONDS - sec);
+            else if (sec >= SINGLE_WALL_SECONDS - 5 && sec < SINGLE_WALL_SECONDS) warnDoubleWalls(SINGLE_WALL_SECONDS - sec);
+            else if (sec == SINGLE_WALL_SECONDS) {
+                titleAll("§c§lDOUBLE WALLS", "§7Two walls can now come at once!", 5, 50, 10);
+                soundAll(Sound.ENTITY_ENDER_DRAGON_GROWL, 0.6f, 1.2f);
+            }
             else if (sec >= MAIN_SECONDS + OVERDRIVE_SECONDS) { endGame("Time is up"); return; }
             // wall-type unlocks follow the difficulty clock (head start included), announced when they really happen
             if (!overdrive && sec > 0) announceProgress();
@@ -294,7 +305,8 @@ public final class HoleInTheWallGame implements McmGame, Listener {
 
         // waves
         if (waveCooldown > 0) waveCooldown--;
-        if (waveCooldown <= 0 && walls.size() < 6) spawnWave();
+        // owner: never two walls on the field at once before 2:00 of real play time
+        if (waveCooldown <= 0 && walls.size() < 6 && (sec >= SINGLE_WALL_SECONDS || walls.isEmpty())) spawnWave();
 
         // walls
         for (Wall wall : new ArrayList<>(walls)) {
@@ -354,6 +366,8 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         else if (lvl <= 7) count = 2;
         else if (lvl <= 9) count = rnd.nextDouble() < 0.35 ? 3 : 2;
         else count = 3;
+        boolean singleOnly = !overdrive && elapsedTicks / 20 < SINGLE_WALL_SECONDS;
+        if (singleOnly) count = 1;
         count = Math.min(count, 6 - walls.size());
         if (count <= 0) return;
 
@@ -372,7 +386,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
             int[] partner = null;
             if (types.contains(WallType.SANDWICH)) {
                 for (int[] o : dirs) if (o[0] == d[0] && o[1] == -d[1]) { partner = o; break; }
-                if (partner == null || walls.size() + made + 2 > 6) types = EnumSet.of(WallType.STANDARD);
+                if (singleOnly || partner == null || walls.size() + made + 2 > 6) types = EnumSet.of(WallType.STANDARD);
                 else dirs.remove(partner);
             }
             Wall wall = new Wall(d[0] == 1, d[1], types, interval, overdrive, rollTier(lvl), platformHalf, delay, wave, rnd);
@@ -641,6 +655,13 @@ public final class HoleInTheWallGame implements McmGame, Listener {
 
     // ------------------------------------------------------------------ phases
 
+    /** Heads-up that two walls at once begin in {@code secs} seconds (30 s, 10 s, then the last 5 s). */
+    private void warnDoubleWalls(int secs) {
+        if (secs >= 10) titleAll("", "§e⚠ Two walls at once in §f" + secs + "§e seconds!", 0, 50, 10);
+        else actionBarAll("§c⚠ Two walls at once in §f" + secs + "§c...");
+        soundAll(secs <= 5 ? Sound.BLOCK_NOTE_BLOCK_HAT : Sound.BLOCK_NOTE_BLOCK_PLING, 1f, secs <= 5 ? 1.5f : 1.0f);
+    }
+
     private void warnShrink(int ring) {
         arena.paintRing(ring, Material.RED_TERRACOTTA);
         titleAll("", "§cThe platform is shrinking!", 0, 40, 10);
@@ -699,6 +720,12 @@ public final class HoleInTheWallGame implements McmGame, Listener {
         }
     }
 
+    private static String ordinalOf(int n) {
+        int m = n % 100;
+        if (m >= 11 && m <= 13) return n + "th";
+        return n + switch (n % 10) { case 1 -> "st"; case 2 -> "nd"; case 3 -> "rd"; default -> "th"; };
+    }
+
     private void eliminate(Player p, boolean award) {
         UUID id = p.getUniqueId();
         if (!alive.remove(id)) return;
@@ -714,8 +741,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
             for (UUID other : new ArrayList<>(alive)) {
                 Player op = Bukkit.getPlayer(other);
                 if (op == null) continue;
-                ctx.addPoints(other, perElimPoints, "Outlived a player");
-                op.sendActionBar(LEGACY.deserialize("§a+" + perElimPoints + " §7— " + names.getOrDefault(id, p.getName()) + " §7is out"));
+                ctx.addPoints(other, perElimPoints, "Outlived " + p.getName());
             }
         }
     }
@@ -839,7 +865,7 @@ public final class HoleInTheWallGame implements McmGame, Listener {
             int each = (int) Math.round(sum / (double) g.size());   // MCC: tied players split the sum of the tied places
             StringBuilder sb = new StringBuilder();
             for (UUID id : g) {
-                if (Bukkit.getPlayer(id) != null && each > 0) ctx.addPoints(id, each, "Placement #" + (place + 1));
+                if (Bukkit.getPlayer(id) != null && each > 0) ctx.addPoints(id, each, "Finished in " + ordinalOf(place + 1) + " place");
                 if (sb.length() > 0) sb.append("§7, ");
                 sb.append(names.getOrDefault(id, "?"));
             }

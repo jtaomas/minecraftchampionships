@@ -1,0 +1,8 @@
+setblock 5048 126 5078 minecraft:snow[layers=1]
+setblock 4957 126 5081 minecraft:snow[layers=1]
+setblock 5040 126 5082 minecraft:snow[layers=1]
+setblock 4966 126 5085 minecraft:snow[layers=1]
+setblock 5031 126 5086 minecraft:snow[layers=1]
+setblock 4975 126 5088 minecraft:snow[layers=1]
+setblock 5022 126 5089 minecraft:snow[layers=1]
+setblock 4984 126 5090 minecraft:snow[layers=1]

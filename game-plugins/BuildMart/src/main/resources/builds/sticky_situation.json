@@ -1,0 +1,60 @@
+{
+  "id": "sticky_situation",
+  "name": "Sticky Situation",
+  "debut": "MCC 17",
+  "stars": 3,
+  "status": "approximate",
+  "gold": true,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Sticky_Situation.png",
+  "floor": [
+    "lllllll",
+    "lllllll",
+    "lllllll",
+    "lllllll",
+    "lllllll",
+    "lllllll",
+    "lllllll"
+  ],
+  "palette": {
+    "l": "minecraft:light_blue_concrete",
+    "G": "minecraft:light_blue_stained_glass",
+    "p": "minecraft:pink_concrete",
+    "b": "minecraft:black_concrete",
+    "s": "minecraft:slime_block"
+  },
+  "layers": [
+    [
+      ".GGGGG.",
+      ".......",
+      "..GGG..",
+      "p.GsG.p",
+      "..GGG..",
+      ".......",
+      "......."
+    ],
+    [
+      ".GGGGG.",
+      ".......",
+      "..GGG..",
+      "b.G.G.b",
+      "..GGG..",
+      ".......",
+      "......."
+    ],
+    [
+      ".GGGGG.",
+      ".......",
+      "..GGG..",
+      "..GGG..",
+      "..GGG..",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the glass cube is read as a hollow 3 x 3 x 3 light blue glass shell with the slime block filling its 1 x 1 x 1 inside",
+    "the tall glass sheet behind is 5 wide x 3 high at the back row",
+    "the two black concrete blocks sit one block up beside the cube; the pink concrete blocks sit on the floor outside them",
+    "the blue floor is read as light blue concrete; its extent under the glass is hidden"
+  ]
+}

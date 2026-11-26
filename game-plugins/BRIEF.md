@@ -3,9 +3,9 @@
 Each game is a standalone Paper plugin that plugs into the server's tournament plugin, **MinecraftMondayCore**, through its game API. The tournament runs the event and handles teams and points. Your plugin just plays one game and reports points.
 
 ## Environment
-- Server: Paper **1.21.1**, Java 21. The server folder is `C:\Users\USER\Desktop\Mcc`. **Don't edit anything there except your own `game-plugins\<YourGame>\` folder.** Don't start the server; a separate test pass does that.
-- JDK 21: `JAVA_HOME=C:\Users\USER\Desktop\java`. Maven: `C:\Users\USER\Desktop\java-tools\maven\bin\mvn.cmd`. Set JAVA_HOME explicitly in each command.
-- The core API is installed in the local Maven repo as `com.mcm:MinecraftMondayCore:3.1.0`. Its source is `C:\Users\USER\Desktop\Mcc\plugin-src\com\mcm\api\*.java`. **Read all four files first**: `McmGame`, `McmGameContext`, `McmApi`, `McmVoteProvider`.
+- Server: Paper **1.21.1**, Java 21. The server folder is `C:\Users\LeonS\Desktop\Mcc`. **Don't edit anything there except your own `game-plugins\<YourGame>\` folder.** Don't start the server; a separate test pass does that.
+- JDK 21: `JAVA_HOME=C:\Users\LeonS\Desktop\java`. Maven: `C:\Users\LeonS\Desktop\java-tools\maven\bin\mvn.cmd`. Set JAVA_HOME explicitly in each command.
+- The core API is installed in the local Maven repo as `com.mcm:MinecraftMondayCore:3.1.0`. Its source is `C:\Users\LeonS\Desktop\Mcc\plugin-src\com\mcm\api\*.java`. **Read all four files first**: `McmGame`, `McmGameContext`, `McmApi`, `McmVoteProvider`.
 
 ## Project layout (Maven)
 - `game-plugins\<YourGame>\pom.xml`
@@ -19,7 +19,7 @@ Each game is a standalone Paper plugin that plugs into the server's tournament p
   - `depend: [MinecraftMondayCore]`
   - main class in onEnable: `McmApi.registerGame(this, new YourGame(this))`
   - onDisable: stop if running
-- Build: `mvn -B -q package`, then copy the jar to `C:\Users\USER\Desktop\Mcc\game-plugins\_built\`. Create that folder if needed.
+- Build: `mvn -B -q package`, then copy the jar to `C:\Users\LeonS\Desktop\Mcc\game-plugins\_built\`. Create that folder if needed.
 - No shaded dependencies unless really needed. Use only Paper API.
 
 ## How a game must behave (API contract)

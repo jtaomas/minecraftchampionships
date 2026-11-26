@@ -1,0 +1,94 @@
+{
+  "id": "fancy_flamingos",
+  "name": "Fancy Flamingos",
+  "debut": "MCC R2",
+  "stars": 4,
+  "status": "approximate",
+  "gold": true,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-FancyFlamigos.png",
+  "floor": [
+    "ggggggg",
+    "gwwwwwg",
+    "gwwwwwg",
+    "gwwwwwg",
+    "gwwwwwg",
+    "gwwwwwg",
+    "ggggggg"
+  ],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "w": "minecraft:water",
+    "y": "minecraft:yellow_stained_glass",
+    "c": "minecraft:cobblestone",
+    "s": "minecraft:sand",
+    "p": "minecraft:pink_concrete",
+    "f": "minecraft:oxeye_daisy",
+    "n": "minecraft:spruce_fence",
+    "L": "minecraft:stripped_spruce_log[axis=x]",
+    "e": "minecraft:polished_blackstone_button[face=wall,facing=south,powered=false]"
+  },
+  "layers": [
+    [
+      "yyyyyyy",
+      "ygggssy",
+      "ygggssy",
+      "yg..ccy",
+      "yg..ccy",
+      "yg..ccy",
+      "yyyyyyy"
+    ],
+    [
+      ".......",
+      "...f.ss",
+      "....ss.",
+      "....n..",
+      ".n.....",
+      ".f.....",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "....n..",
+      ".pp....",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "....pp.",
+      "Ln.....",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".....nL",
+      "Lp.....",
+      ".e.....",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".....pL",
+      ".....e.",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the pond is dug one block into the floor in the render; recreated with the water in the floor layer and the yellow glass rim, banks and path raised one layer, so the rim sits one block above the plinth instead of flush",
+    "flamingo legs are hidden behind the banks; left bird 1 fence leg, right bird 2 fence legs assumed",
+    "beaks read as stripped spruce logs lying east-west (axis=x), 2 blocks with a lower tip block",
+    "eyes are item-frame-like art in the render; substituted with polished blackstone buttons",
+    "sand mound (2x2, 1 high), path shape (2 wide, rows 3-5) and flower positions estimated from the perspective",
+    "yellow rim read as yellow stained glass blocks (bright inset border in the render)"
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "id": "stormy_day",
+  "name": "Stormy Day",
+  "debut": "MCC 24",
+  "stars": 4,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Stormy_Day.png",
+  "floor": [
+    "bbbbbbb",
+    "bbbbbbb",
+    "tbbccbb",
+    "tbbccbb",
+    "ttcctbb",
+    "ttcctbb",
+    "ttcctbb"
+  ],
+  "palette": {
+    "b": "minecraft:blue_concrete",
+    "c": "minecraft:cyan_concrete",
+    "t": "minecraft:cyan_terracotta",
+    "k": "minecraft:black_concrete",
+    "g": "minecraft:light_gray_concrete",
+    "l": "minecraft:lime_stained_glass"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      ".......",
+      "....gg.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "ggg....",
+      "....l..",
+      "....g..",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".g.....",
+      "....l..",
+      "....g..",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".g..l..",
+      ".......",
+      "....g..",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".g..l..",
+      ".......",
+      "....g..",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".g...l.",
+      ".......",
+      "....g..",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "..kkkkk",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "...kkk.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "...kkk.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "status": "approximate",
+  "guessed": [
+    "black cloud read as black concrete: a 5-wide bar with a 3-wide block on top, at the back row",
+    "the two grey shapes are tornadoes: a floating debris bar (3 wide left, 2 wide right) with a 1-wide funnel rising to the cloud",
+    "the left debris bar floats one block above the floor exactly as in the render; there is no support",
+    "the lightning is a lime stained-glass zigzag: one block under the cloud's right edge, two left of it, then two down and one row forward to the floor",
+    "the stormy-sea floor is a patchwork of blue concrete, cyan concrete and cyan terracotta; the exact patches are partly hidden by the tornadoes",
+    "the cloud and funnels are 1 block deep; the render only shows a thin side face"
+  ]
+}

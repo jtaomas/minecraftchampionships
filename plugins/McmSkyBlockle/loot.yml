@@ -1,0 +1,200 @@
+# Sky Blockle loot tables by island type.
+#
+# Classic Sky Blockle chests are FIXED, hand-arranged layouts (video research skyblockle_video.md §1: the start
+# and generator chests are identical slot for slot in MCC 1 and MCC 4). Observed chests use "slots" layouts.
+# Tables marked "DEFAULT, NOT RESEARCHED" were never opened on camera and keep provisional weighted tiers.
+#
+# Table format:
+#   slots:                fixed layout, slot -> item. Slot = number (0-26) or "r<row>c<col>" (row 1-3, col 1-9)
+#   rolls: 4-6            number of weighted picks per chest (a number or "min-max"; 0/absent = none)
+#   fixed: [...]          items always added (random empty slots)
+#   items: [...]          weighted pool; each pick adds one stack
+# Item format (also used by start-inventory in config.yml):
+#   {item: <material>, amount: 3 | "1-4", weight: 10, enchants: {sharpness: 1}, potion: healing, name: "&aText"}
+#   - for enchanted_book, "enchants" become stored enchantments
+#   - potion / splash_potion / lingering_potion / tipped_arrow take "potion: <potion type>"
+# Table choice: <type>_<variant> if present (variant from the map, or inferred for MID chests from the block
+# under the chest: pillar / spike / grass), else <type>.
+# Chests are filled once when the map is built (see loot.refill-at in config.yml).
+
+# Start island chest - observed (video #1/#2, H). Unconfirmed IDs: terracotta (orange-brown block),
+# wheat_seeds (green seeds), oak_sapling (oak/birch-type sapling).
+start:
+  slots:
+    r1c4: {item: sugar_cane, amount: 9}
+    r1c6: {item: terracotta, amount: 6}
+    r2c2: {item: oak_sapling, amount: 1}
+    r2c4: {item: wheat_seeds, amount: 3}
+    r2c5: {item: apple, amount: 6}
+    r2c6: {item: snowball, amount: 8}
+    r2c8: {item: acacia_sapling, amount: 1}
+    r3c4: {item: milk_bucket}
+    r3c5: {item: milk_bucket}
+    r3c6: {item: milk_bucket}
+
+# Generator hut chest - observed (video #3/#4, H). Unconfirmed: red_mushroom, flint, ice (ice/packed ice),
+# bottle count (4-5).
+generator:
+  slots:
+    r1c2: {item: red_mushroom, amount: 1}
+    r1c9: {item: flint, amount: 3}
+    r2c4: {item: leather, amount: 12}
+    r2c5: {item: ice, amount: 6}
+    r2c6: {item: egg, amount: 3}
+    r3c2: {item: coal, amount: 3}
+    r3c4: {item: water_bucket}
+    r3c6: {item: lava_bucket}
+    r3c8: {item: experience_bottle, amount: 4}
+
+# Hidden chest inside the generator island's rock - observed (video #5, M). Used for GENERATOR chests with
+# variant "hidden" (SkyMap buries one in every generator island's rock). "book (enchanted?)": enchantment unknown, plain book here.
+generator_hidden:
+  slots:
+    r2c5: {item: potato, amount: 1}
+    r2c6: {item: book, amount: 1}
+    r2c7: {item: experience_bottle, amount: 1}
+
+# Generic MID (no/unknown variant): the unidentified stone mid structure - observed (video #11, L/M).
+# "green block x8" unconfirmed (melon or slime) - melon here.
+mid:
+  slots:
+    r1c5: {item: tnt, amount: 1}
+    r2c5: {item: chainmail_leggings}
+    r3c3: {item: cobweb, amount: 3}
+    r3c4: {item: sandstone, amount: 8}
+    r3c5: {item: redstone_torch, amount: 1}
+    r3c7: {item: melon, amount: 8}
+    r3c8: {item: snowball, amount: 2}
+
+# Tall pillar / tower top - observed TNT-tower chest (video #8, H; #9 had 2 pearls + 1 bone).
+mid_pillar:
+  slots:
+    r1c5: {item: diamond, amount: 1}
+    r2c2: {item: redstone, amount: 3}
+    r2c4: {item: snowball, amount: 4}
+    r2c6: {item: ender_pearl, amount: 1}
+    r3c5: {item: cobweb, amount: 3}
+
+# Spike / small rock islet - observed red terracotta islet chest (video #12, M).
+mid_spike:
+  slots:
+    r1c4: {item: porkchop, amount: 2}
+    r1c5: {item: experience_bottle, amount: 1}
+    r1c6: {item: beef, amount: 2}
+    r2c4: {item: lava_bucket}
+    r2c5: {item: coal, amount: 5}
+    r2c6: {item: water_bucket}
+    r3c3: {item: snowball, amount: 8}
+    r3c4: {item: mossy_cobblestone, amount: 8}
+    r3c7: {item: diamond, amount: 1}
+
+# Showpiece island - observed "ship" chest (video #7, H trident/diamond, M rest). Slots of bone x3 and
+# snowball x4 were not seen (placed at r2c2 / r2c8). Used for MID chests with variant "showpiece".
+mid_showpiece:
+  slots:
+    r1c2: {item: wheat, amount: 12}
+    r1c4: {item: cobweb, amount: 2}
+    r1c5: {item: experience_bottle, amount: 4}
+    r1c6: {item: cobweb, amount: 2}
+    r1c8: {item: melon_slice, amount: 1}
+    r2c2: {item: bone, amount: 3}
+    r2c4: {item: water_bucket}
+    r2c5: {item: diamond, amount: 2}
+    r2c6: {item: lava_bucket}
+    r2c8: {item: snowball, amount: 4}
+    r3c2: {item: sandstone, amount: 10}
+    r3c3: {item: coal, amount: 3}
+    r3c4: {item: oak_door, amount: 1}
+    r3c5: {item: trident}
+
+# Between-team grass island - DEFAULT, NOT RESEARCHED (never opened on camera).
+mid_grass:
+  rolls: 4-6
+  items:
+    - {item: stone_pickaxe, weight: 8}
+    - {item: stone_sword, weight: 8}
+    - {item: stone_axe, weight: 6}
+    - {item: iron_pickaxe, weight: 4}
+    - {item: iron_sword, weight: 4}
+    - {item: bow, weight: 5}
+    - {item: arrow, amount: 4-8, weight: 7}
+    - {item: cobblestone, amount: 8-16, weight: 8}
+    - {item: oak_planks, amount: 8-16, weight: 8}
+    - {item: dirt, amount: 8-16, weight: 5}
+    - {item: cooked_beef, amount: 2-4, weight: 7}
+    - {item: bread, amount: 2-4, weight: 6}
+
+# Fort - DEFAULT, NOT RESEARCHED (seen from outside only).
+fort:
+  rolls: 4-6
+  items:
+    - {item: iron_helmet, weight: 6}
+    - {item: iron_chestplate, weight: 5}
+    - {item: iron_leggings, weight: 5}
+    - {item: iron_boots, weight: 6}
+    - {item: shield, weight: 6}
+    - {item: ender_pearl, amount: 1-2, weight: 6}
+    - {item: iron_sword, weight: 4}
+    - {item: arrow, amount: 4-8, weight: 5}
+    - {item: cooked_beef, amount: 2-4, weight: 5}
+    - {item: cobblestone, amount: 8-16, weight: 5}
+
+# Brewing deck - DEFAULT, NOT RESEARCHED (brewing never seen on camera).
+brewing:
+  rolls: 3-5
+  fixed:
+    - {item: blaze_powder, amount: 2}
+  items:
+    - {item: nether_wart, amount: 2-4, weight: 8}
+    - {item: glass_bottle, amount: 2-3, weight: 6}
+    - {item: glistering_melon_slice, amount: 1-2, weight: 5}
+    - {item: sugar, amount: 1-2, weight: 5}
+    - {item: potion, potion: healing, weight: 5}
+    - {item: arrow, amount: 2-4, weight: 5}
+    - {item: cobweb, amount: 1-2, weight: 4}
+
+# Enchanting deck chest - observed (video #10, H books/lapis/XP, M others). The third row held ~8 level-I books
+# (Power, Sharpness, Protection seen; Loyalty seen in inventories) - exact order/mix not readable.
+# Unconfirmed: green block x8 (melon here), orange orb (fire_charge here).
+enchanting:
+  slots:
+    r1c2: {item: lapis_lazuli, amount: 6}
+    r1c3: {item: melon, amount: 8}
+    r1c4: {item: coal, amount: 2}
+    r1c5: {item: experience_bottle, amount: 3}
+    r1c7: {item: cobweb, amount: 5}
+    r1c8: {item: fire_charge, amount: 1}
+    r2c6: {item: bone, amount: 1}
+    r3c1: {item: enchanted_book, enchants: {power: 1}}
+    r3c2: {item: enchanted_book, enchants: {sharpness: 1}}
+    r3c3: {item: enchanted_book, enchants: {protection: 1}}
+    r3c4: {item: enchanted_book, enchants: {power: 1}}
+    r3c5: {item: enchanted_book, enchants: {sharpness: 1}}
+    r3c6: {item: enchanted_book, enchants: {protection: 1}}
+    r3c7: {item: enchanted_book, enchants: {loyalty: 1}}
+    r3c8: {item: enchanted_book, enchants: {protection: 1}}
+
+# Central castle - DEFAULT, NOT RESEARCHED (no castle chest opened on camera).
+castle:
+  rolls: 5-7
+  items:
+    - {item: diamond_sword, weight: 6}
+    - {item: diamond_helmet, weight: 5}
+    - {item: diamond_chestplate, weight: 4}
+    - {item: diamond_leggings, weight: 4}
+    - {item: diamond_boots, weight: 5}
+    - {item: diamond_pickaxe, weight: 3}
+    - {item: golden_apple, amount: 1-2, weight: 7}
+    - {item: enchanted_book, enchants: {sharpness: 2}, weight: 4}
+    - {item: enchanted_book, enchants: {protection: 2}, weight: 4}
+    - {item: enchanted_book, enchants: {power: 2}, weight: 3}
+    - {item: ender_pearl, amount: 1-2, weight: 4}
+    - {item: arrow, amount: 8-16, weight: 4}
+
+# Contents of every brewing stand block in the map (slot 0-2 bottles, 3 ingredient, 4 fuel).
+# DEFAULT, NOT RESEARCHED for classic (remix S4: 3 awkward potions pre-loaded).
+brewing_stand:
+  slots:
+    0: {item: potion, potion: awkward}
+    1: {item: potion, potion: awkward}
+    2: {item: potion, potion: awkward}

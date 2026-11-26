@@ -44,6 +44,13 @@ import java.util.zip.GZIPInputStream;
  *   tag EASY|MEDIUM|HARD             difficulty sign (bonus paths)
  *   credit KEY
  * end
+ * builtin SLOT KEY THEME LEVEL       a moving-mechanic obstacle from {@link Mechanics} (conveyor, bars, ledges, doors,
+ *                                    barrels, press, beams, checker) in this slot, themed mesa|garden|jungle|ice, level 1..3
+ * classic SLOT FROMSLOT              the built-in (classic course) obstacle of FROMSLOT in this slot, e.g. classic B1-3 B5-3
+ * zone N NAME...                     hub / zone name of stage N (default: the classic zone names)
+ * mapcredit TEXT...                  credit line on the start island and in /pw info
+ * endname EASY|MEDIUM|HARD TEXT...   the ending's name on its fork gate
+ * map ID                             the map id (mcc6, mcc10, ...)
  * </pre>
  */
 final class ImportedCourse {
@@ -86,6 +93,14 @@ final class ImportedCourse {
     final Map<String, String> credits = new LinkedHashMap<>();
     final Map<String, Section> sections = new LinkedHashMap<>();
     final List<String> problems = new ArrayList<>();
+    /** builtin lines: slot -> {key, theme, level}. */
+    final Map<String, String[]> builtins = new LinkedHashMap<>();
+    /** classic lines: slot -> classic slot. */
+    final Map<String, String> classics = new LinkedHashMap<>();
+    final Map<Integer, String> zones = new HashMap<>();
+    String mapCredit = "", mapId = "imported";
+    /** endname EASY|MEDIUM|HARD text: the ending's name on its fork gate. */
+    final Map<String, String> endNames = new HashMap<>();
     private final Map<String, Object[]> pieceCache = new HashMap<>();
 
     private ImportedCourse(File dir) { this.dir = dir; }
@@ -96,6 +111,7 @@ final class ImportedCourse {
         File f = new File(dir, "course.txt");
         if (!f.isFile()) return null;
         ImportedCourse ic = new ImportedCourse(dir);
+        ic.mapId = dir.getName().toLowerCase(Locale.ROOT);
         try {
             ic.parse(Files.readAllLines(f.toPath(), StandardCharsets.UTF_8));
             File r = new File(dir, "routes.txt");
@@ -158,6 +174,12 @@ final class ImportedCourse {
                 }
                 switch (t[0]) {
                     case "credit" -> credits.put(t[1], rest(t, 2));
+                    case "builtin" -> builtins.put(t[1].toUpperCase(Locale.ROOT), new String[]{t[2], t.length > 3 ? t[3] : "mesa", t.length > 4 ? t[4] : "1"});
+                    case "classic" -> classics.put(t[1].toUpperCase(Locale.ROOT), t[2].toUpperCase(Locale.ROOT));
+                    case "zone" -> zones.put(i(t[1]), rest(t, 2));
+                    case "mapcredit" -> mapCredit = rest(t, 1);
+                    case "endname" -> endNames.put(t[1].toUpperCase(Locale.ROOT), rest(t, 2));
+                    case "map" -> mapId = t[1].toLowerCase(Locale.ROOT);
                     case "section" -> {
                         cur = new Section();
                         cur.slot = t[1].toUpperCase(Locale.ROOT);
@@ -210,6 +232,7 @@ final class ImportedCourse {
         try { bl = blocks(s); } catch (IOException | RuntimeException e) { problems.add(slot.id() + ": " + e); return null; }
         Ob o = new Ob(w, slot, s.name, s.idea);
         o.imported = true;
+        o.replica = true;
         o.credit = credit(s);
         o.killDepth = s.killDepth;
         if (slot.kind() == com.mcm.games.parkourwarrior.CourseModel.Kind.BONUS) o.difficultyTag = s.tag;

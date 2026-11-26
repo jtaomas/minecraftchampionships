@@ -1,0 +1,59 @@
+{
+  "id": "turtle_plush",
+  "name": "Turtle Plush",
+  "debut": "MCC 14",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Turtle_Plush.png",
+  "floor": [
+    "sssswww",
+    "gssswww",
+    "ggsssww",
+    "ggsssww",
+    "ggssssw",
+    "ggsssss",
+    "ggsssss"
+  ],
+  "palette": {
+    "s": "minecraft:sand",
+    "g": "minecraft:grass_block",
+    "w": "minecraft:water",
+    "o": "minecraft:oak_planks",
+    "l": "minecraft:lime_concrete"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      ".l.l...",
+      ".......",
+      ".l.l...",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..ooo..",
+      "..ooo.l",
+      "..ooo..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "..ooo..",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the shell reads as oak planks with a 1-block ridge along its back; its two-tone look could be one wood in shadow",
+    "legs are four lime concrete blocks at the shell corners, one block of the shell resting on them",
+    "the head is a lime concrete block at the shell side; its small dark eye is a 2-pixel decal and is left out",
+    "the sand / grass / water beach layout is inferred from the visible diagonal shoreline"
+  ]
+}

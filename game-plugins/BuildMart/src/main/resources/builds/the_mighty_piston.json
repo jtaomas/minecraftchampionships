@@ -1,0 +1,77 @@
+{
+  "id": "the_mighty_piston",
+  "name": "The Mighty Piston",
+  "debut": "MCC 14",
+  "stars": 5,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-The_Mighty_Piston.png",
+  "floor": [
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb"
+  ],
+  "palette": {
+    "b": "minecraft:stone_bricks",
+    "s": "minecraft:slime_block",
+    "p": "minecraft:oak_planks"
+  },
+  "layers": [
+    [
+      ".......",
+      ".sssss.",
+      ".sssss.",
+      ".sssss.",
+      ".sssss.",
+      ".sssss.",
+      "......."
+    ],
+    [
+      ".......",
+      ".sssss.",
+      ".sssss.",
+      ".sspss.",
+      ".sssss.",
+      ".s...s.",
+      "......."
+    ],
+    [
+      ".......",
+      ".sssss.",
+      ".sssss.",
+      ".ss.ss.",
+      ".sssss.",
+      ".s...s.",
+      "......."
+    ],
+    [
+      ".......",
+      ".sssss.",
+      ".sssss.",
+      ".ss.ss.",
+      ".sssss.",
+      ".s...s.",
+      "......."
+    ],
+    [
+      ".......",
+      ".sssss.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "status": "approximate",
+  "gold": true,
+  "guessed": [
+    "slime is read as slime blocks, so the whole frame is translucent in the render; the hidden inner/back faces are filled as a 5x5x3 U-wall plus a 3x3 tube",
+    "the tan piston head in the centre is read as oak planks (gold tint comes from the slime in front of it)",
+    "the stone-brick floor and the 5x5 slime platform are clear; the platform is solid because the underside is hidden",
+    "the back wall is one block taller than the side and inner walls, as the render shows",
+    "the piston head is 1 block, recessed one layer below the top of the 3x3 slime tube"
+  ]
+}

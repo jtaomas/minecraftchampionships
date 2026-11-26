@@ -93,6 +93,12 @@ public final class SkyBlockleGame implements McmGame {
         earned.merge(u, pts, Integer::sum);
     }
 
+    void awardKill(UUID killer, int pts, UUID victim, String victimName, String reason) {
+        if (pts == 0 || ctx == null) return;
+        ctx.addKillCoins(killer, pts, victim, victimName, reason);
+        earned.merge(killer, pts, Integer::sum);
+    }
+
     public SkyBlockleGame(JavaPlugin plugin) {
         this.plugin = plugin;
         this.map = new MapWorld(plugin);
@@ -600,27 +606,28 @@ public final class SkyBlockleGame implements McmGame {
         if (killer != null) {
             if (enemyKill) {
                 kills.merge(killer, 1, Integer::sum);
-                if (scoring) award(killer, settings.killPoints, "Sky Blockle elimination");
+                if (scoring) awardKill(killer, settings.killPoints, victim, names.getOrDefault(victim, "a player"),
+                        "You eliminated " + names.getOrDefault(victim, "a player"));
             } else if (scoring) {
                 award(killer, settings.teamKillPoints, "Sky Blockle team kill");
             }
         }
         Player kp = killer == null ? null : Bukkit.getPlayer(killer);
 
-        // +N to every other living player
-        if (scoring) for (UUID u : new ArrayList<>(alive)) award(u, settings.surviveDeathPoints, "Sky Blockle survival");
-
-        // chat feed (video research): "[+N] <victim> <death message>" for the living, plain for everyone else;
-        // "[+N] You killed <victim>!" for the killer
+        // chat feed (video research): the core prints "[+N] <victim> <death message>" for the living (that line is the
+        // survival coin award), a plain skull line for everyone else
         String death = coloured(victim) + ChatColor.GRAY + " " + cause
                 + (killer != null && enemyKill ? (cause.startsWith("was ") ? " by " : " whilst fighting ") + coloured(killer) : "");
+        boolean survivePays = scoring && settings.surviveDeathPoints != 0;
+        List<UUID> survivors = new ArrayList<>(alive);
+        // +N to every other living player
+        if (scoring) for (UUID u : survivors) award(u, settings.surviveDeathPoints, ChatColor.stripColor(death));
         for (Player o : Bukkit.getOnlinePlayers()) {
-            boolean living = alive.contains(o.getUniqueId());
-            String prefix = scoring && living && settings.surviveDeathPoints != 0 ? ChatColor.GREEN + "[+" + settings.surviveDeathPoints + "] " : ChatColor.RED + "☠ ";
-            o.sendMessage(prefix + death);
+            if (survivePays && survivors.contains(o.getUniqueId())) continue;
+            o.sendMessage(ChatColor.RED + "☠ " + death);
         }
-        if (kp != null && enemyKill) {
-            kp.sendMessage((scoring && settings.killPoints != 0 ? ChatColor.GOLD + "[+" + settings.killPoints + "] " : "") + ChatColor.GOLD + "You killed " + coloured(victim) + ChatColor.GOLD + "!");
+        if (kp != null && enemyKill && !(scoring && settings.killPoints != 0)) {
+            kp.sendMessage(ChatColor.GOLD + "You killed " + coloured(victim) + ChatColor.GOLD + "!");
             McmFx.actionBar(kp, ChatColor.GOLD + "⚔ Eliminated " + coloured(victim));
             McmFx.sound(kp, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.6f);
         }
@@ -629,7 +636,6 @@ public final class SkyBlockleGame implements McmGame {
             McmFx.sound(p, Sound.ENTITY_ITEM_BREAK, 1f, 0.6f);
             McmFx.burst(p.getLocation().add(0, 1, 0), McmFx.colorOf(side == null ? ChatColor.WHITE : sideColour.getOrDefault(side, ChatColor.WHITE)), 40);
         }
-        if (scoring && settings.surviveDeathPoints != 0) McmFx.actionBar(onlineOf(alive), ChatColor.GREEN + "+" + settings.surviveDeathPoints + " survival");
         if (settings.announceRemaining.contains(alive.size()) && alive.size() > 0 && aliveSides().size() > 1) {
             ctx.broadcast(ChatColor.YELLOW + "[▶] Only " + alive.size() + " players remain!");
         }

@@ -1,0 +1,35 @@
+{
+  "id": "seaweed",
+  "name": "Seaweed",
+  "debut": "MCC P23",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM_-_Seaweed.png",
+  "floor": [
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss"
+  ],
+  "palette": {
+    "s": "minecraft:sand",
+    "p": "minecraft:prismarine",
+    "k": "minecraft:dried_kelp_block"
+  },
+  "layers": [
+    [".......", ".......", ".......", "...pp..", "k..k...", "k......", "......."],
+    [".......", ".......", ".......", ".ppppp.", ".......", ".......", "......."],
+    [".......", ".......", ".......", "pp.pppp", ".......", ".......", "......."],
+    [".......", ".......", ".......", "..pp.pp", ".......", ".......", "......."]
+  ],
+  "guessed": [
+    "the frond is a flat one-block-thick pixel shape standing on the sand; its silhouette is read from a low, foreshortened view and is approximated",
+    "the 1x1 hole in the upper left of the frond is reproduced as the gap in layer 3",
+    "two dried kelp blocks support the frond at its left and centre base, plus one loose kelp block on the sand in front-left",
+    "prismarine chosen for the teal seaweed texture; dried kelp block for the dark green lumps",
+    "prismarine used for the whole frond, including the two arms that reach out to the right"
+  ]
+}

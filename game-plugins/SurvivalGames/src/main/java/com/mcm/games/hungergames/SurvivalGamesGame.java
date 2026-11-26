@@ -953,11 +953,13 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         int killPts = plugin.getConfig().getInt("coins.kill", 65);       // MCC: personal elimination
         int survPts = plugin.getConfig().getInt("coins.outlive", 3);     // MCC: another player eliminated, you alive
 
+        Player victimPlayer = Bukkit.getPlayer(victimId);
+        String victimName = victimPlayer != null ? victimPlayer.getName() : "a player";
         if (killer != null && !killer.getUniqueId().equals(victimId) && killPts > 0) {
-            ctx.addCoins(killer.getUniqueId(), killPts, "Elimination");
+            ctx.addKillCoins(killer.getUniqueId(), killPts, victimId, victimName, "You eliminated " + victimName);
         }
         if (survPts > 0) for (UUID survivor : alive) {
-            ctx.addCoins(survivor, survPts, "Survived elimination");
+            ctx.addCoins(survivor, survPts, victimName + " was eliminated");
         }
 
         String victimSide = sideOfPlayer.get(victimId);

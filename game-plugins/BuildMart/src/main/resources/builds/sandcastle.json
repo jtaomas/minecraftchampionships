@@ -1,0 +1,77 @@
+{
+  "id": "sandcastle",
+  "name": "Sandcastle",
+  "debut": "MCC 6",
+  "stars": 3,
+  "status": "done",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Sandcastle.png",
+  "floor": [
+    "nnnnnnn",
+    "nnnnnnn",
+    "nnnnnnn",
+    "nnnnnnn",
+    "nnnnnnn",
+    "nnnnnnn",
+    "nnnnnnn"
+  ],
+  "palette": {
+    "n": "minecraft:sand",
+    "f": "minecraft:birch_fence",
+    "o": "minecraft:orange_concrete",
+    "r": "minecraft:red_concrete"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".nnnnn.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".nnnnn.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".f.n.f.",
+      ".n.n.n.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "...f...",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "...or..",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "castle is one block deep (only the front is visible); the back is a plain copy",
+    "two squat side towers and a taller centre keep on a 5-wide curtain wall, 3 / 3 / 2 blocks tall",
+    "the slim posts beside the towers read as fences; the flag pole is a third fence post on the keep",
+    "the flag is two blocks, orange concrete and red concrete, to the right of the pole",
+    "sand used for both the plot floor and the castle (the render's castle blocks have the same grain)"
+  ]
+}

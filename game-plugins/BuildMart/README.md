@@ -1,35 +1,49 @@
 # Build Mart (McmBuildMart)
 
-Play with `/mcm play buildmart`. Display name: **Build Mart**. World: `mcc_buildmart` (void world, rebuilt in code; the folder is wiped on every server start).
+Play with `/mcm play buildmart`. Display name: **Build Mart**. World: `mcc_buildmart` (void world, generated in code; it is
+kept between games and regenerated when the map version changes).
 
 ## Rules
-- Each side (tournament team or solo player) gets its own platform on a ring around the central mart:
-  a 5x5 **build plot** (left, team-coloured border) and a **pedestal** (right, quartz border) showing the current target build,
-  with its name, star rating and material list floating above it.
-- The **mart** in the middle has 27 stalls, one material each (2x2x3 columns, sand is 1 layer high). Mined stall blocks go straight
-  into your inventory and regrow after 3 seconds.
-- Four **shop counters** turn raw materials into crafted blocks (right-click, sneak-right-click for up to 16 at once):
-  Glassworks 2 Sand → 1 Glass, Mason 2 Cobblestone → 1 Stone Bricks, Kiln 2 Clay → 1 Bricks, Jeweller 1 Iron Block + 1 Glowstone → 2 Gold Blocks.
-- Copy the target on your plot. Every block has to be the same material in the same spot (rotation/block states are ignored, extra blocks count as wrong).
-  The light grey floor tiles show which columns the build uses. The action bar shows `placed/needed` and how many wrong blocks you have.
-- When the plot matches, the side scores, the plot is cleared and the next build appears. Every side gets the same order of builds
-  (easier ones first, then random).
-- **Big Sales:** every 75 s three random stalls go on sale for 40 s and restock in 0.5 s.
-- Everyone gets unbreakable Efficiency V iron pickaxe/axe/shovel and shears, plus Haste II, and can fly. No PvP, no fall damage, no hunger.
-  You can only place blocks on your own plot and only break blocks on your own plot (you get them back) or at mart stalls.
-- Falling into the void sends you back to your platform and you lose the blocks you were carrying.
-- 10 s preview, then 8 minutes of play.
+- Each side (tournament team or solo player) gets a private **build zone**: three plot pairs side by side, each pair a
+  **reference plot** (back) and a **build plot** (front) — a 7x7 surface with the build's own themed floor on a white quartz
+  plinth. The reference copy of the target build stands on the back plot.
+- The zone also holds a portal to the mall, three crafting tables, a stonecutter, three furnaces and a chest per plot.
+- **Blueprint Gallery** (in the mall plaza): seven pads, each showing one build with a floating name/star/material hologram
+  and a gold post with a red button in front of it. Right-click the button to send that build to your first free plot; three
+  builds at a time, and a completed build frees its plot. Unselected pads restock every 90 s; a pad whose build is on a
+  team's plot stays until that build is completed.
+- **Gold Build**: from 4:00 into the game, then every 2:00, the gold pad carries a **7-star** build. It has **no reference
+  copy** — memorise it in the gallery — and you have **2 minutes**; if it is unfinished when its time is up, the blocks on
+  that plot are removed and it cannot be completed later.
+- The **mart**: five department halls (LUMBER, OUTDOOR, STONE, ORES, COLOURS) packed with mineable shelves, plus four
+  service counters (Water Bucket, Shears, Flint and Steel, Coal). Mined blocks go straight into your inventory and the shelf
+  block regrows after 3 s.
+- Copy the target on your build plot: same block, same spot, same orientation (stairs, slabs, doors, log axis). Connection
+  shapes (stair shape, fence/rail links) and door hinges are ignored; extra blocks count as wrong. The action bar shows
+  `placed/needed` and how many wrong blocks there are.
+- Everyone gets unbreakable diamond pickaxe/axe/shovel and shears (Efficiency IV) and a **Shopping Cart** in hotbar slot 5:
+  use it on the mall floor (frosted ice) to ride the trolley. No PvP, no fall damage, no hunger.
+- You can only place blocks on your own team's build plots and only break blocks on your own plot (you get them back) or at
+  the mart shelves.
+- Falling through a floor pit sends you back to your build zone and **loses every resource you are carrying**.
+- 20 s pre-game (admins can `/mcm skipwait`), then **12 minutes**.
 
-## Scoring (MCC coins, MCC 3-13 rules; config `coins.*`, see `../COINS.md`)
+## Scoring (MCC coins, MCC 3-13 rules plus the MCC 14 gold; config `coins.*`, see `../COINS.md`)
 - Completed build: **30 coins to each player** of the team, **2 less** every time any team has completed that build (floor 10, ours).
-- End of game: each player gets the % of each unfinished build the team filled in, times that build's current value.
+- **Gold Build:** its value **plus 30** (`coins.gold-bonus`), i.e. double a regular build at the base value, which is how
+  MCC 14 paid golden builds.
+- End of game: each player gets the % of each unfinished build the team filled in, times that build's current value. Gold
+  builds are excluded from that, as in MCC.
 - The core multiplies every award by the event multiplier (x1.0 ... x3.0).
 
 ## Known limitations
-- No build selection gallery or Gold Builds from the original; one build at a time per side.
+- The gold is taken into the first free normal plot: the MCC 13 build zone has no fourth 7x7 plot. It keeps "no reference
+  copy", 7 stars, the 2-minute window and the wipe on failure.
+- The gallery is in the mall plaza; the MCC 3-13 map never had one.
+- Gallery holograms are text only (item icons need a gallery UI in the resource pack).
 - No dedicated spectator stand (spectators fly around in spectator mode).
-- Block states/orientation are ignored when checking a build.
-- Late joiners are left to the core's default (spectator).
+- Star ratings of the classic builds are ours (MCC published none for them), and only two builds are 1-star and two 5-star.
+- Late joiners are put on their team if the game is running, otherwise the core's default (spectator).
 
 ## Classic Mall v12 (owner fix list, Nov 2026)
 - Departments are packed with **server-rack shelving** (MCC 13's warehouse racks, 021810, dressed as a data centre on the

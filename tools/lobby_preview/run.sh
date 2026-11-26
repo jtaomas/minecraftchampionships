@@ -1,8 +1,8 @@
 #!/bin/bash
 # usage: run.sh tag  -> regenerates dumps + renders standard views into previews/lobby/<tag>_*.png
 set -e
-cd /c/Users/USER/Desktop/Mcc/tools/lobby_preview
-J='/c/Users/USER/Desktop/java/bin'
+cd /c/Users/LeonS/Desktop/Mcc/tools/lobby_preview
+J='/c/Users/LeonS/Desktop/java/bin'
 TAG=$1
 rm -rf out/*.class out/com
 (cd ../../plugin-src/com/mcm/lobby && "$J/javac" -d ../../../../tools/lobby_preview/out HNoise.java Vox.java HubLayout.java Glyphs.java Draw.java Trees.java Shapes.java BlockFix.java HubGenerator.java HubVenue.java HubPlaza.java HubSights.java HubHarbour.java ../../../../tools/lobby_preview/HubPreview.java)

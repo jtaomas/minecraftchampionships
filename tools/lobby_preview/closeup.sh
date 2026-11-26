@@ -2,8 +2,8 @@
 # usage: closeup.sh TAG [lobby-src-dir]  -> shape-accurate close-ups (stairs, fences, panes, walls, carpets)
 #        into previews/lobby/TAG_*.png  (each block is expanded to R^3 micro-voxels by HubCloseup)
 set -e
-cd /c/Users/USER/Desktop/Mcc/tools/lobby_preview
-J='/c/Users/USER/Desktop/java/bin'
+cd /c/Users/LeonS/Desktop/Mcc/tools/lobby_preview
+J='/c/Users/LeonS/Desktop/java/bin'
 TAG=$1
 SRC=${2:-../../plugin-src/com/mcm/lobby}
 OUT=out_closeup

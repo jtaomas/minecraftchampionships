@@ -1,0 +1,83 @@
+{
+  "id": "rainbow",
+  "name": "Rainbow",
+  "debut": "MCC 3",
+  "stars": 3,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Rainbow.png",
+  "floor": [
+    "LLLLLLL",
+    "LLLLLLL",
+    "LLLLLLL",
+    "LLLLLLL",
+    "LLLLLLL",
+    "LLLLLLL",
+    "LLLLLLL"
+  ],
+  "palette": {
+    "L": "minecraft:lapis_block",
+    "m": "minecraft:magenta_stained_glass",
+    "o": "minecraft:orange_stained_glass",
+    "y": "minecraft:yellow_stained_glass",
+    "l": "minecraft:lime_stained_glass",
+    "c": "minecraft:light_blue_stained_glass",
+    "b": "minecraft:blue_stained_glass",
+    "p": "minecraft:purple_stained_glass",
+    "g": "minecraft:gray_concrete"
+  },
+  "layers": [
+    [
+      "m.....p",
+      "ggg.gg.",
+      "ggg.gg.",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "mo...bp",
+      "gg..g..",
+      "gg..g..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "moylcbp",
+      "g......",
+      "g......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".oylcb.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "..ylc..",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "status": "approximate",
+  "gold": true,
+  "guessed": [
+    "the arch is a flat 1-block-thick stepped rainbow at the back row; its column heights are read from the render as 3,4,5,5,5,4,3 blocks above the floor",
+    "the seven glass colours are read as magenta, orange, yellow, lime, light blue, blue, purple; red and cyan are the other likely choices",
+    "the two grey mounds in front are 3-wide and 2-wide stepped concrete hills, 3 blocks tall; their hidden backs are filled symmetrically",
+    "the deep blue floor is read as lapis blocks (speckled texture); the pale area under the arch is the sky seen through the arch, not a block",
+    "the rainbow's outer legs are partly hidden by the mounds; both legs are filled down to layer 0"
+  ]
+}

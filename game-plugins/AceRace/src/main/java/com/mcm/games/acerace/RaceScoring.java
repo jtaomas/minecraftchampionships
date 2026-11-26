@@ -31,11 +31,11 @@ public final class RaceScoring {
     }
 
     public void checkpoint(McmGameContext ctx, UUID player, int cp, int total) {
-        if (ctx != null && checkpointCoins > 0) ctx.addCoins(player, checkpointCoins, "Checkpoint " + cp + "/" + total);
+        if (ctx != null && checkpointCoins > 0) ctx.addObjectiveCoins(player, checkpointCoins, null, "Checkpoint " + cp + "/" + total + " completed");
     }
 
     public void lap(McmGameContext ctx, UUID player, int lap, int laps) {
-        if (ctx != null && lapCoins > 0 && lap < laps) ctx.addCoins(player, lapCoins, "Lap " + lap + "/" + laps);
+        if (ctx != null && lap < laps) ctx.addObjectiveCoins(player, lapCoins, "LAP COMPLETED!", "Lap " + lap + "/" + laps + " completed");
     }
 
     /** Kept for callers; the finish coins depend on the place and are paid by {@link #place}. */
@@ -53,10 +53,14 @@ public final class RaceScoring {
 
     public void place(McmGameContext ctx, UUID player, int place) {
         if (ctx == null || place < 1) return;
-        int f = finishCoins(place);
-        if (f > 0) ctx.addCoins(player, f, "Finished the race #" + place);
-        int b = placementCoins(place);
-        if (b > 0) ctx.addCoins(player, b, "Placement bonus #" + place);
+        int total = finishCoins(place) + placementCoins(place);
+        ctx.addObjectiveCoins(player, total, "LAP COMPLETED!", "Finished in " + ordinal(place) + " place");
+    }
+
+    private static String ordinal(int n) {
+        int m = n % 100;
+        if (m >= 11 && m <= 13) return n + "th";
+        return n + switch (n % 10) { case 1 -> "st"; case 2 -> "nd"; case 3 -> "rd"; default -> "th"; };
     }
 
     /** Total coins for a place (finish + placement bonus), for HUD/result text. */

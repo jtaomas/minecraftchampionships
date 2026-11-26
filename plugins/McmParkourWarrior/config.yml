@@ -1,0 +1,51 @@
+# Parkour Warrior (spec v2). Values marked "default" are not researched; tune after playtests.
+map:
+  # auto = use com.mcm.games.parkourwarrior.map.CourseMap when present, else the stub course; coursemap; stub
+  generator: auto
+  seed: 20261124
+  # world position of local course coordinates (default: local == world)
+  offset-x: 0
+  offset-y: 0
+  offset-z: 0
+  blocks-per-tick: 30000
+
+game:
+  countdown-seconds: 10            # default
+  time-seconds: 600                # researched: 10:00
+  overtime-seconds: 30             # researched: 30 s, a fall ends the run
+  scroll-removed-at-seconds-left: 30      # researched (30 s mark)
+  ending-switch-until-seconds-left: 30    # researched (30 s mark)
+  bonus-return-delay-ticks: 30     # default: delay before auto-return after a bonus path's 3rd obstacle
+  end-delay-seconds: 6             # default: results shown before returning to the lobby
+  start-leash-blocks: 4            # default: how far players may wander during the countdown
+
+daylight:
+  start-time: 0        # morning (sunrise)
+  end-time: 12500      # sunset
+
+players:
+  translucent: true    # default: everyone invisible + same scoreboard team with "see friendly invisibles" = ghosts
+  hide-within: 0       # default 0 = off; >0 fully hides runners closer than this (blocks) - note: hiding also removes tab entries
+  show-again-at: 5
+  fall-margin-below-course: 8   # default: global fall line below the lowest course block
+
+spectators:
+  bounds-margin: 40    # default
+
+timed:
+  warn-particle: DUST
+
+scoring:   # researched shape, scaled /5 (spec v2)
+  stone: 1
+  bronze: [1, 3, 5, 8, 12]   # total for holding 1..5
+  silver: [2, 5, 9, 14, 20]
+  gold: [3, 6, 11, 18, 28]
+  multiplier:
+    easy: 0.15
+    medium: 0.35
+    hard: 0.80
+  share-weight:
+    none: 0.40
+    easy: 0.45
+    medium: 0.65
+    hard: 1.10

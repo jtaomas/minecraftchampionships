@@ -1,0 +1,89 @@
+{
+  "id": "patio_party",
+  "name": "Patio Party",
+  "debut": "MCC 10",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Patio_Party.png",
+  "floor": [
+    "ddddddd",
+    "dtttttd",
+    "dtttttd",
+    "dtttttd",
+    "dtttttd",
+    "dtttttd",
+    "ddddddd"
+  ],
+  "palette": {
+    "d": "minecraft:gray_concrete",
+    "t": "minecraft:stone",
+    "q": "minecraft:quartz_block",
+    "w": "minecraft:oak_planks",
+    "o": "minecraft:oak_log[axis=y]",
+    "T": "minecraft:oak_trapdoor[facing=south,half=top,open=false]",
+    "b": "minecraft:bricks"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      "wtqqqtw",
+      "wtqqqtw",
+      ".......",
+      "...ww..",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "T..ob..",
+      ".......",
+      ".......",
+      "...ww..",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...o...",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...o...",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...o...",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "...qq..",
+      "...qq..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the pale table is quartz block, the benches stone, the dark paving gray concrete with stone tile bands",
+    "the tall pole is an oak log carrying a 2 x 2 quartz parasol shade",
+    "the two small side pieces are read as oak trapdoors standing on oak plank bases (their slot pattern matches a trapdoor)",
+    "the block on the table is read as a single bricks block; its top is partly cut off by the parasol pole",
+    "the board at the front is read as a 2 x 2 oak plank grill; its small pale panels are too fine to reproduce at block scale"
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "id": "to_arms",
+  "name": "To Arms",
+  "debut": "MCC 20",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-To_arms.png",
+  "floor": [
+    "ddddddd",
+    "ddddddd",
+    "ddddddd",
+    "ddddddd",
+    "ddddddd",
+    "ddddddd",
+    "ddddddd"
+  ],
+  "palette": {
+    "d": "minecraft:cobbled_deepslate",
+    "W": "minecraft:smooth_stone",
+    "p": "minecraft:spruce_planks",
+    "g": "minecraft:white_concrete"
+  },
+  "layers": [
+    [
+      ".......",
+      ".WWW...",
+      ".WWW...",
+      ".WWW.pp",
+      "..pgpgW",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".WWW...",
+      ".WWW...",
+      ".WWW.pg",
+      "..pgpgW",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".WWW...",
+      ".WWW...",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".WW....",
+      ".WW....",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".W.....",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "scene read as a castle corner on a dark cobbled deepslate courtyard: white stone keep at the back left, wooden hoardings with small white windows at the front and right",
+    "keep stepped from 3x3 up to 1x1 over four courses; the hidden back of the keep assumed solid",
+    "hoarding walls taken as one block thick, two courses tall with white concrete window blocks in the upper course",
+    "the white block at the far right read as a short stone tower; its depth assumed",
+    "wood read as spruce planks, white stone as smooth stone, windows as white concrete"
+  ]
+}

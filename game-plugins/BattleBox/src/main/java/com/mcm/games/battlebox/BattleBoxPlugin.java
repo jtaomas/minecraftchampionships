@@ -34,6 +34,12 @@ public final class BattleBoxPlugin extends JavaPlugin {
             cmd.setTabCompleter(this);
         }
         McmApi.registerGame(this, game);
+        BbOverlay.init(this);
+        try {
+            McmApi.registerMapEditable(this, game.id(), new BbEdit(this, game));   // core /mcm mapedit (older cores skip it)
+        } catch (Throwable t) {
+            getLogger().info("Map Edit is not available on this core (" + t.getClass().getSimpleName() + ").");
+        }
     }
 
     @Override

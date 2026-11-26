@@ -151,7 +151,7 @@ public final class Validate {
         if (kit.bridging() && de.lazyCorridor != null) {
             Route.Params lp = Route.Params.expert(true);
             lp.searchBox = de.searchBox;
-            lp.buildBox = d.buildBounds != null ? d.buildBounds : d.playBounds;
+            lp.buildBox = de.lazyBuildBox != null ? de.lazyBuildBox : d.buildBounds != null ? d.buildBounds : d.playBounds;
             lp.corridor = List.of(de.lazyCorridor, d.startStrip);
             lp.blockPenalty = 20;
             lp.noJumps = true;

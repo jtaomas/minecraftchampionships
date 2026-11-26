@@ -1,0 +1,44 @@
+{
+  "id": "christmas_eve",
+  "name": "Christmas Eve",
+  "debut": "MCC 13",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Christmas_Eve.png",
+  "floor": [
+    "qqqqqqq",
+    "qqqqqqq",
+    "qqqqqqq",
+    "qqqqqqq",
+    "qqqqqqq",
+    "qqqqqqq",
+    "qqqqqqq"
+  ],
+  "palette": {
+    "q": "minecraft:quartz_block",
+    "r": "minecraft:red_carpet",
+    "k": "minecraft:black_carpet",
+    "S": "minecraft:stone_bricks",
+    "s": "minecraft:stone_brick_slab[type=bottom]",
+    "c": "minecraft:campfire[facing=south,lit=true]",
+    "p": "minecraft:spruce_planks",
+    "d": "minecraft:spruce_slab[type=bottom]"
+  },
+  "layers": [
+    ["..SSS..", "..ScS..", ".rkkkr.", "prrrr.p", ".rrrrr.", ".rrrrr.", "......."],
+    ["..SSS..", "..S.S..", ".......", "d.....d", ".......", ".......", "......."],
+    ["..SSS..", "..SSS..", "..sss..", ".......", ".......", ".......", "......."],
+    ["..SSS..", "..SSS..", ".......", ".......", ".......", ".......", "......."],
+    ["..sss..", "..sss..", ".......", ".......", ".......", ".......", "......."],
+    ["...S...", "...S...", ".......", ".......", ".......", ".......", "......."]
+  ],
+  "guessed": [
+    "fireplace depth taken as 2 rows (rows 0-1); the back and sides are hidden in the render",
+    "the stepped shoulders above the mantel read as a 2-wide tier in the render; on a 7-wide grid that cannot be centred, so built as one full 3-wide course of stone brick slabs",
+    "firebox is 1 wide and 2 tall with a lit campfire inside; the fire is read as a campfire block",
+    "the two brown boxes beside the rug are read as wooden crates/presents with lids: spruce planks with a spruce slab lid",
+    "black object hanging above the fire is a mob (bat/spider); left out as an entity",
+    "carpet drawn 5 wide over rows 2-5; its hidden part behind the crates assumed",
+    "block count behind the fireplace front face filled solid with stone bricks"
+  ]
+}

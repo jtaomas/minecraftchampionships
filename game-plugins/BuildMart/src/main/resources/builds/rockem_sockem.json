@@ -1,0 +1,82 @@
+{
+  "id": "rockem_sockem",
+  "name": "Rock'em Sock'em",
+  "debut": "MCC 11",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Rockem_Sockem.png",
+  "floor": [
+    "wwwwwww",
+    "wwwwwww",
+    "wwwwwww",
+    "wwwwwww",
+    "wwwwwww",
+    "wwwwwww",
+    "wwwwwww"
+  ],
+  "palette": {
+    "w": "minecraft:white_concrete",
+    "k": "minecraft:black_concrete",
+    "e": "minecraft:quartz_stairs[facing=east,half=bottom]",
+    "v": "minecraft:quartz_stairs[facing=west,half=bottom]",
+    "s": "minecraft:quartz_stairs[facing=south,half=bottom]",
+    "n": "minecraft:quartz_stairs[facing=north,half=bottom]",
+    "i": "minecraft:iron_bars",
+    "R": "minecraft:red_concrete",
+    "B": "minecraft:blue_concrete",
+    "H": "minecraft:oak_planks"
+  },
+  "layers": [
+    [
+      "vnnnnne",
+      "vkkkkke",
+      "vkkkkke",
+      "vkkkkke",
+      "vkkkkke",
+      "vkkkkke",
+      "vssssse"
+    ],
+    [
+      "iiiiiii",
+      "i.....i",
+      "i.....i",
+      "iRR.BBi",
+      "i.....i",
+      "i.....i",
+      "iiiiiii"
+    ],
+    [
+      "iiiiiii",
+      "i.....i",
+      "i.....i",
+      "iRR.BBi",
+      "i.....i",
+      "i.....i",
+      "iiiiiii"
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".RR.BB.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".HH.HH.",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "ring mat read as black concrete, ring edge as quartz stairs (light grey, matching the plinth), cage as iron bars 2 tall",
+    "boxers read as 2 wide x 3 tall red/blue concrete bodies with 1-tall oak plank heads; the dark headband in the render is not block-reproducible and was left out",
+    "boxers' depth (1) and the ring's exact mat/apron sizes estimated from the perspective",
+    "floor read as white concrete"
+  ]
+}

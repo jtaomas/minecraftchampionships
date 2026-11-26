@@ -114,6 +114,23 @@ final class Paster {
         return j;
     }
 
+    /**
+     * Map Edit: paste into a slot nothing has ever used (no margin clear, no stale-set bookkeeping kept afterwards).
+     * Remember to {@link #forgetSlot} when the edit session ends.
+     */
+    Job pasteFresh(String label, World w, int slot, TgMapData d, Map<String, String> choice) {
+        pasted.put(slot, Set.of());
+        return paste(label, w, slot, d, choice);
+    }
+
+    /** Drop the bookkeeping and chunk tickets of a slot (an edit slot that is no longer used). */
+    void forgetSlot(int slot) {
+        pasted.remove(slot);
+        Set<Long> t = tickets.remove(slot);
+        World w = Bukkit.getWorld(TgttosPlugin.WORLD);
+        if (t != null && w != null) for (long k : t) w.removePluginChunkTicket((int) (k >> 32), (int) k, plugin);
+    }
+
     /** Worker: group every write by chunk (clears, then map blocks, then variants - later writes win). */
     private void prepare(Job j, int ox, int oy, int oz, int minY, int maxY) {
         TgMapData d = j.data;

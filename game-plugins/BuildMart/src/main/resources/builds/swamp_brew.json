@@ -1,0 +1,62 @@
+{
+  "id": "swamp_brew",
+  "name": "Swamp Brew",
+  "debut": "MCC 10",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Swamp_Brew.png",
+  "floor": [
+    "zzzzzzz",
+    "zzzzzzz",
+    "zzzzzzz",
+    "zzzzzzz",
+    "zzzzzzz",
+    "zzzzzzz",
+    "zzzzzzz"
+  ],
+  "palette": {
+    "z": "minecraft:podzol",
+    "S": "minecraft:spruce_stairs[facing=south]",
+    "N": "minecraft:spruce_stairs[facing=north]",
+    "E": "minecraft:spruce_stairs[facing=east]",
+    "W": "minecraft:spruce_stairs[facing=west]",
+    "P": "minecraft:spruce_planks",
+    "C": "minecraft:cauldron",
+    "c": "minecraft:cornflower"
+  },
+  "layers": [
+    [
+      ".......",
+      "cSSSSSc",
+      "cEPPPWc",
+      ".EPPPW.",
+      "cEPPPWc",
+      "cNNNNNc",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..PPP..",
+      "..PPP..",
+      "..PPP..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "...C...",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the platform is 2 tiers: a 5 x 5 bottom tier (spruce stairs ring with spruce plank core) and a 3 x 3 spruce plank top tier; the reskin notes mention spruce slabs and stairs",
+    "the cauldron is empty (no water surface is visible); it sits at the centre of the top tier",
+    "the floor is podzol (mottled brown/orange)",
+    "the cornflower positions around the platform are estimated from the four visible clusters"
+  ]
+}

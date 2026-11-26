@@ -746,10 +746,10 @@ public final class DodgeboltGame implements McmGame, Listener {
             Integer sg = groupOf.get(shooter.getUniqueId());
             if (sg != null) matchElims[sg]++;
             kills.merge(shooter.getUniqueId(), 1, Integer::sum);
-            if (ptsElim > 0) ctx.addPoints(shooter.getUniqueId(), ptsElim, "Dodgebolt elimination");
+            if (ptsElim > 0) ctx.addKillCoins(shooter.getUniqueId(), ptsElim, v, victim.getName(), "You eliminated " + victim.getName());
             String sName = (sg == null ? ChatColor.WHITE : groups[sg].color) + shooter.getName();
             ctx.broadcast(ChatColor.DARK_GRAY + "☠ " + vName + ChatColor.GRAY + " was tagged by " + sName);
-            McmFx.title(shooter, "", ChatColor.GREEN + "Eliminated " + vName, 0, 25, 5);
+            if (ptsElim <= 0) McmFx.title(shooter, "", ChatColor.GREEN + "Eliminated " + vName, 0, 25, 5);
             shooter.playSound(shooter.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1f, 1f);
         } else {
             matchElims[1 - g]++;

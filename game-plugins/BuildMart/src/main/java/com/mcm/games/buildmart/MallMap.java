@@ -23,12 +23,14 @@ import java.util.*;
  *   plaza (spawn from the build zones, MCC store facade with the portal to your build zone, pool)
  *   -> main concourse north, LUMBER (west) and OUTDOOR (east) near the plaza, pitfalls mid-concourse
  *   -> cross hall with STONE (left), COLOURS (centre), ORES (right) along its back wall.
+ *   -> overflow halls share the cross hall: WOOD DETAILS, GARDEN, BRICK & SLAB and REDSTONE & METAL open off its
+ *      south wall, and GLASS & CLAY is the wing west of the cross hall. Each hall is sized so its 3-column bays fit.
  * Every walkable mall floor is FROSTED ICE (ages 0-3 are retextured by the pack into white tiles, red carpet, yellow tiles
  * and hazard stripes). Boats slide on it exactly like on ice, which is how MCC's trolleys were fast: see TROLLEY.md.
  */
 final class MallMap {
     static final int FY = 64;              // floor block level (stand at 65)
-    static final int VERSION = 12;          // bump to force regeneration
+    static final int VERSION = 14;          // bump to force regeneration
     static final int FALL_Y = 55;
     static final int ROOMS = 10;
     static final int ROOM_Z = 300;
@@ -38,7 +40,7 @@ final class MallMap {
     }
     record Label(double x, double y, double z, String text, float scale) { }
     record Counter(int x, int y, int z, Material item, String name) { }
-    /** entrance: 'E' / 'W' = door in the east / west wall, 'S' = door in the south wall (towards the cross hall). */
+    /** entrance: 'E' / 'W' = door in the east / west wall, 'S' / 'N' = door in the south / north wall. */
     record Dept(String name, Box box, int roofY, char entrance, int doorC, int doorHalf, Material colour, List<BlockData> stock) { }
     /** A status LED on a server rack (redstone lamps blink during the game). */
     final List<long[]> leds = new ArrayList<>();
@@ -48,12 +50,17 @@ final class MallMap {
     static final Box CORRIDOR = new Box(-13, -86, 13, 0);
     static final Box CROSS = new Box(-67, -102, 67, -86);
     static final Box LUMBER = new Box(-51, -42, -13, -2);
+    static final Box WOOD_DETAILS = new Box(-67, -86, -41, -46);
     static final Box OUTDOOR = new Box(13, -42, 51, -2);
+    static final Box GARDEN = new Box(-40, -86, -13, -46);
     static final Box STONE = new Box(-67, -142, -23, -102);
+    static final Box BRICK_SLAB = new Box(41, -86, 67, -46);
     static final Box COLOURS = new Box(-21, -150, 21, -102);
+    static final Box GLASS_CLAY = new Box(-114, -122, -67, -86);
     static final Box ORES = new Box(23, -142, 67, -102);
+    static final Box REDSTONE_METAL = new Box(13, -86, 40, -46);
     static final Box[] PITS = {new Box(-3, -66, 1, -52), new Box(6, -40, 9, -34), new Box(-31, -97, -27, -90)};
-    static final Box MALL_BOUNDS = new Box(-67, -150, 67, 46);
+    static final Box MALL_BOUNDS = new Box(-114, -150, 67, 46);
 
     /** The MCC store portal in the plaza (to your build zone). */
     static final Box MALL_PORTAL = new Box(-3, 46, 3, 46);
@@ -64,33 +71,68 @@ final class MallMap {
     final List<Label> labels = new ArrayList<>();
     final List<Counter> counters = new ArrayList<>();
     final List<Dept> depts = new ArrayList<>();
+    private static final Set<String> NEW_HALLS = Set.of(
+            "WOOD DETAILS", "GARDEN", "BRICK & SLAB", "GLASS & CLAY", "REDSTONE & METAL");
     private long placed;
 
     MallMap(World w) {
         this.w = w;
         depts.add(new Dept("LUMBER", LUMBER, 80, 'E', -22, 5, Material.ORANGE_CONCRETE, list(
                 "oak_log", "spruce_log", "birch_log", "jungle_log", "acacia_log", "dark_oak_log",
-                "oak_planks", "spruce_planks", "birch_planks", "jungle_planks", "acacia_planks", "dark_oak_planks")));
+                "stripped_oak_log", "stripped_spruce_log", "stripped_dark_oak_log",
+                "oak_planks", "spruce_planks", "birch_planks", "jungle_planks", "acacia_planks", "dark_oak_planks",
+                "bamboo_planks")));
+        depts.add(new Dept("WOOD DETAILS", WOOD_DETAILS, 80, 'N', -54, 3, Material.BROWN_CONCRETE, list(
+                "oak_slab", "spruce_slab", "birch_slab", "acacia_slab",
+                "spruce_stairs", "birch_stairs", "acacia_stairs",
+                "oak_fence", "spruce_fence", "birch_fence", "oak_door",
+                "oak_trapdoor", "spruce_trapdoor", "dark_oak_trapdoor",
+                "acacia_button", "bamboo_button", "spruce_button",
+                "ladder", "barrel", "note_block", "campfire")));
         depts.add(new Dept("OUTDOOR", OUTDOOR, 80, 'W', -22, 5, Material.LIME_CONCRETE, list(
                 "grass_block", "dirt", "coarse_dirt", "podzol", "sand", "gravel", "snow_block", "ice", "pumpkin", "cactus",
-                "oak_leaves", "spruce_leaves", "birch_leaves", "jungle_leaves", "acacia_leaves", "dark_oak_leaves",
-                "dandelion", "poppy", "red_tulip", "orange_tulip", "oxeye_daisy", "lily_of_the_valley", "allium")));
+                "oak_leaves", "spruce_leaves", "birch_leaves", "jungle_leaves", "acacia_leaves", "dark_oak_leaves")));
+        depts.add(new Dept("GARDEN", GARDEN, 80, 'N', -26, 3, Material.GREEN_CONCRETE, list(
+                "dandelion", "poppy", "red_tulip", "orange_tulip", "oxeye_daisy", "lily_of_the_valley", "allium",
+                "cornflower", "short_grass", "potted_red_tulip", "brown_mushroom_block", "mushroom_stem", "moss_block",
+                "dried_kelp_block", "honey_block", "honeycomb_block", "slime_block")));
         depts.add(new Dept("STONE", STONE, 80, 'S', -45, 5, Material.CYAN_CONCRETE, list(
-                "stone", "cobblestone", "stone_bricks", "smooth_stone", "andesite", "diorite", "granite", "sandstone",
-                "bricks", "quartz_block", "smooth_quartz", "end_stone", "purpur_block", "nether_bricks", "netherrack", "soul_soil",
-                "obsidian")));
-        depts.add(new Dept("ORES", ORES, 80, 'S', 45, 5, Material.BLACK_CONCRETE, list(
-                "coal_block", "coal_ore", "iron_block", "gold_block", "diamond_block", "emerald_block", "lapis_block",
-                "redstone_block", "copper_block", "nether_wart_block", "glowstone")));
+                "stone", "cobblestone", "smooth_stone", "andesite", "diorite", "granite", "sandstone",
+                "quartz_block", "smooth_quartz", "end_stone", "purpur_block", "netherrack", "soul_soil", "obsidian",
+                "blackstone", "calcite", "cobbled_deepslate", "polished_deepslate", "prismarine", "dark_prismarine",
+                "polished_diorite", "smooth_sandstone", "purpur_pillar", "quartz_pillar",
+                "furnace", "stonecutter", "smithing_table")));
+        depts.add(new Dept("BRICK & SLAB", BRICK_SLAB, 80, 'N', 54, 3, Material.RED_CONCRETE, list(
+                "bricks", "stone_bricks", "mossy_stone_bricks", "mud_bricks", "nether_bricks", "chiseled_stone_bricks",
+                "cobblestone_slab", "stone_slab", "stone_brick_slab", "purpur_slab", "quartz_slab",
+                "smooth_stone_slab", "smooth_quartz_slab", "stone_brick_stairs", "quartz_stairs",
+                "andesite_wall", "stone_brick_wall", "nether_brick_wall", "end_stone_brick_wall")));
         List<String> col = new ArrayList<>();
         String[] cs = {"white", "light_gray", "gray", "black", "brown", "red", "orange", "yellow", "lime", "green", "cyan",
                 "light_blue", "blue", "purple", "magenta", "pink"};
         for (String c : cs) col.add(c + "_concrete");
         for (String c : cs) col.add(c + "_wool");
-        for (String c : cs) col.add(c + "_stained_glass");
-        col.addAll(List.of("glass", "terracotta", "orange_terracotta", "light_blue_glazed_terracotta",
-                "lime_glazed_terracotta", "yellow_glazed_terracotta", "red_glazed_terracotta"));
         depts.add(new Dept("COLOURS", COLOURS, 80, 'S', 0, 6, Material.PURPLE_CONCRETE, list(col.toArray(String[]::new))));
+        List<String> glass = new ArrayList<>();
+        for (String c : cs) glass.add(c + "_stained_glass");
+        glass.addAll(List.of("glass",
+                "light_blue_glazed_terracotta", "lime_glazed_terracotta", "yellow_glazed_terracotta",
+                "red_glazed_terracotta", "black_glazed_terracotta", "blue_glazed_terracotta",
+                "green_glazed_terracotta", "terracotta", "orange_terracotta", "black_terracotta",
+                "cyan_terracotta", "red_terracotta", "white_terracotta", "yellow_terracotta",
+                "black_carpet", "magenta_carpet", "purple_carpet", "red_carpet", "yellow_carpet",
+                "black_stained_glass_pane", "light_blue_stained_glass_pane", "orange_stained_glass_pane",
+                "purple_stained_glass_pane", "glass_pane", "yellow_concrete_powder"));
+        depts.add(new Dept("GLASS & CLAY", GLASS_CLAY, 80, 'E', -94, 3, Material.LIGHT_BLUE_CONCRETE,
+                list(glass.toArray(String[]::new))));
+        depts.add(new Dept("ORES", ORES, 80, 'S', 45, 5, Material.BLACK_CONCRETE, list(
+                "coal_block", "coal_ore", "iron_block", "gold_block", "diamond_block", "emerald_block", "lapis_block",
+                "redstone_block", "copper_block", "nether_wart_block", "glowstone",
+                "bone_block", "warped_wart_block", "cut_copper", "oxidized_copper", "oxidized_cut_copper", "sea_lantern")));
+        depts.add(new Dept("REDSTONE & METAL", REDSTONE_METAL, 80, 'N', 26, 3, Material.GRAY_CONCRETE, list(
+                "iron_bars", "iron_door", "chain", "hopper", "cauldron", "rail", "lightning_rod",
+                "lantern", "torch", "redstone_torch", "stone_button", "polished_blackstone_button",
+                "stone_pressure_plate", "light_weighted_pressure_plate")));
     }
 
     private static List<BlockData> list(String... ids) {
@@ -149,6 +191,11 @@ final class MallMap {
         opening(-50, -102, -40, -102);   // STONE
         opening(-6, -102, 6, -102);      // COLOURS
         opening(40, -102, 50, -102);     // ORES
+        opening(-57, -86, -51, -86);     // WOOD DETAILS
+        opening(-29, -86, -23, -86);     // GARDEN
+        opening(23, -86, 29, -86);       // REDSTONE & METAL
+        opening(51, -86, 57, -86);       // BRICK & SLAB
+        opening(-67, -97, -67, -91);     // GLASS & CLAY (west wing)
 
         floorDetails();
         concourse();
@@ -299,6 +346,31 @@ final class MallMap {
         boardOnZ(-45, "STONE", Material.CYAN_CONCRETE, false);
         boardOnZ(0, "COLOURS", Material.PURPLE_CONCRETE, true);
         boardOnZ(45, "ORES", Material.BLACK_CONCRETE, false);
+        // the five overflow halls get floating name signs (BlockFont only contains the original department letters)
+        for (Dept d : depts) if (NEW_HALLS.contains(d.name)) hallLabel(d);
+    }
+
+    /** Floating name sign over a new hall's door, readable from the hall or the cross hall. */
+    private void hallLabel(Dept d) {
+        double x = switch (d.entrance) {
+            case 'E' -> d.box.x2 + 0.5;
+            case 'W' -> d.box.x1 + 0.5;
+            default -> d.doorC + 0.5;
+        };
+        double z = switch (d.entrance) {
+            case 'N' -> d.box.z1 + 0.5;
+            case 'S' -> d.box.z2 + 0.5;
+            default -> d.doorC + 0.5;
+        };
+        String c = switch (d.colour) {
+            case BROWN_CONCRETE -> "§6";
+            case GREEN_CONCRETE -> "§a";
+            case RED_CONCRETE -> "§c";
+            case LIGHT_BLUE_CONCRETE -> "§b";
+            case GRAY_CONCRETE -> "§7";
+            default -> "§f";
+        };
+        labels.add(new Label(x, FY + 11.2, z, c + "● §f§l" + d.name, 1.0f));
     }
 
     /** Board in a constant-x plane. east = the board faces east (+x side readable). */
@@ -347,22 +419,28 @@ final class MallMap {
      *
      * Local frame per department: u runs from the back wall (u0) to the door wall (u1), v runs across.
      *   u0 .. u0+3   back aisle (4 wide)
-     *   rows of cabinets: post, 3 stock columns (2 in COLOURS), post, ..., rows 2 deep (back to back), aisles 4 wide
-     *   u1-4 .. u1   main aisle along the door wall (5 wide, trolleys)
+     *   rows of cabinets: post, 3 stock columns, post, ..., rows 2 deep (back to back), aisles 4 wide
+     *   u1-5 .. u1   main aisle along the door wall (5 wide, trolleys)
      */
     private record Frame(Dept d, int u0, int u1, int v0, int v1) {
         int x(int u, int v) {
             return switch (d.entrance()) { case 'E' -> u; case 'W' -> d.box().x1() + d.box().x2() - u; default -> v; };
         }
-        int z(int u, int v) { return d.entrance() == 'S' ? u : v; }
-        BlockFace minusV() { return d.entrance() == 'S' ? BlockFace.WEST : BlockFace.NORTH; }
-        BlockFace plusV() { return d.entrance() == 'S' ? BlockFace.EAST : BlockFace.SOUTH; }
-        boolean uIsX() { return d.entrance() != 'S'; }
+        int z(int u, int v) {
+            return switch (d.entrance()) {
+                case 'S' -> u;
+                case 'N' -> d.box().z1() + d.box().z2() - u;
+                default -> v;
+            };
+        }
+        BlockFace minusV() { return d.entrance() == 'S' || d.entrance() == 'N' ? BlockFace.WEST : BlockFace.NORTH; }
+        BlockFace plusV() { return d.entrance() == 'S' || d.entrance() == 'N' ? BlockFace.EAST : BlockFace.SOUTH; }
+        boolean uIsX() { return d.entrance() == 'E' || d.entrance() == 'W'; }
     }
 
     private Frame frame(Dept d) {
         Box b = d.box;
-        if (d.entrance == 'S') return new Frame(d, b.z1 + 1, b.z2 - 1, b.x1 + 1, b.x2 - 1);
+        if (d.entrance == 'S' || d.entrance == 'N') return new Frame(d, b.z1 + 1, b.z2 - 1, b.x1 + 1, b.x2 - 1);
         return new Frame(d, b.x1 + 1, b.x2 - 1, b.z1 + 1, b.z2 - 1);
     }
 
@@ -388,6 +466,7 @@ final class MallMap {
                 switch (d.entrance) {
                     case 'E' -> set(b.x2, y, k, m);
                     case 'W' -> set(b.x1, y, k, m);
+                    case 'N' -> set(k, y, b.z1, m);
                     default -> set(k, y, b.z2, m);
                 }
             }
@@ -396,7 +475,7 @@ final class MallMap {
 
     private void racks(Dept d) {
         Frame f = frame(d);
-        int cw = d.stock.size() > 40 ? 2 : 3;      // stock columns per cabinet (COLOURS has 55 blocks: narrower bays)
+        int cw = 3;                                // every bay is the approved 3-column server cabinet
         int pitch = cw + 1;
         int uA = f.u0 + AISLE;                     // first post (back aisle is u0 .. u0+AISLE-1)
         int cabs = ((f.u1 - 5) - uA) / pitch;      // main aisle keeps the last 5 (or more)
@@ -435,9 +514,10 @@ final class MallMap {
         return org.bukkit.Tag.SMALL_FLOWERS.isTagged(item.getMaterial());
     }
 
-    /** One server cabinet: 3 stock columns x 2 deep x 4 shelves of 2 blocks, shelf slabs, black cap with a status light. */
+    /** One server cabinet: cw stock columns x 2 deep x 4 shelves of 2 blocks, shelf slabs, black cap with a status light. */
     private void cabinet(Frame f, int p, int v, int cw, BlockData item) {
-        boolean plant = plant(item), cactus = item.getMaterial() == Material.CACTUS;
+        boolean plant = plant(item) || item.getMaterial() == Material.SHORT_GRASS,
+                cactus = item.getMaterial() == Material.CACTUS;
         for (int t = 0; t < TIERS; t++) {
             int yb = FY + 1 + t * 3;
             for (int u = p + 1; u <= p + cw; u++)
@@ -558,18 +638,19 @@ final class MallMap {
         }
         // block catalogue board on the back wall (021920 / zz_detail_orig_buildarea_block_catalogue)
         int zw = b.z1;
-        int col = cx - 12;
-        for (int x = cx - 13; x <= cx + 13; x++) for (int y = FY + 2; y <= FY + 10; y++) set(x, y, zw, Material.QUARTZ_BLOCK);
+        int col = cx - 23;                         // full inner wall: ten departments need the width
+        for (int x = cx - 24; x <= cx + 24; x++) for (int y = FY + 2; y <= FY + 10; y++) set(x, y, zw, Material.QUARTZ_BLOCK);
+        int di = 0;
         for (Dept d : depts) {
             int n = 0;
             int startCol = col;
             for (BlockData bd : d.stock) {
                 if (!bd.getMaterial().isOccluding()) continue;
-                set(col + n / 7, FY + 9 - n % 7, zw, bd);
+                set(col + n / 9, FY + 10 - n % 9, zw, bd);
                 n++;
             }
-            int cols = (n + 6) / 7;
-            labels.add(new Label(startCol + cols / 2.0, FY + 10.2, zw + 1.05, "§0" + d.name, 0.7f));
+            int cols = (n + 8) / 9;
+            labels.add(new Label(startCol + cols / 2.0, FY + 10.2 + (di++ % 2) * 1.4, zw + 1.05, "§0" + d.name, 0.7f));
             col += cols + 1;
         }
     }
@@ -611,6 +692,27 @@ final class MallMap {
 
     // ------------------------------------------------------------------ queries
 
+    /** Per-department rack audit used by /bm stock: stock size, cw=3 bays and how many items are shown. */
+    String stockSummary() {
+        StringBuilder sb = new StringBuilder();
+        for (Dept d : depts) {
+            Frame f = frame(d);
+            int cw = 3, pitch = cw + 1;
+            int uA = f.u0 + AISLE;
+            int cabs = ((f.u1 - 5) - uA) / pitch;
+            int width = f.v1 - f.v0 + 1;
+            int rowsN = (width - AISLE) / (AISLE + 2);
+            int total = rowsN * cabs;
+            Set<Integer> shown = new HashSet<>();
+            for (int i = 0; i < total; i++) shown.add((int) ((long) i * d.stock.size() / total));
+            sb.append(d.name).append(" stock=").append(d.stock.size())
+                    .append(" cw=").append(cw).append(" bays=").append(total).append(" shown=").append(shown.size())
+                    .append(shown.size() == d.stock.size() && total >= d.stock.size() ? " OK" : " MISSING")
+                    .append(" | ");
+        }
+        return sb.toString();
+    }
+
     static boolean inMall(double x, double z) { return MALL_BOUNDS.in((int) Math.floor(x), (int) Math.floor(z)); }
 
     static int roomAt(double x, double z) {
@@ -646,12 +748,13 @@ final class MallMap {
     private boolean dry;
 
     private void catalogueLabels(int i) {
-        int cx = roomX(i), zw = roomBox(i).z1, col = cx - 12;
+        int cx = roomX(i), zw = roomBox(i).z1, col = cx - 23;
+        int di = 0;
         for (Dept d : depts) {
             int n = 0;
             for (BlockData bd : d.stock) if (bd.getMaterial().isOccluding()) n++;
-            int cols = (n + 6) / 7;
-            labels.add(new Label(col + cols / 2.0, FY + 10.2, zw + 1.05, "§0" + d.name, 0.7f));
+            int cols = (n + 8) / 9;
+            labels.add(new Label(col + cols / 2.0, FY + 10.2 + (di++ % 2) * 1.4, zw + 1.05, "§0" + d.name, 0.7f));
             col += cols + 1;
         }
     }

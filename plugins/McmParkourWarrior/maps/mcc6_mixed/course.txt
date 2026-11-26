@@ -1,0 +1,260 @@
+# Parkour Warrior imported map mcc6: private third-party data, loaded from the server's maps folder, never committed
+map mcc6_mixed
+mapcredit MCC 6 replica by TryHardOfDoom
+credit TH MCC 6 replica by TryHardOfDoom
+zone 1 Warm-Up Run
+zone 2 Rising Islands
+zone 3 Sky Gauntlet
+zone 4 High Wire
+zone 5 Final Ascent
+builtin M1-3 ledges mesa 2
+classic M2-3 M1-1
+classic M3-2 M1-2
+classic M4-1 M1-3
+builtin M4-3 conveyor garden 3
+classic M5-1 B3-1
+builtin M5-3 beams ice 3
+builtin B1-2 press mesa 1
+builtin B1-3 checker mesa 4
+classic B2-2 E-MEDIUM-2
+classic B2-3 B1-3
+classic B3-2 B2-1
+classic B4-3 B4-3
+builtin B5-1 barrels ice 3
+builtin B5-2 doors ice 2
+builtin B5-3 bars ice 3
+classic E-EASY-1 E-EASY-1
+classic E-EASY-2 E-EASY-2
+classic E-MEDIUM-1 M4-1
+classic E-HARD-2 B5-3
+section M1-1 s1-2.mcmi.gz S12 The Hanging Hoops
+  base 0 0 0
+  origin 19 14 29
+  end 47 14 30
+  turn 1
+  credit TH
+  crop 17 0 18 53 127 42
+end
+section M1-2 s1-3.mcmi.gz S13 The Sidesteps
+  base 0 0 0
+  origin 47 14 30
+  end 97 9 39
+  turn 1
+  credit TH
+  crop 45 0 17 102 127 49
+end
+section M2-1 s2-2.mcmi.gz S22 The Narrow Ledge
+  base 0 0 0
+  origin 85 12 84
+  end 56 12 83
+  turn 3
+  credit TH
+  crop 50 0 71 87 127 98
+end
+section M2-2 s2-3.mcmi.gz S23 The Switchback
+  base 0 0 0
+  origin 56 12 83
+  end 20 20 123
+  turn 0
+  credit TH
+  crop 7 0 81 67 127 128
+  set 40 15 85 minecraft:pink_terracotta
+  set 40 17 86 minecraft:pink_terracotta
+  set 41 17 85 minecraft:pink_terracotta
+  set 35 19 85 minecraft:grass_block
+  set 35 18 85 minecraft:grass_block
+  set 35 17 85 minecraft:grass_block
+  set 35 19 86 minecraft:grass_block
+  set 28 20 88 minecraft:pink_terracotta
+  set 28 19 88 minecraft:pink_terracotta
+  set 28 18 88 minecraft:pink_terracotta
+  set 28 20 89 minecraft:pink_terracotta
+  set 29 20 88 minecraft:pink_terracotta
+  set 26 19 91 minecraft:pink_terracotta
+  set 26 18 91 minecraft:pink_terracotta
+  set 26 17 91 minecraft:pink_terracotta
+  set 26 19 92 minecraft:pink_terracotta
+  set 27 19 91 minecraft:pink_terracotta
+  set 23 19 93 minecraft:pink_terracotta
+  set 23 18 93 minecraft:pink_terracotta
+  set 23 17 93 minecraft:pink_terracotta
+  set 23 19 94 minecraft:pink_terracotta
+  set 24 19 93 minecraft:pink_terracotta
+end
+section M3-1 s3-2.mcmi.gz S32 The Holey Moley
+  base 0 0 0
+  origin 9 17 146
+  end 9 22 182
+  turn 0
+  credit TH
+  crop -2 0 144 21 127 187
+end
+section M3-3 s4-1.mcmi.gz S41 The Ladder Hop
+  base 0 0 0
+  origin 23 23 226
+  end 23 26 259
+  turn 0
+  credit TH
+  crop 11 0 224 38 127 264
+  set 27 26 239 minecraft:dark_prismarine
+  set 27 25 239 minecraft:dark_prismarine
+  set 27 24 239 minecraft:dark_prismarine
+  set 27 26 240 minecraft:dark_prismarine
+  set 28 26 239 minecraft:dark_prismarine
+  set 26 26 242 minecraft:dark_prismarine
+  set 26 25 242 minecraft:dark_prismarine
+  set 26 24 242 minecraft:dark_prismarine
+  set 26 26 243 minecraft:dark_prismarine
+  set 27 26 242 minecraft:dark_prismarine
+  set 26 26 244 minecraft:dark_prismarine
+  set 26 25 244 minecraft:dark_prismarine
+  set 26 24 244 minecraft:dark_prismarine
+  set 26 26 245 minecraft:dark_prismarine
+  set 27 26 244 minecraft:dark_prismarine
+  set 27 25 252 minecraft:nether_wart
+  set 27 24 252 minecraft:nether_wart
+  set 27 23 252 minecraft:nether_wart
+  set 27 25 253 minecraft:nether_wart
+  set 28 25 252 minecraft:nether_wart
+  set 25 25 254 minecraft:nether_wart
+  set 25 24 254 minecraft:nether_wart
+  set 25 23 254 minecraft:nether_wart
+  set 25 25 255 minecraft:nether_wart
+  set 26 25 254 minecraft:nether_wart
+end
+section M4-2 s6-3.mcmi.gz S63 The Tuning Forks
+  base 0 0 0
+  origin -130 26 179
+  end -73 23 180
+  turn 1
+  credit TH
+  crop -132 0 169 -68 127 191
+end
+section M5-2 s7-2.mcmi.gz S72 The Frozen Path
+  base 0 0 0
+  origin -38 23 174
+  end -38 20 130
+  turn 2
+  credit TH
+  crop -51 0 125 -26 127 176
+  set -41 17 145 minecraft:blue_ice
+  set -41 16 145 minecraft:blue_ice
+  set -41 15 145 minecraft:blue_ice
+  set -41 17 144 minecraft:blue_ice
+  set -42 17 145 minecraft:blue_ice
+  set -41 18 142 minecraft:blue_ice
+  set -41 17 142 minecraft:blue_ice
+  set -41 16 142 minecraft:blue_ice
+  set -41 18 141 minecraft:blue_ice
+  set -42 18 142 minecraft:blue_ice
+  set -40 18 140 minecraft:blue_ice
+  set -40 17 140 minecraft:blue_ice
+  set -40 16 140 minecraft:blue_ice
+  set -40 18 139 minecraft:blue_ice
+  set -41 18 140 minecraft:blue_ice
+end
+section B1-1 s1-1.mcmi.gz S11 The Lofty Leap
+  base 0 0 0
+  origin 7 14 2
+  end 19 14 29
+  turn 0
+  credit TH
+  crop -6 0 0 29 127 35
+  set 5 15 13 minecraft:iron_trapdoor
+  set 5 14 13 minecraft:iron_trapdoor
+  set 5 13 13 minecraft:iron_trapdoor
+  set 5 15 14 minecraft:iron_trapdoor
+  set 6 15 13 minecraft:iron_trapdoor
+  set 7 15 16 minecraft:iron_trapdoor
+  set 7 14 16 minecraft:iron_trapdoor
+  set 7 13 16 minecraft:iron_trapdoor
+  set 7 15 17 minecraft:iron_trapdoor
+  set 8 15 16 minecraft:iron_trapdoor
+  set 8 15 18 minecraft:iron_trapdoor
+  set 8 14 18 minecraft:iron_trapdoor
+  set 8 13 18 minecraft:iron_trapdoor
+  set 8 15 19 minecraft:iron_trapdoor
+  set 9 15 18 minecraft:iron_trapdoor
+  tag MEDIUM
+end
+section B2-1 s2-1.mcmi.gz S21 The Barrel Hop
+  base 0 0 0
+  origin 97 9 39
+  end 85 12 84
+  turn 0
+  credit TH
+  crop 75 0 37 108 127 90
+  tag MEDIUM
+end
+section B3-1 s3-1.mcmi.gz S31 The Double Weaver
+  base 0 0 0
+  origin 20 20 123
+  end 9 17 146
+  turn 0
+  credit TH
+  crop -1 0 121 30 127 151
+  set 18 21 129 minecraft:spruce_trapdoor
+  set 18 20 129 minecraft:spruce_trapdoor
+  set 18 19 129 minecraft:spruce_trapdoor
+  set 18 21 130 minecraft:spruce_trapdoor
+  set 19 21 129 minecraft:spruce_trapdoor
+  set 17 22 132 minecraft:spruce_trapdoor
+  set 17 21 132 minecraft:spruce_trapdoor
+  set 17 20 132 minecraft:spruce_trapdoor
+  set 17 22 133 minecraft:spruce_trapdoor
+  set 18 22 132 minecraft:spruce_trapdoor
+  set 14 19 136 minecraft:spruce_trapdoor
+  set 14 18 136 minecraft:spruce_trapdoor
+  set 14 17 136 minecraft:spruce_trapdoor
+  set 14 19 137 minecraft:spruce_trapdoor
+  set 15 19 136 minecraft:spruce_trapdoor
+  set 12 18 140 minecraft:spruce_trapdoor
+  set 12 17 140 minecraft:spruce_trapdoor
+  set 12 16 140 minecraft:spruce_trapdoor
+  set 12 18 141 minecraft:spruce_trapdoor
+  set 13 18 140 minecraft:spruce_trapdoor
+  tag MEDIUM
+end
+section B3-3 s3-3.mcmi.gz S33 The Wide Hoops
+  base 0 0 0
+  origin 9 22 182
+  end 23 23 226
+  turn 0
+  credit TH
+  crop -3 0 180 34 127 234
+  tag HARD
+end
+section B4-1 s5-1.mcmi.gz S51 The Helpful Dolphins
+  base 0 0 0
+  origin -34 27 306
+  end -65 31 296
+  turn 3
+  credit TH
+  crop -71 0 286 -32 127 318
+  tag MEDIUM
+end
+section B4-2 s5-2.mcmi.gz S52 The Anchors
+  base 0 0 0
+  origin -65 31 296
+  end -64 32 256
+  turn 2
+  credit TH
+  crop -76 0 251 -51 127 298
+  tag HARD
+end
+section E-MEDIUM-2 s8-1.mcmi.gz S81 The Trouble U's
+  base 0 0 0
+  origin -38 22 90
+  end -37 22 53
+  turn 2
+  credit TH
+  crop -50 0 48 -24 127 92
+end
+section E-HARD-1 s7-1.mcmi.gz S71 The Sneaky Jumper
+  base 0 0 0
+  origin -73 23 180
+  end -38 23 174
+  turn 1
+  credit TH
+  crop -75 0 164 -33 127 192
+end

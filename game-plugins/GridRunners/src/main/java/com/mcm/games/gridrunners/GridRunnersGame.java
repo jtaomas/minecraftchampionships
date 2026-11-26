@@ -557,8 +557,9 @@ public final class GridRunnersGame implements McmGame {
             int pts = (int) com.mcm.api.McmCoins.linear(roomFirst, roomStep, place, roomMin);   // MCC 175, 158, 141, ...
             double each = ctx.teamShare(pts, on.size());
             for (Player p : on) {
-                if (each > 0) ctx.addCoins(p.getUniqueId(), each, "Grid Runners: " + room.name() + " (" + Msg.ordinal(place) + ")");
-                Msg.title(p, "§aRoom Cleared!", "§6+" + pts + " team coins §7- " + Msg.ordinal(place) + " team to clear " + room.name(), 3, 35, 10);
+                if (each > 0) ctx.addObjectiveCoins(p.getUniqueId(), each, "ROOM COMPLETED!",
+                        "Your team completed " + room.name() + " in " + Msg.ordinal(place) + " place");
+                else Msg.title(p, "§aRoom Cleared!", "§7" + Msg.ordinal(place) + " team to clear " + room.name(), 3, 35, 10);
                 p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.4f);
             }
         } else {
@@ -601,8 +602,8 @@ public final class GridRunnersGame implements McmGame {
         List<Player> fin = online(lane);
         double each = ctx.teamShare(pts, fin.size());
         for (Player p : fin) {
-            if (each > 0) ctx.addCoins(p.getUniqueId(), each, "Grid Runners: finished " + Msg.ordinal(lane.place));
-            Msg.title(p, "§6§lCourse Complete!", "§e" + Msg.ordinal(lane.place) + " place §7- §6+" + pts + " team coins", 5, 60, 15);
+            if (each > 0) ctx.addObjectiveCoins(p.getUniqueId(), each, null, "Your team finished in " + Msg.ordinal(lane.place) + " place");
+            Msg.title(p, "§6§lCourse Complete!", "§e" + Msg.ordinal(lane.place) + " place", 5, 60, 15);
             p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
             SpectatorGuard.makeSpectator(p, lane.overview(world));
         }

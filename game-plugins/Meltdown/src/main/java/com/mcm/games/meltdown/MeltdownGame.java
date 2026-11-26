@@ -729,9 +729,9 @@ public final class MeltdownGame implements McmGame {
         victim.setFreezeTicks(victim.getMaxFreezeTicks());
         victim.showTitle(title("§b§l❄ FROZEN ❄", "§7A teammate's heater can thaw you"));
         victim.playSound(victim.getLocation(), Sound.BLOCK_GLASS_BREAK, 1f, 1.5f);
-        shooter.playSound(shooter.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.6f);
         world.spawnParticle(Particle.SNOWFLAKE, victim.getLocation().add(0, 1, 0), 40, 0.4, 0.8, 0.4, 0.05);
-        if (PTS_FREEZE > 0) ctx.addCoins(s, PTS_FREEZE, "Froze " + victim.getName());
+        if (PTS_FREEZE > 0) ctx.addKillCoins(s, PTS_FREEZE, v, victim.getName(), "You froze " + victim.getName());
+        else shooter.playSound(shooter.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.6f);
         ctx.broadcast("§b❄ " + coloredName(v) + " §7was frozen by " + coloredName(s));
         for (UUID mate : sideMembers.getOrDefault(side, List.of())) {
             Player m = Bukkit.getPlayer(mate);
@@ -777,7 +777,10 @@ public final class MeltdownGame implements McmGame {
         Player p = Bukkit.getPlayer(id);
 
         if (fz != null && fz.by != null && phase == Phase.RUNNING && Bukkit.getPlayer(fz.by) != null) {
-            if (PTS_FREEZE_ELIM > 0) ctx.addCoins(fz.by, PTS_FREEZE_ELIM, "Eliminated " + names.getOrDefault(id, "a player"));
+            if (PTS_FREEZE_ELIM > 0) {
+                String vn = names.getOrDefault(id, "a player");
+                ctx.addKillCoins(fz.by, PTS_FREEZE_ELIM, id, vn, "You eliminated " + vn);
+            }
         }
         if (p != null && p.isOnline()) {
             if (quit) {
@@ -797,7 +800,7 @@ public final class MeltdownGame implements McmGame {
 
         if (!quit && phase == Phase.RUNNING) {
             for (UUID other : new ArrayList<>(alive)) {
-                if (PTS_SURVIVAL > 0 && Bukkit.getPlayer(other) != null) ctx.addCoins(other, PTS_SURVIVAL, "Outlived " + names.getOrDefault(id, "a player"));
+                if (PTS_SURVIVAL > 0 && Bukkit.getPlayer(other) != null) ctx.addCoins(other, PTS_SURVIVAL, names.getOrDefault(id, "A player") + " was eliminated");
             }
         }
         String side = sideOf.get(id);

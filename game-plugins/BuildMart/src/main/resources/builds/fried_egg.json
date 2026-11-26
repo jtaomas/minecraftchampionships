@@ -1,0 +1,61 @@
+{
+  "id": "fried_egg",
+  "name": "Fried Egg",
+  "debut": "MCC P21",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Fried_Egg.png",
+  "floor": [
+    "ppppppp",
+    "ppppppp",
+    "ppppppp",
+    "ppppppp",
+    "ppppppp",
+    "ppppppp",
+    "ppppppp"
+  ],
+  "palette": {
+    "p": "minecraft:spruce_planks",
+    "k": "minecraft:black_concrete",
+    "e": "minecraft:white_concrete",
+    "s": "minecraft:stone",
+    "h": "minecraft:honey_block",
+    "q": "minecraft:quartz_block"
+  },
+  "layers": [
+    [
+      "..kkk..",
+      ".skeeek",
+      "s.keeek",
+      "..keeek",
+      "..skkk.",
+      ".s.....",
+      "s......"
+    ],
+    [
+      ".......",
+      ".q.....",
+      "q..h...",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".q.....",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the pan is read as a 5x5 black-concrete ring with the four corners cut, egg white flush inside and the honey-block yolk one block proud",
+    "the grey stone blocks trailing to the front-left are modelled as a pan handle (three blocks) plus a two-high stone/quartz pillar at the back-left; the render does not make their purpose clear",
+    "pan interior/egg white assumed flush with the rim (the render only shows a thin step)",
+    "feet of the pillars hidden behind the handle blocks; extended by symmetry",
+    "floor planks read as spruce from the grain and colour"
+  ]
+}

@@ -15,9 +15,9 @@ import com.mcm.games.tgttos.model.TgMapData.Spawn;
 
 /**
  * Dam Face (climb, bridging kit). A pale curved dam in a rock canyon faces the start across a stilling basin.
- * Built route: 3-wide ladder banks zig-zagging between yellow bamboo catwalk terraces every 8 blocks (pipes to
- * hop, grating holes to jump). Fast route: pillar straight up the face (overhanging terrace lips, ~41 blocks of
- * the 64). The crest has a parapet with one 4-wide stair cut in the middle (choke) and side ladders far out.
+ * No ladders (owner): every tier is climbed with the kit's blocks, between yellow bamboo catwalk terraces every 8
+ * blocks (pipes to hop, grating holes to jump). Fast route: pillar straight up the face (overhanging terrace lips,
+ * ~41 blocks of the 64). The crest has a parapet with one 4-wide stair cut in the middle (choke) and side openings.
  *
  * <p>Local frame: x across (lane -18..17), z along the run. Apron/start y = 0 (feet 1); basin water surface and
  * dam toe y = -3 (feet -2); terraces at y = 8, 16, 24, 32; crest road y = 36 (feet 37).
@@ -70,7 +70,7 @@ public final class DamFaceMap extends AMap {
         d.overviewPoints.add(new Spawn(0.5, 30, -16, 0f, 22f));
         d.overviewPoints.add(new Spawn(-16, 44, 30, -120f, 35f));
         d.notes.put("fastLine", "baffle jumps, pillar up the middle under the terrace lips (~41 blocks), centre stair choke, ~27 s expert");
-        d.notes.put("safeLine", "side wall + ladder banks zig-zagging between catwalks, no blocks, ~45 s expert");
+        d.notes.put("safeLine", "side wall, then pillar up each tier onto the catwalks (no ladders), side or centre to the crest");
 
         de.searchBox = Region.of(-19, -8, -6, 18, 44, 62);
         de.lane.add(Region.of(-19, -40, -12, 18, 90, 130));
@@ -84,9 +84,9 @@ public final class DamFaceMap extends AMap {
         fast.leg("dam toe", Region.of(-5, TOE + 1, 20, 4, TOE + 1, 23), Region.of(-9, -6, 7, 7, 2, 24))
             .leg("terrace 3", Region.of(-5, 33, 33, 4, 33, 37), Region.of(-6, -3, 19, 5, 34, 38))
             .leg("pen", d.pen, Region.of(-6, 32, 30, 6, 40, 58));
-        Design.Line safe = de.line("SAFE", false, false);
+        Design.Line safe = de.line("SAFE", true, false);
         safe.maxGap = 2;
-        safe.description = "left training wall, ladder banks left/right/left/right between the catwalks, side or centre to the crest";
+        safe.description = "left training wall, pillar up each tier onto the catwalks (no ladders), side or centre to the crest";
         safe.leg("pen", d.pen, Region.of(-18, -6, 7, 17, 42, 58));
     }
 
@@ -160,10 +160,7 @@ public final class DamFaceMap extends AMap {
                 int ty = yt;
                 for (int z = fz - 1; z <= fz + 2; z++) g.set(x, ty, z, z == fz - 1 ? (Math.floorMod(x, 4) < 2 ? "yellow_terracotta" : "black_terracotta") : catwalk.at(x, ty, z, g.seed));
                 g.set(x, ty - 1, fz - 1, "smooth_stone_slab[type=top]");
-                // ladder bank of tier k (on the face, standing on terrace k-1 / the toe)
-                if (ladderCol(x, k)) {
-                    for (int y = yb; y <= yt; y++) g.set(x, y, fz - 1, "ladder[facing=north,waterlogged=false]");
-                }
+                // owner: no ladders on the dam - every tier is climbed with the kit's blocks
                 // railings on the lip of terrace k (gaps every 4th, none over the next ladder bank top)
                 boolean nextLadder = ladderCol(x, k + 1) || (k == 3 && false);
                 if (!ladderCol(x, k) && Math.floorMod(x, 4) != 1)
@@ -198,9 +195,6 @@ public final class DamFaceMap extends AMap {
             }
         }
         for (int x = -2; x <= 1; x++) g.set(x, 33, zf(x) + 8, null);
-        // side ladders to the crest (long way round)
-        for (int x = -16; x <= -14; x++) for (int y = 33; y <= CREST; y++) g.set(x, y, zf(x) + 11, "ladder[facing=north,waterlogged=false]");
-        for (int x = 13; x <= 15; x++) for (int y = 33; y <= CREST; y++) g.set(x, y, zf(x) + 11, "ladder[facing=north,waterlogged=false]");
         // sluice gates in the lowest tier (teal copper panels with chain hoists), not on the ladder banks
         for (int gx : new int[]{-9, -4, 4, 9}) {
             for (int x = gx - 1; x <= gx + 1; x++) for (int y = TOE + 2; y <= 5; y++) g.set(x, y, zf(x), (y == 5 || x == gx) ? "oxidized_cut_copper" : "oxidized_copper");

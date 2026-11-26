@@ -7,6 +7,6 @@ public final class Maps {
     private Maps() {}
 
     public static List<PtMap> all() {
-        return List.of(new DustbowlMap());
+        return List.of(new DustbowlMap(), new UrbanJungleMap(), new FactoryMap(), new StadiumMap());
     }
 }

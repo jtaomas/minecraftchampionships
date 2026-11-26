@@ -1,0 +1,61 @@
+{
+  "id": "precious_ores",
+  "name": "Precious Ores",
+  "debut": "MCC 17",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Precious_Ores.png",
+  "floor": [
+    "GGssIIs",
+    "sssssIs",
+    "sGssDss",
+    "ssDssss",
+    "EssssRs",
+    "sEsDsRs",
+    "sEssRRs"
+  ],
+  "palette": {
+    "s": "minecraft:stone",
+    "G": "minecraft:gold_ore",
+    "I": "minecraft:iron_ore",
+    "D": "minecraft:diamond_ore",
+    "R": "minecraft:redstone_ore",
+    "E": "minecraft:emerald_ore",
+    "g": "minecraft:gold_block",
+    "i": "minecraft:iron_block",
+    "d": "minecraft:diamond_block",
+    "r": "minecraft:redstone_block",
+    "e": "minecraft:emerald_block",
+    "a": "minecraft:green_stained_glass",
+    "b": "minecraft:yellow_stained_glass",
+    "c": "minecraft:white_stained_glass",
+    "k": "minecraft:red_stained_glass",
+    "l": "minecraft:light_blue_stained_glass"
+  },
+  "layers": [
+    [
+      ".......",
+      "gb...ci",
+      "bb...cc",
+      "..lll..",
+      "ealdlkr",
+      "aalllkk",
+      "......."
+    ],
+    [
+      ".......",
+      "bb...cc",
+      "bb...cc",
+      "..lll..",
+      "aalllkk",
+      "aalllkk",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the display cases are 2 x 2 x 2 cubes of tinted glass with the mineral block embedded in one cell (green/emerald, yellow/gold, white/iron, red/redstone); the cases look 2 x 2 in the render",
+    "the central cyan case is larger and flatter: a 3 x 3 light blue glass box with a diamond block at its centre",
+    "the ore pattern on the stone floor is a scatter; ore blocks are grouped near the matching cases",
+    "case interiors are not visible; the gems are placed in the most sheltered cell of each case"
+  ]
+}

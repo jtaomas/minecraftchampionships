@@ -38,15 +38,34 @@ final class ArenaPlacer {
 
     /** Queue the whole grid at origin (ox, oy, oz), clearing any leftover blocks from {@code prevBounds} if larger. */
     static void enqueue(McmBuild.BuildQueue q, World w, int ox, int oy, int oz, Grid g, int[] prevBounds, Logger log) {
+        enqueue(q, w, ox, oy, oz, g, prevBounds, log, null);
+    }
+
+    /** Local box {minX, minY, minZ, maxX, maxY, maxZ} this copy occupies: the grid plus its overlay layer. */
+    static int[] footprint(Grid g, BbOverlay.Layer layer) {
+        int[] b = {g.minX, g.minY, g.minZ, g.maxX, g.maxY, g.maxZ};
+        if (layer != null) {
+            for (int i = 0; i < 3; i++) { b[i] = Math.min(b[i], layer.bounds[i]); b[i + 3] = Math.max(b[i + 3], layer.bounds[i + 3]); }
+        }
+        return b;
+    }
+
+    /**
+     * As above, with the Map Edit overlay layered over the grid (the overlay wins; its managed zones are already
+     * left out of the layer). The cleared box covers the grid, the overlay and the previous round's footprint.
+     */
+    static void enqueue(McmBuild.BuildQueue q, World w, int ox, int oy, int oz, Grid g, int[] prevBounds, Logger log, BbOverlay.Layer layer) {
         if (AIR == null) AIR = Material.AIR.createBlockData();
-        int minX = prevBounds == null ? g.minX : Math.min(g.minX, prevBounds[0]);
-        int minY = prevBounds == null ? g.minY : Math.min(g.minY, prevBounds[1]);
-        int minZ = prevBounds == null ? g.minZ : Math.min(g.minZ, prevBounds[2]);
-        int maxX = prevBounds == null ? g.maxX : Math.max(g.maxX, prevBounds[3]);
-        int maxY = prevBounds == null ? g.maxY : Math.max(g.maxY, prevBounds[4]);
-        int maxZ = prevBounds == null ? g.maxZ : Math.max(g.maxZ, prevBounds[5]);
-        q.region(w, ox + minX, oy + minY, oz + minZ, ox + maxX, oy + maxY, oz + maxZ, (x, y, z) -> {
+        int[] f = footprint(g, layer);
+        if (prevBounds != null) {
+            for (int i = 0; i < 3; i++) { f[i] = Math.min(f[i], prevBounds[i]); f[i + 3] = Math.max(f[i + 3], prevBounds[i + 3]); }
+        }
+        q.region(w, ox + f[0], oy + f[1], oz + f[2], ox + f[3], oy + f[4], oz + f[5], (x, y, z) -> {
             int lx = x - ox, ly = y - oy, lz = z - oz;
+            if (layer != null) {
+                BlockData o = layer.get(lx, ly, lz);
+                if (o != null) return o;
+            }
             if (g.isAir(lx, ly, lz)) return AIR;
             return data(g.get(lx, ly, lz), log);
         }, false);

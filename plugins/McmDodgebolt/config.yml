@@ -1,0 +1,16 @@
+# Dodgebolt finale settings
+rounds-to-win: 3        # first to N round wins
+win-by-two: false       # if true, a side must also lead by 2 rounds (until max-rounds)
+max-rounds: 7           # hard cap on rounds played (draws count)
+round-seconds: 120      # round time limit
+overtime-at: 60         # seconds into a round when the floor starts shrinking
+ring-interval: 4        # seconds between ring drops in overtime
+countdown-seconds: 5
+intermission-seconds: 6
+start-arrows-per-side: 1
+extra-arrow-interval: 30   # every N seconds one more arrow spawns on each side...
+max-arrows: 4              # ...until this many arrows are in play
+points:
+  elimination: 4        # to the shooter
+  round-win: 8          # to every member of the round-winning side
+  match-win: 25         # to every member of the champion side

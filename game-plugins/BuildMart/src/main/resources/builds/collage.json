@@ -1,0 +1,53 @@
+{
+  "id": "collage",
+  "name": "Collage",
+  "debut": "MCC 10",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Collage.png",
+  "floor": [
+    "qqqqqcc",
+    "qqqqqcc",
+    "qqqqqcc",
+    "qqqqqcc",
+    "sssqqqq",
+    "sssqqqq",
+    "sssqqqq"
+  ],
+  "palette": {
+    "q": "minecraft:quartz_block",
+    "s": "minecraft:sponge",
+    "c": "minecraft:cyan_concrete",
+    "l": "minecraft:lime_concrete",
+    "O": "minecraft:lime_glazed_terracotta",
+    "y": "minecraft:yellow_concrete",
+    "b": "minecraft:blue_glazed_terracotta"
+  },
+  "layers": [
+    [
+      ".....bb",
+      "...l.bb",
+      "..OOO..",
+      ".lOlOl.",
+      "..OOO..",
+      "yy.l...",
+      "yy....."
+    ],
+    [
+      ".....bb",
+      ".....bb",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the build is an abstract collage: a flat 3x3 lime glazed terracotta ring with a lime concrete centre and four lime concrete tabs, plus a yellow concrete block and a blue glazed terracotta cube",
+    "lime concrete and lime glazed terracotta taken from the wiki reskin notes (black concrete in place of lime concrete, black glazed terracotta in place of lime glazed terracotta)",
+    "yellow block read as 2x1x2 yellow concrete and blue cube as 2x2x2 blue glazed terracotta; exact sizes estimated from perspective",
+    "floor patches read as sponge (front-left) and cyan concrete (right); both colours are ambiguous under the render lighting",
+    "the glazed ring may in the real build be a full 3x3 plate with the lime centre covered; hidden faces assumed"
+  ]
+}

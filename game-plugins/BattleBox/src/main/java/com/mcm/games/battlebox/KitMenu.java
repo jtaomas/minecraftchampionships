@@ -75,8 +75,8 @@ final class KitMenu implements InventoryHolder {
             if (taken != null && k != mine) icon.setType(Material.BARRIER);
             h.inv.setItem(SLOTS[k.ordinal()], icon);
         }
-        h.inv.setItem(22, named(Material.WHITE_CONCRETE, ChatColor.WHITE + "Centre: fill the 3x3!",
-                List.of(ChatColor.GRAY + "Full 3x3 in your colour = instant win.",
+        h.inv.setItem(22, named(Material.WHITE_CONCRETE, ChatColor.WHITE + "Centre: fill the pad!",
+                List.of(ChatColor.GRAY + "Whole pad in your colour = instant win.",
                         ChatColor.GRAY + (timeLimit ? "At time-out, more centre blocks wins." : "No time limit: fill it to win."))));
         p.openInventory(h.inv);
     }

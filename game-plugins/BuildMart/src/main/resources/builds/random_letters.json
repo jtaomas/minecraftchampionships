@@ -1,0 +1,77 @@
+{
+  "id": "random_letters",
+  "name": "Random Letters?",
+  "debut": "MCC P22",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Random_Letters.png",
+  "floor": [
+    "yyyyyyy",
+    "yyyyyyy",
+    "yyyyyyy",
+    "rrrrrrr",
+    "rrrrrrr",
+    "rrrrrrr",
+    "rrrrrrr"
+  ],
+  "palette": {
+    "r": "minecraft:red_concrete",
+    "y": "minecraft:yellow_concrete",
+    "m": "minecraft:cut_copper",
+    "x": "minecraft:oxidized_cut_copper"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      ".....xx",
+      "....xx.",
+      "m..m...",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".....x.",
+      "....x..",
+      "m.mm...",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".....x.",
+      "....x..",
+      "mmmm...",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".....x.",
+      "....x..",
+      "mm.m...",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".....xx",
+      "....xx.",
+      "m..m...",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the three letters are cut copper (the X-pattern on every face) with the first C oxidized cut copper; the reskin note calls the colour change 'prismarine', but the render texture is cut copper",
+    "the letters are staggered in depth: M at the front row, first C one row back, second C two rows back, so their x ranges overlap",
+    "each letter is one block thick and 5 tall; the M is 4 wide, each C 2 wide",
+    "the pixel pattern of the M is read from the render; the exact diagonal rows are estimated",
+    "the floor is a yellow concrete back area (3 rows) with the rest red concrete"
+  ]
+}

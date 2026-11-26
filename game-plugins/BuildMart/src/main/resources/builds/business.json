@@ -1,0 +1,79 @@
+{
+  "id": "business",
+  "name": "BUSINESS!",
+  "debut": "MCC P22",
+  "stars": 3,
+  "status": "done",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-BUSINESS!.png",
+  "floor": [
+    "gbbbbbg",
+    "gbbbbbg",
+    "gbbbbbg",
+    "gbbbbbg",
+    "gbbbbbg",
+    "gbbbbbg",
+    "gbbbbbg"
+  ],
+  "palette": {
+    "g": "minecraft:gray_concrete",
+    "b": "minecraft:black_concrete",
+    "c": "minecraft:bone_block",
+    "r": "minecraft:red_concrete",
+    "p": "minecraft:bamboo_planks",
+    "w": "minecraft:nether_brick_wall"
+  },
+  "layers": [
+    [
+      ".......",
+      "..w.w..",
+      ".......",
+      ".......",
+      ".p...p.",
+      ".p...p.",
+      ".p...p."
+    ],
+    [
+      ".......",
+      ".bbbbb.",
+      ".......",
+      ".......",
+      ".p...p.",
+      ".p...p.",
+      ".p...p."
+    ],
+    [
+      ".......",
+      ".bcccr.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".bcrrc.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".brccc.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "board panel read as 1 block deep; its back and sides are hidden and filled with the black edge block",
+    "the pale chart background colour matches bone_block; could also be white terracotta (same game role)",
+    "the tan blocks on both sides are horizontal-striped, read as bamboo planks (the build's stacks of paper/boxes); exact pile depth assumed 3 blocks (three stepped tops visible)",
+    "the two half-width dark supports are nether brick walls, 1 block tall; their inner faces are hidden",
+    "the black floor runs down the middle 5 columns with a gray concrete border on both outer columns"
+  ]
+}

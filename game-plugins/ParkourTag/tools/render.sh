@@ -5,10 +5,10 @@ set -e
 cd "$(dirname "$0")/.."
 OUT=target/offline
 rm -rf "$OUT/classes"; mkdir -p "$OUT/classes" previews
-"/c/Users/USER/Desktop/java/bin/javac" -d "$OUT/classes" src/main/java/com/mcm/games/parkourtag/map/*.java tools/PtPreview.java
-"/c/Users/USER/Desktop/java/bin/java" -cp "$OUT/classes" PtPreview "$OUT" "$@" || echo "ROUTE CHECK FAILED"
+"/c/Users/LeonS/Desktop/java/bin/javac" -d "$OUT/classes" src/main/java/com/mcm/games/parkourtag/map/*.java tools/PtPreview.java
+"/c/Users/LeonS/Desktop/java/bin/java" -cp "$OUT/classes:src/main/resources" PtPreview "$OUT" "$@" || echo "ROUTE CHECK FAILED"
 [ -n "$NORENDER" ] && exit 0
-R=/c/Users/USER/Desktop/Mcc/tools/render_preview.py
+R=/c/Users/LeonS/Desktop/Mcc/tools/render_preview.py
 for f in "$OUT"/*_full.mcmdump.gz; do
   id=$(basename "$f" _full.mcmdump.gz)
   if [ -n "$*" ]; then case " $* " in *" $id "*) ;; *) continue;; esac; fi

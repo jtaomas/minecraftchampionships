@@ -56,6 +56,22 @@ public abstract class ArenaTheme {
         return geo.isCentreCell(x, y, z);
     }
 
+    /** Centre pad size in cells (3 x 3 unless an imported arena says otherwise). */
+    public int centreSizeX() { return 3; }
+    public int centreSizeZ() { return 3; }
+    public final int centreCells() { return centreSizeX() * centreSizeZ(); }
+    /** Lowest local x / z of the centre pad (the pad spans {@code centreMin + size - 1}). */
+    public final int centreMinX() { return centreX() - centreSizeX() / 2; }
+    public final int centreMinZ() { return centreZ() - centreSizeZ() / 2; }
+    public final String centreLabel() { return centreSizeX() + "x" + centreSizeZ(); }
+
+    /** Gate boxes of a side as {x1, y1, z1, x2, y2, z2} in local coordinates (imported arenas only; empty = none). */
+    public java.util.List<int[]> gates(boolean sideB) { return java.util.List.of(); }
+    public final boolean hasGates() { return !gates(false).isEmpty() || !gates(true).isEmpty(); }
+
+    /** Author credit / licence note of an imported arena, or null. */
+    public String credit() { return null; }
+
     public double[] spawn(ArenaGeo geo, boolean sideB, int i) {
         return geo.spawn(sideB, i);
     }
@@ -66,6 +82,36 @@ public abstract class ArenaTheme {
 
     public boolean inSpectatorBox(ArenaGeo geo, double x, double y, double z) {
         return geo.inSpectatorBox(x, y, z);
+    }
+
+    /** A box (inclusive, local coordinates) the game builds itself every round; Map Edit changes inside it are ignored. */
+    public record Zone(String label, int x1, int y1, int z1, int x2, int y2, int z2) {
+        public boolean contains(int x, int y, int z) {
+            return x >= x1 && x <= x2 && y >= y1 && y <= y2 && z >= z1 && z <= z2;
+        }
+    }
+
+    /**
+     * Cells the game paints itself each round (centre pad and the lanterns/headroom around it, team gate glass,
+     * kit rooms): the Map Edit overlay never applies there, and the editor is warned when they were changed.
+     */
+    public java.util.List<Zone> managedZones(ArenaGeo geo) {
+        java.util.List<Zone> l = new java.util.ArrayList<>();
+        l.add(centreZone(geo));
+        for (boolean b : new boolean[]{false, true}) {
+            int sg = b ? 1 : -1;
+            String s = b ? "B" : "A";
+            l.add(new Zone("kit room " + s, -geo.ROOM_HALF - 1, -1, Math.min(sg * geo.ROOM_IN, sg * geo.ROOM_OUT),
+                    geo.ROOM_HALF + 1, geo.ROOM_CEIL, Math.max(sg * geo.ROOM_IN, sg * geo.ROOM_OUT)));
+            l.add(new Zone("team gate " + s, -geo.GATE_HALF, 1, Math.min(sg * geo.R, sg * geo.W),
+                    geo.GATE_HALF, geo.GATE_TOP, Math.max(sg * geo.R, sg * geo.W)));
+        }
+        return l;
+    }
+
+    protected final Zone centreZone(ArenaGeo geo) {
+        int cy = centreY(geo);
+        return new Zone("centre pad", centreMinX(), cy - 1, centreMinZ(), centreMinX() + centreSizeX() - 1, cy + 3, centreMinZ() + centreSizeZ() - 1);
     }
 
     public int voidY() { return -8; }

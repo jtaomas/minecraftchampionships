@@ -516,7 +516,7 @@ public final class FootRaceGame implements McmGame, Listener {
         r.lap++;
         r.seq = 0;
         r.lastCp = 0;
-        if (lapCoins > 0) ctx.addCoins(r.id, lapCoins, "Foot Race lap " + r.lap);
+        if (lapCoins > 0) ctx.addObjectiveCoins(r.id, lapCoins, null, "Lap " + r.lap + " completed");
         if (r.lap >= Track.LAPS) {
             finishRunner(p, r, now);
             return;
@@ -533,10 +533,10 @@ public final class FootRaceGame implements McmGame, Listener {
         r.place = ++finishCount;
         r.finishMs = now - raceStartMs;
         double bonus = McmCoins.linear(finishFirst, finishStep, r.place, finishMin);
-        if (bonus > 0) ctx.addCoins(r.id, bonus, "Foot Race finished #" + r.place);
+        if (bonus > 0) ctx.addObjectiveCoins(r.id, bonus, null, "Finished in " + ordinal(r.place) + " place");
         ctx.broadcast("§6Foot Race §7» " + coloredName(p) + " §7finished §e" + ordinal(r.place)
                 + " §7in §f" + fmtMs(r.finishMs) + " §7(best lap §f" + fmtMs(r.bestLapMs) + "§7)");
-        p.sendTitle("§a§lFINISHED " + ordinal(r.place), "§f" + fmtMs(r.finishMs) + " §8| §6+" + McmCoins.format(bonus * ctx.coinMultiplier()) + " coins", 0, 60, 15);
+        p.sendTitle("§a§lFINISHED " + ordinal(r.place), "§f" + fmtMs(r.finishMs), 0, 60, 15);
         p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
         SpectatorGuard.makeSpectator(p, Track.spectatorSpot(world));
     }

@@ -1,0 +1,40 @@
+{
+  "id": "sunny_day",
+  "name": "Sunny Day",
+  "debut": "MCC R",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Sunny_Day.png",
+  "floor": [
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssswww",
+    "sssswww",
+    "sssswww"
+  ],
+  "palette": {
+    "s": "minecraft:sand",
+    "w": "minecraft:water",
+    "o": "minecraft:orange_terracotta"
+  },
+  "layers": [
+    ["sssssss", "sssssss", "sssssss", "sssssss", "ssss...", "ssss...", "ssss..."],
+    [".......", ".ssss..", ".ssss..", ".ssss..", ".ssss..", ".......", "......."],
+    [".......", ".sss...", ".sss...", "...oo..", "...oo..", ".......", "......."],
+    [".......", ".......", "..o....", "...oo..", ".......", ".......", "......."],
+    [".......", ".......", "..o....", ".......", ".......", ".......", "......."],
+    [".......", ".......", "..o....", ".......", ".......", ".......", "......."],
+    [".......", ".......", "..o....", ".......", ".......", ".......", "......."],
+    ["sssss..", "sssss..", "sssss..", "sssss..", ".......", ".......", "......."],
+    [".......", "..s....", ".......", ".......", ".......", ".......", "......."]
+  ],
+  "guessed": [
+    "beach read as a sand floor with a one-block-deep pool in the front-right corner (water in the floor cells, sand raised one block around it)",
+    "dune heights and outline estimated: a 4x4 sand mound two blocks above the beach, with a smaller 3x3 top at the back",
+    "umbrella pole is orange terracotta, 4 blocks above the dune, with a 5x4 sand canopy one block thick and a single sand knob on top",
+    "the beach chair is a 2x2 orange terracotta seat with a 2-wide backrest on its north edge",
+    "the umbrella and chair sit on the dune; their exact positions and the hidden sand behind them are estimated"
+  ]
+}

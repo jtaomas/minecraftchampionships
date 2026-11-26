@@ -1,0 +1,12 @@
+function mcc_lobby:lbr3_01_mountain_mass_a
+function mcc_lobby:lbr3_01_mountain_mass_b
+function mcc_lobby:lbr3_02_mountain_detail
+function mcc_lobby:lbr3_03_gate
+function mcc_lobby:lbr3_04_sign
+function mcc_lobby:lbr3_05_globe_earth
+function mcc_lobby:lbr3_06_globe_shell
+function mcc_lobby:lbr3_07_globe_base
+function mcc_lobby:lbr3_08_terraces
+function mcc_lobby:lbr3_09_water
+function mcc_lobby:lbr3_10_snow_trim
+function mcc_lobby:lbr3_11_rock_skirt

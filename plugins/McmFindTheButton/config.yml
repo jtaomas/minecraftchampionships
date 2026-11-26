@@ -1,0 +1,16 @@
+# Find the Button settings
+rounds: 5                 # one map per round, never repeated (max = number of maps, 6)
+round-seconds: 90
+countdown-seconds: 5      # frozen in the start area, then GO
+results-seconds: 4
+hints:
+  start-seconds: 45       # particle pulse + soft chime at the button from here on
+  interval-seconds: 3
+  radius: 12              # only players this close see/hear it
+  wide-seconds: 70        # from here the radius widens
+  wide-radius: 24
+points:
+  first: 20               # 1st finder; each later finder gets `step` less, never below `minimum`
+  step: 2
+  minimum: 6
+  team-bonus: 5           # to each member when every online member of a 2+ player side found it

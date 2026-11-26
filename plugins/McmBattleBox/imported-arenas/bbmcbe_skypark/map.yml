@@ -1,0 +1,13 @@
+id: bbmcbe_skypark
+name: "Sky Park (Battle Box MCBE)"
+credit: "builder not named in the download - MCC BattleBox MCBE (Bedrock world; Chef Franky Function Template, MCC Recreation pack by Chairocchi/pv6q)"
+license: "private use only, no licence given"
+size: [53, 50, 43]
+floor_y: 0
+centre: [0, 6, 0]
+centre_size: [3, 3]
+spawn_a: [-20, 1, 0]
+spawn_b: [20, 1, 0]
+gates_a: [[-16, 1, -4, -16, 4, 4]]
+gates_b: [[16, 1, -4, 16, 4, 4]]
+blocks: blocks.mcmi.gz

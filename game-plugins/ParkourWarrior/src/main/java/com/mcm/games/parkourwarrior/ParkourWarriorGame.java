@@ -60,6 +60,37 @@ public final class ParkourWarriorGame implements McmGame {
 
     final JavaPlugin plugin;
     final CourseWorld course;
+    /** Admin-forced map id for the next games (null = random among the pool), set by /pw map. */
+    volatile String forcedMap;
+    /** Map chosen at enable for the first game (so the world is built once), consumed by start(). */
+    private String plannedMap;
+    /** Map picked in the game menu / /mcm map: used for the next game only. */
+    private volatile String nextOnce;
+
+    @Override public List<String> maps() { return course.availableMaps(s != null ? s : Settings.load(plugin.getConfig(), plugin.getLogger())); }
+
+    @Override public boolean forceNextMap(String id) {
+        if (id == null) return false;
+        String c = id.trim().toLowerCase(java.util.Locale.ROOT).split(" ")[0];
+        if (!maps().contains(c)) return false;
+        nextOnce = c;
+        return true;
+    }
+
+    @Override public String currentMap() { return running() ? course.mapId() : null; }
+
+    /** The map the next game uses: the forced one, else the planned one, else a random one of the pool. */
+    String pickMap(Settings st, boolean consumePlanned) {
+        List<String> av = course.availableMaps(st);
+        String once = nextOnce;
+        if (once != null && av.contains(once)) { if (consumePlanned) nextOnce = null; plannedMap = null; return once; }
+        String f = forcedMap;
+        if (f != null && av.contains(f)) { plannedMap = null; return f; }
+        if (plannedMap != null && av.contains(plannedMap)) { String p = plannedMap; if (consumePlanned) plannedMap = null; return p; }
+        plannedMap = null;
+        return av.get(new java.util.Random().nextInt(av.size()));
+    }
+
     final NamespacedKey itemKey;
     Settings s;
     McmGameContext ctx;
@@ -88,10 +119,23 @@ public final class ParkourWarriorGame implements McmGame {
     @Override public String id() { return "parkourwarrior"; }
     @Override public String displayName() { return "Parkour Warrior"; }
     @Override public Material icon() { return Material.LEATHER_BOOTS; }
-    @Override public String description() { return "One shared course: medals, bonus paths, three endings and a team multiplier."; }
+    @Override public String description() { return "One shared course: coins per challenge, bonus paths and three endings."; }
     @Override public boolean useCoreScoreboard() { return true; }
 
     boolean running() { return phase != Phase.IDLE; }
+
+    /** True while the built map is a linear replica (one line of sections, plugin-side checkpoints; see CourseModel.Linear). */
+    boolean linearCourse() { CourseModel m = course.model(); return m != null && m.linear != null; }
+
+    /** Where this runner respawns: the position of the last checkpoint reached (linear course) or the node's respawn. */
+    Pos respawnFor(Run r) {
+        CourseModel m = course.model();
+        if (m != null && m.linear != null) {
+            if (r.cp <= 0 || r.cp > m.linear.checkpoints.size()) return prog.startSpawn(r.spawnIndex);
+            return m.linear.checkpoints.get(r.cp - 1).respawn();
+        }
+        return prog.respawn(r.node);
+    }
     boolean inPlay() { return phase == Phase.RUNNING || phase == Phase.OVERTIME; }
     Run run(Player p) { return p == null ? null : runs.get(p.getUniqueId()); }
     boolean isRunner(Player p) { Run r = run(p); return r != null && r.status == Run.Status.ACTIVE && r.online && running(); }
@@ -111,7 +155,8 @@ public final class ParkourWarriorGame implements McmGame {
     void preload() {
         s = Settings.load(plugin.getConfig(), plugin.getLogger());
         course.ensureWorld();
-        course.prepare(s, false, null);
+        plannedMap = pickMap(s, false);
+        course.prepare(s, plannedMap, false, null);
     }
 
     @Override
@@ -135,7 +180,8 @@ public final class ParkourWarriorGame implements McmGame {
         ctx.setSidebarLines(List.of(ChatColor.GRAY + "Preparing the course..."));
         if (course.world() == null) course.ensureWorld();
         if (!course.ready()) McmFx.actionBar(ctx.participants(), ChatColor.YELLOW + "Building the Parkour Warrior course...");
-        course.prepare(s, false, () -> { if (mySession == session && phase == Phase.PREPARING) begin(); });
+        final String mapId = pickMap(s, true);
+        course.prepare(s, mapId, false, () -> { if (mySession == session && phase == Phase.PREPARING) begin(); });
         prepTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             if (mySession != session || phase != Phase.PREPARING) { if (prepTask != null) { prepTask.cancel(); prepTask = null; } return; }
             if (course.state() == CourseWorld.State.FAILED || course.state() == CourseWorld.State.NONE) {
@@ -154,6 +200,7 @@ public final class ParkourWarriorGame implements McmGame {
         w.setTime(s.dayStart);
         course.holdChunks();
         course.spawnLabels();
+        if (course.movers() != null && !course.movers().isEmpty()) course.movers().begin(0);
         int i = 0;
         for (Player p : new ArrayList<>(ctx.participants())) {
             String side = McmFx.sideKeyOf(ctx, p);
@@ -167,8 +214,10 @@ public final class ParkourWarriorGame implements McmGame {
         tickTask = Bukkit.getScheduler().runTaskTimer(plugin, this::onTick, 1L, 1L);
         List<Player> all = new ArrayList<>(ctx.participants());
         if (!fastTest()) McmFx.titleCard(all, ChatColor.GOLD + "Parkour Warrior",
-                ChatColor.YELLOW + "Medals, bonus paths and three endings");
+                ChatColor.YELLOW + (m.linear != null ? "Coins for every checkpoint" : "Coins for every challenge, bonus paths, three endings"));
         sendRules(all);
+        if (m.credit != null && !m.credit.isEmpty())
+            for (Player p : all) p.sendMessage(ChatColor.GRAY + "Map: " + ChatColor.WHITE + m.mapId + ChatColor.GRAY + (m.linear != null ? " - " : " - course sections built by ") + ChatColor.WHITE + m.credit);
         int cd = fastTest() ? 1 : s.countdown;
         countdownTask = McmFx.countdown(plugin, all, cd, ChatColor.YELLOW + "Get ready to run!", this::go);
         updateHud();
@@ -237,6 +286,7 @@ public final class ParkourWarriorGame implements McmGame {
         course.removeLabels();
         course.releaseChunks();
         course.resetTimed();
+        if (course.movers() != null) course.movers().stop();
         World w = course.world();
         if (w != null) w.setTime(6000);
     }
@@ -342,23 +392,14 @@ public final class ParkourWarriorGame implements McmGame {
         PlayerInventory inv = p.getInventory();
         inv.clear();
         inv.setBoots(teamBoots(p));
-        inv.setItem(0, medalItem(Material.STONE_BUTTON, r.stone, "§fStone Medals", "stone", "§7Main challenges completed"));
-        inv.setItem(1, medalItem(Material.COPPER_INGOT, r.bronze, "§6Bronze Medals", "bronze", "§7First bonus challenge of a stage"));
-        inv.setItem(2, medalItem(Material.IRON_INGOT, r.silver, "§7Silver Medals", "silver", "§7Second bonus challenge of a stage"));
-        inv.setItem(3, medalItem(Material.GOLD_INGOT, r.gold, "§eGold Medals", "gold", "§7Third bonus challenge of a stage"));
         if (r.status == Run.Status.ACTIVE && inPlay()) {
-            if (!scrollRemoved) inv.setItem(7, item(Material.PAPER, 1, "§dTeleportation Scroll §7(right-click)", "scroll",
-                    "§7Leave a bonus path and return to", "§7the main line. Medals are kept."));
+            if (!scrollRemoved && !linearCourse()) inv.setItem(7, item(Material.PAPER, 1, "§dTeleportation Scroll §7(right-click)", "scroll",
+                    "§7Leave a bonus path and return to", "§7the main line. Your coins are kept."));
             if (!switchLocked && prog != null && prog.isEndingPhase(r.mainNode))
                 inv.setItem(8, item(Material.COMPASS, 1, "§bReturn to the Fork §7(right-click)", "fork",
                         "§7Switch to a different ending.", "§7Allowed until " + s.switchLockAt + " s remain."));
         }
         inv.setHeldItemSlot(4);
-    }
-
-    private ItemStack medalItem(Material m, int n, String name, String id, String lore) {
-        if (n <= 0) return item(Material.LIGHT_GRAY_STAINED_GLASS_PANE, 1, name + " §8x0", id, lore);
-        return item(m, n, name + " §8x" + n, id, lore);
     }
 
     void onItemUse(Player p, String id) {
@@ -384,7 +425,7 @@ public final class ParkourWarriorGame implements McmGame {
         r.returning = false;
         teleport(p, course.loc(prog.respawn(r.mainNode)));
         r.noFallUntilTick = tick + 10;
-        p.sendMessage(ChatColor.LIGHT_PURPLE + "Whoosh! " + ChatColor.WHITE + "Back on the main line. Your medals are kept.");
+        p.sendMessage(ChatColor.LIGHT_PURPLE + "Whoosh! " + ChatColor.WHITE + "Back on the main line. Your coins are kept.");
         McmFx.sound(p, Sound.ENTITY_ENDERMAN_TELEPORT, 0.8f, 1.2f);
     }
 
@@ -408,6 +449,12 @@ public final class ParkourWarriorGame implements McmGame {
         try {
             tick++;
             course.updateTimed(tick);
+            MoverRuntime mr = course.movers();
+            if (mr != null && !mr.isEmpty()) {
+                List<Player> live = new ArrayList<>();
+                for (Run r : runs.values()) { Player lp = r.online ? Bukkit.getPlayer(r.id) : null; if (lp != null && r.status == Run.Status.ACTIVE) live.add(lp); }
+                mr.tick(tick, live);
+            }
             ensureGhostTeams();
             if (phase == Phase.COUNTDOWN) leash();
             if (inPlay()) {
@@ -447,11 +494,16 @@ public final class ParkourWarriorGame implements McmGame {
     private void checkPlayer(Player p, Run r) {
         Location l = p.getLocation();
         if (l.getWorld() != course.world()) {
-            teleport(p, course.loc(prog.respawn(r.node)));
+            teleport(p, course.loc(respawnFor(r)));
             return;
         }
-        if (p.getGameMode() != GameMode.ADVENTURE) p.setGameMode(GameMode.ADVENTURE);
+        if (p.getGameMode() != GameMode.ADVENTURE && !(p.isOp() && p.getGameMode() == GameMode.CREATIVE)) p.setGameMode(GameMode.ADVENTURE);   // ops may stay in creative
         double x = course.lx(l), y = course.ly(l), z = course.lz(l);
+        if (linearCourse()) {      // replica imported 1:1: the checkpoints its command blocks implemented
+            if (checkLinear(p, r, x, y, z)) return;
+            if (tick >= r.noFallUntilTick && fell(r, x, y, z)) onFall(p, r, x, z);
+            return;
+        }
         // pads
         for (Obstacle o : prog.padCandidates(r.node, r.mainNode, !switchLocked)) {
             if (o.pad() != null && o.pad().containsFeet(x, y, z)) {
@@ -469,12 +521,22 @@ public final class ParkourWarriorGame implements McmGame {
                 return;
             }
         }
+        // moving traps: a hit counts as a fall (sweep from last tick's position to this one)
+        MoverRuntime mr = course.movers();
+        double[] lp = r.lastPos;
+        r.lastPos = new double[]{x, y, z};
+        if (lp != null && Math.abs(lp[0] - x) + Math.abs(lp[1] - y) + Math.abs(lp[2] - z) > 6) lp = null;   // teleported
+        if (mr != null && !mr.isEmpty() && lp != null && tick >= r.noFallUntilTick) {
+            CourseModel.Mover hit = mr.hit(lp[0], lp[1], lp[2], x, y, z);
+            if (hit != null) { onFall(p, r, x, z, ChatColor.RED + "Hit by the " + hit.name() + "! Back to your last checkpoint."); return; }
+        }
         // falls
         if (tick >= r.noFallUntilTick && fell(r, x, y, z)) onFall(p, r, x, z);
     }
 
     private boolean fell(Run r, double x, double y, double z) {
         CourseModel m = course.model();
+        if (m.linear != null) return y < m.linear.fallY;      // the replica's own fall line (command block: y below -30)
         if (y < m.minY - s.fallMarginBelowCourse) return true;
         List<Obstacle> c = prog.fallCandidates(r.node, r.mainNode);
         if (c.isEmpty()) return false;
@@ -487,15 +549,86 @@ public final class ParkourWarriorGame implements McmGame {
     }
 
     private void onFall(Player p, Run r, double x, double z) {
+        onFall(p, r, x, z, linearCourse() ? ChatColor.RED + "You fell! Returning to last checkpoint..." : ChatColor.RED + "You fell! Back to your last checkpoint.");
+    }
+
+    // =====================================================================================
+    // linear (replica) course: the logic of the replica's command blocks, in plugin code
+    // =====================================================================================
+
+    /** Touch tests of a linear course, per tick. True if the run was moved/finished (stop checking this tick). */
+    private boolean checkLinear(Player p, Run r, double x, double y, double z) {
+        CourseModel.Linear L = course.model().linear;
+        for (CourseModel.Checkpoint c : L.checkpoints) {
+            if (c.n() > r.cp && c.trigger().hitsPlayer(x, y, z)) { completeLinear(p, r, c.n()); return false; }
+        }
+        if (L.finish != null && L.finish.hitsPlayer(x, y, z) && r.status == Run.Status.ACTIVE) { finishLinear(p, r); return true; }
+        return false;
+    }
+
+    /** Obstacle id of section k (1-based) of a linear course. */
+    private String sectionId(int k) {
+        int per = course.model().linear.perStage;
+        return CourseModel.mainId((k - 1) / per + 1, (k - 1) % per + 1);
+    }
+
+    /** Checkpoint k reached: coins (once), the checkpoint moves forward only, "Spawn point updated". */
+    private void completeLinear(Player p, Run r, int k) {
+        CourseModel m = course.model();
+        CourseModel.Linear L = m.linear;
+        String id = sectionId(k);
+        boolean first = r.completed.add(id);
+        r.cp = Math.max(r.cp, k);
+        Obstacle o = m.obstacle(id);
+        String name = k - 1 < L.sections.size() ? L.sections.get(k - 1) : id;
+        int per = L.perStage;
+        if (first) {
+            int pts = o == null ? 0 : Scoring.coins(s, m, o);
+            r.coins += pts;
+            p.sendMessage(ChatColor.WHITE + "You completed " + ChatColor.YELLOW + "Stage " + ((k - 1) / per + 1) + "-" + ((k - 1) % per + 1)
+                    + ChatColor.WHITE + " (" + ChatColor.YELLOW + name + ChatColor.WHITE + ")!");
+            if (pts > 0) ctx.addObjectiveCoins(r.id, pts, null, "Checkpoint " + k + " completed");
+            if (k % per == 0) {
+                CourseModel.Hub h = m.hub(k / per);
+                String zone = h != null ? h.zoneName() : "Stage " + (k / per);
+                p.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "You completed the " + zone + " zone!");
+                McmFx.title(p, "", ChatColor.GOLD + zone + " zone complete!", 5, 30, 10);
+                McmFx.sound(p, Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.6f, 1.2f);
+            }
+        }
+        spawnUpdated(p, r);
+    }
+
+    /** The finish volume: the course is done (one line, one finish); coins from coins.course.<map>.finish. */
+    private void finishLinear(Player p, Run r) {
+        if (r.status != Run.Status.ACTIVE) return;
+        CourseModel m = course.model();
+        r.status = Run.Status.FINISHED;
+        r.finishTick = tick;
+        r.completed.add(sectionId(m.linear.sectionCount()));
+        String who = McmFx.sideColor(ctx, r.sideKey) + p.getName();
+        ctx.broadcast(who + ChatColor.WHITE + " finished the entire course!");
+        int fc = Scoring.finish(s, m.mapId);
+        r.coins += fc;
+        if (fc > 0) ctx.addObjectiveCoins(r.id, fc, null, "Course completed");
+        McmFx.title(p, ChatColor.GOLD + "" + ChatColor.BOLD + "FINISHED!", ChatColor.WHITE + "You finished the entire course", 5, 50, 15);
+        McmFx.teamFirework(p.getLocation().add(0, 1, 0), McmFx.sideColor(ctx, r.sideKey), true);
+        McmFx.sound(p, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
+        makeSpectator(p);
+        checkAllDone();
+    }
+
+    private void onFall(Player p, Run r, double x, double z, String msg) {
         r.falls++;
         if (phase == Phase.OVERTIME) { knockOut(p, r); return; }
-        Pos target = prog.respawn(r.node);
-        for (Obstacle o : prog.candidates(r.node)) {
+        Pos target = respawnFor(r);
+        if (!linearCourse()) for (Obstacle o : prog.candidates(r.node)) {
             if (o.area() != null && o.area().containsColumn(x, z)) { target = o.entry(); break; }
         }
         teleport(p, course.loc(target));
         r.noFallUntilTick = tick + 5;
-        p.sendMessage(ChatColor.RED + "You fell! Back to your last checkpoint.");
+        r.lastPos = null;
+        p.sendMessage(msg);
         McmFx.sound(p, Sound.ENTITY_PLAYER_HURT, 0.6f, 1.0f);
         McmFx.sound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 0.7f, 0.6f);
     }
@@ -533,9 +666,9 @@ public final class ParkourWarriorGame implements McmGame {
                 }
                 if (next.type() == Progress.Type.FORK) {
                     p.sendMessage(ChatColor.AQUA + "You reached the fork! " + ChatColor.WHITE + "Pick an ending: "
-                            + ChatColor.GREEN + "Easy (+" + fmtMult(s.multInc.get(Difficulty.EASY)) + ")" + ChatColor.WHITE + ", "
-                            + ChatColor.GOLD + "Medium (+" + fmtMult(s.multInc.get(Difficulty.MEDIUM)) + ")" + ChatColor.WHITE + " or "
-                            + ChatColor.RED + "Hard (+" + fmtMult(s.multInc.get(Difficulty.HARD)) + ")" + ChatColor.WHITE + " team multiplier.");
+                            + ChatColor.GREEN + "Easy (+" + s.endEasy + " coins)" + ChatColor.WHITE + ", "
+                            + ChatColor.GOLD + "Medium (+" + s.endMedium + ")" + ChatColor.WHITE + " or "
+                            + ChatColor.RED + "Hard (+" + s.endHard + ")" + ChatColor.WHITE + ".");
                     giveItems(p, r);
                 }
                 return false;
@@ -583,28 +716,19 @@ public final class ParkourWarriorGame implements McmGame {
     }
 
     private void award(Player p, Run r, Obstacle o) {
-        Scoring.Medal medal;
-        if (o.kind() == Kind.MAIN) { medal = Scoring.Medal.STONE; r.stone++; }
-        else if (o.kind() == Kind.BONUS) {
-            if (o.index() == 1) { medal = Scoring.Medal.BRONZE; r.bronze++; }
-            else if (o.index() == 2) { medal = Scoring.Medal.SILVER; r.silver++; }
-            else { medal = Scoring.Medal.GOLD; r.gold++; }
-        } else return;
-        int count = switch (medal) { case STONE -> r.stone; case BRONZE -> r.bronze; case SILVER -> r.silver; case GOLD -> r.gold; };
-        int pts = Scoring.delta(s, medal, count);
-        r.medalPoints += pts;
-        String mname = switch (medal) {
-            case STONE -> ChatColor.GRAY + "stone";
-            case BRONZE -> ChatColor.GOLD + "bronze";
-            case SILVER -> ChatColor.WHITE + "silver";
-            case GOLD -> ChatColor.YELLOW + "gold";
-        };
-        p.sendMessage(ChatColor.WHITE + "You completed " + ChatColor.YELLOW + o.name() + ChatColor.WHITE + " and earned a " + mname
-                + ChatColor.WHITE + " medal! " + ChatColor.DARK_GRAY + "(+" + pts + ")");
-        if (pts > 0) ctx.addPoints(r.id, pts, medal.name().toLowerCase(Locale.ROOT) + " medal: " + o.name());
-        McmFx.sound(p, medal == Scoring.Medal.STONE ? Sound.ENTITY_EXPERIENCE_ORB_PICKUP : Sound.ENTITY_PLAYER_LEVELUP, 0.8f,
-                medal == Scoring.Medal.GOLD ? 1.6f : 1.2f);
+        if (o.kind() == Kind.ENDING) return;
+        int pts = Scoring.coins(s, o);
+        r.coins += pts;
+        String what = o.kind() == Kind.MAIN ? "Checkpoint " + mainDone(r) + " completed" : "Bonus: " + o.name();
+        p.sendMessage(ChatColor.WHITE + "You completed " + ChatColor.YELLOW + o.name() + ChatColor.WHITE + "!");
+        if (pts > 0) ctx.addObjectiveCoins(r.id, pts, null, what);
         giveItems(p, r);
+    }
+
+    private int mainDone(Run r) {
+        int n = 0;
+        for (String id : r.completed) if (id.startsWith("M")) n++;
+        return n;
     }
 
     private void spawnUpdated(Player p, Run r) {
@@ -622,9 +746,10 @@ public final class ParkourWarriorGame implements McmGame {
         ChatColor c = d == Difficulty.EASY ? ChatColor.GREEN : d == Difficulty.MEDIUM ? ChatColor.GOLD : ChatColor.RED;
         String who = McmFx.sideColor(ctx, r.sideKey) + p.getName();
         ctx.broadcast(who + ChatColor.WHITE + " finished the entire course! " + c + "(" + CourseWorld.cap(d.name()) + " ending)");
-        double mult = Scoring.multiplier(s, sideEndings.get(r.sideKey));
-        p.sendMessage(ChatColor.WHITE + "Team multiplier is now " + ChatColor.AQUA + "x" + fmt2(mult));
-        McmFx.title(p, c + "" + ChatColor.BOLD + "FINISHED!", ChatColor.WHITE + CourseWorld.cap(d.name()) + " ending  " + ChatColor.AQUA + "+" + fmtMult(s.multInc.get(d)), 5, 50, 15);
+        int ec = Scoring.ending(s, d);
+        r.coins += ec;
+        if (ec > 0) ctx.addObjectiveCoins(r.id, ec, null, "You finished the " + CourseWorld.cap(d.name()) + " ending");
+        McmFx.title(p, c + "" + ChatColor.BOLD + "FINISHED!", ChatColor.WHITE + CourseWorld.cap(d.name()) + " ending", 5, 50, 15);
         McmFx.teamFirework(p.getLocation().add(0, 1, 0), McmFx.sideColor(ctx, r.sideKey), true);
         McmFx.sound(p, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
         makeSpectator(p);
@@ -761,21 +886,18 @@ public final class ParkourWarriorGame implements McmGame {
     void updateHud() {
         if (ctx == null) return;
         List<Run> sorted = new ArrayList<>(runs.values());
-        sorted.sort(Comparator.comparingInt(Run::medals).reversed().thenComparing(Comparator.comparingInt((Run r) -> r.medalPoints).reversed()));
+        sorted.sort(Comparator.comparingInt((Run r) -> r.coins).reversed());
         List<String> lines = new ArrayList<>();
-        lines.add(ChatColor.GOLD + "" + ChatColor.BOLD + "MEDALS OBTAINED");
+        lines.add(ChatColor.GOLD + "" + ChatColor.BOLD + "COINS");
         for (int i = 0; i < Math.min(3, sorted.size()); i++) {
             Run r = sorted.get(i);
-            lines.add(ChatColor.YELLOW + "" + (i + 1) + ". " + McmFx.sideColor(ctx, r.sideKey) + trim(r.name, 12) + ChatColor.GRAY + " " + r.medals()
+            lines.add(ChatColor.YELLOW + "" + (i + 1) + ". " + McmFx.sideColor(ctx, r.sideKey) + trim(r.name, 12) + ChatColor.GRAY + " " + r.coins
                     + (r.status == Run.Status.FINISHED ? ChatColor.GREEN + " ✔" : r.status == Run.Status.OUT ? ChatColor.RED + " ✖" : ""));
         }
-        String best = null;
-        double bm = 1.0;
-        for (Map.Entry<String, List<Difficulty>> e : sideEndings.entrySet()) {
-            double mm = Scoring.multiplier(s, e.getValue());
-            if (mm > bm + 1e-9) { bm = mm; best = e.getKey(); }
-        }
-        lines.add(ChatColor.AQUA + "Top multiplier " + ChatColor.WHITE + "x" + fmt2(bm) + (best != null ? " " + McmFx.sideColor(ctx, best) + "●" : ""));
+        int mainTotalAll = prog == null ? 15 : prog.mainCount;
+        int bestDone = 0;
+        for (Run r : runs.values()) bestDone = Math.max(bestDone, mainDone(r));
+        lines.add(ChatColor.GRAY + "Challenges left " + ChatColor.WHITE + Math.max(0, mainTotalAll - bestDone) + ChatColor.GRAY + "/" + ChatColor.WHITE + mainTotalAll);
         long fin = runs.values().stream().filter(r -> r.status == Run.Status.FINISHED).count();
         lines.add(ChatColor.GRAY + "Finished " + ChatColor.WHITE + fin + ChatColor.GRAY + "/" + ChatColor.WHITE + runs.size());
         ctx.setSidebarLines(lines);
@@ -793,15 +915,14 @@ public final class ParkourWarriorGame implements McmGame {
             if (p == null || !r.online) continue;
             BossBar b = bars.computeIfAbsent(r.id, k -> Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SEGMENTED_10));
             if (!b.getPlayers().contains(p)) b.addPlayer(p);
-            b.setTitle(title.isEmpty() ? medalRow(r) : title + ChatColor.DARK_GRAY + "  |  " + medalRow(r));
+            b.setTitle(title);
             b.setColor(ot ? BarColor.RED : BarColor.WHITE);
             b.setProgress(Math.max(0, Math.min(1, progress)));
             if (r.status == Run.Status.ACTIVE && inPlay() && now - r.lastMessageMs > 2500) {
                 int mainDone = 0;
                 for (String id : r.completed) if (id.startsWith("M")) mainDone++;
-                double mult = Scoring.multiplier(s, sideEndings.getOrDefault(r.sideKey, List.of()));
-                McmFx.actionBar(p, ChatColor.GRAY + "Main challenges left " + ChatColor.WHITE + (mainTotal - mainDone) + "/" + mainTotal
-                        + ChatColor.DARK_GRAY + "  |  " + ChatColor.AQUA + "Team multiplier x" + fmt2(mult));
+                McmFx.actionBar(p, ChatColor.GOLD + "Coins " + ChatColor.WHITE + r.coins
+                        + ChatColor.DARK_GRAY + "  |  " + ChatColor.GRAY + "Challenges left " + ChatColor.WHITE + (mainTotal - mainDone) + "/" + mainTotal);
             }
         }
         for (Map.Entry<UUID, BossBar> e : bars.entrySet()) {
@@ -810,11 +931,6 @@ public final class ParkourWarriorGame implements McmGame {
             e.getValue().setColor(ot ? BarColor.RED : BarColor.WHITE);
             e.getValue().setProgress(Math.max(0, Math.min(1, progress)));
         }
-    }
-
-    private String medalRow(Run r) {
-        return ChatColor.GRAY + "■" + r.stone + " " + ChatColor.GOLD + "■" + r.bronze + " " + ChatColor.WHITE + "■" + r.silver + " "
-                + ChatColor.YELLOW + "■" + r.gold;
     }
 
     static String mmss(int sec) { return (sec / 60) + ":" + (sec % 60 < 10 ? "0" : "") + (sec % 60); }
@@ -914,7 +1030,7 @@ public final class ParkourWarriorGame implements McmGame {
         if (r != null && r.status == Run.Status.ACTIVE && phase != Phase.ENDING) {
             r.online = true;
             preparePlayer(p, r);
-            Pos at = phase == Phase.COUNTDOWN ? prog.startSpawn(r.spawnIndex) : prog.respawn(r.node);
+            Pos at = phase == Phase.COUNTDOWN ? prog.startSpawn(r.spawnIndex) : respawnFor(r);
             teleport(p, course.loc(at));
             r.noFallUntilTick = tick + 20;
             p.sendMessage(ChatColor.GREEN + "Welcome back! You resume at your last checkpoint.");
@@ -940,7 +1056,7 @@ public final class ParkourWarriorGame implements McmGame {
         phase = Phase.ENDING;
         finishReason = reason;
         if (countdownTask != null) { countdownTask.cancel(); countdownTask = null; }
-        awardMultiplierShares();
+        announceResults();
         List<Player> online = new ArrayList<>();
         for (Run r : runs.values()) { Player p = Bukkit.getPlayer(r.id); if (p != null && r.online) online.add(p); }
         for (Player p : online) {
@@ -980,25 +1096,12 @@ public final class ParkourWarriorGame implements McmGame {
         Bukkit.getScheduler().runTask(plugin, () -> c.finish(reason));
     }
 
-    private void awardMultiplierShares() {
-        Map<String, List<Scoring.Member>> bySide = new LinkedHashMap<>();
-        for (Run r : runs.values()) bySide.computeIfAbsent(r.sideKey, k -> new ArrayList<>()).add(new Scoring.Member(r.id, r.medalPoints, r.ending));
-        List<String> summary = new ArrayList<>();
-        for (Map.Entry<String, List<Scoring.Member>> e : bySide.entrySet()) {
-            double mult = Scoring.multiplier(s, sideEndings.getOrDefault(e.getKey(), List.of()));
-            int sum = 0;
-            for (Scoring.Member m : e.getValue()) sum += m.medalPoints();
-            Map<UUID, Integer> sh = Scoring.shares(s, e.getValue(), mult);
-            int extra = 0;
-            for (Map.Entry<UUID, Integer> x : sh.entrySet()) {
-                if (x.getValue() > 0) { ctx.addPoints(x.getKey(), x.getValue(), "team multiplier share x" + fmt2(mult)); extra += x.getValue(); }
-            }
-            summary.add(McmFx.sideLabel(ctx, e.getKey()) + ChatColor.GRAY + ": " + ChatColor.WHITE + sum + ChatColor.GRAY + " medal coins x"
-                    + ChatColor.AQUA + fmt2(mult) + ChatColor.GRAY + " = " + ChatColor.YELLOW + (sum + extra));
-        }
+    private void announceResults() {
+        List<Run> sorted = new ArrayList<>(runs.values());
+        sorted.sort(Comparator.comparingInt((Run r) -> r.coins).reversed());
         ctx.broadcast(ChatColor.GOLD + "" + ChatColor.BOLD + "Parkour Warrior results");
-        summary.sort(Comparator.reverseOrder());
-        for (String l : summary) ctx.broadcast(" " + l);
+        for (Run r : sorted) ctx.broadcast(" " + McmFx.sideColor(ctx, r.sideKey) + r.name + ChatColor.GRAY + ": " + ChatColor.YELLOW + r.coins + " coins"
+                + (r.ending != null ? ChatColor.GRAY + " (" + CourseWorld.cap(r.ending.name()) + " ending)" : ""));
     }
 
     // =====================================================================================
@@ -1006,13 +1109,23 @@ public final class ParkourWarriorGame implements McmGame {
     // =====================================================================================
 
     private void sendRules(Collection<Player> ps) {
+        if (linearCourse()) {
+            CourseModel.Linear L = course.model().linear;
+            for (Player p : ps) {
+                p.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Parkour Warrior");
+                p.sendMessage(ChatColor.WHITE + "Run the whole course: " + ChatColor.GOLD + "each of the " + (L.sectionCount() - 1) + " checkpoints pays coins" + ChatColor.WHITE
+                        + " and sets your spawn point. Fall and you return to the last one. Reach the end (" + L.sections.get(L.sectionCount() - 1) + ") for a finish bonus.");
+                p.sendMessage(ChatColor.WHITE + mmss(s.time) + " + " + s.overtime + " s overtime (a fall in overtime ends your run).");
+            }
+            return;
+        }
         for (Player p : ps) {
             p.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Parkour Warrior");
-            p.sendMessage(ChatColor.WHITE + "Run the main line through 5 zones: each challenge is a " + ChatColor.GRAY + "stone medal" + ChatColor.WHITE + " and a checkpoint.");
-            p.sendMessage(ChatColor.WHITE + "Each hub has a harder bonus path: " + ChatColor.GOLD + "bronze" + ChatColor.WHITE + ", " + ChatColor.GRAY + "silver"
+            p.sendMessage(ChatColor.WHITE + "Run the main line through 5 zones: each challenge pays " + ChatColor.GOLD + "coins" + ChatColor.WHITE + " straight away and is a checkpoint.");
+            p.sendMessage(ChatColor.WHITE + "Each hub has bonus paths that pay more: " + ChatColor.GOLD + "bronze" + ChatColor.WHITE + ", " + ChatColor.GRAY + "silver"
                     + ChatColor.WHITE + ", " + ChatColor.YELLOW + "gold" + ChatColor.WHITE + ". Your scroll takes you back to the main line.");
             p.sendMessage(ChatColor.WHITE + "At the end pick " + ChatColor.GREEN + "Easy" + ChatColor.WHITE + ", " + ChatColor.GOLD + "Medium" + ChatColor.WHITE + " or "
-                    + ChatColor.RED + "Hard" + ChatColor.WHITE + " to raise your team multiplier. " + mmss(s.time) + " + " + s.overtime + " s overtime (a fall in overtime ends your run).");
+                    + ChatColor.RED + "Hard" + ChatColor.WHITE + " for a finish bonus. " + mmss(s.time) + " + " + s.overtime + " s overtime (a fall in overtime ends your run).");
         }
     }
 
@@ -1023,9 +1136,13 @@ public final class ParkourWarriorGame implements McmGame {
         if (r == null || r.status != Run.Status.ACTIVE) { msg.append(target.getName()).append(" is not an active runner."); return false; }
         Obstacle o = course.model().obstacle(obstacleId);
         if (o == null) { msg.append("Unknown obstacle ").append(obstacleId); return false; }
-        complete(target, r, o);
+        if (linearCourse()) {
+            int k = (o.stage() - 1) * course.model().linear.perStage + o.index();
+            if (k >= course.model().linear.sectionCount()) finishLinear(target, r);
+            else completeLinear(target, r, k);
+        } else complete(target, r, o);
         if (r.status == Run.Status.ACTIVE && !r.returning) {
-            teleport(target, course.loc(prog.respawn(r.node)));
+            teleport(target, course.loc(respawnFor(r)));
             r.noFallUntilTick = tick + 10;
         }
         msg.append("Completed ").append(o.id()).append(" for ").append(target.getName());
@@ -1035,7 +1152,11 @@ public final class ParkourWarriorGame implements McmGame {
     /** Admin: teleport to an obstacle's entry; mid-game the runner's checkpoint becomes that entry's node (no medals). */
     void adminTpObstacle(Player p, Obstacle o) {
         Run r = run(p);
-        if (inPlay() && r != null && r.status == Run.Status.ACTIVE) {
+        if (inPlay() && r != null && r.status == Run.Status.ACTIVE && linearCourse()) {
+            r.cp = Math.max(0, (o.stage() - 1) * course.model().linear.perStage + o.index() - 1);   // its checkpoint = the one before it
+            r.noFallUntilTick = tick + 20;
+            giveItems(p, r);
+        } else if (inPlay() && r != null && r.status == Run.Status.ACTIVE) {
             Node n = nodeBefore(o);
             r.node = n;
             if (o.kind() != Kind.BONUS) r.mainNode = n;
@@ -1064,6 +1185,7 @@ public final class ParkourWarriorGame implements McmGame {
     String info() {
         StringBuilder b = new StringBuilder();
         b.append("phase=").append(phase).append(" course=").append(course.state()).append(" generator=").append(course.generatorUsed());
+        b.append(" map=").append(course.mapId()).append(forcedMap != null ? " (forced " + forcedMap + ")" : " (random of " + course.availableMaps(s != null ? s : Settings.load(plugin.getConfig(), plugin.getLogger())) + ")");
         if (inPlay()) b.append(" left=").append(secondsLeft()).append("s scrollRemoved=").append(scrollRemoved).append(" switchLocked=").append(switchLocked);
         b.append(" runs=").append(runs.size()).append(" ghost=").append(ghost() ? "on" : "off");
         return b.toString();

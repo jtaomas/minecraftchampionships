@@ -1,0 +1,109 @@
+{
+  "id": "mystery_boxes",
+  "name": "Mystery Boxes",
+  "debut": "MCC P23",
+  "stars": 4,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM_-_Mystery_Boxes.png",
+  "floor": [
+    "bbrrccb",
+    "bbrrccb",
+    "yybbccb",
+    "yybbccb",
+    "bbggbbb",
+    "bbggbbb",
+    "bbggbbb"
+  ],
+  "palette": {
+    "b": "minecraft:black_concrete",
+    "g": "minecraft:lime_concrete",
+    "y": "minecraft:yellow_terracotta",
+    "c": "minecraft:cyan_terracotta",
+    "r": "minecraft:red_terracotta",
+    "B": "minecraft:barrel[facing=up]",
+    "D": "minecraft:barrel[facing=south]",
+    "p": "minecraft:stone_pressure_plate",
+    "s": "minecraft:stone"
+  },
+  "layers": [
+    [
+      "bbrrccb",
+      "bbrrccb",
+      "yybbccp",
+      "yyBbbBb",
+      "bbggbbb",
+      "bbgDgbb",
+      "bbgpbbb"
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "...s...",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "....s..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".....s.",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".s...s.",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".s...s.",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "..sss..",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "floor patchwork layout (black / lime / yellow / cyan / red areas) estimated from the perspective; the exact edges are partly hidden by the barrels",
+    "the three mystery boxes read as barrels: two upright, the front one on its side with the lid facing south",
+    "the grey pads read as stone pressure plates (one at the front, one at the right)",
+    "the floating question mark (7 blocks tall, one block thick) is shown floating in the render with no support; recreated floating as shown",
+    "colours taken as concrete for black/lime and terracotta for yellow/cyan/red"
+  ]
+}

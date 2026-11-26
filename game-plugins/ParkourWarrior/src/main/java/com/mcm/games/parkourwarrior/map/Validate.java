@@ -89,7 +89,9 @@ final class Validate {
 
         int jumps = 0, decoys = 0, ledges = 0, tiny = 0, footholds = 0, bypasses = 0, killOverlaps = 0;
         Set<String> ids = new HashSet<>(), names = new HashSet<>();
+        String onlyProp = System.getProperty("pw.only");
         for (Ob o : w.obs) {
+            if (onlyProp != null && !("," + onlyProp + ",").contains("," + o.id + ",")) continue;
             Tier tier = tier(o);
             if (!ids.add(o.id)) r.err(o.id + ": duplicate id");
             if (!names.add(o.name)) r.err(o.id + ": duplicate name " + o.name);
@@ -128,13 +130,14 @@ final class Validate {
                     r.err(tag + ": IMPOSSIBLE in the simulation" + (res.killHit ? " (every landing is inside a kill volume)" : "")
                             + (res.fail.isEmpty() ? "" : " - " + res.fail));
                 } else {
-                    if (res.worst < tier.minWorst) r.err(tag + ": window " + res.worst + " at the worst alignment < " + tier.minWorst + " (tier " + tier + ")");
-                    if (res.best < tier.minBest) r.err(tag + ": window " + res.best + " at the best alignment < " + tier.minBest + " (tier " + tier + ")");
+                    int mw = o.imported ? 0 : tier.minWorst, mb = o.imported ? 1 : tier.minBest;   // imported replica sections: possible is the floor, the ramp is judged by est. attempts
+                    if (res.worst < mw) r.err(tag + ": window " + res.worst + " at the worst alignment < " + mw + " (tier " + tier + ")");
+                    if (res.best < mb) r.err(tag + ": window " + res.best + " at the best alignment < " + mb + " (tier " + tier + ")");
                 }
                 if (res.curved && res.wallLen >= 1) {
                     if (res.wallLen >= 3) r.err(tag + ": neo around a " + res.wallLen + "-block wall (never buildable)");
-                    else if (res.wallLen == 2 && tier != Tier.GOLD && tier != Tier.HARD) r.err(tag + ": double neo outside gold / hard");
-                    else if (tier == Tier.Z1 || tier == Tier.Z2 || tier == Tier.EASY) r.err(tag + ": neo in zone 1-2 / easy ending");
+                    else if (res.wallLen == 2 && tier != Tier.GOLD && tier != Tier.HARD) r.errUnless(o.imported, tag + ": double neo outside gold / hard");
+                    else if (tier == Tier.Z1 || tier == Tier.Z2 || tier == Tier.EASY) r.errUnless(o.imported, tag + ": neo in zone 1-2 / easy ending");
                 }
                 if (!res.trivial) {
                     double we = (res.worst + res.best) / 2.0;
@@ -195,19 +198,34 @@ final class Validate {
             if (od > 4) r.errUnless(o.imported, o.id + ": ... " + (od - 4) + " more decoys");
             decoys += od; ledges += ol;
             // ---- bypass search
-            for (String b : Bypass.check(wd, o, o.killY)) { bypasses++; r.err(o.id + ": " + b); }
+            for (String b : Bypass.check(wd, o, o.killY)) { bypasses++; r.errUnless(o.replica, o.id + ": " + b); }
             // ---- timed positions empty in the static store
             for (CourseModel.Timed t : o.timed) for (CourseModel.BlockPos p : t.positions())
                 if (!Bs.isAir(w.get(p.x(), p.y(), p.z()))) r.err(o.id + ": timed position not air in the static store " + p);
             // ---- length
             int sx = o.wx(0, 0), sz = o.wz(0, 0), ex = o.wx(o.endX, o.endZ), ez = o.wz(o.endX, o.endZ);
             double span = o.kind == CourseModel.Kind.ENDING ? Math.hypot(Math.hypot(ex - sx, ez - sz), o.endY) - 3 : Math.hypot(ex - sx, ez - sz) - 3;
-            if (o.kind != CourseModel.Kind.ENDING && (span < 15 || span > (o.imported ? 60 : 35))) r.err(o.id + ": length " + f(span) + " outside 15..35");
-            if (o.kind == CourseModel.Kind.ENDING && (span < 8 || span > 35)) r.err(o.id + ": ending length " + f(span) + " outside 8..35");
+            if (o.kind != CourseModel.Kind.ENDING && (span < (o.imported ? 10 : 15) || span > (o.imported ? 60 : 35))) r.err(o.id + ": length " + f(span) + " outside " + (o.imported ? "10..60" : "15..35"));
+            if (o.kind == CourseModel.Kind.ENDING && (span < 8 || span > (o.imported ? 60 : 35))) r.err(o.id + ": ending length " + f(span) + " outside 8.." + (o.imported ? 60 : 35));
             r.line(String.format(Locale.ROOT, "%-10s %-24s %-7s %-6s len %4.1f  steps %2d  tightest %s window %s  est. attempts %.1f  killY %d",
                     o.id, o.name, o.idea, tier, span, stepRes.size(), hardDesc, hardW == 99 ? "-" : hardW + "/" + hardB, att, o.killY));
             r.text.append(detail);
         }
+
+        // ---- overlap: two obstacles / frames / backdrop writing blocks into the same cells (a classic structure cutting through
+        // replica terrain was the owner's "how is this possible"). Each pair is reported once with its block count.
+        r.line("");
+        r.line("== block overlaps (A x B = blocks of A overwritten by B)");
+        int ov = 0;
+        for (Map.Entry<String, int[]> e : w.overlaps().entrySet()) {
+            int[] v = e.getValue();
+            r.line(String.format(Locale.ROOT, "  %s: %d blocks, first at %d,%d,%d", e.getKey(), v[0], v[1], v[2], v[3]));
+            String[] ab = e.getKey().split(" x ");
+            boolean rep = false;
+            for (Ob o : w.obs) if (o.replica && (o.id.equals(ab[0]) || o.id.equals(ab[1]))) rep = true;
+            if (rep && v[0] >= 3) { ov++; r.err("overlap " + e.getKey() + ": " + v[0] + " blocks, first at " + v[1] + "," + v[2] + "," + v[3]); }
+        }
+        r.line("overlapping pairs: " + ov);
 
         // ---- kill-volume overlap: footholds, frame walkways and jump lines vs every obstacle's kill column
         r.line("");

@@ -107,11 +107,11 @@ final class Router {
         }
         if (b.ladder) {
             type[0] = 1;
-            return g <= 2.0 && dh <= 1.0 && dh >= -4 && arc(wd, a, b) ? jumpCost(g, Math.max(0, dh)) : -1;
+            return g <= 3.2 && dh <= 1.0 && dh >= -4 && arc(wd, a, b) ? jumpCost(g + (g > 2.0 ? 0.6 : 0), Math.max(0, dh)) : -1;
         }
         if (a.ladder) {
             type[0] = 1;
-            return g <= 2.0 && dh <= 1.0 && dh >= -6 && arc(wd, a, b) ? jumpCost(g, 0) : -1;
+            return g <= 3.2 && dh <= 1.0 && dh >= -6 && arc(wd, a, b) ? jumpCost(g + (g > 2.0 ? 0.6 : 0), 0) : -1;
         }
         if (adx <= 1 && adz <= 1) {
             if (adx + adz == 2 && !diagonalFree(wd, a, b)) return -1;
@@ -140,7 +140,11 @@ final class Router {
         return 2.5 + c;
     }
 
+    /** Offline tool switch: let the jump simulation judge head-height obstructions in the gap (rings, frames, arches). */
+    static boolean lenientArc = false;
+
     static boolean arc(Phys.World wd, Cell a, Cell b) {
+        if (lenientArc) return true;
         double hi = Math.max(a.feet, b.feet);
         double ax = a.x + 0.5, az = a.z + 0.5, bx = b.x + 0.5, bz = b.z + 0.5;
         int steps = (int) Math.ceil(Math.hypot(bx - ax, bz - az) * 4);

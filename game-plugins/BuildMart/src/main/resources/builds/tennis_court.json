@@ -1,0 +1,80 @@
+{
+  "id": "tennis_court",
+  "name": "Tennis Court",
+  "debut": "MCC P23",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM_-_Tennis_Court.png",
+  "floor": [
+    "wwwwwww",
+    "wwwwwww",
+    "wGGGGPP",
+    "wGGGGPP",
+    "wGGGGPP",
+    "wwwwwPP",
+    "wwwwwww"
+  ],
+  "palette": {
+    "w": "minecraft:white_concrete",
+    "G": "minecraft:green_concrete",
+    "g": "minecraft:glass_pane",
+    "c": "minecraft:cobblestone",
+    "b": "minecraft:bricks",
+    "l": "minecraft:ladder[facing=south]",
+    "P": "minecraft:gray_concrete"
+  },
+  "layers": [
+    [
+      ".....bb",
+      ".cgggcl",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".....bb",
+      ".cgggcl",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "....bbb",
+      "......l",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "....g..",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "....g..",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "court read as green concrete painted into the white concrete floor; no raised court surface",
+    "grey path read as gray concrete behind/right of the court",
+    "back wall read as two cobblestone posts with three 2-tall glass panes between them",
+    "right structure read as an umpire chair/scoreboard: brick column with an oak ladder and a 2-tall glass pane on the brick seat ledge; exact shape guessed",
+    "floor/white surround read as white concrete"
+  ]
+}

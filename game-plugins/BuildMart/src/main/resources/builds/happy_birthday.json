@@ -1,0 +1,68 @@
+{
+  "id": "happy_birthday",
+  "name": "Happy Birthday!",
+  "debut": "MCC 8",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Happy_Birthday!.png",
+  "floor": [
+    "ooooooo",
+    "ooooooo",
+    "ooooooo",
+    "ooooooo",
+    "ooooooo",
+    "ooooooo",
+    "ooooooo"
+  ],
+  "palette": {
+    "o": "minecraft:oak_planks",
+    "h": "minecraft:honeycomb_block",
+    "y": "minecraft:yellow_carpet",
+    "f": "minecraft:oak_fence",
+    "t": "minecraft:torch"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      ".hhhh..",
+      ".hhhh..",
+      ".hhhh..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".hhhh..",
+      ".hhhh..",
+      ".hhhh..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".yfyf..",
+      ".yyyy..",
+      ".yfyf..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..t.t..",
+      ".......",
+      "..t.t..",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "cake sides read as honeycomb block (yellow honeycomb texture); top read as yellow carpet laid over the honeycomb so the sides stay honeycomb",
+    "cake read as 4 wide x 3 deep x 2 tall; the back/side rows are hidden and estimated from the visible front",
+    "candles read as oak fence posts with torches on top (4 candles); exact candle x/z estimated",
+    "floor read as oak planks"
+  ]
+}

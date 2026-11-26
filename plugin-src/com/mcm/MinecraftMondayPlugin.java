@@ -209,6 +209,8 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     private boolean skipRoundNoAwards = false;
     private String forcedSgMap;
     private AdminTools adminTools;
+    void openMapEdit(Player p) { if (mapEdit != null) mapEdit.openMenu(p); }
+    private com.mcm.mapedit.MapEditManager mapEdit;
     private FeedbackLog feedback;
     private final Map<Location, BlockData> podiumOriginal = new LinkedHashMap<>();
     private final List<UUID> podiumPlayers = new ArrayList<>();
@@ -327,8 +329,9 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                 e.renderer((source, name, message, viewer) -> hud.chat(source, message, viewer instanceof Player vp && McmFx.hasPack(vp)));
             }
             @EventHandler
-            public void onHudQuit(PlayerQuitEvent e) { hud.forget(e.getPlayer()); }
+            public void onHudQuit(PlayerQuitEvent e) { hud.forget(e.getPlayer()); CoinFeedback.forget(e.getPlayer().getUniqueId()); }
         }, this);
+        CoinFeedback.init(this);
         packServer = new PackServer(this);
         packServer.start();
         world = Bukkit.getWorlds().get(0);
@@ -374,6 +377,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         getConfig().addDefault("mcc-hub.enabled", true);
         getConfig().addDefault("mcc-hub.ambient-fireworks-per-minute", 3.0);
         getConfig().addDefault("mcc-championship-playlist", new ArrayList<String>());
+        getConfig().addDefault("finale-game", "dodgebolt");
         getConfig().addDefault("fast-test", false);
         getConfig().addDefault("admin-tools-item", true);
         getConfig().addDefault("admin-tools-hidden-in-games", new ArrayList<>(List.of("bingo", "skyblockle")));
@@ -402,6 +406,8 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                 "Average ambient fireworks per minute over the MCC hub between games (0 = none). Game wins, the podium and the vote reveal still fire."));
         getConfig().setInlineComments("mcc-championship-playlist", List.of(
                 "MCC game ids for /mcm start mcc. Empty = every installed MCC game."));
+        getConfig().setInlineComments("finale-game", List.of(
+                "Played last, between the top two teams, and never a Decision Dome vote option (MCC: Dodgebolt). Empty = none."));
         getConfig().setInlineComments("championship-playlist", List.of(
                 "Game ids in order. Empty = the 7 built-in events followed by every installed MCC game.",
                 "Built-ins: sg, parkour, dropper, tntrun, spleef, kitpvp, survival, oneshot. Run /mcm games for MCC game ids."));
@@ -439,6 +445,8 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         McmApi.setFastTest(getConfig().getBoolean("fast-test", false));
         if (McmApi.isFastTest()) getLogger().info("Admin fast-test mode is ON (all core waits <= 1 s). /mcm fast off to disable.");
         adminTools = new AdminTools(this);
+        mapEdit = new com.mcm.mapedit.MapEditManager(this);
+        mapEdit.enable();
         feedback = new FeedbackLog(this);
         Bukkit.getPluginManager().registerEvents(new FishHookFix(this), this);
         Bukkit.getPluginManager().registerEvents(new ChatLog(this), this);
@@ -497,7 +505,9 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
+        CoinFeedback.shutdown();
         if (packServer != null) packServer.stop();
+        if (mapEdit != null) { try { mapEdit.disable(); } catch (Throwable t) { getLogger().log(Level.WARNING, "Map Edit shutdown", t); } }
         if (adminTools != null) { try { adminTools.disable(); } catch (Throwable ignored) {} }
         if (importedDroppers != null) { try { importedDroppers.disable(); } catch (Throwable ignored) {} }
         removePodium(false);
@@ -551,6 +561,14 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             feedback.handle(sender, cmd.getName(), args);
             return true;
         }
+        if (cmd.getName().equalsIgnoreCase("mcm") && args.length > 0 && args[0].equalsIgnoreCase("cointest")) {
+            if (sender instanceof Player pl && !pl.isOp()) {
+                pl.sendMessage(ChatColor.RED + "Only tournament admins (OPs) can run cointest.");
+                return true;
+            }
+            coinTest(sender, args);
+            return true;
+        }
         if (cmd.getName().equalsIgnoreCase("mcm") && args.length > 0 && args[0].equalsIgnoreCase("selftest")) {
             if (sender instanceof Player pl && !pl.isOp()) {
                 pl.sendMessage(ChatColor.RED + "Only tournament admins (OPs) can run selftest.");
@@ -575,7 +593,8 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                 championshipMode = false;
                 if (!startById(args[1])) sender.sendMessage("Unknown game. Options: " + String.join(", ", allGameIds()));
             } else {
-                if (args.length > 0 && args[0].equalsIgnoreCase("games")) listGames(sender);
+                if (args.length > 0 && args[0].equalsIgnoreCase("mapedit")) mapEdit.command(sender, args);
+                else if (args.length > 0 && args[0].equalsIgnoreCase("games")) listGames(sender);
                 else if (args.length > 0 && args[0].equalsIgnoreCase("start")) startChampionship(args.length > 1 && args[1].equalsIgnoreCase("mcc"));
                 else if (args.length > 0 && args[0].equalsIgnoreCase("lobby")) lobbyCommand(sender, args);
                 else sender.sendMessage("Use in-game as OP (/mcm or /team) or run 'mcm selftest|start|games|play <game>|stop|help' from console (see mcm help).");
@@ -934,7 +953,48 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
 
     // ==================== ADMIN TESTING HOOKS (/mcm fast|skipwait|skip|next|map|tools|help) ====================
 
-    private static final List<String> TESTING_SUBS = List.of("fast", "skipwait", "skip", "next", "map", "maps", "tools", "help");
+    /**
+     * Op-only feedback probe (no game needed): {@code /mcm cointest <player> kill <victim> [coins] [froze]},
+     * {@code ... obj <banner|-> [coins] [reason...]}, {@code ... burst <n> [coins]}, {@code ... add <coins> [reason...]}.
+     * Goes through the same TeamScoring/CoinFeedback path as ctx.addCoins/addKillCoins/addObjectiveCoins, without a multiplier.
+     */
+    private void coinTest(CommandSender sender, String[] args) {
+        if (args.length < 3) { sender.sendMessage("Usage: /mcm cointest <player> kill <victim> [coins] [froze] | obj <banner|-> [coins] [reason] | burst <n> [coins] | add <coins> [reason]"); return; }
+        Player p = Bukkit.getPlayerExact(args[1]);
+        if (p == null) { sender.sendMessage("No such player: " + args[1]); return; }
+        scoring.ensurePlayer(p.getUniqueId());
+        try {
+            switch (args[2].toLowerCase(Locale.ROOT)) {
+                case "kill" -> {
+                    Player v = args.length > 3 ? Bukkit.getPlayerExact(args[3]) : null;
+                    double c = args.length > 4 ? Double.parseDouble(args[4]) : 15;
+                    boolean froze = args.length > 5 && args[5].equalsIgnoreCase("froze");
+                    String reason = froze ? "Froze " + (args.length > 3 ? args[3] : "?") : "Elimination";
+                    scoring.addCoins(p.getUniqueId(), c, reason);
+                    CoinFeedback.kill(p, v == null ? null : v.getUniqueId(), args.length > 3 ? args[3] : null,
+                            v == null ? null : scoring.getTeam(v.getUniqueId()), reason);
+                }
+                case "obj" -> {
+                    String banner = args.length > 3 && !args[3].equals("-") ? args[3].replace('_', ' ') : null;
+                    double c = args.length > 4 ? Double.parseDouble(args[4]) : 0;
+                    String reason = args.length > 5 ? String.join(" ", Arrays.copyOfRange(args, 5, args.length)) : "Objective";
+                    scoring.addCoins(p.getUniqueId(), c, reason);
+                    if (banner != null) CoinFeedback.objective(p, banner, reason);
+                }
+                case "burst" -> {
+                    int n = Integer.parseInt(args[3]);
+                    double c = args.length > 4 ? Double.parseDouble(args[4]) : 3;
+                    for (int i = 0; i < n; i++) scoring.addCoins(p.getUniqueId(), c, "Burst " + (i + 1));
+                }
+                default -> scoring.addCoins(p.getUniqueId(), Double.parseDouble(args[3]),
+                        args.length > 4 ? String.join(" ", Arrays.copyOfRange(args, 4, args.length)) : "Test");
+            }
+        } catch (RuntimeException ex) {
+            sender.sendMessage("cointest: " + ex);
+        }
+    }
+
+    private static final List<String> TESTING_SUBS = List.of("fast", "skipwait", "skip", "next", "map", "maps", "tools", "mapedit", "help");
 
     private boolean isTestingSub(String s) { return TESTING_SUBS.contains(s.toLowerCase(Locale.ROOT)); }
 
@@ -972,6 +1032,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             case "skip" -> cmdSkipRound(sender);
             case "next" -> cmdSkipEvent(sender);
             case "map", "maps" -> mapCommand(sender, args);
+            case "mapedit" -> mapEdit.command(sender, args);
             case "tools" -> {
                 if (sender instanceof Player pl) adminTools.openMain(pl);
                 else sender.sendMessage("The Admin Tools menu is in-game only.");
@@ -990,6 +1051,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         s.sendMessage(y + "/mcm skip" + g + " - skip the current ROUND/MAP only (no coins); the game continues with the next round");
         s.sendMessage(y + "/mcm next" + g + " - skip the WHOLE current game/event and advance the championship");
         s.sendMessage(y + "/mcm map [id]" + g + " - list the running game's maps / force the next map; " + y + "/mcm map <game> [id]" + g + " before starting");
+        s.sendMessage(y + "/mcm mapedit" + g + " - Map Edit: open a game map in creative and save it as an overlay the game applies (" + y + "/mcm mapedit help" + g + ")");
         s.sendMessage(y + "/mcm stop" + g + " - stop & return to lobby   " + y + "/mcm reset" + g + " - reset scores   " + y + "/mcm games" + g + " - list games");
         s.sendMessage(y + "/mcm teamsize <1-5>" + g + ", " + y + "/mcm lobby [tp|mm|rebuild|status]" + g + ", " + y + "/mcm preview ..." + g + ", " + y + "/mcm selftest");
     }
@@ -1210,7 +1272,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         if (sender instanceof Player pl && !pl.isOp()) return List.of(); // admin commands are never offered to players
         List<String> out = new ArrayList<>();
         if (args.length == 1) {
-            out.addAll(List.of("start", "play", "fast", "skipwait", "skip", "next", "map", "tools", "stop", "reset", "games",
+            out.addAll(List.of("start", "play", "fast", "skipwait", "skip", "next", "map", "mapedit", "tools", "stop", "reset", "games",
                     "teamsize", "lobby", "preview", "selftest", "help"));
         } else if (args.length == 2) {
             switch (args[0].toLowerCase(Locale.ROOT)) {
@@ -1219,6 +1281,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                 case "play" -> out.addAll(allGameIds());
                 case "teamsize" -> out.addAll(List.of("1", "2", "3", "4", "5"));
                 case "lobby", "hub" -> out.addAll(List.of("tp", "mm", "rebuild", "status"));
+                case "mapedit" -> { if (mapEdit != null) return mapEdit.tab(sender, args); }
                 case "map", "maps" -> {
                     String running = runningGameId();
                     if (running != null) out.addAll(mapsOf(running));
@@ -1226,6 +1289,8 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                 }
                 default -> { }
             }
+        } else if (args.length >= 2 && args[0].equalsIgnoreCase("mapedit") && mapEdit != null) {
+            return mapEdit.tab(sender, args);
         } else if (args.length == 3 && (args[0].equalsIgnoreCase("map") || args[0].equalsIgnoreCase("maps")) && isGameId(args[1])) {
             out.addAll(mapsOf(canonicalGameId(args[1])));
         }
@@ -1241,6 +1306,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         playlist.clear();
         playlist.addAll(mcc ? buildMccPlaylist() : buildPlaylist());
         if (playlist.isEmpty()) { broadcast(ChatColor.RED + (mcc ? "MCC championship playlist is empty (no MCC games installed?)!" : "Championship playlist is empty!")); return; }
+        getLogger().info("Championship playlist: " + playlist);
         championshipMode = true;
         mccContext = mcc;
         playlistIndex = 0;
@@ -1252,6 +1318,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     }
 
     private void startEvent(GameType game) {
+        if (mapEdit != null) mapEdit.evictAll("A game is starting.");
         if (!championshipMode) mccContext = false;
         snapshotGamePoints();
         roundNumber = 1;
@@ -1577,7 +1644,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         McmVoteProvider vp = McmApi.voteProvider();
         // Minecraft Monday external games (e.g. Find the Button) are never Decision Dome vote options
         List<String> voteIds = new ArrayList<>();
-        for (String id : playlist.subList(playlistIndex, playlist.size())) if (!isMmExternal(id)) voteIds.add(id);
+        for (String id : playlist.subList(playlistIndex, playlist.size())) if (!isMmExternal(id) && !isFinale(id)) voteIds.add(id);
         if (vp != null && voteIds.size() > 1) {
             broadcast(ChatColor.AQUA + "Head to the vote! The next event is chosen by the players.");
             // placeholder task so /mcm skipwait treats the vote as a wait it can finish;
@@ -3602,11 +3669,25 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             for (McmGame g : mccGames()) out.add(g.id());
         } else {
             for (String id : configured) {
-                if (parseGame(id) != null || McmApi.game(id) != null) out.add(id.toLowerCase());
+                if (hiddenGame(id)) getLogger().info("championship-playlist: '" + id + "' is in hidden-games - skipped");
+                else if (parseGame(id) != null || McmApi.game(id) != null) out.add(id.toLowerCase());
                 else getLogger().warning("championship-playlist: unknown game '" + id + "' (is its plugin installed?) - skipped");
             }
         }
-        return out;
+        return finaleLast(out);
+    }
+
+    private boolean isFinale(String id) {
+        String f = getConfig().getString("finale-game", "dodgebolt");
+        return id != null && f != null && !f.isBlank() && f.equalsIgnoreCase(id);
+    }
+
+    /** Moves the finale game (Dodgebolt) to the end of a playlist, if it is in it. */
+    private List<String> finaleLast(List<String> list) {
+        List<String> fin = new ArrayList<>();
+        list.removeIf(id -> { if (isFinale(id)) { fin.add(id); return true; } return false; });
+        if (!fin.isEmpty()) list.add(fin.get(0));
+        return list;
     }
 
     private void listGames(CommandSender s) {
@@ -3702,6 +3783,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     }
 
     private void startExternal(McmGame g) {
+        if (mapEdit != null) mapEdit.evictAll("A game is starting.");
         if (!championshipMode) mccContext = !isMmExternal(g.id()); // MM-group externals use the MM lobby/venue
         stopExternalIfActive();
         cancelTasks();
@@ -3837,6 +3919,20 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         @Override public void addCoins(UUID player, double coins, String reason) {
             if (done || player == null || coins == 0) return;
             scoring.addCoins(player, coins * coinMultiplier, reason);
+        }
+
+        @Override public void addKillCoins(UUID killer, double coins, UUID victim, String victimName, String reason) {
+            if (done || killer == null) return;
+            addCoins(killer, coins, reason);
+            Player kp = Bukkit.getPlayer(killer);
+            if (kp != null) CoinFeedback.kill(kp, victim, victimName, victim == null ? null : scoring.getTeam(victim), reason);
+        }
+
+        @Override public void addObjectiveCoins(UUID player, double coins, String banner, String reason) {
+            if (done || player == null) return;
+            addCoins(player, coins, reason);   // 0 coins: no chat line, no ding, but the banner still shows
+            Player p = Bukkit.getPlayer(player);
+            if (p != null && banner != null && !banner.isBlank()) CoinFeedback.objective(p, banner, reason);
         }
 
         @Override public void addTeamCoins(String sideKey, double pool, String reason) {
@@ -4201,12 +4297,13 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             for (McmGame g : mccGames()) out.add(g.id().toLowerCase(Locale.ROOT)); // MM-group externals excluded
         } else {
             for (String id : configured) {
-                if (McmApi.game(id) != null && isMmExternal(id)) getLogger().warning("mcc-championship-playlist: '" + id + "' is a Minecraft Monday game (minecraft-monday-external-games) - skipped");
+                if (hiddenGame(id)) getLogger().info("mcc-championship-playlist: '" + id + "' is in hidden-games - skipped");
+                else if (McmApi.game(id) != null && isMmExternal(id)) getLogger().warning("mcc-championship-playlist: '" + id + "' is a Minecraft Monday game (minecraft-monday-external-games) - skipped");
                 else if (McmApi.game(id) != null) out.add(id.toLowerCase(Locale.ROOT));
                 else getLogger().warning("mcc-championship-playlist: '" + id + "' is not an installed MCC game - skipped");
             }
         }
-        return out;
+        return finaleLast(out);
     }
 
     /** Joins a team (same rules as the team GUI). Returns false if refused. */

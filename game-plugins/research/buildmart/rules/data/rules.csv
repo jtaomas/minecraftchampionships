@@ -1,0 +1,59 @@
+﻿id,area,rule,current_value,old_value,source,confidence,current_plugin_status,recommended
+01,core,Game duration,12:00,10:00 in MCC14-P24; 15:00 in MCC4-6,Wiki BSABM infobox + VOD timer 11:39 @40:58 + Reddit MCC HT thread,H,8:00,Set 720 s and show 12:00 at start
+02,core,Team size,4,4,VOD roster (Philza/cubfan/ish/SeaPeeKay),H,1..n sides,4 players per team; sides still configurable
+03,plots,Regular build plots,3,4 before MCC8,Wiki history + VOD sidebar @40:26,H,1,Three plots per side
+04,plots,Gold Build plot,1 separate raised plot,none before MCC14,Wiki + VOD @40:26,H,none,One Gold plot per side behind the three
+05,plots,Plot state at start,All empty; no target shown,-,VOD @39:58,H,Target shown during 10 s preview,Remove pre-game target; start all plots empty
+06,gallery,Normal gallery slots,7,fixed build order pre-P25,Wiki + Games Updates S5 (P25),H,none,Seven normal blueprint podiums
+07,gallery,Star distribution in gallery,2x1-star + 2x2-star + 1x3-star + 1x4-star + 1x5-star,n/a,Wiki BSABM Blueprint Gallery section,M,none,Use exactly 2/2/1/1/1
+08,gallery,Gallery rotation,Every 90 s independent of completions,Gold appeared after 3 builds,Wiki + S5 + VOD chat 43:46,H,none,90 s ticker; announce in chat
+09,gallery,Active builds per team,3,1,Wiki + VOD sidebar @40:58,H,1,Three concurrent build slots
+10,gallery,Selection input,Press button at the blueprint podium,n/a,VOD @44:30 (gold pedestal + red button) + Reddit report of 'selected as a Blueprint' chat,M,n/a,Physical button at each podium; chat confirmation
+11,gallery,Gallery exclusivity,Per-team copies; two teams can build the same blueprint,n/a,VOD chat @43:48 (two teams completed Whale),H,n/a,Give every side its own gallery state
+12,gallery,Repeat same blueprint,Allowed before that slot rerolls,Not allowed before P25,Wiki trivia (P25),M,n/a,Allow reselecting the same entry
+13,gallery,Selected slot reroll,Paused while the build is on a team plot until completed,n/a,S5 P25 notes,M,n/a,Keep slot stable while any side is working it
+14,reference,Reference build in team area,Copy of selected build placed by the plot,yes,Wiki + S5,H,Pedestal copy,Place a reference copy per selected build
+15,reference,Material list on plot,Shown at the plot,yes,Wiki + S5,H,Floating text label,Show name + stars + material counts
+16,book,Shopping list book,Offhand custom GUI with 3 pages,none pre-P25,VOD @43:46,H,Chat message only,Build a custom 3-page GUI in the offhand
+17,book,Book page content,Build name + exact material quantities + Done button,n/a,VOD @43:46,H,n/a,Page N of 3; list every material with count
+18,gold,First Gold Build,4:00,After every 3 builds (MCC14-P24),Wiki + S5 + VOD @44:02,H,none,First gold at 240 s
+19,gold,Gold cadence,Every 2:00,After every 3 builds,Wiki + VOD countdown,H,none,New gold every 120 s
+20,gold,Gold star value,7 stars,Double coins in MCC14 era,Wiki + official rules page,H,none,7 stars = 140 coins at 20/star
+21,gold,Gold team-area reference,None; only visible in gallery,Reference existed before P25,Wiki + S5,H,n/a,No reference at the Gold plot
+22,gold,Gold selection,Manual at the gold booth,n/a,VOD @44:42,H,n/a,Button at gold booth sends it to the Gold plot
+23,gold,Gold completion window,2:00,Until next gold,Wiki + VOD,H,none,120 s per gold; global availability window
+24,gold,Gold failure,Placed blocks are removed,n/a,Wiki,M,n/a,Clear the Gold plot on timeout/fail
+25,gold,Retroactive gold completion,Not allowed,n/a,Wiki,M,n/a,Reject late completion of a previous gold
+26,score,Coin value per star,20 flat,P25 10/15/20 by time phase; earlier placement tables,Official rules page + Wiki FS history,H,4+3*stars,Coins = 20 x stars
+27,score,Build payout table,20/40/60/80/100/140 for 1-5 stars and gold,160 minus 8 per team etc.,Official + Wiki,H,7-19 points,Use star table; no speed or order bonus
+28,score,Partial completion,Percentage of remaining builds paid at game end,10th-build payout / placement-based,Official rules page,H,none,At 0:00 pay pct complete x star value
+29,score,Gold partial completion,Final gold partial not awarded,Previously awarded,Wiki BG change notes,M,none,Exclude gold from partial payout
+30,score,Employee of the Month categories,Entrepreneur most stars; Line Cook most builds; Quality Assurance highest average stars,None pre-P25,Wiki + official,H,none,Three end-of-game categories
+31,score,EOTM payouts,100 / 50 / 25,None,Wiki + official,H,none,Top three per category
+32,score,EOTM and final-placement ties,Unknown,n/a,No source,L,Shares rank,Decide and document a tie-break
+33,buildcheck,Block rotation,Exact rotation required for stairs/slabs/doors,Not required before MCC AS,Wiki history MCC AS,M,Orientation ignored,Compare BlockData orientation for directional blocks (AS rule is H; still-current is M)
+34,buildcheck,Texture rotation,Not required (e.g. door hinge),n/a,Wiki history MCC AS,M,Ignored,Ignore texture-only differences
+35,buildcheck,Double slabs,Count as a full block,n/a,Wiki history MCC AS,M,n/a,Treat double slab as full block
+36,buildcheck,Extra blocks,Invalidate the build,n/a,Wiki copy exactly + VOD,H,Wrong blocks counted,Reject any extra block in the plot volume
+37,room,Portal to mart,Portal in front of the build area,yes,Wiki + VOD @42:06,H,Path,Use a portal threshold
+38,room,Flight,Allowed in the build area,Since MCC7,Wiki,M,allowFlight,Keep flight in the room only
+39,room,Chests,Five colour-coded chests,Added in P25,S5 + VOD @44:36,H,none,Five labelled team chests
+40,room,Crafting,Crafting tables + stonecutters,yes,Wiki,M,Four shop counters,Remove shop counters; provide crafting/stonecutter
+41,room,Smelting,Two smelting areas with fuel provided,yes,Wiki,M,none,Two fuelled furnace arrays
+42,mart,Travel,Elytra + central fan + launch pads + speed boosts,Shopping carts before MCC14,Wiki + VOD,H,None,Grant elytra; add fan and pads
+43,mart,Resource layout,Upper islands ores/logs/stones; lower islands coloured blocks,Stalls before MCC14,Wiki + VOD @44:28,H,27-stall ring,Replace with islands per the map spec
+44,mart,Falling,Lose all carried materials and respawn,yes,Wiki + plugin behaviour,H,Yes,Keep; exclude kit/book from the loss
+45,mart,Block regen,Assumed yes; needed for four teams,Yes,Community threads + necessity,M,3 s,3-5 s regen per mined block
+46,kit,Tools,Diamond axe/pickaxe/shovel/shears,Earlier events varied,VOD hotbar + action bar 'Diamond Pickaxe',M,Iron Efficiency V,Upgrade to diamond; keep unbreakable
+47,kit,Haste,Haste II,yes,VOD @41:48,H,Haste II,Keep Haste II
+48,kit,Elytra,Equipped in chest slot,Since MCC14,Wiki + VOD @41:48,H,None,Give elytra and disable armour
+49,hud,Timer,12:00 game timer + gold countdown,n/a,VOD @40:58,H,8:00 timer,Rework HUD
+50,hud,Team counters,Stars earned + builds completed top-right,n/a,VOD @40:58,H,None,Add both counters
+51,hud,Sidebar,Team coins + three build slots,n/a,VOD @40:58,H,Builds completed only,Show coins and the three slot names/stars
+52,hud,Block name,Green action-bar name of targeted block,Since MCC7,VOD @41:12,H,Yes,Keep for colourblind readability
+53,flow,Pre-game,Explanation card + countdown; no build preview,n/a,VOD @39:58,H,10 s target preview,Replace preview with how-to-play + countdown
+54,flow,Completion,Immediate coins + all-team chat; slot frees,n/a,VOD @43:48,H,Next build in sequence,Free the slot and wait for a new selection
+55,flow,Game end,0:00 freeze then partial coins + EOTM results,n/a,Official,H,Most-builds bonus,Replace final bonus with partial + EOTM
+56,flow,Final placement ties,Unknown,n/a,No source,L,Shares rank,Decide whether to share or break by stars/builds
+57,flow,Big Sales,Not part of current Build Mart,n/a,VOD shows no sale HUD or mechanic,H,Every 75 s,Remove Big Sales
+58,pool,Build pool per event,60 regular (16/16/8/8/8) + 4 gold,n/a,List of Build Mart Builds (P25/BG/MU/SB),H,27 presets,Expand pool and tag each preset with stars

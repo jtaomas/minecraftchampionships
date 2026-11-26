@@ -1,0 +1,54 @@
+{
+  "id": "sightseeing",
+  "name": "Sightseeing",
+  "debut": "MCC Party",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/Sightseeing-BSABM.png",
+  "floor": [
+    "gddddgg",
+    "gddddgg",
+    "gddddgg",
+    "gddddgg",
+    "gddddgg",
+    "gddddgg",
+    "gddddgg"
+  ],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "d": "minecraft:coarse_dirt",
+    "n": "minecraft:rail[shape=north_south]",
+    "E": "minecraft:rail[shape=east_west]",
+    "w": "minecraft:rail[shape=south_west]",
+    "p": "minecraft:spruce_planks",
+    "C": "minecraft:cut_copper",
+    "L": "minecraft:oak_leaves[persistent=true]"
+  },
+  "layers": [
+    [
+      ".....LL",
+      ".EEw.LL",
+      "...n.LL",
+      "..pppLL",
+      "..pCpLL",
+      "..pppLL",
+      "...n..."
+    ],
+    [
+      ".....LL",
+      ".....LL",
+      ".....LL",
+      ".....LL",
+      ".....LL",
+      ".....LL",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the camera is rotated about 30 degrees; floor layout (dirt yard cols 1-4, grass edges, hedge cols 5-6) inferred from that view",
+    "the cart read as a 3x3 spruce plank box with a cut copper block load; the render's cart is a 2-wide copper load and reads slightly larger, and a minecart entity is left out",
+    "track read as one rail block wide running north from the front edge and curving west at the back-left (south_west curve + east_west rails)",
+    "the three oak leaf bushes recreated as a 6x2x2 hedge along the right edge; they may be separate 2x2x2 cubes at different heights",
+    "the dirt read as coarse dirt"
+  ]
+}

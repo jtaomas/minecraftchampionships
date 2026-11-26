@@ -32,6 +32,9 @@ public interface PtMap {
     /** A player whose feet go below this local y is sent back (void safety). */
     default int voidY() { return -4; }
 
+    /** Preview only: which blocks the pit view (no walls or stands in the way) keeps. */
+    default boolean pitKeep(int x, int y, int z, String block) { return y < 16; }
+
     /** The play area {x0, z0, x1, z1} (local, inclusive), used by the offline route checks. */
     default int[] playBox() { return new int[]{0, 0, sizeX() - 1, sizeZ() - 1}; }
 }

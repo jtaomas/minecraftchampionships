@@ -1,0 +1,100 @@
+{
+  "id": "coin_casting",
+  "name": "Coin Casting",
+  "debut": "MCC AS",
+  "stars": 4,
+  "status": "done",
+  "gold": true,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Coin_Casting.png",
+  "floor": [
+    "GGGGGGG",
+    "SSSSSSS",
+    "SGGGGGS",
+    "SGGGGGS",
+    "SGGGGGS",
+    "SGGGGGS",
+    "GGGGGGG"
+  ],
+  "palette": {
+    "G": "minecraft:gold_block",
+    "S": "minecraft:stone",
+    "Y": "minecraft:yellow_concrete",
+    "O": "minecraft:orange_concrete",
+    "Q": "minecraft:white_concrete",
+    "W": "minecraft:stone_brick_wall",
+    "L": "minecraft:oak_log[axis=y]",
+    "B": "minecraft:oak_log[axis=x]",
+    "H": "minecraft:hopper[facing=down]"
+  },
+  "layers": [
+    [
+      ".......",
+      ".W...W.",
+      ".YYYYY.",
+      ".YYYYY.",
+      ".YYYYY.",
+      ".YYQQY.",
+      "......."
+    ],
+    [
+      ".......",
+      ".W...W.",
+      ".YOOOY.",
+      ".YGGGY.",
+      ".YGGGY.",
+      ".YYQQY.",
+      "......."
+    ],
+    [
+      ".......",
+      ".L...L.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".L...L.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".L.H.L.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".L.G.L.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "BBBBBBB",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the whole gold floor is one block of gold; the grey apron under the machine is stone",
+    "the platform is 5 wide and 2 high: yellow concrete body, a 2 x 2 white concrete front, orange concrete across the back of the gold inlay",
+    "the beam is 7 long at the back row, with the two oak posts set one block in from each end",
+    "the hanging gold block sits directly under the beam with the hopper below it; the hidden back of the beam and the platform are mirrored"
+  ]
+}

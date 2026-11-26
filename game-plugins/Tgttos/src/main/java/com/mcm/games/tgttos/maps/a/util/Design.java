@@ -41,6 +41,8 @@ public final class Design {
     public final List<Stairs.Flight> flights = new ArrayList<>();
     /** Corridor for the lazy straight bridging line (bridging maps). */
     public Region lazyCorridor;
+    /** Optional smaller build box for the lazy-line search only (long maps: keeps the search inside its node budget). */
+    public Region lazyBuildBox;
     /** Search box for map-wide reachability and the sprint check. */
     public Region searchBox;
     /** Bridging allowed for this map's kit. */

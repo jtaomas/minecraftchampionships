@@ -1,0 +1,87 @@
+{
+  "id": "my_frst_hous",
+  "name": "My frst Hous",
+  "debut": "MCC 8",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-My_Frst_House.png",
+  "floor": [
+    "ggggggg",
+    "ggggggg",
+    "ggooogg",
+    "ggooogg",
+    "gggoggg",
+    "gggoggg",
+    "gggoggg"
+  ],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "o": "minecraft:oak_planks",
+    "p": "minecraft:spruce_planks",
+    "D": "minecraft:oak_door[half=lower,facing=south,hinge=right,open=true]",
+    "U": "minecraft:oak_door[half=upper,facing=south,hinge=right,open=true]"
+  },
+  "layers": [
+    [
+      ".......",
+      "ppppppp",
+      "ppp.ppp",
+      "ppp.ppp",
+      "pppDppp",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "ppppppp",
+      "ppp.ppp",
+      "ppp.ppp",
+      "pppUppp",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "ppppppp",
+      "ppppppp",
+      "ppppppp",
+      "ppppppp",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "ppppppp",
+      "ppppppp",
+      "ppppppp",
+      "ppppppp",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "..ppp..",
+      "..ppp..",
+      "..ppp..",
+      "..ppp..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "..ppp..",
+      "..ppp..",
+      "..ppp..",
+      "..ppp..",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the house is a 7 x 4 box: 2-wide side wings 4 high, a 3-wide centre tower 6 high with flat tops",
+    "the walls are spruce planks (the reskin notes swap spruce for birch later) and the floor/path oak planks",
+    "the interior is a 1 x 2 room behind the door, ceiling at layer 3; the room's height is hidden",
+    "the door is shown open (the render sees into the house and shows the door edge with its handle), oak, hinged right",
+    "the back and side walls are mirrored; the door is 1 wide x 2 high in the centre of the tower"
+  ]
+}

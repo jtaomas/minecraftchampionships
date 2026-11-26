@@ -1,0 +1,108 @@
+{
+  "id": "captains_ship",
+  "name": "Captain's Ship",
+  "debut": "MCC 14",
+  "stars": 4,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Captain's_Ship.png",
+  "floor": [
+    "WWWWWWW",
+    "WWWWWWW",
+    "WWWWWWW",
+    "WWWWWWW",
+    "WWWWWWW",
+    "WWWWWWW",
+    "WWWWWWW"
+  ],
+  "palette": {
+    "W": "minecraft:water",
+    "s": "minecraft:spruce_planks",
+    "d": "minecraft:dark_oak_planks",
+    "f": "minecraft:spruce_fence",
+    "w": "minecraft:white_concrete",
+    "b": "minecraft:blue_concrete",
+    "c": "minecraft:light_blue_concrete"
+  },
+  "layers": [
+    [
+      ".dsssd.",
+      ".sssss.",
+      ".sssss.",
+      ".sssss.",
+      "b.sss.b",
+      "..sss..",
+      "..bsbc."
+    ],
+    [
+      ".dsssd.",
+      ".ss.ss.",
+      ".ss.ss.",
+      ".ssfss.",
+      "b.sss.b",
+      "..sss..",
+      "......."
+    ],
+    [
+      ".wwwww.",
+      ".......",
+      ".......",
+      "...f...",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".wwwww.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".wwwww.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".wwwww.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "..ww...",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "..ww...",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "status": "approximate",
+  "guessed": [
+    "the 7x7 pool is one block below the quartz rim in the render; the water is used as the flat floor and the hull sits on it",
+    "the hull is stepped and partly underwater, so its plan was read from the waterline and the deck warp: stern 5 wide, 2 blocks tall, tapering to a 1-wide bow tip",
+    "the open well in the deck is 1x2 at the centreline; its exact depth and the mast (spruce fence) position are guessed",
+    "the little brown blocks at the top edge of the sail (yardarm ends) are left out; they are hidden behind the upper sail",
+    "the upper sail is 2 wide, which cannot be exactly centred on the 5-wide lower sail; it is placed one cell left of centre",
+    "wave heights (2 blocks, pale one 1) and their exact cells are estimated from the water plane; all five wave blocks are on the floor"
+  ]
+}

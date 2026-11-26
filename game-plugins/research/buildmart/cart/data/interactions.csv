@@ -1,0 +1,35 @@
+id,area,interaction,input,precondition,result,feedback,failure,source,confidence,emulate
+gallery.inspect,Blueprint Gallery,inspect pedestal,look at pedestal,7 slots spawned,show 3D diorama + name + stars + material count,floating hologram,none,S1 + S5,H,yes
+gallery.preview,Blueprint Gallery,preview build,right-click diorama,slot in stock,show build info without selecting,title/action bar,none,S5,M,optional
+gallery.select,Blueprint Gallery,select blueprint,right-click select pad,free plot + blueprint in stock,fill next free plot + reference + book page + sidebar slot,chime + hologram + toast,3 active -> deny,S1 + S5 + S3,H for effect; M for click,yes
+gallery.deny_full,Blueprint Gallery,deny fourth selection,right-click select pad,3 active builds,no change,action bar 'All plots busy - finish a build',selection rejected,S1,H,yes
+gallery.deny_rotated,Blueprint Gallery,deny stale click,right-click select pad,slot rotated since render,no change,action bar 'Blueprint restocked',selection rejected,original,H,yes
+gallery.repeat,Blueprint Gallery,repeat build,right-click same pad after completion,blueprint still displayed,new copy on a free plot,chime + book page,rotated -> deny,S1 Trivia,H,yes
+gallery.rotate,Blueprint Gallery,restock,90 s timer,game running,replace unselected pedestals,particles + 'New blueprints' broadcast,active builds unaffected,S1,H,yes
+sidebar.view,Team area,read slots,look at sidebar,any,show 3 slots empty or name + stars,sidebar text,none,S3,H,yes
+plot.reference,Team area,inspect reference,look at pedestal,active build,physical 3D copy + floating name/stars/materials,floating text,none,S3 + S5,H,yes
+plot.open_book,Team area,open build page,right-click reference pedestal,active build,open book at that build page,page turn,none,original,M,yes
+plot.place,Team area,place block,place in plot,active build,accept block and update progress,action bar '12/28 placed',wrong -> red particles,S6,H,yes
+plot.complete,Team area,complete build,exact block + rotation match,all required correct + no extras,score + clear plot + free slot,title + particles + sound,wrong/extra -> no complete,S1 + S6,H,yes
+plot.partial,Team area,partial payout,end of game,incomplete build,track best % and pay at results,results line,none,S1,H,yes
+plot.cancel,Team area,cancel build,shift-right-click border + confirm,active regular build,clear plot + reference + free slot,confirm GUI,blocks returned; gold denied,original,L,yes
+book.open,Shopping book,open book,right-click book,player has book,open written book at last page,page sound,missing -> reissue,S3,H,yes
+book.page,Shopping book,turn page,click arrows,book open,next/previous page,page turn,none,S3,H,yes
+book.update,Shopping book,refresh pages,selection/completion/gold change,any,rebuild pages; reissue if closed,action bar 'Shopping list updated',open -> defer,S3,H,yes
+book.line,Shopping book,read material,look at line,book open,icon + name + count + source badge,tooltip recipe,none,S3 + original,H for icon/name/count; M for badge,yes
+book.empty,Shopping book,empty state,open before selection,no builds,show 'Select builds in the Mart',single page,none,S3,H,yes
+book.protect,Shopping book,survive void,fall into void,carrying book,keep book and tools; lose other items,message,none,S6 + original,H,yes
+cart.open,Supply Cart,open cart,right-click chest minecart,team member,open 27-slot cart,cart sound,non-team -> deny,original,H design,yes
+cart.deposit,Supply Cart,deposit,shift-click manifest item,item on manifest,add to cart and update hologram,count +1,invalid -> 'Not on the list'; full -> deny,original,H design,yes
+cart.withdraw,Supply Cart,withdraw,shift-click cart item,cart has item,move to inventory,hologram update,inventory full -> deny,original,H design,yes
+cart.manifest,Supply Cart,read manifest,look at cart,any,show delivered/required + top 3 missing,hologram,none,original,M design,yes
+cart.surplus,Supply Cart,surplus,after build complete/rotate,leftover items,mark gray and exclude from count,label 'SURPLUS',none,original,M design,yes
+gold.spawn,Gold Build,spawn gold,elapsed 240 s then every 120 s,game running,activate gold pedestal + plot + book page,broadcast + crown,none,S1,H,yes
+gold.view,Gold Build,memorise,right-click gold pedestal,gold active,5 s locked preview of build,'memorise' prompt,expired -> deny,S1,M design,yes
+gold.complete,Gold Build,complete gold,exact match within 120 s,gold active,score 7 stars + clear plot,title + particles,late -> fail,S1,H,yes
+gold.expire,Gold Build,expire,timer 0,gold active,clear placed blocks + deactivate,broadcast + low sound,none,S1,H,yes
+void.loss,Any,fall,fall below void line,carrying blocks,lose carried blocks; keep book/tools/cart,message,none,S1 + S6,H,yes
+late.join,Any,late join,join running game,team has space,survival + tools + book + team spawn,welcome,none -> spectator,original,M,yes
+disconnect.rejoin,Any,rejoin,reconnect,was on team,reissue book + restore sidebar + teleport,page sound,none,original,M,yes
+shop.counter,Mart,craft block,right-click counter,has inputs,convert raw to crafted,action bar '+1 Glass',missing -> needs message,S6,H,yes
+cleanup,Any,game end,end game,any,clear plots/gold/cart/books/entities,results,none,S6,H,yes

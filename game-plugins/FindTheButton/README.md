@@ -66,7 +66,7 @@ plus `previews/<id>_spots_top.png` (top-down, every hiding spot marked as a red 
 
 ## Build
 ```
-JAVA_HOME=C:\Users\USER\Desktop\java  C:\Users\USER\Desktop\java-tools\maven\bin\mvn.cmd -B -q package
+JAVA_HOME=C:\Users\LeonS\Desktop\java  C:\Users\LeonS\Desktop\java-tools\maven\bin\mvn.cmd -B -q package
 ```
 Jar: `target/McmFindTheButton.jar` (copied to `game-plugins\_built\`).
 

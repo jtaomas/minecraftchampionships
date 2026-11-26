@@ -1,0 +1,84 @@
+{
+  "id": "motorbike_ride",
+  "name": "Motorbike Ride",
+  "debut": "MCC 10",
+  "stars": 2,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Motorbike_Ride.png",
+  "floor": [
+    "ctbbbtc",
+    "cgbbbgc",
+    "cgbbbgc",
+    "cgbbbgc",
+    "ctbwbtc",
+    "cgbbbgc",
+    "cgbbbgc"
+  ],
+  "palette": {
+    "c": "minecraft:cobblestone",
+    "g": "minecraft:gray_concrete",
+    "b": "minecraft:black_concrete",
+    "w": "minecraft:white_concrete",
+    "t": "minecraft:iron_trapdoor[facing=north,half=top,open=false]",
+    "k": "minecraft:black_terracotta",
+    "s": "minecraft:sandstone",
+    "S": "minecraft:smooth_sandstone",
+    "o": "minecraft:oak_planks",
+    "f": "minecraft:spruce_fence"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      "...k...",
+      "...k...",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...k...",
+      "..oko..",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...s...",
+      "...s...",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...S...",
+      "...S...",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...f...",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "status": "approximate",
+  "guessed": [
+    "the road is black concrete with gray-concrete side strips and cobblestone outer strips (read from block colours)",
+    "the four pale squares with a 2x2 hole grid are read as iron trapdoors set into the sidewalk, one block each",
+    "the white start line is one white concrete block in front of the bike",
+    "the bike is a 1-wide, 2-deep stack: two black terracotta blocks (body/tyres), two sandstone blocks (box/fairing) and a fence-post aerial",
+    "the small oak side bars (handlebars or panniers) are 1 block each side of the bike",
+    "the bike's exact depth, wheel placement and the box texture (sandstone vs smooth sandstone) are estimated; the build is seen from the back"
+  ]
+}

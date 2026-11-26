@@ -3,6 +3,7 @@
   "name": "Swingset",
   "debut": "MCC 10",
   "stars": 3,
+  "gold": true,
   "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Swingset.png",
   "floor": [
     "ggggggg",

@@ -1,0 +1,26 @@
+material,total_used,max_in_one_build,builds_using,kind
+RED_WOOL,74,25,Pixel Heart:13;Traffic Light:1;Mushroom:13;Rocket:1;Lighthouse:21;Cottage:25,raw
+OAK_PLANKS,47,17,Fruit Stand:6;Stone Well:9;Tiny Hut:15;Cottage:17,raw
+SNOW_BLOCK,46,36,Snowman:10;Igloo:36,raw
+BLACK_WOOL,44,18,Traffic Light:8;Smiley:5;Penguin:18;Bumble Bee:8;Creeper Head:5,raw
+COBBLESTONE,40,16,Brick Chimney:4;Stone Well:8;Fountain:16;Watchtower:12,raw
+SANDSTONE,34,34,Desert Pyramid:34,raw
+OAK_LOG,32,8,Flag:5;Small Tree:3;Fruit Stand:4;Stone Well:4;Tiny Hut:8;Cottage:8,raw
+WHITE_WOOL,31,11,Flag:4;Mushroom:1;Brick Chimney:1;Rocket:11;Penguin:2;Bumble Bee:4;Lighthouse:8,raw
+YELLOW_WOOL,26,16,Traffic Light:1;Cactus:1;Smiley:16;Bumble Bee:8,raw
+LIME_WOOL,23,22,Traffic Light:1;Creeper Head:22,raw
+PINK_WOOL,22,22,Piggy:22,raw
+GREEN_WOOL,16,12,Pumpkin Patch:4;Cactus:12,raw
+GLASS,14,8,Rocket:1;Lighthouse:8;Cottage:5,shop
+OAK_LEAVES,13,13,Small Tree:13,raw
+QUARTZ_BLOCK,13,9,Mushroom:2;Golden Trophy:9;Fountain:2,raw
+SPRUCE_PLANKS,13,13,Watchtower:13,raw
+GOLD_BLOCK,11,10,Golden Trophy:10;Desert Pyramid:1,shop
+PUMPKIN,8,4,Pumpkin Patch:4;Snowman:1;Fruit Stand:3,raw
+BRICKS,8,8,Brick Chimney:8,shop
+ORANGE_WOOL,7,4,Rocket:4;Penguin:3,raw
+LIGHT_BLUE_WOOL,5,5,Fountain:5,raw
+BLUE_WOOL,4,4,Flag:4,raw
+MELON,3,3,Fruit Stand:3,raw
+HAY_BLOCK,1,1,Pumpkin Patch:1,raw
+GLOWSTONE,1,1,Lighthouse:1,raw

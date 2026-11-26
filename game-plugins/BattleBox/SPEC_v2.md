@@ -22,7 +22,7 @@ Source of truth for this rebuild. Research is in `..\VISUAL_REFS.md` (section "B
   - **Charges** (consumable, e.g. a dyed amethyst shard with a name): right-click = apply the effect to yourself; hit an enemy with it = apply to them. Effects: Speed, Regeneration, Levitation, Invisibility, Escape (short dash + speed).
   - **Bursts** (thrown, snowball-based): apply an area effect where they land (Regeneration to teammates only, Levitation/Glowing to enemies only).
   - **Fuse Bursts** (thrown): effect applies after ~1.5 s with a ticking particle ring (Harming, Blindness) to enemies only.
-  - Use custom names, lore, and `custom_model_data` hooks (resource pack constants live in `C:\Users\USER\Desktop\Mcc\resourcepack\McmGlyphs.java` — don't depend on it yet; just leave TODO hooks).
+  - Use custom names, lore, and `custom_model_data` hooks (resource pack constants live in `C:\Users\LeonS\Desktop\Mcc\resourcepack\McmGlyphs.java` — don't depend on it yet; just leave TODO hooks).
 - **HUD:** boss-bar timer per phase; sidebar: round x/9, phase, top matchups; action bar: opponent, your kills, centre count (you vs them) with coloured squares.
 
 ## Arenas (the visual part)

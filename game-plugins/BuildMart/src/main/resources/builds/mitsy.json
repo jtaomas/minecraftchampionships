@@ -1,0 +1,59 @@
+{
+  "id": "mitsy",
+  "name": "Mitsy",
+  "debut": "MCC 4",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Mitsy.png",
+  "floor": [
+    "ppppppp",
+    "ppppppp",
+    "ppppppp",
+    "ppppppp",
+    "ppppppp",
+    "ppppppp",
+    "ppppppp"
+  ],
+  "palette": {
+    "p": "minecraft:pink_concrete_powder",
+    "G": "minecraft:stone",
+    "W": "minecraft:white_concrete",
+    "b": "minecraft:black_wool"
+  },
+  "layers": [
+    [
+      ".......",
+      "GGGGGGG",
+      "GWbGbWG",
+      "GGGGGGG",
+      "GGGbGGG",
+      ".GGGGG.",
+      ".G...G."
+    ],
+    [
+      ".......",
+      "GGGGGGG",
+      "G..G..G",
+      "GGGGGGG",
+      "GGG.GGG",
+      ".GGGGG.",
+      "......."
+    ],
+    [
+      ".......",
+      ".G...G.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the cat lies flat and is seen almost from above, so its height is a guess: body read as 2 blocks tall with the eyes and nose sunk one block into the top",
+    "eye whites/nose sit at the bottom of their sockets, the surrounding stone one block higher",
+    "ear positions (back corners) and the two front paws taken from the outline",
+    "black of the eyes/nose is dead-flat black with no concrete texture, read as black wool",
+    "pink floor is mottled like concrete powder"
+  ]
+}

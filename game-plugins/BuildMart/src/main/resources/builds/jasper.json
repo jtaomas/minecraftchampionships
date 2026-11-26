@@ -1,0 +1,37 @@
+{
+  "id": "jasper",
+  "name": "Jasper",
+  "debut": "MCC 10",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Jasper.png",
+  "floor": [
+    "kkkkkkk",
+    "kkkkkkk",
+    "kkkkkkk",
+    "kkkkkkk",
+    "kkkkkkk",
+    "kkkkkkk",
+    "kkkkkkk"
+  ],
+  "palette": {
+    "k": "minecraft:black_concrete",
+    "s": "minecraft:sandstone",
+    "o": "minecraft:oak_planks",
+    "b": "minecraft:bricks",
+    "D": "minecraft:diamond_block"
+  },
+  "layers": [
+    ["ss...ss", "ss...ss", ".ooooo.", ".ooooo.", ".ooooo.", "bbbDbbb", "......."],
+    ["ss...ss", "ss...ss", ".ooooo.", ".kkokk.", ".okkko.", ".......", "......."],
+    ["ss...ss", ".......", ".......", ".......", ".......", ".......", "......."]
+  ],
+  "guessed": [
+    "the build is a low, wide creature/head on a black concrete floor holding a diamond block at the front centre",
+    "sandstone blocks read as ears/horns at the back corners, two layers tall with one extra block at the back; the hidden backs filled by symmetry",
+    "oak plank head is 5 wide and 2 tall; the two black eyes and the wide black nose are inlaid in its top face",
+    "brick masses at the front read as claws/jaw, one layer tall, L-shaped at the sides; the black floor in front of them assumed",
+    "the black floor extends over all 7x7 cells (only the areas beside the build are visible)",
+    "parts of the build hidden behind the front masses assumed solid"
+  ]
+}

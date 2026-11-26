@@ -1,0 +1,76 @@
+{
+  "id": "stone_archway",
+  "name": "Stone Archway",
+  "debut": "MCC 16",
+  "stars": 3,
+  "status": "done",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Stone_Archway.png",
+  "floor": [
+    "bbbbbbb",
+    "blllllb",
+    "blbbblb",
+    "blbbblb",
+    "blbbblb",
+    "blllllb",
+    "bbbbbbb"
+  ],
+  "palette": {
+    "b": "minecraft:stone_bricks",
+    "l": "minecraft:smooth_stone",
+    "m": "minecraft:mossy_stone_bricks",
+    "c": "minecraft:chiseled_stone_bricks"
+  },
+  "layers": [
+    [
+      ".......",
+      ".b...b.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".b...b.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".b.m.b.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".mbbbm.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".cbbbc.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the gateway is 1 block deep; only the front is visible, the back is a plain copy",
+    "two 1-wide pillars with a 2-wide opening either side of a mossy keystone block, and a 2-course lintel",
+    "mossy stone bricks on the lintel ends and the keystone, chiseled stone bricks for the two small carved squares",
+    "the paved floor's pale oval border is simplified to a 5x5 smooth stone ring"
+  ]
+}

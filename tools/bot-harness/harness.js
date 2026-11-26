@@ -16,10 +16,10 @@ const mineflayer = require('mineflayer');
 const HERE = __dirname;
 const SCRATCH = path.resolve(HERE, '..');
 const STAGING = path.join(SCRATCH, 'staging');
-const REAL = 'C:\\Users\\USER\\Desktop\\Mcc';
+const REAL = 'C:\\Users\\LeonS\\Desktop\\Mcc';
 const BUILT = path.join(REAL, 'game-plugins', '_built');
 const CORE_JAR = path.join(REAL, 'plugin-build', 'target', 'MinecraftMondayCore.jar');
-const JAVA = 'C:\\Users\\USER\\Desktop\\java\\bin\\java.exe';
+const JAVA = 'C:\\Users\\LeonS\\Desktop\\java\\bin\\java.exe';
 const HOST = '127.0.0.1', PORT = 25570, MC_VERSION = '1.21.1';
 const BUILTIN = ['sg', 'parkour', 'dropper', 'tntrun', 'spleef', 'kitpvp', 'survival', 'oneshot'];
 

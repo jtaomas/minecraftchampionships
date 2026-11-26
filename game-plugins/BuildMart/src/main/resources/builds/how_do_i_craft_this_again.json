@@ -1,0 +1,52 @@
+{
+  "id": "how_do_i_craft_this_again",
+  "name": "How do I craft this again?",
+  "debut": "MCC 10",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Craft_This_Again.png",
+  "floor": [
+    "WWWWWWW",
+    "bbbbbbb",
+    "WWWbWWW",
+    "WWWbWWW",
+    "WWWbWWW",
+    "WWWbWWW",
+    "WWWbWWW"
+  ],
+  "palette": {
+    "W": "minecraft:white_concrete",
+    "b": "minecraft:black_concrete",
+    "r": "minecraft:barrel[facing=up]",
+    "s": "minecraft:smithing_table",
+    "c": "minecraft:stonecutter[facing=south]",
+    "d": "minecraft:diorite"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      "....c..",
+      "...r...",
+      ".r...s.",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "....d..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the build is a flat 'workbench' still life: white concrete floor divided by a black concrete line down the middle and one across the back",
+    "the two brown blocks on the left are barrels (two iron hoops and a plank lid with a rim); the back one is partly hidden",
+    "the dark block on the right is a smithing table (dark top, maroon face with grey tool marks)",
+    "the grey pile behind the smithing table is mostly hidden; filled as a stonecutter block with a diorite block on top",
+    "the exact depth of the black strips (one row back, one column centre) is estimated from the foreshortened floor"
+  ]
+}

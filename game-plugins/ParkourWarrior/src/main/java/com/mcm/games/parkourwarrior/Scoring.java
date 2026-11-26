@@ -1,87 +1,55 @@
 package com.mcm.games.parkourwarrior;
 
 import com.mcm.games.parkourwarrior.CourseModel.Difficulty;
+import com.mcm.games.parkourwarrior.CourseModel.Kind;
+import com.mcm.games.parkourwarrior.CourseModel.Obstacle;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-/**
- * Pure scoring maths (spec v2): stone medals flat, metal medals by count held (cumulative table), team multiplier
- * from ending finishers, and the multiplier extra split across the side's members by ending weight.
- */
+/** Coin amounts (no medals, no team multiplier): a challenge pays when it is completed; later stages and harder tracks pay more. */
 final class Scoring {
     private Scoring() {}
 
-    enum Medal { STONE, BRONZE, SILVER, GOLD }
-
-    /** Total points of holding {@code n} medals of a metal type (table[n-1]; beyond the table: last + last step). */
-    static int metalTotal(int[] table, int n) {
-        if (n <= 0 || table.length == 0) return 0;
-        if (n <= table.length) return table[n - 1];
-        int last = table[table.length - 1];
-        int step = table.length >= 2 ? last - table[table.length - 2] : last;
-        return last + step * (n - table.length);
+    private static int scaled(Settings s, int base, int stage) {
+        return (int) Math.round(base * (1.0 + s.stageScale * Math.max(0, stage - 1)));
     }
 
-    static int medalPoints(Settings s, int stone, int bronze, int silver, int gold) {
-        return stone * s.stone + metalTotal(s.bronze, bronze) + metalTotal(s.silver, silver) + metalTotal(s.gold, gold);
+    /** Coins for completing an obstacle (0 for an ending part: endings pay on the finish). */
+    static int coins(Settings s, Obstacle o) {
+        if (o.kind() == Kind.MAIN) return scaled(s, s.mainCoins, o.stage());
+        if (o.kind() == Kind.BONUS) {
+            int base = o.index() == 1 ? s.bonusBronze : o.index() == 2 ? s.bonusSilver : s.bonusGold;
+            return scaled(s, base, o.stage());
+        }
+        return 0;
     }
-
-    /** Points gained by the medal that raised the count of {@code type} from {@code newCount - 1} to {@code newCount}. */
-    static int delta(Settings s, Medal type, int newCount) {
-        return switch (type) {
-            case STONE -> s.stone;
-            case BRONZE -> metalTotal(s.bronze, newCount) - metalTotal(s.bronze, newCount - 1);
-            case SILVER -> metalTotal(s.silver, newCount) - metalTotal(s.silver, newCount - 1);
-            case GOLD -> metalTotal(s.gold, newCount) - metalTotal(s.gold, newCount - 1);
-        };
-    }
-
-    static double multiplier(Settings s, List<Difficulty> finishedEndings) {
-        double m = 1.0;
-        for (Difficulty d : finishedEndings) if (d != null) m += s.multInc.getOrDefault(d, 0.0);
-        return m;
-    }
-
-    record Member(UUID id, int medalPoints, Difficulty ending) {}
 
     /**
-     * Multiplier extra per member: extra = sum(medal points) * (mult - 1), shared by weight
-     * (none / easy / medium / hard). Rounded per member (largest remainder, so the shares add up to round(extra)).
+     * Coins for completing section {@code k} (1-based) of a linear (replica) course: coins.course.<mapId>.checkpoints[k-1] (the last
+     * entry repeats), else coins.course.<mapId>.checkpoint, else the main-line default for its stage (coins.main x stage scale).
+     * No difficulty branches or multipliers. Section {@code k == total} is the finish ({@link #finish}).
      */
-    static Map<UUID, Integer> shares(Settings s, List<Member> members, double mult) {
-        Map<UUID, Integer> out = new HashMap<>();
-        if (members.isEmpty()) return out;
-        int sum = 0;
-        for (Member m : members) sum += m.medalPoints();
-        double extra = sum * Math.max(0, mult - 1.0);
-        int target = (int) Math.round(extra);
-        if (target <= 0) { for (Member m : members) out.put(m.id(), 0); return out; }
-        double wsum = 0;
-        double[] w = new double[members.size()];
-        for (int i = 0; i < w.length; i++) {
-            Difficulty d = members.get(i).ending();
-            w[i] = d == null ? s.weightNone : s.weight.getOrDefault(d, s.weightNone);
-            wsum += w[i];
+    static int linearCheckpoint(Settings s, String mapId, int k, int perStage) {
+        Settings.CourseCoins c = mapId == null ? null : s.courseCoins.get(mapId.toLowerCase(java.util.Locale.ROOT));
+        if (c != null && !c.checkpoints.isEmpty()) return c.checkpoints.get(Math.min(Math.max(k, 1), c.checkpoints.size()) - 1);
+        if (c != null && c.checkpoint >= 0) return c.checkpoint;
+        return scaled(s, s.mainCoins, (Math.max(k, 1) - 1) / Math.max(1, perStage) + 1);
+    }
+
+    /** Coins for finishing a linear course: coins.course.<mapId>.finish, else the hard-ending value (the last section is the hardest). */
+    static int finish(Settings s, String mapId) {
+        Settings.CourseCoins c = mapId == null ? null : s.courseCoins.get(mapId.toLowerCase(java.util.Locale.ROOT));
+        return c != null && c.finish >= 0 ? c.finish : s.endHard;
+    }
+
+    /** Coins for completing {@code o}; a linear course pays its own table (a single line of sections). */
+    static int coins(Settings s, CourseModel m, Obstacle o) {
+        if (m != null && m.linear != null && o.kind() == Kind.MAIN) {
+            int k = (o.stage() - 1) * m.linear.perStage + o.index();
+            return k >= m.linear.sectionCount() ? finish(s, m.mapId) : linearCheckpoint(s, m.mapId, k, m.linear.perStage);
         }
-        if (wsum <= 0) { for (int i = 0; i < w.length; i++) w[i] = 1; wsum = w.length; }
-        int given = 0;
-        double[] rem = new double[w.length];
-        int[] base = new int[w.length];
-        for (int i = 0; i < w.length; i++) {
-            double exact = target * w[i] / wsum;
-            base[i] = (int) Math.floor(exact);
-            rem[i] = exact - base[i];
-            given += base[i];
-        }
-        while (given < target) {
-            int best = 0;
-            for (int i = 1; i < rem.length; i++) if (rem[i] > rem[best]) best = i;
-            base[best]++; rem[best] = -1; given++;
-        }
-        for (int i = 0; i < w.length; i++) out.put(members.get(i).id(), base[i]);
-        return out;
+        return coins(s, o);
+    }
+
+    static int ending(Settings s, Difficulty d) {
+        return d == Difficulty.EASY ? s.endEasy : d == Difficulty.MEDIUM ? s.endMedium : s.endHard;
     }
 }

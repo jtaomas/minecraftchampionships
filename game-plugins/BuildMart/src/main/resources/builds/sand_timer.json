@@ -1,0 +1,122 @@
+{
+  "id": "sand_timer",
+  "name": "Sand Timer",
+  "debut": "MCC PARTY 2",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-SandTimer.jpg",
+  "floor": [
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "oosssoo",
+    "oosssoo",
+    "sssssss",
+    "sssssss"
+  ],
+  "palette": {
+    "s": "minecraft:smooth_sandstone",
+    "o": "minecraft:orange_terracotta",
+    "b": "minecraft:bricks",
+    "n": "minecraft:sand"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      "..bbb..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".bbbbb.",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "bb...bb",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".b...b.",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...n...",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...n...",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".b...b.",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "bb...bb",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".bbbbb.",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..bbb..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the display is in the MCC lobby and stands ~13 blocks tall: the falling-sand neck is shortened to fit the 10-layer limit",
+    "the frame reads as bricks (warm lobby light makes it look salmon); the pouring stream is read as sand",
+    "the frame is a 1-block-deep silhouette with the flared bulb rims stepping out at the widest rows",
+    "the lobby floor (pale sandstone with orange patches) is used as the plot floor",
+    "the player figure standing beside the plinth is an entity and is left out"
+  ]
+}

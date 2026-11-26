@@ -1,0 +1,70 @@
+{
+  "id": "gravestone",
+  "name": "Gravestone",
+  "debut": "MCC 18",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Gravestone.png",
+  "floor": [
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "sgggggs",
+    "sgggggs",
+    "sgggggs",
+    "sgggggs"
+  ],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "s": "minecraft:smooth_stone",
+    "S": "minecraft:stone_bricks",
+    "h": "minecraft:stone_brick_slab[type=bottom]",
+    "n": "minecraft:iron_bars",
+    "p": "minecraft:potted_red_tulip"
+  },
+  "layers": [
+    [
+      ".......",
+      "nnSSSnn",
+      "nSSSSSn",
+      ".SSSSS.",
+      ".SSSSS.",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "nnSSSnn",
+      "n..p..n",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "..SSS..",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "...h...",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "tombstone read as a 3-wide, 3-tall stone brick wall (its lowest course hidden behind the platform) with a single stone brick slab on top; the render's 'wide cap' is the slab plus its two side faces",
+    "platform read as a 1-high, 5x3 stone brick step in front of the wall; its depth and the wall's lower course are hidden",
+    "iron bar enclosure assumed to run along the wall's row with 1-block returns at the sides; its hidden back continues behind the wall",
+    "the light grey paths along both floor edges read as smooth stone, 1 wide, from the platform to the front rim",
+    "flower pot + red tulip reproduced as a potted_red_tulip block"
+  ]
+}

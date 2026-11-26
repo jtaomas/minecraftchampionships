@@ -1412,7 +1412,7 @@ public final class BingoGame implements McmGame, Listener {
         Player killer = p.getKiller();
         if (killer != null && cfg.killPoints > 0 && phase == Phase.PLAYING && ctx != null) {   // OURS, 0 = off
             String ks = sideOf.get(killer.getUniqueId());
-            if (ks != null && !ks.equals(sideOf.get(p.getUniqueId()))) ctx.addPoints(killer.getUniqueId(), cfg.killPoints, "Bingo kill");
+            if (ks != null && !ks.equals(sideOf.get(p.getUniqueId()))) ctx.addKillCoins(killer.getUniqueId(), cfg.killPoints, p.getUniqueId(), p.getName(), "You eliminated " + p.getName());
         }
     }
 

@@ -13,6 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -25,6 +27,7 @@ import java.util.zip.GZIPOutputStream;
  */
 public final class ImportRoute {
     public static void main(String[] args) throws Exception {
+        Router.lenientArc = !"strict".equals(System.getProperty("pw.arc"));
         File dir = new File(args[0]);
         File out = new File(args[1]);
         new File(out, "dumps").mkdirs();
@@ -40,6 +43,7 @@ public final class ImportRoute {
             if (t.length > 1 && !l.startsWith("#")) keep.computeIfAbsent(t[1], k -> new ArrayList<>()).add(l);
         }
         StringBuilder rep = new StringBuilder();
+        List<String> easeOut = new ArrayList<>();
         for (ImportedCourse.Section s : ic.sections.values()) {
             if (!only.isEmpty() && !only.contains(s.slot)) continue;
             long t0 = System.currentTimeMillis();
@@ -57,7 +61,7 @@ public final class ImportRoute {
             int[] e = s.endLocal();
             List<int[]> start = pad(w, 0, 0, 0), goal = pad(w, e[0], e[1], e[2]);
             int killY = Math.min(1, e[1] + 1) - s.killDepth;
-            int[] box = {Math.min(bb[0], -2), killY - 1, Math.min(bb[2], -2), Math.max(bb[3], 2), Math.max(bb[4], e[1] + 4), Math.max(bb[5], e[2] + 2)};
+            int[] box = {Math.min(Math.min(bb[0], -2), e[0] - 2), killY - 1, Math.min(bb[2], -2), Math.max(Math.max(bb[3], 2), e[0] + 2), Math.max(bb[4], e[1] + 4), Math.max(bb[5], e[2] + 2)};
             Phys.World wd = new Phys.World(w, new HashMap<>());
             List<int[]> via = new ArrayList<>(), avoid = new ArrayList<>();
             for (int[] v : s.via) via.add(s.toLocal(v[0], v[1], v[2]));
@@ -66,10 +70,19 @@ public final class ImportRoute {
                 avoid.add(new int[]{p[0], p[1], p[2], q[0], q[1], q[2]});
             }
             Router.Grid gr = new Router.Grid(wd, box, killY, avoid);
+            if (System.getProperty("pw.ease") != null) {
+                List<String> el = ease(w, s, box, killY, avoid, start, goal, e);
+                if (!el.isEmpty()) {
+                    easeOut.addAll(el);
+                    wd = new Phys.World(w, new HashMap<>());
+                    gr = new Router.Grid(wd, box, killY, avoid);
+                }
+            }
             Router.Bans bans = new Router.Bans();
             Router.Result res = null;
             List<JumpSim.Res> sims = null;
             String err = null;
+            List<String> forced = new ArrayList<>();
             int iter;
             JumpSim.Kill kill = new JumpSim.Kill(killY, new ArrayList<>(), new ArrayList<>());
             JumpSim.Cfg cfg = new JumpSim.Cfg();
@@ -84,7 +97,10 @@ public final class ImportRoute {
                     JumpSim.Res r = JumpSim.eval(wd, res.nodes.get(i - 1), List.of(res.nodes.get(i)), kill, cfg, prev);
                     prev = r.arrivals;
                     sims.add(r);
-                    if (r.best == 0) { bad = i - 1; break; }
+                    if (r.best == 0) {
+                        if (System.getProperty("pw.force") != null) { forced.add(s.slot + " step " + i); continue; }   // replica treated as human-tested: keep the router's route, listed in the report
+                        bad = i - 1; break;
+                    }
                 }
                 if (bad < 0) break;
                 Router.Cell[] j = res.jumps.get(bad);
@@ -103,6 +119,7 @@ public final class ImportRoute {
                 keep.remove(s.slot);
                 continue;
             }
+            if (!forced.isEmpty()) rep.append("  FORCED (simulator finds no landing; kept as the replica's own jump): ").append(forced).append("\n");
             double pass = 1;
             int hardW = 99, hardB = 99;
             List<String> lines = new ArrayList<>();
@@ -131,8 +148,84 @@ public final class ImportRoute {
             for (List<String> l : keep.values()) for (String x : l) { bw.write(x); bw.write('\n'); }
         }
         Files.write(new File(out, "import_routes.txt").toPath(), rep.toString().getBytes(StandardCharsets.UTF_8));
+        if (System.getProperty("pw.ease") != null) Files.write(new File(out, "ease.txt").toPath(), (String.join("\n", easeOut) + "\n").getBytes(StandardCharsets.UTF_8));
         System.out.print(rep);
     }
+
+    /**
+     * Optional (-Dpw.ease=1): when the goal pad cannot be reached from the start with the router's jump model (a fan
+     * replica has physically impossible gaps), bridge the gap that makes the most progress with plain stepping
+     * stones in the neighbouring foothold's own block (1.5 blocks wide, a short pillar below), at most 8 rounds.
+     * Every stone is returned as a course.txt {@code set} line "SLOT x y z STATE" (source coordinates), so the survey
+     * lists each edit; nothing else of the section is changed.
+     */
+    static List<String> ease(W w, ImportedCourse.Section s, int[] box, int killY, List<int[]> avoid, List<int[]> start, List<int[]> goal, int[] e) {
+        List<String> out = new ArrayList<>();
+        int q = (4 - s.turn) & 3;
+        for (int round = 0; round < 8; round++) {
+            Phys.World wd = new Phys.World(w, new HashMap<>());
+            Router.Grid gr = new Router.Grid(wd, box, killY, avoid);
+            Set<Long> seen = new HashSet<>();
+            java.util.ArrayDeque<Router.Cell> dq = new java.util.ArrayDeque<>();
+            for (int[] c : start) { Router.Cell k = gr.get(c[0], c[1], c[2]); if (k != null && seen.add(k.key())) dq.add(k); }
+            List<Router.Cell> reach = new ArrayList<>();
+            int[] type = new int[1];
+            while (!dq.isEmpty()) {
+                Router.Cell c = dq.poll();
+                reach.add(c);
+                for (int dx = -8; dx <= 8; dx++) for (int dz = -8; dz <= 8; dz++) {
+                    List<Router.Cell> col = gr.byCol.get(W.key(c.x + dx, 0, c.z + dz));
+                    if (col == null) continue;
+                    for (Router.Cell b : col) if (!seen.contains(b.key()) && Router.edge(wd, c, b, type) >= 0) { seen.add(b.key()); dq.add(b); }
+                }
+            }
+            for (int[] g : goal) if (seen.contains(W.key(g[0], g[1], g[2]))) return out;
+            double dMin = 1e9;
+            for (Router.Cell c : reach) dMin = Math.min(dMin, dist(c, e));
+            Router.Cell bc = null, bb = null;
+            double bs = 1e9;
+            for (Router.Cell c : reach) {
+                if (c.ladder) continue;
+                for (Router.Cell b : gr.cells.values()) {
+                    if (b.ladder || seen.contains(b.key())) continue;
+                    int adx = Math.abs(b.x - c.x), adz = Math.abs(b.z - c.z);
+                    if (adx > 11 || adz > 11) continue;
+                    double db = dist(b, e);
+                    if (db > dMin - 1.5 && db > dist(c, e) - 1.5) continue;
+                    double h = Math.max(adx, adz);
+                    double dh = b.feet - c.feet;
+                    if (dh > 6 || dh < -8) continue;
+                    double score = db + 0.7 * h + 0.8 * Math.max(0, dh);
+                    if (score < bs) { bs = score; bc = c; bb = b; }
+                }
+            }
+            if (bc == null) return out;
+            int hops = (int) Math.max(Math.ceil((Math.max(Math.abs(bb.x - bc.x), Math.abs(bb.z - bc.z)) - 1) / 3.0), Math.ceil(Math.max(0, bb.feet - bc.feet) / 1.0));
+            hops = Math.max(2, hops);
+            String top = Bs.full(Bs.id(wd.state(bc.x, bc.y, bc.z)));
+            if (Bs.isAir(top) || top.contains("froglight")) top = "minecraft:stone_bricks";
+            String stone = "minecraft:" + Bs.id(top);
+            for (int i = 1; i < hops; i++) {
+                double t = i / (double) hops;
+                int x = (int) Math.round(bc.x + t * (bb.x - bc.x)), z = (int) Math.round(bc.z + t * (bb.z - bc.z));
+                int y = (int) Math.round(bc.feet + t * (bb.feet - bc.feet)) - 1;
+                for (int dx = 0; dx <= 1; dx++) for (int dz = 0; dz <= 1; dz++) {
+                    if (dx + dz == 2) continue;
+                    for (int dy = 0; dy >= -2; dy--) {
+                        if (!Bs.isAir(w.get(x + dx, y + dy, z + dz))) continue;
+                        if (dy < 0 && dx + dz > 0) continue;
+                        w.set(x + dx, y + dy, z + dz, stone);
+                        int[] pc = new int[]{Bs.rx(x + dx, z + dz, q) + s.origin[0], y + dy + s.origin[1], Bs.rz(x + dx, z + dz, q) + s.origin[2]};
+                        s.sets.add(new Object[]{new int[]{pc[0] - 0, pc[1], pc[2]}, stone});
+                        out.add(s.slot + " " + (pc[0] + s.base[0]) + " " + (pc[1] + s.base[1]) + " " + (pc[2] + s.base[2]) + " " + stone);
+                    }
+                }
+            }
+        }
+        return out;
+    }
+
+    static double dist(Router.Cell c, int[] e) { return Math.sqrt(Math.pow(c.x - e[0], 2) + Math.pow(c.z - e[2], 2) + Math.pow((c.feet - e[1]) * 1.5, 2)); }
 
     /** 3x3 pad centred on (x, y, z) with 3 blocks of headroom (as in the course); returns its cells. */
     static List<int[]> pad(W w, int x, int y, int z) {

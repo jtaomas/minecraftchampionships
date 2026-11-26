@@ -1,0 +1,71 @@
+{
+  "id": "parkour",
+  "name": "Parkour",
+  "debut": "MCC 3",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Parkour.png",
+  "floor": [
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb"
+  ],
+  "palette": {
+    "b": "minecraft:stone_bricks",
+    "i": "minecraft:iron_bars",
+    "f": "minecraft:oak_fence",
+    "G": "minecraft:glass",
+    "p": "minecraft:pink_concrete",
+    "w": "minecraft:yellow_concrete",
+    "P": "minecraft:purple_concrete",
+    "r": "minecraft:red_concrete"
+  },
+  "layers": [
+    [
+      "...G...",
+      ".i.....",
+      "..f....",
+      "....f.r",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "...G...",
+      ".i.....",
+      "..f....",
+      "....p..",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".i.....",
+      "..w....",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".P.....",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "checkpoint markers read as coloured concrete cubes on poles, stepping down from the tall purple one to the red block on the floor",
+    "the transparent block behind the middle markers is read as a two-high glass column; it is barely visible in the render",
+    "pole heights estimated from the render (purple three tall, yellow two, pink one)",
+    "the thin dark line across the floor is the plinth carpet showing at the back edge, not part of the build"
+  ]
+}

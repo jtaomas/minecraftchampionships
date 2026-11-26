@@ -1,0 +1,120 @@
+{
+  "id": "whats_uphouse",
+  "name": "What's Uphouse?",
+  "debut": "MCC AS",
+  "stars": 4,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-What's_Uphouse.png",
+  "floor": [
+    "ppplppp",
+    "ppppppp",
+    "ppppppp",
+    "lpppppl",
+    "ppppppp",
+    "ppppppp",
+    "ppplppp"
+  ],
+  "palette": {
+    "p": "minecraft:oak_planks",
+    "l": "minecraft:sea_lantern",
+    "d": "minecraft:coarse_dirt",
+    "k": "minecraft:bricks",
+    "w": "minecraft:spruce_planks",
+    "Y": "minecraft:yellow_concrete",
+    "O": "minecraft:orange_concrete",
+    "R": "minecraft:red_concrete"
+  },
+  "layers": [
+    [
+      ".......",
+      ".ddddd.",
+      ".dpppd.",
+      ".dpppd.",
+      ".dpppd.",
+      ".ddddd.",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..ddd..",
+      "..d.d..",
+      "..d.w..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..ddd..",
+      "..d.d..",
+      "..d.w..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..kkk..",
+      "..k.k..",
+      "..k.w..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..kkk..",
+      "..k.k..",
+      "..k.w..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..YRY..",
+      "..RYR..",
+      "..YRY..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..OYO..",
+      "..YOY..",
+      "..OYO..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..ROR..",
+      "..ORO..",
+      "..ROR..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "...O...",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "status": "approximate",
+  "gold": true,
+  "guessed": [
+    "the house is 3x3 with a 1x1 hollow interior; the back and sides are assumed symmetric and hidden",
+    "the coloured roof is a 3x3x3 checker of yellow/orange/red concrete with a single orange block on top; the exact checker order is read from the front and repeated on the sides",
+    "the front is open at the centre with a spruce plank door frame on the right side; the three small blue panes in the frame are too small to read as blocks and are left out",
+    "the lower band is read as coarse dirt and the upper band as bricks",
+    "the base is a 5x5 dirt platform with an oak-plank interior floor",
+    "the four floor panels are read as sea lanterns (bright cyan with a border); diamond block is possible",
+    "the roof size and the 9-layer height are estimated from the render; the build is seen from the front only"
+  ]
+}

@@ -8,6 +8,8 @@ import java.util.*;
 public final class McmApi {
     private static final Map<String, McmGame> GAMES = new LinkedHashMap<>();
     private static final Map<String, Plugin> OWNERS = new HashMap<>();
+    private static final Map<String, McmMapEditable> EDITABLES = new LinkedHashMap<>();
+    private static final Map<String, Plugin> EDITABLE_OWNERS = new HashMap<>();
     private static McmVoteProvider voteProvider;
     private static Bridge bridge;
     private static volatile boolean fastTest;
@@ -26,12 +28,15 @@ public final class McmApi {
         String id = game.id().toLowerCase(Locale.ROOT);
         GAMES.put(id, game);
         OWNERS.put(id, owner);
+        if (game instanceof McmMapEditable me) registerMapEditable(owner, id, me);
         owner.getLogger().info("Registered MCM game '" + id + "' (" + game.displayName() + ")");
     }
 
     public static void unregisterGame(String id) {
         GAMES.remove(id.toLowerCase(Locale.ROOT));
         OWNERS.remove(id.toLowerCase(Locale.ROOT));
+        EDITABLES.remove(id.toLowerCase(Locale.ROOT));
+        EDITABLE_OWNERS.remove(id.toLowerCase(Locale.ROOT));
     }
 
     /** Remove every game registered by a plugin (called automatically when it disables). */
@@ -40,7 +45,30 @@ public final class McmApi {
             if (e.getValue().equals(owner)) { GAMES.remove(e.getKey()); return true; }
             return false;
         });
+        EDITABLE_OWNERS.entrySet().removeIf(e -> {
+            if (e.getValue().equals(owner)) { EDITABLES.remove(e.getKey()); return true; }
+            return false;
+        });
     }
+
+    /**
+     * Make the maps of a game editable with {@code /mcm mapedit} (Map Edit core), see {@link McmMapEditable}. Also done
+     * automatically when the registered {@link McmGame} itself implements the interface. Removed with the game.
+     */
+    public static void registerMapEditable(Plugin owner, String gameId, McmMapEditable editable) {
+        String id = gameId.toLowerCase(Locale.ROOT);
+        EDITABLES.put(id, editable);
+        EDITABLE_OWNERS.put(id, owner);
+    }
+
+    /** The map-edit hook of a game, or null. @since the Map Edit core update */
+    public static McmMapEditable mapEditable(String gameId) { return gameId == null ? null : EDITABLES.get(gameId.toLowerCase(Locale.ROOT)); }
+
+    /** Plugin that registered the map-edit hook of a game (its data folder holds the overlays), or null. @since the Map Edit core update */
+    public static Plugin mapEditableOwner(String gameId) { return gameId == null ? null : EDITABLE_OWNERS.get(gameId.toLowerCase(Locale.ROOT)); }
+
+    /** Ids of every game with editable maps, in registration order. @since the Map Edit core update */
+    public static List<String> mapEditableGames() { return new ArrayList<>(EDITABLES.keySet()); }
 
     public static McmGame game(String id) { return id == null ? null : GAMES.get(id.toLowerCase(Locale.ROOT)); }
 

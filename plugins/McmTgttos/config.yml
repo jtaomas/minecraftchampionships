@@ -1,0 +1,93 @@
+# To Get To The Other Side - settings. Values marked (default) are not researched; adjust after playtesting.
+
+# Map classes in preferred order (fully-qualified). Missing classes are skipped with a warning.
+maps:
+  - com.mcm.games.tgttos.maps.a.LaundryLineMap
+  - com.mcm.games.tgttos.maps.a.DamFaceMap
+  - com.mcm.games.tgttos.maps.a.BookshelfRunMap
+  - com.mcm.games.tgttos.maps.a.OrchardDropMap
+  - com.mcm.games.tgttos.maps.b.KiteFestival
+  - com.mcm.games.tgttos.maps.b.FrozenCanal
+  - com.mcm.games.tgttos.maps.b.TicketGates
+  - com.mcm.games.tgttos.maps.b.QuarrySteps
+# Also load any other TgMap class found in com.mcm.games.tgttos.maps.* inside the jar.
+auto-discover: true
+# Development stub map (com.mcm.games.tgttos.stub.StubBridgeMap): always | auto (only if fewer real maps than rounds) | never
+stub-map: auto
+# false = every map uses a fixed seed (validated layout); true = new seed each game (variants are re-rolled anyway).
+random-seeds: false
+
+rounds: 6
+round-seconds: 100
+pre-round-seconds: 15        # in the start strip with the kit in hand; the last 3 s are the 3-2-1 title
+intermission-seconds: 6      # round results before the next map
+time-skip:
+  enabled: true              # (default, MCC Island rule)
+  finished-fraction: 0.8
+  seconds-left: 20
+
+world:
+  base-y: 64                 # world y of local y = 0
+  map-spacing: 600           # each map slot sits at x = slot * spacing
+
+kit:
+  concrete: 64
+  snowballs: 10              # owner (playtest 1): 10 per attempt, refilled on every respawn
+  fireworks: 2               # elytra maps (default)
+  pickaxe: IRON_PICKAXE      # (default) no enchantments
+
+knockback:                   # (default) vanilla-like values; no damage is ever dealt
+  punch-horizontal: 0.42
+  punch-vertical: 0.36
+  sprint-bonus: 0.35
+  snowball: 0.55             # (default) horizontal push of a snowball hit, in the snowball's travel direction
+  snowball-vertical: 0.30    # (default) upward part of a snowball hit
+  log-snowball-hits: true    # log every snowball hit on a player and why it was accepted / rejected
+  hit-cooldown-ticks: 10     # min ticks between two knockbacks on the same victim (vanilla i-frames)
+  glide-multiplier: 1.6      # (default) knockback on a gliding victim is added to its flight velocity, times this
+
+bridging:                    # owner decision (playtest 1): the concrete stack never runs out
+  infinite-blocks: true      # top the team concrete back up to kit.concrete after every placement
+  refill-delay-ticks: 1      # (default) 1 = next tick, i.e. instant; raise for a visible refill delay
+
+elytra:
+  floor-drop-delay-seconds: 3  # (default) elytra maps: at GO the barrier opens but the gantry floor stays this long,
+                               # so racers can shove each other off before it drops. 0 = drop at GO.
+
+karma:                       # (default) thresholds; karma decays every second
+  per-punch: 1.0
+  same-victim-bonus: 0.5     # extra karma when punching the same player again within same-victim-seconds
+  same-victim-seconds: 5
+  decay-per-second: 0.35
+  more-knockback-from: 3.0   # from this karma the puncher takes extra knockback
+  knockback-per-karma: 0.08  # +8% knockback taken per karma point above the threshold
+  max-knockback-mult: 1.8
+  glow-from: 6.0             # red glow (+ slowness if enabled)
+  slowness: true
+  lock-from: 9.0             # punching disabled for lock-seconds
+  lock-seconds: 4
+  snowball-hits-count: false # (default) true = a snowball hit adds karma like a punch
+  # victims: each recent hit taken reduces knockback received, decays per second
+  hit-protection-per-hit: 0.07
+  hit-protection-max: 0.45
+  hit-protection-decay: 0.5
+
+points:                      # scaled /5 from the researched MCC table
+  placement-first: 8
+  placement-step-every: 5    # 1 point less every 5 places
+  placement-min: 1
+  top10-bonus: [16, 15, 14, 13, 12, 11, 10, 9, 8, 7]
+  team-bonus: [20, 15, 10, 5]   # first 4 sides (2+ members) with every online member finished, split evenly
+
+chickens:
+  count: 10
+  wander: true               # AI on, but put back into the pen if they leave it
+
+goal:
+  chicken-name: "&e&lPunch me!"  # always-visible name tag of real goal chickens (& colour codes); decoys have none
+  decoy-penalty-seconds: 0       # reserved for later: punching a decoy currently does nothing
+  log-punches: true              # log every chicken punch and why it was accepted / rejected
+
+# Pun death lines (%s = player name). Leave empty to use the built-in list.
+puns-void: []
+puns-hazard: []

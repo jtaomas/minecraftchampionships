@@ -1,0 +1,89 @@
+{
+  "id": "pride_heart",
+  "name": "Pride Heart",
+  "debut": "MCC P21",
+  "stars": 4,
+  "gold": true,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Pride_Heart.png",
+  "floor": [
+    "kkkkkkk",
+    "kkkkkkk",
+    "kkkkkkk",
+    "kkkkkkk",
+    "kkkkkkk",
+    "kkkkkkk",
+    "kkkkkkk"
+  ],
+  "palette": {
+    "R": "minecraft:red_concrete",
+    "O": "minecraft:orange_concrete",
+    "Y": "minecraft:yellow_concrete",
+    "G": "minecraft:green_concrete",
+    "B": "minecraft:blue_concrete",
+    "P": "minecraft:purple_concrete",
+    "k": "minecraft:gold_block"
+  },
+  "layers": [
+    [
+      ".RR.RR.",
+      "OOOOOOO",
+      "YYYYYYY",
+      ".GGGGG.",
+      "..BBB..",
+      "...P...",
+      "......."
+    ],
+    [
+      ".RR.RR.",
+      "OOOOOOO",
+      "YYYYYYY",
+      ".GGGGG.",
+      "..BBB..",
+      ".......",
+      "......."
+    ],
+    [
+      ".RR.RR.",
+      "OOOOOOO",
+      "YYYYYYY",
+      ".GGGGG.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".RR.RR.",
+      "OOOOOOO",
+      "YYYYYYY",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".RR.RR.",
+      "OOOOOOO",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".RR.RR.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "heart read as a heart-shaped staircase: each row from the front point to the back lobes is one block higher and a different rainbow colour",
+    "colour order read as purple (front point, lowest) -> blue -> green -> yellow -> orange -> red (back lobes, highest)",
+    "heart row widths (4,7,7,5,3,1 from back to front) estimated from the render; back rows hidden by the front steps",
+    "floor read as gold blocks (shiny yellow tiles in front of the heart)"
+  ]
+}

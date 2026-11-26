@@ -2,7 +2,7 @@
 """Orthographic side elevation of an MCMDUMP (viewed from +x toward -x; z runs left to right, y up).
 Usage: python side_view.py in.mcmdump.gz out.png [scale]"""
 import sys
-sys.path.insert(0, r"C:\Users\USER\Desktop\Mcc\tools")
+sys.path.insert(0, r"C:\Users\LeonS\Desktop\Mcc\tools")
 import numpy as np
 import render_preview as rp
 

@@ -146,6 +146,48 @@ public final class CourseModel {
     /** Named overview teleport for spectators; pitch 90 = looking straight down. */
     public record Overview(String name, Pos pos, float pitch) {}
 
+    // ================================================================== linear (replica) courses
+
+    /**
+     * Volume the replica's command blocks tested with an entity selector ({@code @p[x=,y=,z=,dx=,dy=,dz=]}): true when the
+     * player's hitbox (0.6 wide, 1.8 tall, feet at x/y/z) overlaps it, exactly like the selector.
+     */
+    public record Trigger(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+        public boolean hitsPlayer(double x, double y, double z) {
+            return x + 0.3 > minX && x - 0.3 < maxX && y + 1.8 > minY && y < maxY && z + 0.3 > minZ && z - 0.3 < maxZ;
+        }
+        public Box blockBox() { return new Box((int) Math.floor(minX), (int) Math.floor(minY), (int) Math.floor(minZ), (int) Math.ceil(maxX) - 1, (int) Math.ceil(maxY) - 1, (int) Math.ceil(maxZ) - 1); }
+    }
+
+    /** Checkpoint {@code n} (1-based, in course order): touching {@code trigger} sets the respawn to {@code respawn}. */
+    public record Checkpoint(int n, Trigger trigger, Pos respawn) {}
+
+    /** Text of a sign block (applied after the blocks are placed; a model block string cannot carry it). */
+    public record SignText(int x, int y, int z, List<String> lines) {}
+
+    /**
+     * A single-line course imported 1:1 from a replica world (map format {@code linear}, see {@code map.FullCourse}): no hubs,
+     * bonus paths or endings. Obstacles M1-1 .. M8-3 stand for its sections (3 per stage); section k ends at checkpoint k and
+     * the last one at {@link #finish}. {@link #fallY}: feet below it = a fall. Checkpoints may be touched out of order;
+     * the runner's checkpoint only ever moves forward.
+     */
+    public static final class Linear {
+        public double fallY = -30;
+        /** Checkpoint 1..n (the last section has no checkpoint, it ends at {@link #finish}). */
+        public final List<Checkpoint> checkpoints = new ArrayList<>();
+        public Trigger finish;
+        /** Section names, index 0 = section 1. */
+        public final List<String> sections = new ArrayList<>();
+        public final List<SignText> signs = new ArrayList<>();
+        /** Sections per stage (the replica has 8 stages of 3). */
+        public int perStage = 3;
+
+        public int sectionCount() { return sections.size(); }
+    }
+
+    /** Non-null for a linear (replica) course. */
+    public Linear linear;
+
     /** Sparse block store; also the sink the generator writes into. */
     public interface Blocks {
         void set(int x, int y, int z, String blockData);

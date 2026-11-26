@@ -1,0 +1,109 @@
+{
+  "id": "treetop",
+  "name": "Treetop",
+  "debut": "MCC 20",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Treetop.png",
+  "floor": [
+    "gggdddp",
+    "ggggddp",
+    "ggmmdgg",
+    "gmmmggg",
+    "ddggggg",
+    "tdggggd",
+    "ddggggd"
+  ],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "d": "minecraft:coarse_dirt",
+    "p": "minecraft:podzol",
+    "m": "minecraft:moss_block",
+    "t": "minecraft:dirt",
+    "a": "minecraft:acacia_log[axis=y]",
+    "l": "minecraft:ladder[facing=south]",
+    "E": "minecraft:birch_stairs[facing=east,half=bottom]",
+    "W": "minecraft:birch_stairs[facing=west,half=bottom]"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      "...a...",
+      "...l...",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...a...",
+      "...l...",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "EEEaWWW",
+      "...l...",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...a...",
+      "...l...",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...a...",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".mmmmm.",
+      ".mmmmm.",
+      ".mmmmm.",
+      ".mmmmm.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".mmmmm.",
+      ".mmmmm.",
+      ".mmmmm.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "..mmm..",
+      "..mmm..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "trunk read as acacia logs (grey-brown bark; wiki notes acacia log and birch stairs in this build)",
+    "canopy read as moss block, 3 stepped layers; its back/side extent estimated from the low camera",
+    "birch stair platform read as two arms stepping up to the trunk at two heights; exact stair count/facing estimated",
+    "oak ladder on the trunk front, 4 tall",
+    "floor patchwork of grass, coarse dirt, podzol and dirt estimated from the render"
+  ]
+}

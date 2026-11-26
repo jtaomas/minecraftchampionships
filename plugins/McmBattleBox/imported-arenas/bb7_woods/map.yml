@@ -1,0 +1,13 @@
+id: bb7_woods
+name: "Farmer Woods"
+credit: "Gerfield, Hmoushly, blepisagod, speedyparrot, Crazyblop (builders), Blueberry (guide) - BattleBox Recreation 7"
+license: "private use only, no licence given"
+size: [57, 29, 45]
+floor_y: 0
+centre: [0, 7, 0]
+centre_size: [3, 3]
+spawn_a: [-20, 1, 0]
+spawn_b: [20, 1, 0]
+gates_a: [[-16, 1, -4, -16, 5, 4]]
+gates_b: [[16, 1, -4, 16, 5, 4]]
+blocks: blocks.mcmi.gz

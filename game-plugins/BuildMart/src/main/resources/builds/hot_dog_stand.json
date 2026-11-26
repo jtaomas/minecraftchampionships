@@ -1,0 +1,98 @@
+{
+  "id": "hot_dog_stand",
+  "name": "Hot Dog Stand",
+  "debut": "MCC P22",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Hot_Dog_Stand.png",
+  "floor": [
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss"
+  ],
+  "palette": {
+    "s": "minecraft:stone_bricks",
+    "w": "minecraft:oak_planks",
+    "h": "minecraft:oak_slab[type=bottom]",
+    "f": "minecraft:oak_fence",
+    "B": "minecraft:bricks",
+    "r": "minecraft:barrel[facing=south]"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".f.www.",
+      "...r...",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".h...w.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".....w.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".....w.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".....w.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".BBBBB.",
+      ".BBBBB.",
+      ".BBBBB.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "...B...",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the render is a lobby display, not the usual plot: the pavement under the stand is used as the floor",
+    "the parasol is read as a 5 x 3 brick plate one block thick with a single brick block on top of the pole",
+    "the pole is oak planks (5 blocks) and the counter is a 3-wide oak plank row with the pole in its middle",
+    "the barrel standing in front of the counter shows the 2 x 2 panel top texture, so it is read as a sideways barrel",
+    "the small framed stool at the left is approximated with an oak fence and a slab on top",
+    "the standing figure by the counter is an entity and is left out"
+  ]
+}

@@ -77,6 +77,26 @@ public interface McmGameContext {
      */
     default double teamShare(double pool, int members) { return members <= 0 ? 0 : pool / members; }
 
+    /**
+     * Kill coins (MCC "ELIMINATION!" banner: crossed swords + the victim's name, double/triple tiers, ~4 s). The core
+     * pays like {@link #addCoins}, prints the MCC chat line and shows the banner to the killer. A core without the
+     * feature just pays and prints. {@code victim} may be null when the victim is not a player.
+     * @since 3.4.0
+     */
+    default void addKillCoins(UUID killer, double coins, UUID victim, String victimName, String reason) {
+        addCoins(killer, coins, reason);
+    }
+
+    /**
+     * Objective coins. {@code banner} is the MCC centre graphic for this objective ("LAP COMPLETED!",
+     * "ROOM COMPLETED!") or null where MCC shows none (TGTTOS finish, Hole in the Wall, checkpoints): chat line and
+     * sound only.
+     * @since 3.4.0
+     */
+    default void addObjectiveCoins(UUID player, double coins, String banner, String reason) {
+        addCoins(player, coins, reason);
+    }
+
     /** The event coin multiplier of the game running now (x1.0 outside a championship). @since 3.3.0 */
     default double coinMultiplier() { return 1.0; }
 

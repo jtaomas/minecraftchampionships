@@ -1,0 +1,70 @@
+{
+  "id": "mcc_chess",
+  "name": "MCC Chess",
+  "debut": "MCC P22",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-MCC_Chess.png",
+  "floor": [
+    "ooooooo",
+    "owbwbwo",
+    "obwbwbo",
+    "owbwbwo",
+    "obwbwbo",
+    "owbwbwo",
+    "ooooooo"
+  ],
+  "palette": {
+    "o": "minecraft:oak_planks",
+    "w": "minecraft:white_concrete",
+    "b": "minecraft:black_concrete",
+    "B": "minecraft:birch_log[axis=y]",
+    "S": "minecraft:spruce_log[axis=y]",
+    "s": "minecraft:spruce_slab[type=bottom]",
+    "H": "minecraft:birch_slab[type=bottom]"
+  },
+  "layers": [
+    [
+      "ooooooo",
+      "oBBBBBo",
+      "o.....o",
+      "o.S.S.o",
+      "oS.S.So",
+      "o.....o",
+      "ooooooo"
+    ],
+    [
+      "ooooooo",
+      "oBBBBBo",
+      "o.....o",
+      "o.S.S.o",
+      "oS.S.So",
+      "o.....o",
+      "ooooooo"
+    ],
+    [
+      ".......",
+      ".BBBBB.",
+      ".......",
+      "..s.s..",
+      ".s.s.s.",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".HHHHH.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "board is a 5x5 checker inside a 1-block wooden rim so it fits the 7x7 plot; the render's checker may be 7x7 with the rim outside the floor",
+    "rim read as oak planks, 2 tall (the render shows a raised wooden box edge)",
+    "light pieces read as birch logs with birch slab heads, dark pieces as spruce logs with spruce slab heads (wiki notes spruce slabs in this build)",
+    "the chess position (5 light pieces on the back rank, 5 dark pieces advanced) is estimated from the render; piece heights/positions approximate"
+  ]
+}

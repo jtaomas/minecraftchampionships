@@ -1,0 +1,88 @@
+{
+  "id": "pkt_mini",
+  "name": "PKT Mini",
+  "debut": "MCC P22",
+  "stars": 3,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-PKT_Mini.png",
+  "floor": [
+    "bbbbbbb",
+    "bgggggb",
+    "bgggggb",
+    "bgggggb",
+    "bgggggb",
+    "bgggggb",
+    "bbgggbb"
+  ],
+  "palette": {
+    "b": "minecraft:black_concrete",
+    "g": "minecraft:gray_concrete",
+    "k": "minecraft:bricks",
+    "l": "minecraft:light_gray_concrete",
+    "r": "minecraft:red_concrete"
+  },
+  "layers": [
+    [
+      "...k...",
+      "..kk...",
+      "...l...",
+      ".......",
+      "rr.....",
+      "rr.....",
+      "......."
+    ],
+    [
+      "...k...",
+      "..kk...",
+      "...l...",
+      ".......",
+      "rr.....",
+      "rr.....",
+      "......."
+    ],
+    [
+      "...k...",
+      "..kk...",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "...k...",
+      "..kk...",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "...k...",
+      "..kk...",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "...k...",
+      "kkkk...",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "status": "approximate",
+  "guessed": [
+    "the player figure on the right-hand red table is a player-skin statue (player head); heads/entities are not allowed, so it is left out",
+    "the brick chimney is modelled as a 2-wide stack with a 4-wide brick cap; the render shows a mantel/cornice at the top and a small hearth at the base",
+    "the grey block in the centre is read as a 2-tall light-grey concrete fridge/cabinet",
+    "the two red boxes are 2-tall red concrete counters: a 2x2 one at the left and a 2x1 one at the right",
+    "the floor's grey/black path layout is partly hidden by the furniture; modelled as a grey centre with black borders",
+    "the yellow/orange wall and the red pillars behind the build are the stage backdrop, not part of the build"
+  ]
+}

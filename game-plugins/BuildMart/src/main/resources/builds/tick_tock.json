@@ -1,0 +1,61 @@
+{
+  "id": "tick_tock",
+  "name": "Tick Tock",
+  "debut": "MCC P22",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Tick_Tock.png",
+  "floor": [
+    "ccccccc",
+    "cllwllc",
+    "clwwllc",
+    "cllwwlc",
+    "clwwllc",
+    "cllwllc",
+    "ccccccc"
+  ],
+  "palette": {
+    "c": "minecraft:cyan_concrete",
+    "l": "minecraft:light_blue_concrete",
+    "w": "minecraft:white_concrete",
+    "s": "minecraft:stone",
+    "n": "minecraft:nether_bricks",
+    "o": "minecraft:copper_block"
+  },
+  "layers": [
+    [
+      ".sssss.",
+      "s.....s",
+      "s.....s",
+      "s..n..s",
+      "s.....s",
+      "s.....s",
+      ".sssss."
+    ],
+    [
+      ".......",
+      ".......",
+      "...o...",
+      ".oon...",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "...o...",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the clock face reads as a 5 x 5 light blue / white concrete mosaic inside a 1-block-high stone rim",
+    "the centre hub is a nether bricks block with the copper long hand pointing north and the short hand pointing west",
+    "the rim corners are left open (octagonal rim), matching the white plinth showing through at the corners",
+    "the blue-white face pattern is a mosaic of block-sized patches: the exact organic swirls cannot be reproduced block for block",
+    "the cyan concrete base ring is hidden under the stone rim"
+  ]
+}

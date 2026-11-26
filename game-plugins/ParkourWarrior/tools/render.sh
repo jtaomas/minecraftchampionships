@@ -4,7 +4,7 @@
 # Usage: sh tools/render.sh [filter-regex]   (NORENDER=1 skips the PNGs; the regex limits which renders run)
 cd "$(dirname "$0")/.."
 OUT=tools/out
-J=/c/Users/USER/Desktop/java/bin
+J=/c/Users/LeonS/Desktop/java/bin
 rm -rf "$OUT/classes"; mkdir -p "$OUT/classes" previews
 "$J/javac" -encoding UTF-8 -d "$OUT/classes" src/main/java/com/mcm/games/parkourwarrior/CourseModel.java \
   src/main/java/com/mcm/games/parkourwarrior/map/*.java tools/PreviewMain.java || exit 1
@@ -12,7 +12,7 @@ rm -rf "$OUT/classes"; mkdir -p "$OUT/classes" previews
 RC=$?
 grep -E "RESULT|SUMMARY|ERROR|Exception|at com" "$OUT/run.log" | head -80
 [ -n "$NORENDER" ] && exit $RC
-R=/c/Users/USER/Desktop/Mcc/tools/render_preview.py
+R=/c/Users/LeonS/Desktop/Mcc/tools/render_preview.py
 F="${1:-.}"
 grep -E "$F" "$OUT/renders.txt" > "$OUT/sel.txt"
 while read d png rest; do

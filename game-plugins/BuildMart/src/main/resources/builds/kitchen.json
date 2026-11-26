@@ -1,0 +1,98 @@
+{
+  "id": "kitchen",
+  "name": "Kitchen",
+  "debut": "MCC 13",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Kitchen.png",
+  "floor": [
+    "wbwbwbw",
+    "bwbwbwb",
+    "wbwbwbw",
+    "bwbwbwb",
+    "wbwbwbw",
+    "bwbwbwb",
+    "wbwbwbw"
+  ],
+  "palette": {
+    "w": "minecraft:white_concrete",
+    "b": "minecraft:black_concrete",
+    "L": "minecraft:oak_log[axis=y]",
+    "B": "minecraft:oak_log[axis=x]",
+    "P": "minecraft:oak_planks",
+    "F": "minecraft:furnace[facing=south]",
+    "R": "minecraft:barrel[facing=up]"
+  },
+  "layers": [
+    [
+      ".......",
+      ".LPPPL.",
+      ".PPFRP.",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".L...L.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".L...L.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".L...L.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".LP.PL.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".LPPPL.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "BBBBBBB",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the checkered floor is white and black concrete, alternating one block; it continues under the kitchen",
+    "the frame is oak logs (posts and top beam) with oak plank infill; the stepped inner arch is 2 steps (layer 5 at cols 2 and 4, layer 6 full)",
+    "the counter is one block high and 1 deep; furnace at the centre, barrel to its right",
+    "the grey appliance is read as a furnace (its top vent is visible); the wooden block beside it as an upright barrel",
+    "the opening is 3 wide and 3 high above the counter; the exact arch step count is estimated"
+  ]
+}

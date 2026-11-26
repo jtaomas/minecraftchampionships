@@ -1,0 +1,70 @@
+{
+  "id": "frog_jj",
+  "name": "FROG!",
+  "debut": "MCC JJ",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-FrogJJ.png",
+  "floor": [
+    "ppgggpp",
+    "ppgggpp",
+    "pgggggp",
+    "ggggggg",
+    "wggwggw",
+    "wwgggww",
+    "wwwwwww"
+  ],
+  "palette": {
+    "p": "minecraft:podzol",
+    "g": "minecraft:grass_block",
+    "w": "minecraft:water",
+    "G": "minecraft:green_concrete",
+    "y": "minecraft:yellow_concrete",
+    "e": "minecraft:white_concrete",
+    "b": "minecraft:stone_button[face=wall,facing=south]"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "..y.y..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "..GGG..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "..GGG..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "..e.e..",
+      "..b.b..",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the statue is 1 block deep (front face only visible); its back is a plain green copy",
+    "pupils read as wall buttons (the small dark square matches a button face)",
+    "the pond layout behind and beside the statue is hidden by the frog; grass bank in the middle, podzol in the two back corners, water in front",
+    "the yellow webbed feet could be yellow concrete or yellow terracotta"
+  ]
+}

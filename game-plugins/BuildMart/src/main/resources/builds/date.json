@@ -1,0 +1,55 @@
+{
+  "id": "date",
+  "name": "Date",
+  "debut": "MCC 11",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Date.png",
+  "floor": [
+    "sssssss",
+    "syyyyys",
+    "syyyyys",
+    "syyyyys",
+    "syyyyys",
+    "syyyyys",
+    "sssssss"
+  ],
+  "palette": {
+    "s": "minecraft:stone_bricks",
+    "y": "minecraft:yellow_carpet",
+    "b": "minecraft:barrel[facing=up]",
+    "d": "minecraft:oak_door[half=lower,facing=east,hinge=left]",
+    "D": "minecraft:oak_door[half=upper,facing=east,hinge=left]",
+    "e": "minecraft:oak_door[half=lower,facing=west,hinge=right]",
+    "E": "minecraft:oak_door[half=upper,facing=west,hinge=right]",
+    "t": "minecraft:stone",
+    "p": "minecraft:potted_red_tulip"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".dbtbe.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".D.p.E.",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "chair backs read as oak doors (thin panel with a square opening at the top); could be fence gates",
+    "chairs modelled as a barrel seat with the back one cell outboard, all on one row",
+    "yellow carpet read as a 5x5 rug, one bare stone-brick row all round",
+    "table is a single stone block; the pot and red tulip is one block (potted_red_tulip) - if that is not stocked, use flower_pot with a red_tulip plant",
+    "exact chair/table spacing estimated from a slightly rotated camera"
+  ]
+}

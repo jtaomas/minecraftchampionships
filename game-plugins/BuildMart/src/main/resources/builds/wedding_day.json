@@ -1,0 +1,69 @@
+{
+  "id": "wedding_day",
+  "name": "Wedding Day",
+  "debut": "MCC 20",
+  "stars": 3,
+  "status": "done",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Wedding_Day.png",
+  "floor": [
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg"
+  ],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "q": "minecraft:smooth_quartz",
+    "s": "minecraft:spruce_trapdoor[facing=north,half=bottom,open=false]",
+    "b": "minecraft:spruce_trapdoor[facing=south,half=bottom,open=true]",
+    "a": "minecraft:allium"
+  },
+  "layers": [
+    [
+      ".......",
+      ".q...q.",
+      "bb...bb",
+      "ss...ss",
+      "bb...bb",
+      "ss...ss",
+      "..a.a.."
+    ],
+    [
+      ".......",
+      ".q...q.",
+      ".......",
+      "..a.a..",
+      ".......",
+      "...a...",
+      "......."
+    ],
+    [
+      ".......",
+      ".qqqqq.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "..qqq..",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the quartz arch is 1 block deep; the back is a plain copy of the front",
+    "arch steps read as: pillars at the two outer columns, two-block shoulders, then a three-wide crown",
+    "each pew is a row of flat spruce trapdoors with an upright trapdoor backrest one row behind it; two pew rows per side",
+    "alliums scattered on the grass aisle and in front of the pews",
+    "arch material is white cream quartz"
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "id": "duckie",
+  "name": "Duckie",
+  "debut": "MCC P21",
+  "stars": 2,
+  "status": "done",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Duckie.png",
+  "floor": [
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb"
+  ],
+  "palette": {
+    "b": "minecraft:blue_concrete",
+    "y": "minecraft:yellow_concrete",
+    "o": "minecraft:orange_terracotta",
+    "e": "minecraft:stone_button[face=wall,facing=south]"
+  },
+  "layers": [
+    [
+      ".......",
+      ".yyyyy.",
+      "..yyy..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".yyyyy.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "..yyy..",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".yyoyy.",
+      "..e.e..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".yyyyy.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".yyyyy.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "head and body are 1 block deep; only the front is visible, the back is a plain copy of the front",
+    "wings read as 1 block wide and 2 tall at the body's sides, flush with the body's front",
+    "the small square eyes are wall buttons (6x4 pixel button face matches the render); stone grey",
+    "the belly box at the front is 3 wide and 1 tall, one block in front of the body",
+    "yellow could be yellow concrete or yellow terracotta; the flat seamless face reads as concrete"
+  ]
+}

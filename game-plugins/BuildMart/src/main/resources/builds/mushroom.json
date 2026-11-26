@@ -1,0 +1,41 @@
+{
+  "id": "mushroom",
+  "name": "Mushroom",
+  "debut": "MCC 14",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Mushroom.png",
+  "floor": [
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg"
+  ],
+  "palette": {
+    "g": "minecraft:moss_block",
+    "d": "minecraft:coarse_dirt",
+    "c": "minecraft:brown_mushroom_block",
+    "s": "minecraft:mushroom_stem"
+  },
+  "layers": [
+    ["ddddddd", "ddddddd", "ddddd.d", "d..dddd", "d..dddd", ".dddddd", "ddddddd"],
+    [".......", ".......", ".......", ".......", ".......", "....s..", "......."],
+    [".......", ".......", ".......", ".......", "....s..", ".......", "......."],
+    [".......", ".......", ".......", ".......", "...s...", ".......", "......."],
+    [".......", ".......", ".......", "...s...", ".......", ".......", "......."],
+    [".......", ".......", ".......", "...s...", ".......", ".......", "......."],
+    ["ccccccc", "ccccccc", "ccccccc", "ccccccc", "ccccccc", "ccccccc", "ccccccc"],
+    [".......", ".ccccc.", ".ccccc.", ".ccccc.", ".ccccc.", ".ccccc.", "......."],
+    [".......", ".cc.cc.", ".cc.cc.", ".cc.cc.", ".cc.cc.", ".cc.cc.", "......."]
+  ],
+  "guessed": [
+    "ground read as one block of coarse dirt over a moss floor, with three moss holes showing through; hole layout estimated from the visible green patches",
+    "cap is brown mushroom blocks: a full 7x7 rim course, a 5x5 course above it, then two 2-wide lobes with a 1-wide trench between them (the render shows a lower strip between the two raised top parts)",
+    "stem is mushroom stem blocks stepping up and to the left from the front-right foot to the cap centre; the exact step path is estimated",
+    "the stem keeps going up inside the solid cap; hidden cells filled with cap blocks",
+    "materials chosen from the visible colours: brown mushroom block cap, mushroom stem, coarse dirt ground, moss holes"
+  ]
+}

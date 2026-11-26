@@ -1,0 +1,111 @@
+{
+  "id": "pride_bunting",
+  "name": "Pride Bunting",
+  "debut": "MCC P21",
+  "stars": 4,
+  "status": "approximate",
+  "gold": true,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Pride_Bunting.png",
+  "floor": [
+    "GSSSSSG",
+    "GSSSSSG",
+    "GSSSSSG",
+    "GSSSSSG",
+    "GSSSSSG",
+    "GSSSSSG",
+    "GSSSSSG"
+  ],
+  "palette": {
+    "S": "minecraft:stone_bricks",
+    "G": "minecraft:yellow_stained_glass",
+    "L": "minecraft:spruce_log[axis=y]",
+    "r": "minecraft:red_concrete",
+    "o": "minecraft:orange_concrete",
+    "y": "minecraft:yellow_concrete",
+    "n": "minecraft:lime_concrete",
+    "c": "minecraft:cyan_concrete",
+    "b": "minecraft:blue_concrete",
+    "p": "minecraft:purple_concrete"
+  },
+  "layers": [
+    [
+      ".L...L.",
+      ".......",
+      "...c...",
+      ".......",
+      "..r.r..",
+      "L.....L",
+      "......."
+    ],
+    [
+      ".L...L.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "L.....L",
+      "......."
+    ],
+    [
+      ".L...L.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "L.....L",
+      "......."
+    ],
+    [
+      ".L...L.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "L.....L",
+      "......."
+    ],
+    [
+      ".L...L.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".L...L.",
+      "..ync..",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".L...L.",
+      "ro...bp",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".L...L.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the bunting read as 7 concrete flags across the front row: red and orange high on the left, yellow/lime/cyan one layer lower in the middle, blue and purple high on the right; the middle three hang unconnected in the render and are recreated as shown",
+    "two tall spruce posts behind the bunting (8 tall) and two short front posts (4 tall); their exact rows/columns estimated",
+    "the three floor cubes read as red / cyan / red 1x1x1 concrete blocks on the stone brick path",
+    "stone bricks for the floor and yellow stained glass for the two edge strips; the strips could be yellow concrete",
+    "the flag colours are concrete shades taken from the render"
+  ]
+}

@@ -223,10 +223,11 @@ public final class ParkourTagGame implements McmGame, Listener {
 
         map = chooseMap();
         spacing = Math.max(SPACING, Math.max(map.sizeX(), map.sizeZ()) + 40);
-        List<ArenaBuilder.Placement> placements = placements(map);
+        List<ArenaBuilder.Placement> placements = PtOverlay.merge(map, placements(map));   // + Map Edit overlay (core /mcm mapedit)
+        int[] cb = PtOverlay.box(map);
         for (int i = 0; i < arenaCount; i++) {
             int ox = i * spacing;
-            builder.clear(world, ox, BASE_Y, 0, ox + map.sizeX() - 1, BASE_Y + map.sizeY(), map.sizeZ() - 1);
+            builder.clear(world, ox + cb[0], BASE_Y + cb[1], cb[2], ox + cb[3], BASE_Y + cb[4], cb[5]);
             builder.build(world, ox, BASE_Y, 0, placements);
         }
         phase = Phase.BUILDING;
@@ -285,9 +286,10 @@ public final class ParkourTagGame implements McmGame, Listener {
         }
         if (world != null && Bukkit.getWorld(world.getUID()) != null && plugin.isEnabled()) {
             if (map != null) {
+                int[] cb = PtOverlay.box(map);
                 for (int i = 0; i < arenaCount; i++) {
                     int ox = i * spacing;
-                    builder.clear(world, ox, BASE_Y, 0, ox + map.sizeX() - 1, BASE_Y + map.sizeY(), map.sizeZ() - 1);
+                    builder.clear(world, ox + cb[0], BASE_Y + cb[1], cb[2], ox + cb[3], BASE_Y + cb[4], cb[5]);
                 }
             }
         }
@@ -359,6 +361,12 @@ public final class ParkourTagGame implements McmGame, Listener {
             }
         }
     }
+
+    // Map Edit hooks (core /mcm mapedit), used by PtEdit
+    boolean isRunning() { return running; }
+    World editWorld() { return ensureWorld(); }
+    ArenaBuilder arenaBuilder() { return builder; }
+    List<ArenaBuilder.Placement> basePlacements(PtMap m) { return placements(m); }
 
     private Location waitSpot() { return new Location(world, WAIT_X + 0.5, WAIT_Y + 1, WAIT_Z + 0.5); }
 
@@ -973,7 +981,7 @@ public final class ParkourTagGame implements McmGame, Listener {
                 if (!m.hunted[i]) continue;
                 for (UUID u : new ArrayList<>(m.alive.get(i))) {
                     if (Bukkit.getPlayer(u) == null) continue;
-                    if (PTS_SURVIVE_TICK > 0) ctx.addPoints(u, PTS_SURVIVE_TICK, "Survived " + liveElapsed + "s");
+                    if (PTS_SURVIVE_TICK > 0) ctx.addPoints(u, PTS_SURVIVE_TICK, "You successfully survived for " + liveElapsed + " seconds.");
                 }
             }
         }
@@ -981,6 +989,7 @@ public final class ParkourTagGame implements McmGame, Listener {
 
     /** MCC chat line every 10 s for each hunted runner still alive. */
     private void announceSurvival() {
+        if (PTS_SURVIVE_TICK > 0) return;
         for (Match m : matches) {
             for (int i = 0; i < 2; i++) {
                 if (!m.hunted[i]) continue;
@@ -1012,8 +1021,8 @@ public final class ParkourTagGame implements McmGame, Listener {
                 List<UUID> survivors = new ArrayList<>();
                 for (UUID u : m.alive.get(i)) if (Bukkit.getPlayer(u) != null) survivors.add(u);
                 for (UUID u : survivors) {
-                    if (timeout && PTS_SURVIVE_TICK > 0) ctx.addPoints(u, PTS_SURVIVE_TICK, "Survived " + ROUND_SECONDS + "s");
-                    if (PTS_SURVIVE_FULL > 0) ctx.addPoints(u, PTS_SURVIVE_FULL, "Survived the round");
+                    if (timeout && PTS_SURVIVE_TICK > 0) ctx.addPoints(u, PTS_SURVIVE_TICK, "You successfully survived for " + ROUND_SECONDS + " seconds.");
+                    if (PTS_SURVIVE_FULL > 0) ctx.addPoints(u, PTS_SURVIVE_FULL, "You survived the round");
                     survivals.merge(u, 1, Integer::sum);
                     Player p = Bukkit.getPlayer(u);
                     if (p != null) { title(p, "§a§lSurvivor!", "§aWell played!"); p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.7f, 1.2f); }
@@ -1021,7 +1030,7 @@ public final class ParkourTagGame implements McmGame, Listener {
                 if (!survivors.isEmpty()) {
                     List<UUID> share = new ArrayList<>();
                     for (UUID u : m.runners.get(i)) if (Bukkit.getPlayer(u) != null) share.add(u);
-                    splitPoints(share, PTS_SIDE_SURVIVE, mccRunners, "Runners survived the round");
+                    splitPoints(share, PTS_SIDE_SURVIVE, mccRunners, "Your team outlasted the hunter! Well played!");
                 }
                 summary.add(m.side[i].label + "§7: " + survivors.size() + "/" + m.runners.get(i).size() + " survived");
             }
@@ -1119,13 +1128,12 @@ public final class ParkourTagGame implements McmGame, Listener {
         totalTags.merge(h, 1, Integer::sum);
         int bracket = liveElapsed / 10;
         int pts = PTS_TAG_BASE <= 0 ? 0 : Math.max(1, PTS_TAG_BASE - bracket);
-        if (pts > 0) ctx.addPoints(h, pts, "Tagged " + victim.getName());
+        if (pts > 0) ctx.addKillCoins(h, pts, v, victim.getName(), "You tagged " + victim.getName());
 
         Location at = victim.getLocation();
         world.spawnParticle(Particle.FIREWORK, at.clone().add(0, 1, 0), 30, 0.3, 0.5, 0.3, 0.08);
         world.playSound(at, Sound.ENTITY_PLAYER_ATTACK_CRIT, 1f, 0.8f);
-        hunter.playSound(hunter.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.6f);
-        actionBar(hunter, "§aTagged " + victim.getName() + " §6+" + pts);
+        if (pts <= 0) hunter.playSound(hunter.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.6f);
 
         clearPlayer(victim);
         victim.setGameMode(GameMode.SPECTATOR);
@@ -1140,7 +1148,7 @@ public final class ParkourTagGame implements McmGame, Listener {
 
         if (left == 0) {
             int bonus = Math.max(0, PTS_TAG_ALL_BASE - PTS_TAG_ALL_STEP * bracket);
-            if (bonus > 0) ctx.addPoints(h, bonus, "Tagged every runner");
+            if (bonus > 0) ctx.addPoints(h, bonus, "You've tagged all enemies! Good job!");
             m.clearedAt[hs] = liveElapsed;
             title(hunter, "§e§lHunted!", "§eWell played!");
             huntedShown.add(h);
@@ -1150,8 +1158,8 @@ public final class ParkourTagGame implements McmGame, Listener {
                 m.firstClearGiven = true;
                 List<UUID> share = new ArrayList<>();
                 for (UUID u : m.side[hs].members) if (Bukkit.getPlayer(u) != null) share.add(u);
-                splitPoints(share, PTS_FIRST_CLEAR, mccTeam, "Tagged all enemies before the enemy hunter");
-                messageMatch(m, m.side[hs].label + " §7cleared first! §6+" + PTS_FIRST_CLEAR + " §7team coins, shared by the side.");
+                splitPoints(share, PTS_FIRST_CLEAR, mccTeam, "Your team tagged all enemies first!");
+                messageMatch(m, m.side[hs].label + " §7cleared first!");
             }
             // The cleared runners' hunter role ends; that hunter keeps going if their targets remain.
             Player hp = hunter;

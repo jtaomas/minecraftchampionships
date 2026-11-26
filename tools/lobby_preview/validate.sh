@@ -2,8 +2,8 @@
 # usage: validate.sh [lobby-src-dir]  -> compiles the hub generator + HubValidate and walks every staircase.
 # Exit code 0 = no staircase failures, no connection mismatches, no floating carpets.
 set -e
-cd /c/Users/USER/Desktop/Mcc/tools/lobby_preview
-J='/c/Users/USER/Desktop/java/bin'
+cd /c/Users/LeonS/Desktop/Mcc/tools/lobby_preview
+J='/c/Users/LeonS/Desktop/java/bin'
 SRC=${1:-../../plugin-src/com/mcm/lobby}
 OUT=out_validate
 rm -rf $OUT; mkdir -p $OUT

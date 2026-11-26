@@ -1,0 +1,91 @@
+{
+  "id": "fireplace",
+  "name": "Fireplace",
+  "debut": "MCC 16",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Fireplace.png",
+  "floor": [
+    "ddddddd",
+    "ddddddd",
+    "ddddddd",
+    "ddddddd",
+    "ddddddd",
+    "ddddddd",
+    "ddddddd"
+  ],
+  "palette": {
+    "d": "minecraft:dark_oak_planks",
+    "S": "minecraft:stone_bricks",
+    "K": "minecraft:black_concrete",
+    "b": "minecraft:stone_brick_slab[type=bottom]",
+    "p": "minecraft:purple_carpet",
+    "A": "minecraft:oak_trapdoor[facing=east,half=top,open=true]",
+    "R": "minecraft:oak_trapdoor[facing=east,half=bottom,open=false]",
+    "r": "minecraft:oak_trapdoor[facing=west,half=bottom,open=false]"
+  },
+  "layers": [
+    [
+      "..SKS..",
+      "..S.S..",
+      "..bbb..",
+      "AApppAA",
+      "AApppAA",
+      ".......",
+      "......."
+    ],
+    [
+      "..SKS..",
+      "..S.S..",
+      ".......",
+      "RR...rr",
+      "RR...rr",
+      ".......",
+      "......."
+    ],
+    [
+      "..SSS..",
+      "..SSS..",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "...S...",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "...S...",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "...S...",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "firebox read as a 1-wide x 2-tall recess with a black concrete back wall; no flames are visible in the render so it was left empty",
+    "floor read as dark oak planks (plank seams); could be spruce",
+    "the two armchairs are wood lattice boxes in the render; recreated as a flat oak trapdoor seat plus oak trapdoor back/arms (exact lattice construction guessed)",
+    "chimney assumed central 1x1 and 3 tall; back of the fireplace hidden",
+    "hearth read as a stone brick slab step in front of the fireplace",
+    "purple rug estimated 3x2, touching the hearth"
+  ]
+}

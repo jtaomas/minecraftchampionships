@@ -6,10 +6,10 @@ set -e
 cd "$(dirname "$0")/.."
 OUT=target/offline
 rm -rf "$OUT/classes"; mkdir -p "$OUT/classes" previews
-"/c/Users/USER/Desktop/java/bin/javac" -d "$OUT/classes" src/main/java/com/mcm/games/findthebutton/map/*.java tools/PreviewMain.java
-"/c/Users/USER/Desktop/java/bin/java" -cp "$OUT/classes" PreviewMain "$OUT" "$@" | tee "$OUT/validation.txt"
+"/c/Users/LeonS/Desktop/java/bin/javac" -d "$OUT/classes" src/main/java/com/mcm/games/findthebutton/map/*.java tools/PreviewMain.java
+"/c/Users/LeonS/Desktop/java/bin/java" -cp "$OUT/classes" PreviewMain "$OUT" "$@" | tee "$OUT/validation.txt"
 [ -n "$NORENDER" ] && exit 0
-R=/c/Users/USER/Desktop/Mcc/tools/render_preview.py
+R=/c/Users/LeonS/Desktop/Mcc/tools/render_preview.py
 for f in "$OUT"/*_cut.mcmdump.gz; do
   id=$(basename "$f" _cut.mcmdump.gz)
   if [ $# -gt 0 ]; then case " $* " in *" $id "*) ;; *) continue;; esac; fi

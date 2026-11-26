@@ -31,7 +31,6 @@ game-plugins/research/*.log
 game-plugins/ParkourWarrior/tools/out_old/
 
 # Imported third-party arenas, worlds, and preview renders stay server-local
-plugins/McmBattleBox/imported-arenas/
 plugins/McmRocketSpleef/imported-arenas/
 plugins/McmSurvivalGames/worlds/
 mcc_hg_*/
@@ -39,3 +38,9 @@ game-plugins/*/previews/imported/
 
 # Private reference archive (2.94 GB, not for redistribution)
 game-plugins/research/mcc_archive/
+# Large local-only media (GitHub rejects files over 100 MB)
+game-plugins/research/buildmart/*/videos/
+game-plugins/research/existing_maps.zip
+lobby_build_v4_checkpoint*.zip
+game-plugins/research/buildmart/videos/
+game-plugins/research/lobby_reference/existing_mcc_hub_full.zip

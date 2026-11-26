@@ -1,0 +1,105 @@
+island_id,island_name,tier,category,angle_deg,radius,y,slot,local_x,local_z,material,form,stock,regen_ticks,recipe,duplicate_of,confidence,source
+ores,Ores,upper,Ores,0,128,104,00,-4,-3,REDSTONE_BLOCK,block,16,60,,,H,wiki:BuildMartMap.png
+ores,Ores,upper,Ores,0,128,104,01,-1,-3,DIAMOND_BLOCK,block,16,60,,,H,wiki:BuildMartMap.png
+ores,Ores,upper,Ores,0,128,104,02,2,-3,EMERALD_BLOCK,block,16,60,,,H,wiki:BuildMartMap.png
+ores,Ores,upper,Ores,0,128,104,03,5,-3,GOLD_BLOCK,block,16,60,,,H,wiki:BuildMartMap.png
+ores,Ores,upper,Ores,0,128,104,04,-4,0,IRON_BLOCK,block,16,60,,,H,wiki:BuildMartMap.png
+ores,Ores,upper,Ores,0,128,104,05,-1,0,COAL_BLOCK,block,16,60,,,H,wiki:BuildMartMap.png
+ores,Ores,upper,Ores,0,128,104,06,2,0,QUARTZ_BLOCK,block,16,60,,nether,H,wiki:BuildMartMap.png; also on Nether (MCC P21)
+nether,Nether,upper,Nether,45,128,104,00,-4,-3,QUARTZ_BLOCK,block,16,60,,ores,H,wiki:BuildMartMap.png; also on Ores (MCC P21)
+nether,Nether,upper,Nether,45,128,104,01,-1,-3,WARPED_WART_BLOCK,block,16,60,,,H,wiki:BuildMartMap.png
+nether,Nether,upper,Nether,45,128,104,02,2,-3,NETHER_WART_BLOCK,block,16,60,,,H,wiki:BuildMartMap.png
+nether,Nether,upper,Nether,45,128,104,03,5,-3,NETHER_BRICKS,block,16,60,,bricks,H,wiki:BuildMartMap.png; also on Bricks (MCC P21)
+nether,Nether,upper,Nether,45,128,104,04,-4,0,BLACKSTONE,block,16,60,,,H,wiki:BuildMartMap.png
+bricks,Bricks,upper,Bricks,90,128,104,00,-4,-3,BRICKS,block,16,60,,,H,wiki:BuildMartMap.png
+bricks,Bricks,upper,Bricks,90,128,104,01,-1,-3,PRISMARINE_BRICKS,block,16,60,,,M,wiki:BuildMartMap.png; texture read as prismarine bricks; plain prismarine possible
+bricks,Bricks,upper,Bricks,90,128,104,02,2,-3,MOSSY_STONE_BRICKS,block,16,60,,,H,wiki:BuildMartMap.png
+bricks,Bricks,upper,Bricks,90,128,104,03,5,-3,STONE_BRICKS,block,16,60,,,H,wiki:BuildMartMap.png
+bricks,Bricks,upper,Bricks,90,128,104,04,-4,0,NETHER_BRICKS,block,16,60,,nether,H,wiki:BuildMartMap.png; also on Nether (MCC P21)
+logs,Lumber,upper,Lumber,135,128,104,00,-4,-3,BIRCH_LOG,log,16,60,,,H,wiki:BuildMartMap.png
+logs,Lumber,upper,Lumber,135,128,104,01,-1,-3,BIRCH_PLANKS,planks,16,60,,,H,wiki:BuildMartMap.png
+logs,Lumber,upper,Lumber,135,128,104,02,2,-3,SPRUCE_LOG,log,16,60,,,H,wiki:BuildMartMap.png
+logs,Lumber,upper,Lumber,135,128,104,03,5,-3,SPRUCE_PLANKS,planks,16,60,,,H,wiki:BuildMartMap.png
+logs,Lumber,upper,Lumber,135,128,104,04,-4,0,JUNGLE_LOG,log,16,60,,,M,wiki:BuildMartMap.png; 3rd wood type; exact species inferred from texture
+logs,Lumber,upper,Lumber,135,128,104,05,-1,0,JUNGLE_PLANKS,planks,16,60,,,M,wiki:BuildMartMap.png; 3rd wood type; exact species inferred
+logs,Lumber,upper,Lumber,135,128,104,06,2,0,OAK_LOG,log,16,60,,,H,wiki:BuildMartMap.png
+logs,Lumber,upper,Lumber,135,128,104,07,5,0,OAK_PLANKS,planks,16,60,,,H,wiki:BuildMartMap.png
+logs,Lumber,upper,Lumber,135,128,104,08,-4,3,DARK_OAK_LOG,log,16,60,,,H,wiki:BuildMartMap.png
+logs,Lumber,upper,Lumber,135,128,104,09,-1,3,DARK_OAK_PLANKS,planks,16,60,,,H,wiki:BuildMartMap.png
+sand,Sand,upper,Sand,180,128,104,00,-4,-3,SAND,block,16,60,,,H,wiki:BuildMartMap.png; replaced by Snow in MCC 19 only
+sand,Sand,upper,Sand,180,128,104,01,-1,-3,SANDSTONE,block,16,60,,,H,wiki:BuildMartMap.png
+sand,Sand,upper,Sand,180,128,104,02,2,-3,RED_SAND,block,16,60,,,H,wiki:BuildMartMap.png
+sand,Sand,upper,Sand,180,128,104,03,5,-3,RED_SANDSTONE,block,16,60,,,H,wiki:BuildMartMap.png
+stone,Stone,upper,Stone,225,128,104,00,-4,-3,STONE,block,16,60,,,H,wiki:BuildMartMap.png; drops cobblestone unless silk-touch/custom drop
+stone,Stone,upper,Stone,225,128,104,01,-1,-3,DIORITE,block,16,60,,,H,wiki:BuildMartMap.png
+stone,Stone,upper,Stone,225,128,104,02,2,-3,ANDESITE,block,16,60,,,H,wiki:BuildMartMap.png
+stone,Stone,upper,Stone,225,128,104,03,5,-3,GRANITE,block,16,60,,,H,wiki:BuildMartMap.png
+copper,Copper,upper,Copper,270,128,104,00,-4,-3,COPPER_BLOCK,block,16,60,,,H,wiki:BuildMartMap.png; replaced Coral in MCC 20
+copper,Copper,upper,Copper,270,128,104,01,-1,-3,CUT_COPPER,block,16,60,,,H,wiki:BuildMartMap.png
+copper,Copper,upper,Copper,270,128,104,02,2,-3,OXIDIZED_COPPER,block,16,60,,,H,wiki:BuildMartMap.png
+copper,Copper,upper,Copper,270,128,104,03,5,-3,OXIDIZED_CUT_COPPER,block,16,60,,,H,wiki:BuildMartMap.png
+garden,Garden,upper,Garden,315,128,104,00,-4,-3,LILY_OF_THE_VALLEY,flower,16,60,,,H,wiki:BuildMartMap.png
+garden,Garden,upper,Garden,315,128,104,01,-1,-3,ALLIUM,flower,16,60,,,H,wiki:BuildMartMap.png
+garden,Garden,upper,Garden,315,128,104,02,2,-3,CORNFLOWER,flower,16,60,,,H,wiki:BuildMartMap.png
+garden,Garden,upper,Garden,315,128,104,03,5,-3,OXEYE_DAISY,flower,16,60,,,H,wiki:BuildMartMap.png
+garden,Garden,upper,Garden,315,128,104,04,-4,0,DANDELION,flower,16,60,,,H,wiki:BuildMartMap.png
+garden,Garden,upper,Garden,315,128,104,05,-1,0,BLUE_ORCHID,flower,16,60,,,H,wiki:BuildMartMap.png
+garden,Garden,upper,Garden,315,128,104,06,2,0,AZURE_BLUET,flower,16,60,,,H,wiki:BuildMartMap.png
+garden,Garden,upper,Garden,315,128,104,07,5,0,POPPY,flower,16,60,,,H,wiki:BuildMartMap.png
+garden,Garden,upper,Garden,315,128,104,08,-4,3,PINK_TULIP,flower,16,60,,,H,wiki:BuildMartMap.png
+garden,Garden,upper,Garden,315,128,104,09,-1,3,ORANGE_TULIP,flower,16,60,,,H,wiki:BuildMartMap.png
+garden,Garden,upper,Garden,315,128,104,10,2,3,OAK_SAPLING,plant,16,60,,,M,wiki:BuildMartMap.png; shown as small tree on poster
+garden,Garden,upper,Garden,315,128,104,11,5,3,MOSS_BLOCK,block,16,60,,,H,wiki:BuildMartMap.png; MCC 20 added azalea bushes + moss
+colour_white,Colour: White,lower,Colour,0.0,56,64,0,-3,0,WHITE_CONCRETE,concrete,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_white,Colour: White,lower,Colour,0.0,56,64,1,0,0,WHITE_CONCRETE_POWDER,concrete_powder,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_white,Colour: White,lower,Colour,0.0,56,64,2,3,0,WHITE_STAINED_GLASS,stained_glass,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_light_gray,Colour: Light_Gray,lower,Colour,22.5,56,64,0,-3,0,LIGHT_GRAY_CONCRETE,concrete,32,60,,,M,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_light_gray,Colour: Light_Gray,lower,Colour,22.5,56,64,1,0,0,LIGHT_GRAY_CONCRETE_POWDER,concrete_powder,32,60,,,M,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_light_gray,Colour: Light_Gray,lower,Colour,22.5,56,64,2,3,0,LIGHT_GRAY_STAINED_GLASS,stained_glass,32,60,,,M,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_gray,Colour: Gray,lower,Colour,45.0,56,64,0,-3,0,GRAY_CONCRETE,concrete,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_gray,Colour: Gray,lower,Colour,45.0,56,64,1,0,0,GRAY_CONCRETE_POWDER,concrete_powder,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_gray,Colour: Gray,lower,Colour,45.0,56,64,2,3,0,GRAY_STAINED_GLASS,stained_glass,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_black,Colour: Black,lower,Colour,67.5,56,64,0,-3,0,BLACK_CONCRETE,concrete,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_black,Colour: Black,lower,Colour,67.5,56,64,1,0,0,BLACK_CONCRETE_POWDER,concrete_powder,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_black,Colour: Black,lower,Colour,67.5,56,64,2,3,0,BLACK_STAINED_GLASS,stained_glass,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_brown,Colour: Brown,lower,Colour,90.0,56,64,0,-3,0,BROWN_CONCRETE,concrete,32,60,,,M,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_brown,Colour: Brown,lower,Colour,90.0,56,64,1,0,0,BROWN_CONCRETE_POWDER,concrete_powder,32,60,,,M,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_brown,Colour: Brown,lower,Colour,90.0,56,64,2,3,0,BROWN_STAINED_GLASS,stained_glass,32,60,,,M,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_red,Colour: Red,lower,Colour,112.5,56,64,0,-3,0,RED_CONCRETE,concrete,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_red,Colour: Red,lower,Colour,112.5,56,64,1,0,0,RED_CONCRETE_POWDER,concrete_powder,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_red,Colour: Red,lower,Colour,112.5,56,64,2,3,0,RED_STAINED_GLASS,stained_glass,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_orange,Colour: Orange,lower,Colour,135.0,56,64,0,-3,0,ORANGE_CONCRETE,concrete,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_orange,Colour: Orange,lower,Colour,135.0,56,64,1,0,0,ORANGE_CONCRETE_POWDER,concrete_powder,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_orange,Colour: Orange,lower,Colour,135.0,56,64,2,3,0,ORANGE_STAINED_GLASS,stained_glass,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_yellow,Colour: Yellow,lower,Colour,157.5,56,64,0,-3,0,YELLOW_CONCRETE,concrete,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_yellow,Colour: Yellow,lower,Colour,157.5,56,64,1,0,0,YELLOW_CONCRETE_POWDER,concrete_powder,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_yellow,Colour: Yellow,lower,Colour,157.5,56,64,2,3,0,YELLOW_STAINED_GLASS,stained_glass,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_lime,Colour: Lime,lower,Colour,180.0,56,64,0,-3,0,LIME_CONCRETE,concrete,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_lime,Colour: Lime,lower,Colour,180.0,56,64,1,0,0,LIME_CONCRETE_POWDER,concrete_powder,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_lime,Colour: Lime,lower,Colour,180.0,56,64,2,3,0,LIME_STAINED_GLASS,stained_glass,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_green,Colour: Green,lower,Colour,202.5,56,64,0,-3,0,GREEN_CONCRETE,concrete,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_green,Colour: Green,lower,Colour,202.5,56,64,1,0,0,GREEN_CONCRETE_POWDER,concrete_powder,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_green,Colour: Green,lower,Colour,202.5,56,64,2,3,0,GREEN_STAINED_GLASS,stained_glass,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_cyan,Colour: Cyan,lower,Colour,225.0,56,64,0,-3,0,CYAN_CONCRETE,concrete,32,60,,,M,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_cyan,Colour: Cyan,lower,Colour,225.0,56,64,1,0,0,CYAN_CONCRETE_POWDER,concrete_powder,32,60,,,M,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_cyan,Colour: Cyan,lower,Colour,225.0,56,64,2,3,0,CYAN_STAINED_GLASS,stained_glass,32,60,,,M,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_light_blue,Colour: Light_Blue,lower,Colour,247.5,56,64,0,-3,0,LIGHT_BLUE_CONCRETE,concrete,32,60,,,M,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_light_blue,Colour: Light_Blue,lower,Colour,247.5,56,64,1,0,0,LIGHT_BLUE_CONCRETE_POWDER,concrete_powder,32,60,,,M,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_light_blue,Colour: Light_Blue,lower,Colour,247.5,56,64,2,3,0,LIGHT_BLUE_STAINED_GLASS,stained_glass,32,60,,,M,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_blue,Colour: Blue,lower,Colour,270.0,56,64,0,-3,0,BLUE_CONCRETE,concrete,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_blue,Colour: Blue,lower,Colour,270.0,56,64,1,0,0,BLUE_CONCRETE_POWDER,concrete_powder,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_blue,Colour: Blue,lower,Colour,270.0,56,64,2,3,0,BLUE_STAINED_GLASS,stained_glass,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_purple,Colour: Purple,lower,Colour,292.5,56,64,0,-3,0,PURPLE_CONCRETE,concrete,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_purple,Colour: Purple,lower,Colour,292.5,56,64,1,0,0,PURPLE_CONCRETE_POWDER,concrete_powder,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_purple,Colour: Purple,lower,Colour,292.5,56,64,2,3,0,PURPLE_STAINED_GLASS,stained_glass,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_magenta,Colour: Magenta,lower,Colour,315.0,56,64,0,-3,0,MAGENTA_CONCRETE,concrete,32,60,,,M,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_magenta,Colour: Magenta,lower,Colour,315.0,56,64,1,0,0,MAGENTA_CONCRETE_POWDER,concrete_powder,32,60,,,M,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_magenta,Colour: Magenta,lower,Colour,315.0,56,64,2,3,0,MAGENTA_STAINED_GLASS,stained_glass,32,60,,,M,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_pink,Colour: Pink,lower,Colour,337.5,56,64,0,-3,0,PINK_CONCRETE,concrete,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_pink,Colour: Pink,lower,Colour,337.5,56,64,1,0,0,PINK_CONCRETE_POWDER,concrete_powder,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+colour_pink,Colour: Pink,lower,Colour,337.5,56,64,2,3,0,PINK_STAINED_GLASS,stained_glass,32,60,,,H,"wiki:BuildMartMap.png (glass+concrete); VOD 2:21:40/2:22:18 (powder, glass)"
+build_area,Build area (craft/smelt),build,Crafting,,,64,00,,,GLASS,crafted,,,smelt 1 SAND -> 1 GLASS,,M,"wiki:Big_Sales_at_Build_Mart (5 chests, crafting tables, stonecutters, 2 smelting areas)"
+build_area,Build area (craft/smelt),build,Crafting,,,64,01,,,STONE,crafted,,,smelt 1 COBBLESTONE -> 1 STONE,,M,"wiki:Big_Sales_at_Build_Mart (5 chests, crafting tables, stonecutters, 2 smelting areas)"
+build_area,Build area (craft/smelt),build,Crafting,,,64,02,,,STONE_BRICKS,crafted,,,craft/stonecut 4 STONE -> 4 STONE_BRICKS,,M,"wiki:Big_Sales_at_Build_Mart (5 chests, crafting tables, stonecutters, 2 smelting areas)"
+build_area,Build area (craft/smelt),build,Crafting,,,64,03,,,BRICKS,crafted,,,smelt 1 CLAY_BALL/CLAY -> 1 BRICK; craft 4 BRICKS -> 1 BRICKS,,M,"wiki:Big_Sales_at_Build_Mart (5 chests, crafting tables, stonecutters, 2 smelting areas)"
+build_area,Build area (craft/smelt),build,Crafting,,,64,04,,,OAK_PLANKS,crafted,,,craft 1 LOG -> 4 PLANKS (lumber already stocks planks),,M,"wiki:Big_Sales_at_Build_Mart (5 chests, crafting tables, stonecutters, 2 smelting areas)"

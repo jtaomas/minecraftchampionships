@@ -1,0 +1,70 @@
+{
+  "id": "boot_camp",
+  "name": "Boot Camp",
+  "debut": "MCC 20",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Boot_Camp.png",
+  "floor": [
+    "ccccccc",
+    "ccccccc",
+    "ccccccb",
+    "ccccccb",
+    "ggccccg",
+    "ggccccg",
+    "bgcccgg"
+  ],
+  "palette": {
+    "c": "minecraft:coarse_dirt",
+    "g": "minecraft:grass_block",
+    "b": "minecraft:brown_concrete",
+    "P": "minecraft:spruce_planks",
+    "A": "minecraft:andesite_wall",
+    "C": "minecraft:chain"
+  },
+  "layers": [
+    [
+      ".PPPPP.",
+      ".PPPPP.",
+      ".......",
+      ".......",
+      ".......",
+      ".A.C.A.",
+      "......."
+    ],
+    [
+      ".PPPPP.",
+      ".PPPPP.",
+      ".......",
+      ".......",
+      ".......",
+      ".A.C.A.",
+      "......."
+    ],
+    [
+      ".PPPPP.",
+      ".PPPPP.",
+      ".......",
+      ".......",
+      ".......",
+      ".A.C.A.",
+      "......."
+    ],
+    [
+      ".PPPPP.",
+      ".PPPPP.",
+      ".PPPPP.",
+      ".PPPPP.",
+      ".PPPPP.",
+      ".PPPPP.",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "back wall assumed 2 blocks deep (rows 0-1); its rear face is hidden",
+    "roof assumed 6 blocks deep and flat (its top is not visible from this low camera)",
+    "the hanging rope to climb was modelled as a chain: it is thin, dark and rung-like in the render, and only a chain hangs from the roof above",
+    "the two posts read as half-block posts (andesite walls) rather than full blocks",
+    "floor pattern behind the canopy and in the shaded back corners inferred from the visible grass strips; the mid-grey quartz-and-nether-brick rim of the plot is not part of the build"
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "id": "easter_success",
+  "name": "Easter Success!",
+  "debut": "MCC 4",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Easter_Success!.png",
+  "floor": [
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg"
+  ],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "A": "minecraft:spruce_trapdoor[facing=north,half=bottom,open=true]",
+    "B": "minecraft:spruce_trapdoor[facing=south,half=bottom,open=true]",
+    "C": "minecraft:spruce_trapdoor[facing=east,half=bottom,open=true]",
+    "D": "minecraft:spruce_trapdoor[facing=west,half=bottom,open=true]",
+    "b": "minecraft:light_blue_concrete",
+    "l": "minecraft:lime_concrete",
+    "r": "minecraft:red_concrete",
+    "y": "minecraft:gold_block",
+    "p": "minecraft:pink_concrete",
+    "n": "minecraft:nether_wart_block",
+    "o": "minecraft:orange_concrete",
+    "i": "minecraft:allium",
+    "t": "minecraft:red_tulip",
+    "c": "minecraft:cornflower",
+    "d": "minecraft:dandelion",
+    "s": "minecraft:short_grass"
+  },
+  "layers": [
+    [
+      ".p.....",
+      ".BBBBB.",
+      "nCbbyDp",
+      ".CblrD.",
+      "iCblrD.",
+      "tAAAAAc",
+      "ds.o.sd"
+    ],
+    [
+      ".p.....",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "...o..."
+    ]
+  ],
+  "guessed": [
+    "the basket walls are spruce trapdoors standing open (thin woven panels); the render's barrel-like weave could also be barrels",
+    "the basket is read as a 5 x 5 ring with a 3 x 3 of eggs inside (light blue, lime and red concrete, one gold block at the back)",
+    "the tall pink block behind the basket is 2 high and the right-hand pink egg 1 high; pink is concrete (flat colour)",
+    "the red block at the left is read as a nether wart block (mottled dark red); red concrete would be flat",
+    "the purple flower at the basket rim is read as an allium",
+    "flowers and grass positions around the front corners are estimated"
+  ]
+}

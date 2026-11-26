@@ -1,0 +1,68 @@
+{
+  "id": "mcc_crown",
+  "name": "MCC Crown",
+  "debut": "MCC 11",
+  "stars": 2,
+  "status": "done",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-MCC_Crown.png",
+  "floor": [
+    "rrrrrrr",
+    "rrrrrrr",
+    "rrrrrrr",
+    "rrrrrrr",
+    "rrrrrrr",
+    "rrrrrrr",
+    "rrrrrrr"
+  ],
+  "palette": {
+    "r": "minecraft:red_concrete",
+    "g": "minecraft:gold_block",
+    "n": "minecraft:stone_button[face=wall,facing=north,powered=false]",
+    "s": "minecraft:stone_button[face=wall,facing=south,powered=false]",
+    "w": "minecraft:stone_button[face=wall,facing=west,powered=false]",
+    "e": "minecraft:stone_button[face=wall,facing=east,powered=false]"
+  },
+  "layers": [
+    [
+      ".......",
+      ".ggggg.",
+      ".g...g.",
+      ".g...g.",
+      ".g...g.",
+      ".ggggg.",
+      "......."
+    ],
+    [
+      ".......",
+      ".g.g.g.",
+      ".......",
+      ".g...g.",
+      ".......",
+      ".g.g.g.",
+      "......."
+    ],
+    [
+      ".......",
+      ".g.g.g.",
+      ".......",
+      ".g...g.",
+      ".......",
+      ".g.g.g.",
+      "......."
+    ],
+    [
+      ".......",
+      ".n.n.n.",
+      ".......",
+      "wg...ge",
+      ".......",
+      ".s.s.s.",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "band is a 5x5 ring one block tall; eight spikes (corners plus middle of each side) rise two blocks from it",
+    "each spike carries a stone-button jewel on its outward face, set on the upper spike block",
+    "back-of-crown spikes hidden behind the front row; filled by symmetry"
+  ]
+}

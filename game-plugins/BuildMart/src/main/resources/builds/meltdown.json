@@ -1,0 +1,79 @@
+{
+  "id": "meltdown",
+  "name": "Meltdown",
+  "debut": "MCC 24",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Meltdown.png",
+  "floor": [
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "swwwwss",
+    "swwwwss",
+    "sssssss",
+    "sssssss"
+  ],
+  "palette": {
+    "s": "minecraft:stone_bricks",
+    "w": "minecraft:water",
+    "q": "minecraft:quartz_block",
+    "c": "minecraft:oxidized_cut_copper",
+    "m": "minecraft:mud_bricks",
+    "g": "minecraft:light_blue_stained_glass_pane"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      ".cqqqc.",
+      "..g.gmm",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".cqqqc.",
+      "..g.gmm",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".cqqqc.",
+      "..g.gmm",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".cqqqc.",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".c...c.",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the tall green pillars are read as oxidized cut copper (its square cut pattern shows as 2 x 2 panels)",
+    "the pale middle wall is read as quartz block; the brown brick wall on the right as mud bricks",
+    "the glass is read as light blue stained glass panes standing in the water in front of the middle wall",
+    "the brick wall is placed one row nearer than the quartz wall, which is how it lines up with the right pillar in the render",
+    "how deep the walls are and what is behind them is hidden; the water pool edge under the plinth rim is partial"
+  ]
+}

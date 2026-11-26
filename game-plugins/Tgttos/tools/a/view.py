@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 view.py - extra preview modes for MCMDUMP files (builder-A TGTTOS maps), reusing the colour table of
-C:/Users/USER/Desktop/Mcc/tools/render_preview.py:
+C:/Users/LeonS/Desktop/Mcc/tools/render_preview.py:
   persp : first-person perspective view from a camera (eye position + look-at point, local coords via cam.json)
   side  : orthographic side elevation looking along +x (the course runs left->right along z)
 Usage:
@@ -15,7 +15,7 @@ import sys
 import numpy as np
 from PIL import Image
 
-sys.path.insert(0, "C:/Users/USER/Desktop/Mcc/tools")
+sys.path.insert(0, "C:/Users/LeonS/Desktop/Mcc/tools")
 import render_preview as rp  # noqa: E402
 
 SKY_TOP = np.array([0.52, 0.70, 0.95], np.float32)

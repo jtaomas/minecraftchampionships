@@ -12,7 +12,9 @@ import java.io.File;
 
 /** McmAceRace: Ace Race on imported course worlds, on top of MinecraftMondayCore. */
 public final class AceRacePlugin extends JavaPlugin {
-    private static final String[] DEFAULT_WORLDS = {"clouds2", "spacerace", "yetisetgo"};   // City Marathon removed (owner, 2026-11-25: "too rubbish")
+    // City Marathon removed (owner, 2026-11-25: "too rubbish"); Space Race and Yeti Set Go parked (owner, 2026-11-25:
+    // "we'll just have Clouds 2 for now"). Their world files stay in resources/worlds/ for later.
+    private static final String[] DEFAULT_WORLDS = {"clouds2"};
 
     private RaceRegistry registry;
     private RaceWorld world;

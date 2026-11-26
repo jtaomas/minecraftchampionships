@@ -124,6 +124,9 @@ final class McmHud {
         return w;
     }
 
+    /** Width in GUI pixels of text in the mcc:hud font (also what mcc:callout_t1/t2 draw, they are the same face at half size x2). */
+    static int hudWidth(String s) { return textWidth(s, HUD); }
+
     private static int textWidth(String s, Key font) {
         if (ICON.equals(font)) {
             int w = 0;

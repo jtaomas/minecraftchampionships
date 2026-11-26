@@ -1,0 +1,80 @@
+{
+  "id": "blocksketball",
+  "name": "Blocksketball",
+  "debut": "MCC 3",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Basketball.png",
+  "floor": [
+    "sssssss",
+    "sllllls",
+    "slsssls",
+    "slsssls",
+    "sllllls",
+    "sssssss",
+    "sssssss"
+  ],
+  "palette": {
+    "s": "minecraft:stone",
+    "l": "minecraft:smooth_stone",
+    "b": "minecraft:stone_slab[type=bottom]",
+    "p": "minecraft:black_concrete",
+    "d": "minecraft:polished_diorite",
+    "o": "minecraft:orange_stained_glass_pane",
+    "c": "minecraft:orange_concrete"
+  },
+  "layers": [
+    [
+      ".bbbbb.",
+      "...p...",
+      ".......",
+      ".......",
+      ".cc....",
+      ".cc....",
+      "......."
+    ],
+    [
+      ".......",
+      "...p...",
+      ".......",
+      ".......",
+      ".cc....",
+      ".cc....",
+      "......."
+    ],
+    [
+      ".......",
+      "...p...",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "..ddd..",
+      "..ooo..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "..ddd..",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "backboard read as 3 wide x 2 tall polished diorite (the reskin notes list polished andesite in place of polished diorite), orange stained glass panes in front of its lower row",
+    "pole read as 1x3 black concrete (reskin notes list stone/white concrete in place of black concrete)",
+    "the grey band behind the court is a row of 5 stone slabs on the back row; hidden ends assumed",
+    "court floor pattern (stone with smooth stone lane lines) estimated from the perspective",
+    "the basketball is a 2x2x2 orange concrete cube; exact size and position estimated"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "wheres_the_build",
+  "name": "Where's the Build?",
+  "debut": "MCC 17",
+  "stars": 1,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Where's_The_Build.png",
+  "floor": [
+    "wwwowww",
+    "wwwwwww",
+    "wwwwwww",
+    "owwwwwo",
+    "wwwwwww",
+    "wwwwwww",
+    "wwwowww"
+  ],
+  "palette": {
+    "w": "minecraft:white_concrete",
+    "o": "minecraft:oak_planks"
+  },
+  "layers": [],
+  "guessed": [
+    "the plot is deliberately empty: the build is a flat white concrete floor with four single oak plank markers set flush at the middle of each edge, and nothing above the ground",
+    "the front marker is hidden behind the plot's dark nether brick strip in the render; a matching fourth marker was added for symmetry",
+    "markers placed in the outermost floor cells, since the renders cannot separate them from the quartz rim"
+  ]
+}

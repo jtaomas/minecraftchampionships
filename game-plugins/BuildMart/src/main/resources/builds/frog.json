@@ -1,0 +1,58 @@
+{
+  "id": "frog",
+  "name": "Frog?",
+  "debut": "MCC 8",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Frog-.png",
+  "floor": [
+    "wwgggww",
+    "wgggggw",
+    "wgggggw",
+    "wgggggw",
+    "wgggggw",
+    "wgggggw",
+    "wwgggww"
+  ],
+  "palette": {
+    "w": "minecraft:water",
+    "g": "minecraft:grass_block",
+    "s": "minecraft:stone",
+    "d": "minecraft:diamond_block"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      ".......",
+      "..s.s..",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..sss..",
+      "..sss..",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..sss..",
+      ".dsssd.",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the body reads as 3 wide x 2 deep x 2 tall stone, standing on two 1-block stone front legs with a one-block gap between them",
+    "the eyes are 1-block diamond blocks at the head top corners, attached to the sides of the top body row",
+    "the back of the frog is hidden: mirrored from the front",
+    "the grass island shape in the water pool is inferred from the visible patches; the water ring along the rim is partly hidden"
+  ]
+}

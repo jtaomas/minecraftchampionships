@@ -536,8 +536,9 @@ public final class McmFx {
 
     /**
      * Standard elimination feedback: chat broadcast ("☠ Victim was eliminated by Killer", names in team colours),
-     * a red "ELIMINATED" title + break sound for the victim, a "⚔ Eliminated Victim" action bar + ding for the
-     * killer, and a team-coloured particle burst at the victim. Does NOT change game modes or award points.
+     * a red "ELIMINATED" title + break sound for the victim and a team-coloured particle burst at the victim.
+     * Nothing is shown to the killer any more: the core's ELIMINATION banner and award ding come with
+     * {@code ctx.addKillCoins}. Does NOT change game modes or award points.
      *
      * @param victim       the eliminated player (null = no-op)
      * @param killerOrNull the killer, or null for void/hazard deaths
@@ -558,11 +559,7 @@ public final class McmFx {
             sound(victim, Sound.ENTITY_ITEM_BREAK, 1f, 0.6f);
             sound(victim, Sound.ENTITY_PLAYER_HURT, 0.8f, 0.8f);
         }
-        if (killerOrNull != null && !killerOrNull.equals(victim)) {
-            actionBar(killerOrNull, ChatColor.GOLD + "⚔ Eliminated " + v);
-            if (!packSound(killerOrNull, "mcc.ui.score", 0.9f, 1f)) sound(killerOrNull, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.6f);
-            sound(killerOrNull, Sound.ENTITY_ARROW_HIT_PLAYER, 0.7f, 1.2f);
-        }
+        // killer side: the core's ELIMINATION banner + award ding (addKillCoins) replace the old action bar and sounds
         burst(victim.getLocation().add(0, 1, 0), colorOf(sideColor(ctx, sideKeyOf(ctx, victim))), 40);
     }
 

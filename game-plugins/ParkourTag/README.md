@@ -18,6 +18,11 @@ Start it with `/mcm play parkourtag`.
 - Runners get **Runner Vision**, an Eye of Ender. Right-click it to see the enemy hunter for 3 s: a red outline and a pointer beam that only you can see, plus the hunter's distance in the action bar. It has a 10 s cooldown.
 - There is no fall damage or hunger, and players cannot break or place blocks. Falling into the void puts you back on your pad.
 
+## Maps
+The game picks one finished map at random per game; `/parkourtag map <id>` (or `/mcm map parkourtag <id>`) forces the next one. Ids: `dustbowl`, `urbanjungle`, `factory`, `stadium`.
+
+**Stadium** is daniellaur's Parkour Tag arena (from "daniellaur's minigames", private use only, not an MCC map). Its blocks are a bundled resource (`src/main/resources/maps/stadium.mcmdump.gz`, regenerate with `tools/stadium_extract.py` + `tools/stadium_build.py`; the extractor reads the 1.17 world with the standard library only, run it with `python -I`). All command blocks and redstone are stripped (the game here does the round), the underground lobby is gone and the two start rooms are our cages (runner north, hunter south). The original barrier roof and walls keep everyone inside.
+
 ## Scoring
 | Event | Points |
 |---|---|

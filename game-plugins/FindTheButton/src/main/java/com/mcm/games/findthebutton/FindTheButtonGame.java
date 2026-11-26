@@ -255,7 +255,7 @@ final class FindTheButtonGame implements McmGame {
             Integer pts = roundPoints.get(p.getUniqueId());
             if (pts != null) {
                 int place = finders.indexOf(p.getUniqueId()) + 1;
-                McmFx.actionBar(p, ChatColor.GREEN + "You found it! " + ChatColor.GRAY + "#" + place + ChatColor.DARK_GRAY + " · " + ChatColor.YELLOW + "+" + pts + " pts");
+                McmFx.actionBar(p, ChatColor.GREEN + "You found it! " + ChatColor.GRAY + "#" + place);
             } else {
                 String hint = elapsed >= hintWide ? ChatColor.AQUA + " (wide hints)" : elapsed >= hintStart ? ChatColor.AQUA + " (hints on)" : "";
                 McmFx.actionBar(p, ChatColor.YELLOW + "" + ChatColor.BOLD + "Find the button!" + hint);
@@ -333,11 +333,11 @@ final class FindTheButtonGame implements McmGame {
         int pts = Math.max(minPoints, firstPoints - pointStep * (place - 1));
         roundPoints.put(id, pts);
         gamePoints.merge(id, pts, Integer::sum);
-        ctx.addCoins(id, pts, "Find the Button: found it #" + place);
+        ctx.addCoins(id, pts, "You were #" + place + " to find the button");
 
         String side = McmFx.sideKeyOf(ctx, p);
         ChatColor col = McmFx.sideColor(ctx, side);
-        McmFx.title(p, ChatColor.GREEN + "" + ChatColor.BOLD + "FOUND IT!", ChatColor.GRAY + "#" + place + ChatColor.DARK_GRAY + " · " + ChatColor.YELLOW + "+" + pts + " pts", 0, 40, 10);
+        McmFx.title(p, ChatColor.GREEN + "" + ChatColor.BOLD + "FOUND IT!", ChatColor.GRAY + "#" + place, 0, 40, 10);
         McmFx.sound(p, Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.3f);
         McmFx.sound(p, Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 1.6f);
         Location c = buttonCentre();
@@ -346,7 +346,7 @@ final class FindTheButtonGame implements McmGame {
         List<Player> others = new ArrayList<>(ctx.participants());
         others.remove(p);
         McmFx.sound(others, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.6f, 0.8f);
-        ctx.broadcast(PREFIX + col + p.getName() + ChatColor.GREEN + " found the button! " + ChatColor.GRAY + "(#" + place + ", +" + pts + ")");
+        ctx.broadcast(PREFIX + col + p.getName() + ChatColor.GREEN + " found the button! " + ChatColor.GRAY + "(#" + place + ")");
 
         // become a spectator next tick (the vanilla press is still being processed in this event)
         Bukkit.getScheduler().runTask(plugin, () -> {
@@ -376,12 +376,12 @@ final class FindTheButtonGame implements McmGame {
         for (Player m : members) if (!finders.contains(m.getUniqueId())) return;
         bonusSides.add(side);
         for (Player m : members) {
-            ctx.addCoins(m.getUniqueId(), teamBonus, "Find the Button: whole team found it");
+            ctx.addCoins(m.getUniqueId(), teamBonus, "Your whole team found the button!");
             gamePoints.merge(m.getUniqueId(), teamBonus, Integer::sum);
             roundPoints.merge(m.getUniqueId(), teamBonus, Integer::sum);
             McmFx.sound(m, Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.8f, 1.2f);
         }
-        ctx.broadcast(PREFIX + ctx.sideLabel(side) + ChatColor.GREEN + " all found it! " + ChatColor.YELLOW + "+" + teamBonus + " each");
+        ctx.broadcast(PREFIX + ctx.sideLabel(side) + ChatColor.GREEN + " all found it!");
     }
 
     /** Ends the round early once every (still online) participant has found the button. */

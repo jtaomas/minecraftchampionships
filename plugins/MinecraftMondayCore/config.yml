@@ -1,0 +1,11 @@
+championship-playlist: []
+mcc-championship-playlist: []
+fast-test: false
+admin-tools-item: true
+admin-tools-hidden-in-games:
+- bingo
+- skyblockle
+minecraft-monday-external-games:
+- findthebutton
+mcc-hub:
+  enabled: true

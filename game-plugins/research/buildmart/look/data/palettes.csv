@@ -1,0 +1,149 @@
+set,area,role,block,hex_approx,note
+mcc_current,hub,base_dark,black_concrete,#17181B,Floor field; everything saturated pops against it
+mcc_current,hub,base_dark,polished_deepslate,#36383B,Secondary dark; subtle tile break-up
+mcc_current,hub,base_dark,polished_blackstone,#2B2229,Edges and portal surrounds; hints purple
+mcc_current,hub,linework,white_concrete,#D5D8D8,1-block floor lines on the blueprint variant
+mcc_current,hub,medallion,lime_concrete,#6FA53F,Green ring of the floor emblem
+mcc_current,hub,medallion,red_concrete,#8E2121,Red ticks and ribbons in the emblem
+mcc_current,hub,medallion,light_gray_concrete,#9EA0A2,Emblem neutrals and steel panels
+mcc_current,hub,utility,hazard_yellow_concrete,#F0C231,Chevrons/striping; the universal edge motif
+mcc_current,hub,utility,black_concrete,#17181B,Stripe partner; 2:1 yellow:black
+mcc_current,hub,metal,iron_block,#D8D8D8,Truss/frame accents; reads as polished steel
+mcc_current,hub,banner,red_concrete,#8E2121,Wall and pole banners; warm red not blood red
+mcc_current,hub,banner,gold_block,#F2CC4A,Banner trim; 1-block gold is enough
+mcc_current,hub,fan,brown_terracotta,#7A4B32,Fan blades; matte warm disc against black
+mcc_current,hub,signage,white_concrete,#D5D8D8,3D category words; white on saturated ground
+mcc_current,hub,signage,black_concrete,#17181B,Letter shadow side; gives depth at distance
+mcc_current,team_bay,deck,black_concrete,#17181B,Pier deck; identical for every team
+mcc_current,team_bay,panel,light_gray_concrete,#9EA0A2,Industrial panels with red buttons
+mcc_current,team_bay,cabinet_glass,glass,#C8E6EA,Clear glass shelving; contents do the colour
+mcc_current,team_bay,team_colour,team_concrete,#VARIABLE,Concrete stacks inside the cabinet = team ID
+mcc_current,team_bay,nameplate,team_concrete,#VARIABLE,Flat 15-20 block wordmark on the deck edge
+mcc_current,gallery,floor,blue_concrete,#2A3E9E,Saturated blueprint field; dominant colour
+mcc_current,gallery,linework,white_concrete,#D5D8D8,Dashes / plus signs / corner brackets
+mcc_current,gallery,secondary_patch,light_blue_concrete,#5A8FD0,Large pale patches break the field
+mcc_current,gallery,plot_border,stone_bricks,#7A7A76,1-block border around each diorama
+mcc_current,gallery,selection,yellow_concrete,#F2C21E,Whole-frame selection colour + emissive rim
+mcc_current,gallery,beacon,red_candle,#B0332B,Gold/red corner candle-lantern prop
+mcc_current,gallery,diorama_ground,grass_block,#5E8F3F,Each diorama sits on its own material ground
+mcc_current,build_hall,shell,pale_stone_bricks,#B9B7B0,Columns and walls; neutral expensive shell
+mcc_current,build_hall,shell,white_concrete,#D5D8D8,Trim bands, corner blocks, steps
+mcc_current,build_hall,shell,polished_andesite,#8A8A87,Floor field beyond the plots
+mcc_current,build_hall,plot_floor,smooth_sandstone,#D9C58A,Warm pale floor; placed blocks read clearly
+mcc_current,build_hall,plot_frame,quartz_block,#E6E3DA,Raised frame + white corner blocks
+mcc_current,build_hall,light_strip,sea_lantern,#CFE9DE,Inset strips in the plot frame
+mcc_current,build_hall,soft_goods,red_carpet,#8E2121,Team-colour circulation line
+mcc_current,build_hall,soft_goods,red_wool,#8E2121,Fabric banners with gold bands
+mcc_current,build_hall,vip_accent,gold_block,#F2CC4A,Gold build station and trims
+mcc_current,build_hall,truss,black_concrete,#17181B,Ceiling beams and window frames
+mcc_current,build_hall,ceiling_light,lantern,#B06A34,Hanging warm lanterns down the hall
+mcc_current,island_ores,deck,stone,#7E7E7A,Flat market deck
+mcc_current,island_ores,deck,andesite,#8A8A87,Grey variation
+mcc_current,island_ores,deck,tuff,#6B6B5F,Darker grey; underside strata
+mcc_current,island_ores,display,white_concrete,#D5D8D8,White table tops under each ore stack
+mcc_current,island_ores,rim,hazard_yellow_concrete,#F0C231,Edge warning stripe
+mcc_current,island_ores,underside,calcite,#D9D5CC,Pale layered underside
+mcc_current,island_ores,underside,diorite,#B5B2AA,Alternating pale layer
+mcc_current,island_logs,deck,grass_block,#5E8F3F,Green deck over a grey cliff
+mcc_current,island_logs,structure,stripped_spruce_log,#A08455,Timber rack uprights
+mcc_current,island_logs,structure,spruce_planks,#6B4D2E,Rack shelves
+mcc_current,island_logs,cargo,oak_log,#6B4D2E,Log stacks (3 deep, not 1)
+mcc_current,island_logs,underside,stone,#7E7E7A,Grey cliff drop
+mcc_current,island_bricks,deck,terracotta,#985B43,Warm ground
+mcc_current,island_bricks,landmark,bricks,#8E4B3B,Village walls
+mcc_current,island_bricks,landmark,red_terracotta,#8E3B2B,Roof accents
+mcc_current,island_bricks,detail,oak_planks,#A08455,Timber details
+mcc_current,island_bricks,underside,packed_mud,#8C6A4B,Tapered earthen underside
+mcc_current,island_nether,deck,netherrack,#6B2020,Deep red ground
+mcc_current,island_nether,landmark,blackstone,#2B2229,Near-black castle spires
+mcc_current,island_nether,landmark,basalt,#4A4A4A,Cliffs and columns
+mcc_current,island_nether,light,lava,#D45B12,Small falls and streams; light source
+mcc_current,island_nether,accent,crimson_stem,#6B2B4A,Twisted crimson growth
+mcc_current,island_coral,deck,orange_terracotta,#A65A2E,Warm base
+mcc_current,island_coral,prop,tube_coral_block,#D6558C,Giant coral fans
+mcc_current,island_coral,prop,brain_coral_block,#A6231F,Red coral mass
+mcc_current,island_coral,accent,cyan_concrete,#169C9C,Fish and water accents
+mcc_current,island_coral,accent,bone_block,#D9D5C0,Bleached coral
+mcc_current,island_garden,deck,grass_block,#5E8F3F,Overgrown ground
+mcc_current,island_garden,landmark,quartz_block,#E6E3DA,Ruined greenhouse / temple
+mcc_current,island_garden,foliage,oak_leaves,#4E7A34,Overgrowth over the ruin
+mcc_current,island_garden,foliage,azalea_leaves,#6B7A3A,Second leaf tone
+mcc_current,island_garden,flower,pink_petals,#D98CB0,Giant blooms
+mcc_current,island_garden,underside,dirt,#6B4D2E,Earthen taper with roots
+mcc_current,island_sand,deck,sand,#D9CC94,Ground
+mcc_current,island_sand,structure,sandstone,#D9C58A,Strata
+mcc_current,island_sand,structure,smooth_sandstone,#E0D5B4,Cut edges
+mcc_current,island_sand,accent,jungle_leaves,#3F6B2E,Palm silhouettes
+mcc_current,island_snow,deck,snow_block,#F2F5F5,Cap only; not the whole island
+mcc_current,island_snow,detail,packed_ice,#A8C4E0,Blue ice accents
+mcc_current,island_snow,detail,ice,#B9D6EC,Glassy blue
+mcc_current,island_snow,underside,stone,#7E7E7A,Grey sides with copper flecks
+mcc_current,island_colour,module,glass,#C8E6EA,Tank walls
+mcc_current,island_colour,module,smooth_stone_slab,#9E9E9A,Stacked pale frames
+mcc_current,island_colour,floor,black_concrete,#17181B,Dark floor inside the tanks
+mcc_current,island_colour,marking,white_concrete,#D5D8D8,Floor dashes and bay numbers
+mcc_current,island_colour,tint,stained_glass,#VARIABLE,One colour per bay; the air itself is tinted
+mcc_current,island_colour,wall,corrugated_panel,#B9B7B0,Cheap tell when left unbroken; add ribs/lamps
+dir_a,world,base_navy,deepslate_tiles,#2A2E33,Dominant 60%: night-archive floor and walls
+dir_a,world,base_navy,blackstone,#1E1A1C,Recesses, plinths, deep shadow
+dir_a,world,base_navy,dark_prismarine,#2B4A46,Cool secondary; never fully black
+dir_a,world,structure,dark_oak_planks,#3E2A18,Casework and gallery desks
+dir_a,world,structure,chiseled_deepslate,#4A4E52,Coffered beam ends and pilasters
+dir_a,world,metal,gold_block,#F2CC4A,Brass; 10% accent only
+dir_a,world,metal,waxed_copper_block,#C97B5A,Warm secondary metal
+dir_a,world,paper,smooth_sandstone,#E0D5B4,Parchment wall panels and chart paper
+dir_a,world,paper,calcite,#DAD7CE,Chalky highlight; breaks navy at eye level
+dir_a,world,paper,stripped_birch_log,#D7C58F,Instrument handles, rolled charts
+dir_a,world,light,sea_lantern,#CFE9DE,Inlaid constellation lines and rim lights
+dir_a,world,light,candle,#D9B36A,Warm practical light on desks
+dir_a,world,accent,amethyst_block,#8A6FC4,Geode island accent
+dir_a,world,accent,cyan_concrete,#169C9C,Wayfinding accents; use sparingly
+dir_a,islands,rim,polished_blackstone,#2B2229,Brass-capped edge rail
+dir_a,islands,underside,deepslate,#3A3D40,Tapered strata 1
+dir_a,islands,underside,tuff,#6B6B5F,Tapered strata 2
+dir_a,build_hall,shell,calcite,#DAD7CE,Pale plaster shell; neutral for builds
+dir_a,build_hall,shell,polished_deepslate,#36383B,Floor field outside the plots
+dir_a,build_hall,plot_floor,smooth_sandstone,#D9C58A,Warm pale work surface
+dir_a,build_hall,soft_goods,team_wool,#VARIABLE,Carpet + banner only
+dir_a,build_hall,vip,gold_block,#F2CC4A,Gilded display case for the rare build
+dir_b,world,base_teal,prismarine,#6A9C8F,Dominant stone-teal
+dir_b,world,base_teal,dark_prismarine,#2F4F45,Shadow and underside
+dir_b,world,base_cream,calcite,#DAD7CE,Second dominant; airy and clean
+dir_b,world,base_cream,smooth_sandstone,#E0D5B4,Floor field
+dir_b,world,water,cyan_stained_glass,#2BA6A6,Glass volumes and tanks
+dir_b,world,water,light_blue_stained_glass,#7EC8D9,Airier tint
+dir_b,world,metal,oxidised_copper,#4E8F72,Verdigris fittings; the signature metal
+dir_b,world,metal,gold_block,#F2CC4A,Small brass accents only
+dir_b,world,wood,jungle_planks,#A0703F,Teak joinery
+dir_b,world,accent,tube_coral_block,#D6558C,Coral islands only; never in the hub
+dir_b,world,accent,fire_coral_block,#A6231F,Warm coral accent
+dir_b,world,light,sea_lantern,#CFE9DE,Bubble columns and floor mosaic
+dir_b,world,light,pearlescent_froglight,#D9CFC0,Soft glow under awnings
+dir_b,islands,rim,prismarine_bricks,#5F8F84,Edge rail with shell inlay
+dir_b,islands,underside,prismarine,#6A9C8F,Tapered wet rock
+dir_b,islands,underside,dark_prismarine,#2F4F45,Dark layer for depth
+dir_b,build_hall,shell,quartz_block,#E6E3DA,Dry harbour-office shell
+dir_b,build_hall,shell,white_concrete,#D5D8D8,Trim
+dir_b,build_hall,plot_floor,smooth_sandstone,#D9C58A,Warm work surface
+dir_b,build_hall,soft_goods,team_wool,#VARIABLE,Carpet + awning
+dir_b,build_hall,detail,barrel,#8C6A4B,Rope/barrel props at the edges
+dir_c,world,base_charcoal,blackstone,#1E1A1C,Dominant 60%
+dir_c,world,base_charcoal,deepslate_tiles,#2A2E33,Floor and walls
+dir_c,world,base_charcoal,basalt,#4A4A4A,Columnar structure
+dir_c,world,steel,iron_block,#D8D8D8,Gantries and rails
+dir_c,world,steel,polished_andesite,#8A8A87,Steel-grey floor
+dir_c,world,molten,magma_block,#8E3A12,Glowing channels
+dir_c,world,molten,orange_concrete,#C25A1E,Ladle and heat accents
+dir_c,world,brick,bricks,#8E4B3B,Furnace shell
+dir_c,world,brick,mud_bricks,#8C6A4B,Chimney bands
+dir_c,world,metal,oxidised_copper,#4E8F72,Verdigris pipes; the only cool hue
+dir_c,world,light,redstone_lamp,#C98A3A,Warm machine light
+dir_c,world,light,lantern,#B06A34,Hanging work lamps
+dir_c,islands,rim,hazard_yellow_concrete,#F0C231,Edge warning stripe; thematically earned
+dir_c,islands,underside,tuff,#6B6B5F,Slag taper
+dir_c,islands,underside,blackstone,#1E1A1C,Dark underside
+dir_c,build_hall,shell,light_gray_concrete,#9EA0A2,Pattern-shop shell; light enough to read builds
+dir_c,build_hall,shell,polished_deepslate,#36383B,Floor field
+dir_c,build_hall,plot_floor,smooth_sandstone,#D9C58A,Chalk-marked work surface
+dir_c,build_hall,soft_goods,team_wool,#VARIABLE,Carpet + hanging banner
+dir_c,build_hall,vip,gold_block,#F2CC4A,Brass-caged showcase for the rare build

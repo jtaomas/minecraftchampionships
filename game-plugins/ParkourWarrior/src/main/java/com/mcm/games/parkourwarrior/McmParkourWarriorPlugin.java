@@ -28,6 +28,11 @@ public final class McmParkourWarriorPlugin extends JavaPlugin {
             if (cmd != null) { cmd.setExecutor(this); cmd.setTabCompleter(this); }
         }
         McmApi.registerGame(this, game);
+        try {
+            McmApi.registerMapEditable(this, game.id(), new PwEdit(this, game));   // core /mcm mapedit (Map Edit core; older cores skip it)
+        } catch (Throwable t) {
+            getLogger().info("Map Edit is not available on this core (" + t.getClass().getSimpleName() + ").");
+        }
         try { game.preload(); } catch (Throwable t) { getLogger().warning("Parkour Warrior: could not prepare the world/course: " + t); }
         getLogger().info("Parkour Warrior ready (map.generator=" + getConfig().getString("map.generator", "auto") + ", "
                 + (CourseWorld.mapClassPresent(getClassLoader()) ? "CourseMap present" : "CourseMap missing - the stub course will be used") + ")");
@@ -52,7 +57,8 @@ public final class McmParkourWarriorPlugin extends JavaPlugin {
                     + ChatColor.YELLOW + "/pw time <seconds-left>" + ChatColor.GRAY + ", "
                     + ChatColor.YELLOW + "/pw info" + ChatColor.GRAY + ", "
                     + ChatColor.YELLOW + "/pw ghost [on|off]" + ChatColor.GRAY + ", "
-                    + ChatColor.YELLOW + "/pw rebuild [seed]");
+                    + ChatColor.YELLOW + "/pw rebuild [seed]" + ChatColor.GRAY + ", "
+                    + ChatColor.YELLOW + "/pw map [id|random]");
             return true;
         }
         CourseModel m = game.course.model();
@@ -88,7 +94,7 @@ public final class McmParkourWarriorPlugin extends JavaPlugin {
                         if (o == null) { sender.sendMessage(ChatColor.RED + "Unknown obstacle " + args[1] + " (see /pw list)"); return true; }
                         game.adminTpObstacle(p, o);
                         sender.sendMessage(ChatColor.GREEN + "Teleported to " + o.id() + " " + o.name()
-                                + (game.inPlay() && game.run(p) != null ? ChatColor.GRAY + " (checkpoint set to its start; no medals given)" : ""));
+                                + (game.inPlay() && game.run(p) != null ? ChatColor.GRAY + " (checkpoint set to its start; no coins given)" : ""));
                     }
                 }
             }
@@ -133,6 +139,33 @@ public final class McmParkourWarriorPlugin extends JavaPlugin {
                 sender.sendMessage(ChatColor.GREEN + "Ghost players " + (on ? "ON (runners translucent to each other)" : "OFF (runners fully visible)")
                         + ChatColor.GRAY + "; player collision stays off" + (game.running() ? ", applied to the running game." : "."));
             }
+            case "map" -> {
+                reloadConfig();
+                Settings st = Settings.load(getConfig(), getLogger());
+                List<String> av = game.course.availableMaps(st);
+                if (args.length < 2) {
+                    sender.sendMessage(ChatColor.GOLD + "Maps: " + ChatColor.WHITE + av + ChatColor.GRAY + "  built: " + game.course.mapId()
+                            + (game.forcedMap != null ? "  forced for the next games: " + game.forcedMap : "  next game: random"));
+                    sender.sendMessage(ChatColor.GRAY + "/pw map <id> forces that map for the following games, /pw map random goes back to a random pick.");
+                    return true;
+                }
+                String id = args[1].toLowerCase(Locale.ROOT);
+                if (id.equals("random") || id.equals("auto")) {
+                    game.forcedMap = null;
+                    sender.sendMessage(ChatColor.GREEN + "Map choice: random among " + av + ".");
+                    return true;
+                }
+                if (!av.contains(id)) { sender.sendMessage(ChatColor.RED + "Unknown map '" + id + "'. Available: " + av); return true; }
+                game.forcedMap = id;
+                sender.sendMessage(ChatColor.GREEN + "Next games use the map '" + id + "'.");
+                if (!game.running()) {
+                    sender.sendMessage(ChatColor.YELLOW + "Building it now...");
+                    game.course.prepare(st, id, false, () -> {
+                        game.course.removeLabels();
+                        sender.sendMessage(ChatColor.GREEN + "Map '" + game.course.mapId() + "' is built (" + game.course.generatorUsed() + ").");
+                    });
+                }
+            }
             case "rebuild" -> {
                 if (game.running()) { sender.sendMessage(ChatColor.RED + "A game is running."); return true; }
                 reloadConfig();
@@ -141,7 +174,7 @@ public final class McmParkourWarriorPlugin extends JavaPlugin {
                 }
                 Settings s = Settings.load(getConfig(), getLogger());
                 sender.sendMessage(ChatColor.YELLOW + "Rebuilding the course (seed " + s.seed + ")...");
-                game.course.prepare(s, true, () -> {
+                game.course.prepare(s, game.pickMap(s, false), true, () -> {
                     game.course.removeLabels();
                     sender.sendMessage(ChatColor.GREEN + "Course rebuilt with " + game.course.generatorUsed() + ".");
                 });
@@ -169,13 +202,17 @@ public final class McmParkourWarriorPlugin extends JavaPlugin {
         List<String> out = new ArrayList<>();
         if (command.getName().equalsIgnoreCase("pwview")) return out;
         if (args.length == 1) {
-            for (String s : List.of("list", "tp", "complete", "time", "info", "ghost", "rebuild")) if (s.startsWith(args[0].toLowerCase(Locale.ROOT))) out.add(s);
+            for (String s : List.of("list", "tp", "complete", "time", "info", "ghost", "rebuild", "map")) if (s.startsWith(args[0].toLowerCase(Locale.ROOT))) out.add(s);
         } else if (args.length == 2 && (args[0].equalsIgnoreCase("tp") || args[0].equalsIgnoreCase("complete"))) {
             CourseModel m = game.course.model();
             List<String> opts = new ArrayList<>();
             if (args[0].equalsIgnoreCase("tp")) opts.addAll(List.of("start", "fork", "hub", "view"));
             if (m != null) for (Obstacle o : m.obstacles) opts.add(o.id());
             for (String s : opts) if (s.toLowerCase(Locale.ROOT).startsWith(args[1].toLowerCase(Locale.ROOT))) out.add(s);
+        } else if (args.length == 2 && args[0].equalsIgnoreCase("map")) {
+            List<String> ids = new ArrayList<>(game.course.availableMaps(Settings.load(getConfig(), getLogger())));
+            ids.add("random");
+            for (String s : ids) if (s.startsWith(args[1].toLowerCase(Locale.ROOT))) out.add(s);
         } else if (args.length == 2 && args[0].equalsIgnoreCase("ghost")) {
             for (String s : List.of("on", "off")) if (s.startsWith(args[1].toLowerCase(Locale.ROOT))) out.add(s);
         } else if (args.length == 3 && args[0].equalsIgnoreCase("complete")) {

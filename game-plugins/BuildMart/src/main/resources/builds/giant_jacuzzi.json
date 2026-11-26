@@ -1,0 +1,57 @@
+{
+  "id": "giant_jacuzzi",
+  "name": "Giant Jacuzzi",
+  "debut": "MCC 10",
+  "stars": 3,
+  "status": "done",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Giant_Jacuzzi.png",
+  "floor": [
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg"
+  ],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "c": "minecraft:cobblestone",
+    "s": "minecraft:smooth_stone",
+    "l": "minecraft:ladder[facing=south]"
+  },
+  "layers": [
+    [
+      ".......",
+      ".ccccc.",
+      ".ccccc.",
+      ".ccccc.",
+      ".ccccc.",
+      ".ccccc.",
+      "......."
+    ],
+    [
+      ".......",
+      ".ccccc.",
+      ".c...c.",
+      ".c...c.",
+      ".c...c.",
+      ".ccccc.",
+      "......."
+    ],
+    [
+      ".......",
+      ".sssss.",
+      ".s.l.s.",
+      ".s...s.",
+      ".s...s.",
+      ".sssss.",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the tub is 5 x 5 outside with a 3 x 3 basin: cobblestone floor and walls with a smooth stone coping course; the coping could be polished andesite",
+    "the tub is dry in the render (no water visible); the ladder on the back inner wall climbs from the basin floor to the rim",
+    "hidden outer back and side faces are mirrored from the front"
+  ]
+}

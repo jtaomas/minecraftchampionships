@@ -1,0 +1,28 @@
+stall_material,used_by_presets,total_used,real_island,match,note
+OAK_PLANKS,yes,47,logs,exact,mined as planks on Lumber
+OAK_LOG,yes,32,logs,exact,
+SPRUCE_PLANKS,yes,13,logs,exact,
+BIRCH_PLANKS,no,0,logs,exact,no preset uses birch; dead stall
+COBBLESTONE,yes,40,stone,derived,Stone island stocks STONE; cobble only via mining/drop
+SAND,no,0,sand,exact,"used only as a shop input, never placed in a build"
+CLAY,no,0,-,absent,CLAY is not on the MCC 20 poster; Bricks island stocks BRICKS
+IRON_BLOCK,no,0,ores,exact,also the Jeweller gold recipe input
+GLOWSTONE,yes,1,-,absent,not on the MCC 20 poster; only Lighthouse uses 1
+QUARTZ_BLOCK,yes,13,ores+nether,exact,duplicate across two islands
+SANDSTONE,yes,34,sand,exact,
+SNOW_BLOCK,yes,46,snow,event-only,Snow island replaced Sand in MCC 19 only
+WHITE_WOOL,yes,31,colour,wrong-form,"colour bays stock concrete/powder/glass, not wool"
+RED_WOOL,yes,74,colour,wrong-form,"colour bays stock concrete/powder/glass, not wool"
+ORANGE_WOOL,yes,7,colour,wrong-form,"colour bays stock concrete/powder/glass, not wool"
+YELLOW_WOOL,yes,26,colour,wrong-form,"colour bays stock concrete/powder/glass, not wool"
+LIME_WOOL,yes,23,colour,wrong-form,"colour bays stock concrete/powder/glass, not wool"
+GREEN_WOOL,yes,16,colour,wrong-form,"colour bays stock concrete/powder/glass, not wool"
+LIGHT_BLUE_WOOL,yes,5,colour,wrong-form,"colour bays stock concrete/powder/glass, not wool"
+BLUE_WOOL,yes,4,colour,wrong-form,"colour bays stock concrete/powder/glass, not wool"
+BLACK_WOOL,yes,44,colour,wrong-form,"colour bays stock concrete/powder/glass, not wool"
+PINK_WOOL,yes,22,colour,wrong-form,"colour bays stock concrete/powder/glass, not wool"
+BROWN_WOOL,no,0,colour,wrong-form,"colour bays stock concrete/powder/glass, not wool"
+OAK_LEAVES,yes,13,garden,unconfirmed,"poster shows sapling/moss, no leaf block"
+PUMPKIN,yes,8,garden,unconfirmed,not on poster
+HAY_BLOCK,yes,1,garden,unconfirmed,not on poster
+MELON,yes,3,garden,unconfirmed,not on poster

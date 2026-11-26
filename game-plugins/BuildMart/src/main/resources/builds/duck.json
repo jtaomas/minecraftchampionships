@@ -1,0 +1,84 @@
+{
+  "id": "duck",
+  "name": "Duck?",
+  "debut": "MCC 4",
+  "stars": 1,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Duck-.png",
+  "floor": [
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss"
+  ],
+  "palette": {
+    "s": "minecraft:stone_bricks",
+    "w": "minecraft:white_concrete",
+    "o": "minecraft:orange_terracotta"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      ".......",
+      "..s.s..",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "..s.s..",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "...s...",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..sss..",
+      "..sss..",
+      "..sss..",
+      "...o...",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..sss..",
+      "..sss..",
+      "..sss..",
+      "..w.w..",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..sss..",
+      "..sss..",
+      "..sss..",
+      ".......",
+      "......."
+    ]
+  ],
+  "status": "done",
+  "guessed": [
+    "head depth is hidden from the front; filled as a 3x3x3 stone-brick cube on symmetry",
+    "the head's back and the rear face of the legs are hidden; same stone bricks as the front",
+    "beak read as orange terracotta (mottled texture) rather than flat orange concrete",
+    "eyes read as white concrete (no quartz border)"
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "id": "lotta_grotto",
+  "name": "Lotta Grotto",
+  "debut": "MCC 19",
+  "stars": 4,
+  "status": "approximate",
+  "gold": true,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Lotta_Grotto.png",
+  "floor": [
+    "ccccccc",
+    "ccccccc",
+    "ccccccc",
+    "ccccccc",
+    "ccccccc",
+    "ccccccc",
+    "ccccccc"
+  ],
+  "palette": {
+    "c": "minecraft:calcite",
+    "m": "minecraft:mud_bricks",
+    "R": "minecraft:nether_wart_block",
+    "g": "minecraft:gold_block",
+    "q": "minecraft:quartz_slab[type=bottom]",
+    "F": "minecraft:campfire[facing=south,lit=true]"
+  },
+  "layers": [
+    [
+      "..RRR..",
+      "mmRRRmm",
+      "mm...mm",
+      ".g...g.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "..RRR..",
+      "mmRRRmm",
+      "mm...mm",
+      ".g...g.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "..RRR..",
+      "mmRRRmm",
+      "mmm.mmm",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "..RRR..",
+      "qqRRRqq",
+      "cqm.mqq",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "..RRR..",
+      "..RRR..",
+      "..qmq..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "..RRR..",
+      "..RRR..",
+      "...m...",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "..RRR..",
+      "..RRR..",
+      "...m...",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...q...",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the red interior read as nether_wart_block; it may be netherrack or crimson hyphae",
+    "the wall network (mud bricks stepped 3/4/6 blocks with white slab caps, a 3-wide 2-tall cave mouth and a 1-wide red window above) is inferred from the front; the whole back/inside is hidden and guessed",
+    "the white caps read as quartz slabs; they may be calcite or smooth stone slabs",
+    "the flame on the left wing substituted with a lit campfire (fire blocks are not allowed)",
+    "the two gold blocks read as 1x1x2 gold pillars in front of the entrance; their exact size/depth is estimated"
+  ]
+}

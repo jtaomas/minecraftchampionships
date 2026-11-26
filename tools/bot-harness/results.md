@@ -1,6 +1,6 @@
 # MCM staging bot test - run 2026-11-23T10-38-45
 
-Raw logs: `C:\Users\USER\AppData\Local\Temp\claude\3ce71e194a20101d\adb21d58-93cf-493d-abe5-7c5a160bc899\scratchpad\bot-harness\logs\2026-11-23T10-38-45`
+Raw logs: `C:\Users\LeonS\AppData\Local\Temp\claude\3ce71e194a20101d\adb21d58-93cf-493d-abe5-7c5a160bc899\scratchpad\bot-harness\logs\2026-11-23T10-38-45`
 Bots: 6, pass1 watch 90s then /mcm skip; pass2 natural end (timeout 12 min).
 
 - Jars copied: McmAceRace.jar, McmBattleBox.jar, McmBingo.jar, McmBuildMart.jar, McmDecisionDome.jar, McmDodgebolt.jar, McmFootRace.jar, McmGridRunners.jar, McmHoleInTheWall.jar, McmMeltdown.jar, McmParkourTag.jar, McmParkourWarrior.jar, McmRailroadRush.jar, McmRocketSpleef.jar, McmSandsOfTime.jar, McmSkyBattle.jar, McmTgttos.jar, MinecraftMondayCore.jar (core)

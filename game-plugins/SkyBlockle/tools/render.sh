@@ -5,13 +5,13 @@
 set -e
 cd "$(dirname "$0")/.."
 OUT=tools/out
-J=/c/Users/USER/Desktop/java/bin
+J=/c/Users/LeonS/Desktop/java/bin
 rm -rf "$OUT/classes"; mkdir -p "$OUT/classes" previews
 "$J/javac" -d "$OUT/classes" src/main/java/com/mcm/games/skyblockle/MapModel.java \
   src/main/java/com/mcm/games/skyblockle/map/*.java tools/PreviewMain.java
 "$J/java" -Xmx2g -cp "$OUT/classes" PreviewMain "$OUT" "$@"
 [ -n "$NORENDER" ] && exit 0
-R=/c/Users/USER/Desktop/Mcc/tools/render_preview.py
+R=/c/Users/LeonS/Desktop/Mcc/tools/render_preview.py
 P=previews
 python "$R" "$OUT/map_full.mcmdump.gz" "$P/map_top.png" --top &
 python "$R" "$OUT/map_full.mcmdump.gz" "$P/map_iso_a0.png" --angle 0 &

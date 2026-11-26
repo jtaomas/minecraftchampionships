@@ -1,0 +1,479 @@
+# Parkour Warrior map 'mcc6': the MCC 6 Parkour Warrior fan replica ("Championship Parkour", 1.15.2) by Throw_Away_Account
+# (Planet Minecraft), plus new moving-mechanic sections (builtin). Coordinates are the replica's world coordinates.
+map mcc6_replica
+credit pw6 MCC 6 Parkour Warrior replica by Throw_Away_Account
+mapcredit MCC 6 Parkour Warrior replica by Throw_Away_Account (Planet Minecraft)
+zone 1 Mesa
+zone 2 Garden
+zone 3 Jungle
+zone 4 Ocean
+zone 5 Ice
+endname EASY Meadow & Beehive
+endname MEDIUM Nether Gate
+endname HARD The Final Tower
+
+section M1-1 mcc6.mcmi.gz R11 The Lofty Leap
+  base 0 0 0
+  origin 7 14 2
+  end 19 14 29
+  turn 0
+  crop 0 0 -5 26 36 36
+  killdepth 5
+  credit pw6
+  set 5 15 13 minecraft:iron_trapdoor
+  set 5 14 13 minecraft:iron_trapdoor
+  set 5 13 13 minecraft:iron_trapdoor
+  set 5 15 14 minecraft:iron_trapdoor
+  set 6 15 13 minecraft:iron_trapdoor
+  set 7 15 16 minecraft:iron_trapdoor
+  set 7 14 16 minecraft:iron_trapdoor
+  set 7 13 16 minecraft:iron_trapdoor
+  set 7 15 17 minecraft:iron_trapdoor
+  set 8 15 16 minecraft:iron_trapdoor
+  set 8 15 18 minecraft:iron_trapdoor
+  set 8 14 18 minecraft:iron_trapdoor
+  set 8 13 18 minecraft:iron_trapdoor
+  set 8 15 19 minecraft:iron_trapdoor
+  set 9 15 18 minecraft:iron_trapdoor
+end
+
+section M1-2 mcc6.mcmi.gz R12 The Hanging Hoops
+  base 0 0 0
+  origin 19 14 29
+  end 47 14 30
+  turn 1
+  crop 12 0 22 54 36 37
+  killdepth 5
+  credit pw6
+end
+
+section M1-3 mcc6.mcmi.gz R13 The Sidesteps
+  base 0 0 0
+  origin 47 14 30
+  end 97 9 39
+  turn 1
+  crop 40 -5 23 104 36 46
+  killdepth 5
+  credit pw6
+end
+
+section M2-1 mcc6.mcmi.gz R21 The Barrel Hop
+  base 0 0 0
+  origin 97 9 39
+  end 85 12 84
+  turn 0
+  crop 78 -5 32 104 34 91
+  killdepth 5
+  credit pw6
+end
+
+section M2-2 mcc6.mcmi.gz R22 The Narrow Ledge
+  base 0 0 0
+  origin 85 12 84
+  end 56 12 83
+  turn 3
+  crop 49 -2 76 92 34 91
+  killdepth 5
+  credit pw6
+end
+
+section M2-3 mcc6.mcmi.gz R23 The Switchback
+  base 0 0 0
+  origin 56 12 83
+  end 20 20 123
+  turn 0
+  crop 13 -2 76 63 42 130
+  killdepth 5
+  credit pw6
+  set 30 15 98 minecraft:clay
+  set 30 13 98 minecraft:clay
+  set 30 15 99 minecraft:clay
+  set 31 15 98 minecraft:clay
+  set 30 16 99 minecraft:clay
+  set 30 14 99 minecraft:clay
+  set 30 16 100 minecraft:clay
+  set 31 15 99 minecraft:clay
+  set 31 18 101 minecraft:clay
+  set 28 17 102 minecraft:clay
+  set 28 16 102 minecraft:clay
+  set 28 15 102 minecraft:clay
+  set 28 17 103 minecraft:clay
+  set 29 17 102 minecraft:clay
+  set 26 18 104 minecraft:clay
+  set 26 17 104 minecraft:clay
+  set 26 16 104 minecraft:clay
+  set 26 18 105 minecraft:clay
+  set 27 18 104 minecraft:clay
+  set 24 19 107 minecraft:clay
+  set 24 18 107 minecraft:clay
+  set 24 17 107 minecraft:clay
+  set 24 19 108 minecraft:clay
+  set 25 19 107 minecraft:clay
+  set 23 17 111 minecraft:clay
+  set 24 19 111 minecraft:clay
+  set 22 19 114 minecraft:clay
+  set 22 18 114 minecraft:clay
+  set 22 17 114 minecraft:clay
+  set 22 19 115 minecraft:clay
+  set 23 19 114 minecraft:clay
+  set 21 20 116 minecraft:clay
+  set 21 19 116 minecraft:clay
+  set 21 18 116 minecraft:clay
+  set 22 20 116 minecraft:clay
+  set 41 15 89 minecraft:clay
+  set 42 15 89 minecraft:clay
+  set 41 15 90 minecraft:clay
+  set 42 15 90 minecraft:clay
+  set 41 14 89 minecraft:clay
+  set 41 13 89 minecraft:clay
+  set 31 14 93 minecraft:clay
+  set 30 14 93 minecraft:clay
+  set 30 14 94 minecraft:clay
+  set 30 14 95 minecraft:clay
+  set 30 13 94 minecraft:clay
+  set 30 12 94 minecraft:clay
+end
+
+section M3-1 mcc6.mcmi.gz R31 The Double Weaver
+  base 0 0 0
+  origin 20 20 123
+  end 9 17 146
+  turn 0
+  crop 2 3 116 27 42 153
+  killdepth 5
+  credit pw6
+  set 18 21 129 minecraft:spruce_trapdoor
+  set 18 20 129 minecraft:spruce_trapdoor
+  set 18 19 129 minecraft:spruce_trapdoor
+  set 18 21 130 minecraft:spruce_trapdoor
+  set 19 21 129 minecraft:spruce_trapdoor
+  set 17 22 132 minecraft:spruce_trapdoor
+  set 17 21 132 minecraft:spruce_trapdoor
+  set 17 20 132 minecraft:spruce_trapdoor
+  set 17 22 133 minecraft:spruce_trapdoor
+  set 18 22 132 minecraft:spruce_trapdoor
+  set 14 19 136 minecraft:spruce_trapdoor
+  set 14 18 136 minecraft:spruce_trapdoor
+  set 14 17 136 minecraft:spruce_trapdoor
+  set 14 19 137 minecraft:spruce_trapdoor
+  set 15 19 136 minecraft:spruce_trapdoor
+  set 12 18 140 minecraft:spruce_trapdoor
+  set 12 17 140 minecraft:spruce_trapdoor
+  set 12 16 140 minecraft:spruce_trapdoor
+  set 12 18 141 minecraft:spruce_trapdoor
+  set 13 18 140 minecraft:spruce_trapdoor
+end
+
+section M3-2 mcc6.mcmi.gz R32 The Holey Moley
+  base 0 0 0
+  origin 9 17 146
+  end 9 22 182
+  turn 0
+  crop 2 3 139 16 44 189
+  killdepth 5
+  credit pw6
+end
+
+section M3-3 mcc6.mcmi.gz R33 The Wide Hoops
+  base 0 0 0
+  origin 9 22 182
+  end 23 23 226
+  turn 0
+  crop 2 8 175 30 45 233
+  killdepth 5
+  credit pw6
+  set 9 18 211 minecraft:lime_stained_glass_pane
+  set 9 17 211 minecraft:lime_stained_glass_pane
+  set 9 16 211 minecraft:lime_stained_glass_pane
+  set 9 18 212 minecraft:lime_stained_glass_pane
+  set 10 18 211 minecraft:lime_stained_glass_pane
+  set 10 18 214 minecraft:lime_stained_glass_pane
+  set 10 16 214 minecraft:lime_stained_glass_pane
+  set 10 18 215 minecraft:lime_stained_glass_pane
+  set 11 18 214 minecraft:lime_stained_glass_pane
+  set 13 17 216 minecraft:lime_stained_glass_pane
+end
+
+section B3-1 mcc6.mcmi.gz R41 The Ladder Hop
+  base 0 0 0
+  origin 23 23 226
+  end 23 26 259
+  turn 0
+  crop 16 9 219 30 48 266
+  killdepth 5
+  tag MEDIUM
+  credit pw6
+  set 27 26 239 minecraft:dark_prismarine
+  set 27 25 239 minecraft:dark_prismarine
+  set 27 24 239 minecraft:dark_prismarine
+  set 27 26 240 minecraft:dark_prismarine
+  set 28 26 239 minecraft:dark_prismarine
+  set 26 26 242 minecraft:dark_prismarine
+  set 26 25 242 minecraft:dark_prismarine
+  set 26 24 242 minecraft:dark_prismarine
+  set 26 26 243 minecraft:dark_prismarine
+  set 27 26 242 minecraft:dark_prismarine
+  set 26 26 244 minecraft:dark_prismarine
+  set 26 25 244 minecraft:dark_prismarine
+  set 26 24 244 minecraft:dark_prismarine
+  set 26 26 245 minecraft:dark_prismarine
+  set 27 26 244 minecraft:dark_prismarine
+  set 27 25 252 minecraft:nether_wart
+  set 27 24 252 minecraft:nether_wart
+  set 27 23 252 minecraft:nether_wart
+  set 27 25 253 minecraft:nether_wart
+  set 28 25 252 minecraft:nether_wart
+  set 25 25 254 minecraft:nether_wart
+  set 25 24 254 minecraft:nether_wart
+  set 25 23 254 minecraft:nether_wart
+  set 25 25 255 minecraft:nether_wart
+  set 26 25 254 minecraft:nether_wart
+end
+
+section B3-2 mcc6.mcmi.gz R42 The Triple Bounce
+  base 0 0 0
+  origin 23 26 259
+  end 5 24 301
+  turn 0
+  crop -2 10 252 30 48 308
+  killdepth 5
+  tag MEDIUM
+  credit pw6
+  set 22 23 273 minecraft:slime_block
+  set 22 22 273 minecraft:slime_block
+  set 22 21 273 minecraft:slime_block
+  set 22 23 274 minecraft:slime_block
+  set 23 23 273 minecraft:slime_block
+  set 21 23 277 minecraft:slime_block
+  set 21 22 277 minecraft:slime_block
+  set 21 21 277 minecraft:slime_block
+  set 22 23 284 minecraft:dark_prismarine
+  set 22 22 284 minecraft:dark_prismarine
+  set 22 21 284 minecraft:dark_prismarine
+  set 22 23 285 minecraft:dark_prismarine
+  set 23 23 284 minecraft:dark_prismarine
+  set 21 23 286 minecraft:dark_prismarine
+  set 21 22 286 minecraft:dark_prismarine
+  set 21 21 286 minecraft:dark_prismarine
+  set 21 23 287 minecraft:dark_prismarine
+  set 22 23 286 minecraft:dark_prismarine
+  set 18 23 292 minecraft:slime_block
+  set 18 22 292 minecraft:slime_block
+  set 18 21 292 minecraft:slime_block
+  set 18 23 293 minecraft:slime_block
+  set 19 23 292 minecraft:slime_block
+  set 16 22 295 minecraft:slime_block
+  set 16 21 295 minecraft:slime_block
+  set 16 20 295 minecraft:slime_block
+  set 16 22 296 minecraft:slime_block
+  set 17 22 295 minecraft:slime_block
+  set 13 22 297 minecraft:slime_block
+  set 13 21 297 minecraft:slime_block
+  set 13 20 297 minecraft:slime_block
+  set 14 22 297 minecraft:slime_block
+end
+
+section B3-3 mcc6.mcmi.gz R43 The Ladder Climb
+  base 0 0 0
+  origin 5 24 301
+  end -34 27 306
+  turn 3
+  crop -41 10 294 12 49 313
+  killdepth 5
+  tag HARD
+  credit pw6
+end
+
+section M4-1 mcc6.mcmi.gz R51 The Helpful Dolphins
+  base 0 0 0
+  origin -34 27 306
+  end -65 31 296
+  turn 3
+  crop -72 13 289 -27 53 313
+  killdepth 5
+  credit pw6
+end
+
+section M4-2 mcc6.mcmi.gz R52 The Anchors
+  base 0 0 0
+  origin -65 31 296
+  end -64 32 256
+  turn 2
+  crop -72 17 249 -57 54 303
+  killdepth 5
+  credit pw6
+end
+
+section M4-3 mcc6.mcmi.gz R53 The Wall Clinger
+  base 0 0 0
+  origin -64 32 256
+  end -95 26 223
+  turn 2
+  crop -102 12 216 -57 54 263
+  killdepth 5
+  credit pw6
+  set -62 31 243 minecraft:smooth_sandstone
+  set -62 30 243 minecraft:smooth_sandstone
+  set -62 29 243 minecraft:smooth_sandstone
+  set -62 31 242 minecraft:smooth_sandstone
+  set -63 31 243 minecraft:smooth_sandstone
+  set -66 31 239 minecraft:smooth_sandstone
+  set -66 30 239 minecraft:smooth_sandstone
+  set -66 29 239 minecraft:smooth_sandstone
+  set -66 31 238 minecraft:smooth_sandstone
+  set -67 31 239 minecraft:smooth_sandstone
+end
+
+section B4-1 mcc6.mcmi.gz R61 The Six Rings
+  base 0 0 0
+  origin -95 26 223
+  end -132 26 222
+  turn 3
+  crop -139 12 215 -88 48 230
+  killdepth 5
+  tag MEDIUM
+  credit pw6
+  set -114 26 223 minecraft:cyan_terracotta
+  set -114 25 223 minecraft:cyan_terracotta
+  set -114 24 223 minecraft:cyan_terracotta
+  set -115 26 223 minecraft:cyan_terracotta
+  set -114 26 224 minecraft:cyan_terracotta
+  set -118 26 223 minecraft:cyan_terracotta
+  set -118 25 223 minecraft:cyan_terracotta
+  set -118 27 224 minecraft:cyan_terracotta
+end
+
+section B4-2 mcc6.mcmi.gz R62 The Lateral Leaps
+  base 0 0 0
+  origin -132 26 222
+  end -130 26 179
+  turn 2
+  crop -139 12 172 -123 48 229
+  killdepth 5
+  tag MEDIUM
+  credit pw6
+end
+
+section B4-3 mcc6.mcmi.gz R63 The Tuning Forks
+  base 0 0 0
+  origin -130 26 179
+  end -73 23 180
+  turn 1
+  crop -137 9 172 -66 48 187
+  killdepth 5
+  tag HARD
+  credit pw6
+end
+
+section M5-1 mcc6.mcmi.gz R71 The Sneaky Jumper
+  base 0 0 0
+  origin -73 23 180
+  end -38 23 174
+  turn 1
+  crop -80 9 167 -31 45 187
+  killdepth 5
+  credit pw6
+end
+
+section M5-2 mcc6.mcmi.gz R72 The Frozen Path
+  base 0 0 0
+  origin -38 23 174
+  end -38 20 130
+  turn 2
+  crop -45 6 123 -31 45 181
+  killdepth 5
+  credit pw6
+  set -41 17 145 minecraft:blue_ice
+  set -41 16 145 minecraft:blue_ice
+  set -41 15 145 minecraft:blue_ice
+  set -41 17 144 minecraft:blue_ice
+  set -42 17 145 minecraft:blue_ice
+  set -41 18 142 minecraft:blue_ice
+  set -41 17 142 minecraft:blue_ice
+  set -41 16 142 minecraft:blue_ice
+  set -41 18 141 minecraft:blue_ice
+  set -42 18 142 minecraft:blue_ice
+  set -40 18 140 minecraft:blue_ice
+  set -40 17 140 minecraft:blue_ice
+  set -40 16 140 minecraft:blue_ice
+  set -40 18 139 minecraft:blue_ice
+  set -41 18 140 minecraft:blue_ice
+end
+
+section M5-3 mcc6.mcmi.gz R73 The Broken Bars
+  base 0 0 0
+  origin -38 20 130
+  end -38 22 90
+  turn 2
+  crop -45 6 83 -31 44 137
+  killdepth 5
+  credit pw6
+end
+
+section E-MEDIUM-1 mcc6.mcmi.gz R81 The Trouble U's
+  base 0 0 0
+  origin -38 22 90
+  end -37 22 53
+  turn 2
+  crop -45 8 46 -30 44 97
+  killdepth 5
+  credit pw6
+end
+
+section E-HARD-1 mcc6.mcmi.gz R82 The Chain Pipes
+  base 0 0 0
+  origin -37 22 53
+  end -33 23 -32
+  turn 2
+  crop -44 8 -39 -26 45 60
+  killdepth 5
+  credit pw6
+end
+
+section E-HARD-2 mcc6.mcmi.gz R83 The Final Tower
+  base 0 0 0
+  origin -33 23 -32
+  end -49 74 -30
+  turn 3
+  crop -56 9 -39 -26 96 -23
+  killdepth 5
+  credit pw6
+  set -53 47 -31 minecraft:fire
+  set -54 47 -31 minecraft:fire
+  set -53 48 -29 minecraft:fire
+  set -53 49 -29 minecraft:fire
+  set -53 51 -29 minecraft:fire
+  set -53 48 -31 minecraft:fire
+  set -54 48 -31 minecraft:fire
+  set -51 51 -29 minecraft:fire
+  set -51 50 -29 minecraft:fire
+  set -50 47 -25 minecraft:nether_brick_stairs
+  set -51 47 -25 minecraft:nether_brick_stairs
+  set -50 47 -24 minecraft:nether_brick_stairs
+  set -51 46 -26 minecraft:nether_brick_stairs
+  set -52 48 -26 minecraft:nether_brick_stairs
+  set -51 48 -25 minecraft:nether_brick_stairs
+  set -51 49 -25 minecraft:nether_brick_stairs
+  set -51 50 -25 minecraft:nether_brick_stairs
+  set -53 51 -27 minecraft:nether_brick_stairs
+  set -50 48 -25 minecraft:nether_brick_stairs
+  set -50 48 -24 minecraft:nether_brick_stairs
+  set -50 49 -25 minecraft:nether_brick_stairs
+  set -50 50 -25 minecraft:nether_brick_stairs
+  set -49 51 -25 minecraft:nether_brick_stairs
+  set -49 47 -25 minecraft:nether_brick_stairs
+  set -49 47 -24 minecraft:nether_brick_stairs
+  set -49 48 -25 minecraft:nether_brick_stairs
+  set -49 48 -24 minecraft:nether_brick_stairs
+  set -49 49 -25 minecraft:nether_brick_stairs
+  set -49 49 -24 minecraft:nether_brick_stairs
+  set -49 50 -25 minecraft:nether_brick_stairs
+  set -49 50 -24 minecraft:nether_brick_stairs
+  set -57 49 -34 minecraft:light_gray_carpet
+  set -57 50 -35 minecraft:light_gray_carpet
+  set -57 51 -35 minecraft:light_gray_carpet
+end
+
+classic E-EASY-1 E-EASY-1
+classic E-EASY-2 E-EASY-2
+classic E-MEDIUM-2 E-MEDIUM-2

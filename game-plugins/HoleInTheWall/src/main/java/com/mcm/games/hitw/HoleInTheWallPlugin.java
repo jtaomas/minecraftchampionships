@@ -12,6 +12,11 @@ public final class HoleInTheWallPlugin extends JavaPlugin {
         game = new HoleInTheWallGame(this);
         getServer().getPluginManager().registerEvents(game, this);
         McmApi.registerGame(this, game);
+        try {
+            McmApi.registerMapEditable(this, game.id(), new HitwEdit(this, game, game.arena()));   // core /mcm mapedit (Map Edit core; older cores skip it)
+        } catch (Throwable t) {
+            getLogger().info("Map Edit is not available on this core (" + t.getClass().getSimpleName() + ").");
+        }
     }
 
     @Override

@@ -1,0 +1,80 @@
+{
+  "id": "iris",
+  "name": "Iris",
+  "debut": "MCC 5",
+  "stars": 3,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Iris.png",
+  "floor": [
+    "PbbbbbP",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "PbbbbbP",
+    "PPbbbPP",
+    "PPbbbPP"
+  ],
+  "palette": {
+    "b": "minecraft:blue_concrete",
+    "P": "minecraft:purple_concrete",
+    "w": "minecraft:white_terracotta",
+    "i": "minecraft:blue_concrete",
+    "B": "minecraft:black_concrete",
+    "r": "minecraft:iron_bars"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      "...r...",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".ww.ww.",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "w.iBi.w",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "w.iBi.w",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..www..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "status": "approximate",
+  "guessed": [
+    "the floor is a blue/purple pattern read from a perspective warp: purple corners at the back and 2x2 purple blocks at the front corners",
+    "the eye is a flat 1-block-thick wall at the centre; its four rows and seven columns are read from the render, but the thickness is a guess",
+    "the outer white columns float 1 block away from the frame with sky gaps, exactly as the render shows; they have no physical support",
+    "frame read as white terracotta (warm off-white mottled texture); white concrete/calcite are possible",
+    "support pole read as one iron bar (thin grey post); a lightning rod would also fit but is copper-coloured",
+    "the pole is 1 block tall, so the eye sits 1 block above the floor"
+  ]
+}

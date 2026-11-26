@@ -15,6 +15,10 @@ final class Settings {
     long seed = 20261124L;
     int offX, offY, offZ;
     int blocksPerTick = 30000;
+    /** Private imported maps: folder (relative to the plugin data folder) with one sub-folder per map. */
+    String mapsFolder = "maps";
+    /** Maps a game picks from at random (empty = classic + every map found); /pw map forces one. */
+    List<String> mapPool = List.of();
     // timing
     int countdown = 10;
     int time = 600;
@@ -36,14 +40,19 @@ final class Settings {
     // timed blocks
     String warnParticle = "DUST";
     // scoring
-    // MCC coins, Parkour Warrior Dojo (current PW; base x1.0, the core applies the event multiplier). COINS.md.
-    int stone = 2;                          // MCC: per stone medal (main challenge)
-    int[] bronze = {5, 15, 25, 40, 60};     // MCC: total for holding 1..5 bronze medals
-    int[] silver = {10, 25, 45, 70, 100};   // MCC: total for holding 1..5 silver medals
-    int[] gold = {15, 30, 55, 90, 140};     // MCC: total for holding 1..5 gold medals
-    final Map<Difficulty, Double> multInc = new EnumMap<>(Difficulty.class);
-    final Map<Difficulty, Double> weight = new EnumMap<>(Difficulty.class);
-    double weightNone = 0.40;
+    // coins (no medals): every challenge pays straight away, base x1.0, the core applies the event multiplier. COINS.md.
+    int mainCoins = 4;                      // each main-line challenge, stage 1
+    double stageScale = 0.15;               // +15 % per stage above 1 (main challenges and bonus tracks)
+    int bonusBronze = 4, bonusSilver = 6, bonusGold = 8;   // bonus track 1 / 2 / 3 of a hub, stage 1
+    int endEasy = 10, endMedium = 20, endHard = 40;          // finishing an ending
+    /** coins.course.<mapId>: per-checkpoint / finish coins of a linear (replica) course; missing = derived from coins.main. */
+    final Map<String, CourseCoins> courseCoins = new java.util.HashMap<>();
+
+    /** checkpoints = value per checkpoint (the last one repeats), checkpoint = the same value for all (-1 unset), finish = course completion (-1 unset). */
+    static final class CourseCoins {
+        List<Integer> checkpoints = List.of();
+        int checkpoint = -1, finish = -1;
+    }
 
     static Settings load(FileConfiguration c, Logger log) {
         Settings s = new Settings();
@@ -53,6 +62,10 @@ final class Settings {
         s.offY = c.getInt("map.offset-y", 0);
         s.offZ = c.getInt("map.offset-z", 0);
         s.blocksPerTick = Math.max(1000, c.getInt("map.blocks-per-tick", s.blocksPerTick));
+        s.mapsFolder = c.getString("map.maps-folder", s.mapsFolder);
+        List<String> pool = new java.util.ArrayList<>();
+        for (String id : c.getStringList("map.pool")) pool.add(id.trim().toLowerCase(java.util.Locale.ROOT));
+        s.mapPool = pool;
         s.countdown = Math.max(0, c.getInt("game.countdown-seconds", s.countdown));
         s.time = Math.max(30, c.getInt("game.time-seconds", s.time));
         s.overtime = Math.max(0, c.getInt("game.overtime-seconds", s.overtime));
@@ -70,17 +83,29 @@ final class Settings {
         s.fallMarginBelowCourse = Math.max(1, c.getInt("players.fall-margin-below-course", s.fallMarginBelowCourse));
         s.spectatorMargin = Math.max(5, c.getInt("spectators.bounds-margin", s.spectatorMargin));
         s.warnParticle = c.getString("timed.warn-particle", s.warnParticle);
-        s.stone = c.getInt("scoring.stone", s.stone);
-        s.bronze = table(c, "scoring.bronze", s.bronze, log);
-        s.silver = table(c, "scoring.silver", s.silver, log);
-        s.gold = table(c, "scoring.gold", s.gold, log);
-        s.multInc.put(Difficulty.EASY, c.getDouble("scoring.multiplier.easy", 0.15));
-        s.multInc.put(Difficulty.MEDIUM, c.getDouble("scoring.multiplier.medium", 0.35));
-        s.multInc.put(Difficulty.HARD, c.getDouble("scoring.multiplier.hard", 0.80));
-        s.weightNone = c.getDouble("scoring.share-weight.none", 0.40);
-        s.weight.put(Difficulty.EASY, c.getDouble("scoring.share-weight.easy", 0.45));
-        s.weight.put(Difficulty.MEDIUM, c.getDouble("scoring.share-weight.medium", 0.65));
-        s.weight.put(Difficulty.HARD, c.getDouble("scoring.share-weight.hard", 1.10));
+        s.mainCoins = Math.max(0, c.getInt("coins.main", s.mainCoins));
+        s.stageScale = Math.max(0, c.getDouble("coins.stage-scale", s.stageScale));
+        s.bonusBronze = Math.max(0, c.getInt("coins.bonus.bronze", s.bonusBronze));
+        s.bonusSilver = Math.max(0, c.getInt("coins.bonus.silver", s.bonusSilver));
+        s.bonusGold = Math.max(0, c.getInt("coins.bonus.gold", s.bonusGold));
+        s.endEasy = Math.max(0, c.getInt("coins.ending.easy", s.endEasy));
+        s.endMedium = Math.max(0, c.getInt("coins.ending.medium", s.endMedium));
+        s.endHard = Math.max(0, c.getInt("coins.ending.hard", s.endHard));
+        org.bukkit.configuration.ConfigurationSection cc = c.getConfigurationSection("coins.course");
+        if (cc != null) {
+            for (String id : cc.getKeys(false)) {
+                org.bukkit.configuration.ConfigurationSection sec = cc.getConfigurationSection(id);
+                if (sec == null) continue;
+                CourseCoins k = new CourseCoins();
+                List<Integer> raw = sec.getIntegerList("checkpoints");
+                List<Integer> list = new java.util.ArrayList<>();
+                for (int v : raw) list.add(Math.max(0, v));
+                k.checkpoints = list;
+                k.checkpoint = sec.contains("checkpoint") ? Math.max(0, sec.getInt("checkpoint")) : -1;
+                k.finish = sec.contains("finish") ? Math.max(0, sec.getInt("finish")) : -1;
+                s.courseCoins.put(id.toLowerCase(java.util.Locale.ROOT), k);
+            }
+        }
         return s;
     }
 

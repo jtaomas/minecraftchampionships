@@ -2,42 +2,45 @@ Builder-A TGTTOS maps: validation report (in-game seed of each map)
 Movement model: walk/sprint 5.6 b/s (median 4.3), step 0.6 / stairs 1, jumps edge-to-edge gap <= 4 flat, -1 per block of rise,
 drops reach further (vanilla fall time), bridging 0.30 s/block (median 0.55), pillar 0.40 s/block (median 0.55), ladders 2.35 b/s.
 
-==== Bookshelf Run  (com.mcm.games.tgttos.maps.a.BookshelfRunMap, PARKOUR, kit CONCRETE_PICKAXE_SNOWBALLS) ====  [generate 289 ms, validate 1862 ms, 105546 blocks]
+==== Laundry Line  (com.mcm.games.tgttos.maps.a.LaundryLineMap, BRIDGE, kit CONCRETE_PICKAXE_SNOWBALLS) ====  [generate 168 ms, validate 2172 ms, 146031 blocks]
   [ok]   contract check 
   [ok]   no concrete / concrete powder in the build (0)
-  [ok]   distinct block types >= 25 (68)
-  [ok]   scenery share 40-60% (44% of 105546 blocks outside the route envelope)
+  [ok]   distinct block types >= 25 (74)
+  [ok]   scenery share 40-60% (45% of 146031 blocks outside the route envelope)
   [ok]   connection post-pass holds (fences/panes/walls/bars: 0 mismatches)
-  [ok]   staircase helper: 4 flights walkable
-  [ok]   start strip holds 40 (261 standable cells, 60/60 spawns valid)
+  [ok]   staircase helper: 0 flights walkable
+  [ok]   start strip holds 40 (252 standable cells, 60/60 spawns valid)
   [ok]   start strip fenced in before GO (cells reachable outside: 0)
-  [ok]   start barrier blocks present (87)
-  [ok]   landmark visible from the start (ray-cast): 54/60 spawns (90%)
-  [ok]   built route start -> pen without placing blocks (39.2 s expert, 11 jumps, hardest gap 3.0 rise +1.0)
-  -- line FAST: three chained books over the void (gaps 3-4, +1/-1), the open atlas, the 3-wide pencil (choke), the dictionary stack, two chained notebooks (gaps 4), the dictionary, two coin stacks down, the 2-wide letter opener onto the teacup rim, drop in
+  [ok]   start barrier blocks present (108)
+  [ok]   landmark visible from the start (ray-cast): 49/60 spawns (82%)
+  [ok]   built route start -> pen without placing blocks (45.3 s expert, 21 jumps, hardest gap 3.0 rise +1.0)
+  -- line FAST: chimney-stack hops (gaps 2-4) across four streets with swinging sheets over them, the ridge choke, round the whirligig, the crumbling scaffold, the island rotary line, the bleach-yard sheets, the plank
   [ok]   FAST line completes
-         path 204 blocks, blocks placed 0, jumps 11 (3+ gaps: 7, falls 1), hardest jump gap 3.0 rise +1.0, max rise 1.0
-         estimated time: expert 39.5 s, median 53.7 s (+ fails)
-  [ok]   FAST longest obstacle-free straight sprint 12.0 <= 15 (-4,1,142)->(-12,1,151)
+         path 218 blocks, blocks placed 0, jumps 23 (3+ gaps: 14, falls 0), hardest jump gap 3.0 rise +1.0, max rise 1.0
+         estimated time: expert 46.2 s, median 65.1 s (+ fails)
+  [ok]   FAST longest obstacle-free straight sprint 14.0 <= 15 (0,1,197)->(0,1,211)
   [ok]   FAST blocks within the 64 kit (0)
-  -- line SAFE: boards against the wall (2-gaps), 3-wide ruler bridge, the open atlas, 3-wide ruler stair down, 2-gap, 2-wide bookmark ribbon, 2-gap, stair up to the dictionary, stair down to the drawer, round the saucer, up the spoon, drop in
+  -- line SAFE: own bridge on the right weaving between sheets, over the roof through the wide right ridge gap, then balconies on the right of every street (2-3 blocks of bridging each), the plank, the mill yard
   [ok]   SAFE line completes
-         path 214 blocks, blocks placed 0, jumps 9 (3+ gaps: 0, falls 1), hardest jump gap 2.2 rise +1.0, max rise 1.0
-         estimated time: expert 40.7 s, median 53.5 s (+ fails)
-  [ok]   SAFE longest obstacle-free straight sprint 14.9 <= 15 (-2,1,140)->(-12,1,151)
-  [ok]   SAFE blocks within the 64 kit (0)
-  [ok]   FAST saves >= 0% vs SAFE (expert 3%, median -0%)
-  [ok]   best line by an expert <= 50 s (39.5 s)
-  [ok]   map-wide: longest straight flat run along the course (z) 14 <= 15 at (-11,3,62)  [3733 reachable cells]
-         longest straight flat run across (x): 28 at (-19,3,10)
+         path 232 blocks, blocks placed 61, jumps 10 (3+ gaps: 0, falls 0), hardest jump gap 1.4 rise +1.0, max rise 1.0
+         estimated time: expert 51.5 s, median 77.6 s (+ fails)
+  [ok]   SAFE longest obstacle-free straight sprint 14.0 <= 15 (1,1,197)->(1,1,211)
+  [ok]   SAFE blocks within the 64 kit (61)
+  [ok]   FAST saves >= 0% vs SAFE (expert 10%, median 16%)
+  [ok]   best line by an expert <= 62 s (46.2 s)
+  [ok]   lazy straight line (walk + bridge, no jumps) needs >= 40 blocks (88 blocks, corridor x -2..2)
+  [ok]   map-wide: longest straight flat run along the course (z) 14 <= 15 at (0,1,164)  [4828 reachable cells]
+         longest straight flat run across (x): 45 at (-23,4,40)
   [ok]   lines and pen inside playBounds
-  [ok]   FAST crosses open void 10 times (>= 6), gaps [3.0, 3.0+1, 4.0-1, 3.0, 4.0, 4.0-1, 4.0-1, 2.0, 2.0, 7.1-11], widest 7.1
-         FAST: 41 of 143 walked cells (29%) have a void drop right beside them (knock-off exposure)
-  [ok]   SAFE crosses open void 8 times (>= 6), gaps [2.0-1, 2.0, 2.0+1, 2.0, 2.0, 2.2-1, 2.0, 7.1-11], widest 7.1
-         SAFE: 45 of 164 walked cells (27%) have a void drop right beside them (knock-off exposure)
-  [ok]   brawl spot 1: 26 x 13 box, 320 standable cells, 50 on a void edge (>= 80 / >= 10)
-  [ok]   brawl spot 2: 24 x 12 box, 288 standable cells, 55 on a void edge (>= 80 / >= 10)
-  [ok]   brawl spot 3: 24 x 14 box, 336 standable cells, 45 on a void edge (>= 80 / >= 10)
-  [ok]   finish row: 14 chickens in one row 27 wide (pen 27 x 1), spacing 2.0..2.0, 14/14 with a standing cell in front, 13/14 in sight from 8 blocks out (owner, feedback 3: the ending is a whole row of chickens)
+  [ok]   FAST crosses open void 21 times (>= 10), gaps [2.0, 3.0, 2.2+1, 3.0, 2.2-1, 3.0+1, 2.2-1, 3.0, 4.0, 2.2+1, 2.0, 3.6, 3.0+1, 3.0-1, 3.0+1, 4.0-1, 3.2, 3.0+1, 4.0-1, 3.0+1, 2.0-1], widest 4.0
+         FAST: 20 of 124 walked cells (16%) have a void drop right beside them (knock-off exposure)
+  [ok]   SAFE crosses open void 10 times (>= 10), gaps [2.0, 2.0, 1.4+1, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0], widest 2.0
+         SAFE: 32 of 132 walked cells (24%) have a void drop right beside them (knock-off exposure)
+  [ok]   brawl spot 1: 44 x 26 box, 1082 standable cells, 52 on a void edge (>= 80 / >= 10)
+  [ok]   brawl spot 2: 44 x 15 box, 656 standable cells, 110 on a void edge (>= 80 / >= 10)
+  [ok]   brawl spot 3: 44 x 15 box, 579 standable cells, 101 on a void edge (>= 80 / >= 10)
+  [ok]   brawl spot 4: 5 x 18 box, 90 standable cells, 16 on a void edge (>= 80 / >= 10)
+  [ok]   brawl spot 5: 44 x 13 box, 560 standable cells, 57 on a void edge (>= 80 / >= 10)
+  [ok]   finish row: 16 chickens in one row 31 wide (pen 31 x 1), spacing 2.0..2.0, 16/16 with a standing cell in front, 16/16 in sight from 8 blocks out (owner, feedback 3: the ending is a whole row of chickens)
   RESULT PASS
 

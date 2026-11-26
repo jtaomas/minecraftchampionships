@@ -143,7 +143,7 @@ final class MapRegistry {
         for (Entry e : entries) {
             long t0 = System.nanoTime();
             try {
-                TgMapData d = e.map.build(e.fixedSeed());
+                TgMapData d = Overlays.apply(e.map.id(), e.map.build(e.fixedSeed()));   // Map Edit overlay on top (core /mcm mapedit)
                 e.cached = d;
                 e.problems = d.check(e.map.kit());
                 for (int[] dp : e.map.decoyChickens())

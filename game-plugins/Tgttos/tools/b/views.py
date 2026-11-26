@@ -14,7 +14,7 @@ import sys
 import numpy as np
 from PIL import Image
 
-sys.path.insert(0, r"C:\Users\USER\Desktop\Mcc\tools")
+sys.path.insert(0, r"C:\Users\LeonS\Desktop\Mcc\tools")
 import render_preview as rp  # noqa: E402
 
 

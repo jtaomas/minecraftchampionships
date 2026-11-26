@@ -1,0 +1,51 @@
+{
+  "id": "disk_jockey",
+  "name": "Disk Jockey",
+  "debut": "MCC 4",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Disk_Jockey.png",
+  "floor": [
+    "qwqwqwq",
+    "wqwqwqw",
+    "qwqwqwq",
+    "wqwqwqw",
+    "qwqwqwq",
+    "wqwqwqw",
+    "qwqwqwq"
+  ],
+  "palette": {
+    "q": "minecraft:quartz_block",
+    "w": "minecraft:white_concrete",
+    "B": "minecraft:black_glazed_terracotta",
+    "K": "minecraft:black_concrete",
+    "N": "minecraft:note_block",
+    "S": "minecraft:stripped_dark_oak_log[axis=x]"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      ".......",
+      "..NSN..",
+      ".B...B.",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".K...K.",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the speaker cabinets read as black glazed terracotta (its dark texture has the red-ring pattern) with a black concrete block on top",
+    "the mixing deck between them read as note blocks either side of a dark stripped-wood block",
+    "the deck sits one row behind the two speaker towers, which overlap its ends",
+    "the white/grey floor is read as a quartz and white concrete checkerboard; the exact alternation is partly hidden by the deck"
+  ]
+}

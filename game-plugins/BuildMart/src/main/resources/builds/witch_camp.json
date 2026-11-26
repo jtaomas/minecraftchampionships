@@ -1,0 +1,107 @@
+{
+  "id": "witch_camp",
+  "name": "Witch Camp",
+  "debut": "MCC 11",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Witch_Camp.png",
+  "floor": [
+    "kkkkkkk",
+    "kkkkkkk",
+    "kkkkkkk",
+    "kkkkkkk",
+    "kkkkkkk",
+    "kkkkkkk",
+    "kkkkkkk"
+  ],
+  "palette": {
+    "k": "minecraft:black_concrete",
+    "p": "minecraft:purple_carpet",
+    "o": "minecraft:dark_oak_log[axis=y]",
+    "w": "minecraft:dark_oak_planks",
+    "d": "minecraft:cobbled_deepslate",
+    "D": "minecraft:polished_deepslate",
+    "F": "minecraft:campfire[facing=south,lit=true]"
+  },
+  "layers": [
+    [
+      "ppppppp",
+      "p.....p",
+      "p.....p",
+      "p..F..p",
+      "p.....p",
+      "pp...pp",
+      "pp...pp"
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".o...o.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".o.ddo.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "wowDDow",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "wo...ow",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".o...o.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "wwwwwww",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "wwwwwww",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the hanging pot read as a 2x1x2 deepslate cauldron (cobbled deepslate body, polished deepslate rim) hanging between the wooden brackets; the render's pot has small legs that are not reproduced",
+    "the frame read as two dark oak log posts, a 2-high top beam, two middle brackets and short side wings; the back of the frame and the beam depth are hidden",
+    "the floor is black concrete with a purple carpet border/rug; the purple could be magenta and the black could be blackstone",
+    "the campfire under the pot is kept as a lit campfire (smoke particles in the render are not blocks)",
+    "post heights and beam levels estimated from the render"
+  ]
+}

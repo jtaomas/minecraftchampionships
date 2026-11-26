@@ -1,0 +1,78 @@
+{
+  "id": "pizza",
+  "name": "Pizza",
+  "debut": "MCC 16",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Pizza.png",
+  "floor": [
+    "rrrrrrr",
+    "rrrrrrr",
+    "rrrrrrr",
+    "rrrrrrr",
+    "rcccrrr",
+    "rcccrrr",
+    "rcccrrr"
+  ],
+  "palette": {
+    "r": "minecraft:red_concrete",
+    "c": "minecraft:coarse_dirt",
+    "y": "minecraft:yellow_concrete",
+    "p": "minecraft:nether_wart_block",
+    "t": "minecraft:smooth_sandstone",
+    "o": "minecraft:orange_concrete"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      "..ttt..",
+      "..ypy..",
+      "..ypy..",
+      "..yypy.",
+      "......."
+    ],
+    [
+      "..ooo..",
+      "..yyy..",
+      "..yyy..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "..ooo..",
+      "..yyy..",
+      "..ooo..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "..ooo..",
+      "..yyy..",
+      "..yyy..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "..ooo..",
+      "..yyy..",
+      "..ooo..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the render is a close, low shot: only part of the slice is unambiguous, so the whole 7x7 layout is reconstructed",
+    "read as a pizza slice: dark red nether wart block pepperoni, bright yellow concrete cheese, smooth sandstone crust at the back",
+    "the tall yellow wall behind with an orange pizza-slice print is read as the open lid of a pizza box, 3 wide and 4 high at the back row",
+    "the plot floor is the red carpet colour with a coarse dirt patch under the slice"
+  ]
+}

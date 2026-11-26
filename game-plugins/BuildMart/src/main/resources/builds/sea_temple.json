@@ -1,0 +1,77 @@
+{
+  "id": "sea_temple",
+  "name": "Sea Temple",
+  "debut": "MCC 3",
+  "stars": 3,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Sea_Temple.png",
+  "floor": [
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss"
+  ],
+  "palette": {
+    "s": "minecraft:sand",
+    "P": "minecraft:prismarine",
+    "d": "minecraft:dark_prismarine",
+    "l": "minecraft:sea_lantern"
+  },
+  "layers": [
+    [
+      ".PPPPP.",
+      "PPPPPPP",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "..dPd..",
+      "..d.d..",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "..d.d..",
+      "..d.d..",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "..l.l..",
+      "..l.l..",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "..l.l..",
+      "..l.l..",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "status": "approximate",
+  "guessed": [
+    "the temple is 2 blocks deep: the front wall is 1 tall and the back row is 1 taller in the centre; the hidden back is filled symmetrically",
+    "the towers are 1 wide and 2 deep, with 2 dark prismarine blocks under 2 sea lanterns each",
+    "the base spans all seven columns, with the ends only one block deep",
+    "the prismarine variants are read from colour: prismarine for the patterned base, dark prismarine for the solid navy tower bases",
+    "the sandy floor is flat sand; a paler sand block behind the temple could be a different sand type"
+  ]
+}

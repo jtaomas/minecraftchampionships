@@ -1,0 +1,91 @@
+{
+  "id": "snowflake",
+  "name": "Snowflake",
+  "debut": "MCC 13",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Snowflake.png",
+  "floor": [
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb"
+  ],
+  "palette": {
+    "b": "minecraft:light_blue_concrete",
+    "q": "minecraft:quartz_block"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      ".......",
+      "..q.q..",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".q.q.q.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "..qqq..",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "q.q.q.q",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "..qqq..",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      ".q.q.q.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "..q.q..",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "snowflake is a single-block-thick wall one row deep, standing one block above the floor, with an open one-block hole at its centre",
+    "the arms in the render step forwards/backwards by a block; flattened to one plane",
+    "the exact arm lengths are estimated from the front view"
+  ]
+}

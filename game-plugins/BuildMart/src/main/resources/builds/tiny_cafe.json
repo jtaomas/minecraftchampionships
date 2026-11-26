@@ -1,0 +1,60 @@
+{
+  "id": "tiny_cafe",
+  "name": "Tiny Cafe",
+  "debut": "MCC 17",
+  "stars": 2,
+  "status": "done",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Tiny_Cafe.png",
+  "floor": [
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg"
+  ],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "o": "minecraft:oak_planks",
+    "f": "minecraft:oak_fence",
+    "q": "minecraft:smooth_quartz_slab[type=bottom]",
+    "G": "minecraft:green_concrete",
+    "W": "minecraft:white_concrete"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      "..ooo..",
+      "..ooo..",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..fqf..",
+      "..f.f..",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "..GWG..",
+      "..GWG..",
+      "..GWG..",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "counter is a 3x2 oak plank block with a smooth quartz slab laid on the middle",
+    "the two thin posts under the awning read as oak fence posts, one block tall, at the counter's ends",
+    "awning is a flat 3x3 slab of green concrete with a white concrete stripe down the middle; its top is hidden, filled with the same blocks",
+    "the plot floor is plain grass"
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "id": "wilson",
+  "name": "Wilson",
+  "debut": "MCC 14",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Wilson.png",
+  "floor": [
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb",
+    "bbbbbbb"
+  ],
+  "palette": {
+    "b": "minecraft:black_concrete",
+    "W": "minecraft:birch_planks",
+    "T": "minecraft:warped_wart_block"
+  },
+  "layers": [
+    [
+      "WWWWWWW",
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "WT...TW"
+    ],
+    [
+      "WWWWWWW",
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "W.....W"
+    ],
+    [
+      "WWWWWWW",
+      "W.TTT.W",
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "W.....W"
+    ],
+    [
+      "WWWWWWW",
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "W.....W"
+    ],
+    [
+      "WW...WW",
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "W.....W"
+    ],
+    [
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "W.....W",
+      "WT...TW"
+    ]
+  ],
+  "guessed": [
+    "the build is a 7 x 7 open-front room: birch plank side walls 6 high, a birch back wall 5 high, black concrete floor",
+    "the teal blocks are warped wart blocks (the reskin note says netherrack was replaced by warped wart block; the render is the warped version)",
+    "the face pattern: two blocks at the top front corners, a 3-wide band at mid height on the back wall, two blocks at the bottom front corners",
+    "the room's depth and the exact layer of the mid band are estimated from the opening's proportions"
+  ]
+}

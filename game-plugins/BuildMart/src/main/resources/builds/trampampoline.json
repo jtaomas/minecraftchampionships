@@ -1,0 +1,87 @@
+{
+  "id": "trampampoline",
+  "name": "Trampampoline",
+  "debut": "MCC 20",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Trampampoline.png",
+  "floor": [
+    "RRRRRRR",
+    "RbbbbbR",
+    "RbbbbbR",
+    "RbbbbbR",
+    "RbbbbbR",
+    "RbbbbbR",
+    "RbbbbbR"
+  ],
+  "palette": {
+    "R": "minecraft:red_concrete",
+    "b": "minecraft:black_concrete",
+    "W": "minecraft:white_concrete",
+    "f": "minecraft:oak_fence",
+    "p": "minecraft:black_stained_glass_pane",
+    "l": "minecraft:ladder[facing=south]"
+  },
+  "layers": [
+    [
+      ".......",
+      ".f...f.",
+      ".......",
+      ".......",
+      ".......",
+      ".f...f.",
+      "......."
+    ],
+    [
+      ".......",
+      ".RRRRR.",
+      ".RRRRR.",
+      ".RRRRR.",
+      ".RRRRR.",
+      ".RRRRR.",
+      "...l..."
+    ],
+    [
+      ".......",
+      ".RRRRR.",
+      ".RWWWR.",
+      ".RWWWR.",
+      ".RWWWR.",
+      ".RRRRR.",
+      "...l..."
+    ],
+    [
+      ".......",
+      ".ppppp.",
+      ".p...p.",
+      ".p...p.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".ppppp.",
+      ".p...p.",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "..ppp..",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the trampoline is a 5 x 5 red concrete frame 2 blocks tall on four oak fence legs, with a 3 x 3 white concrete mat set into the top",
+    "the back and side wall is black stained glass panes (the reskin note names black stained glass pane), 3 high at the centre and stepping down to 1 at the ends",
+    "the wooden ladder is on the front face, one cell south of the frame, 2 blocks tall",
+    "the frame's underside and hidden legs are mirrored from the front"
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "id": "trophy",
+  "name": "Trophy",
+  "debut": "MCC AS",
+  "stars": 3,
+  "status": "approximate",
+  "gold": true,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Trophy.png",
+  "floor": [
+    "ggggggg",
+    "gRRRRRg",
+    "gRRRRRg",
+    "gRRRRRg",
+    "gRRRRRg",
+    "gRRRRRg",
+    "ggggggg"
+  ],
+  "palette": {
+    "g": "minecraft:gold_block",
+    "R": "minecraft:red_wool",
+    "k": "minecraft:blackstone",
+    "s": "minecraft:smooth_stone"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      "..kkk..",
+      "...s...",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...g...",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...g...",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".kgggk.",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".kgggk.",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "..ggg..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "trophy read as a 3x2 gold bowl over a 3-wide foot, a two-block stem and a blackstone plinth",
+    "handles are blackstone blocks on both sides at the bowl's lower row and one block below it",
+    "the pale block at the front of the plinth is read as smooth stone",
+    "plinth depth and the hidden back are filled as a mirror of the front",
+    "floor is gold blocks with a 5x5 red wool square under the cup"
+  ]
+}

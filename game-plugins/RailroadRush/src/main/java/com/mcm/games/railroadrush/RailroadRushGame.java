@@ -647,7 +647,7 @@ public final class RailroadRushGame implements McmGame, Listener {
         List<Player> doorTeam = onlineMembers(l);
         double doorShare = ctx.teamShare(DOOR_POINTS, doorTeam.size());
         for (Player p : doorTeam) {
-            if (doorShare > 0) ctx.addCoins(p.getUniqueId(), doorShare, "Railroad Rush checkpoint " + (k + 1));
+            if (doorShare > 0) ctx.addObjectiveCoins(p.getUniqueId(), doorShare, null, "Checkpoint " + (k + 1) + " completed");
             p.sendTitle("§6Checkpoint " + (k + 1) + "!", k == 0 ? "§7The trader now sells everything. TNT carts incoming!" : (k == 2 ? "§7Final door down! Extend into the station." : "§7Next room unlocked"), 5, 50, 10);
             p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
         }
@@ -922,8 +922,8 @@ public final class RailroadRushGame implements McmGame, Listener {
             List<Player> team = onlineMembers(l);
             double placeShare = ctx.teamShare(place, team.size()), distShare = ctx.teamShare(dist, team.size());
             for (Player p : team) {
-                if (placeShare > 0) ctx.addCoins(p.getUniqueId(), placeShare, "Railroad Rush #" + (i + 1));
-                if (distShare > 0) ctx.addCoins(p.getUniqueId(), distShare, "Railroad length (" + l.reach + " blocks)");
+                if (placeShare > 0) ctx.addCoins(p.getUniqueId(), placeShare, "Team placement #" + (i + 1));
+                if (distShare > 0) ctx.addCoins(p.getUniqueId(), distShare, "Railroad length: " + l.reach + " blocks");
             }
             if (i < 10) ctx.broadcast(" §e#" + (i + 1) + " " + l.label + " §7- §f" + l.reach + " blocks§7, " + l.doorsOpened + "/3 checkpoints");
         }
@@ -1151,8 +1151,7 @@ public final class RailroadRushGame implements McmGame, Listener {
             case EMERALD_ORE -> {
                 List<Player> emTeam = onlineMembers(lane);
                 double emShare = ctx.teamShare(EMERALD_POINTS, emTeam.size());
-                for (Player q : emTeam) if (emShare > 0) ctx.addCoins(q.getUniqueId(), emShare, "Railroad Rush emerald");
-                p.sendActionBar(legacy("§6+" + EMERALD_POINTS + " team coins §7(emerald)"));
+                for (Player q : emTeam) if (emShare > 0) ctx.addCoins(q.getUniqueId(), emShare, "Found an emerald");
                 p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.7f, 1.6f);
             }
             default -> {

@@ -294,7 +294,7 @@ final class RaceGame implements McmGame {
         long seed = rnd.nextLong();
         plugin.worker().execute(() -> {
             TgMapData d;
-            try { d = e.map.build(seed); }
+            try { d = Overlays.apply(e.map.id(), e.map.build(seed)); }
             catch (Throwable t) { plugin.getLogger().severe("Race: map " + e.map.id() + " failed to build: " + t); d = e.cached; }
             TgMapData out = d;
             Bukkit.getScheduler().runTask(plugin, () -> then.accept(out));
@@ -964,18 +964,17 @@ final class RaceGame implements McmGame {
         int pts = s.placementPoints(place) + s.top10Bonus(place);
         r.places[round - 1] = place;
         r.points += pts;
-        ctx.addPoints(r.id, pts, "Race " + ordinal(place) + " place");
+        ctx.addPoints(r.id, pts, "Finished in " + ordinal(place) + " place");
         roundPts.merge(r.id, pts, Integer::sum);
         int bonus = fx == null ? 0 : bonusTotal(r);
         r.roundBonus = bonus;
         if (bonus > 0) {
             r.points += bonus;
-            ctx.addPoints(r.id, bonus, "Race line bonus");
+            ctx.addPoints(r.id, bonus, "Line bonus: " + bonusText(r));
             roundPts.merge(r.id, bonus, Integer::sum);
-            p.sendMessage("§6Line bonus: §e+" + bonus + " §7(" + bonusText(r) + ")");
         }
         String col = place == 1 ? "§6" : place == 2 ? "§f" : place == 3 ? "§c" : "§e";
-        McmFx.title(p, col + "§l" + ordinal(place), (chicken != null ? "§c§lWhack! §7" : "§a§lFinish! §7") + time(ms) + " §8| §a+" + pts + (bonus > 0 ? " §6+" + bonus + " line" : ""), 2, 40, 10);
+        McmFx.title(p, col + "§l" + ordinal(place), (chicken != null ? "§c§lWhack! §7" : "§a§lFinish! §7") + time(ms), 2, 40, 10);
         McmFx.sound(p, place <= 3 ? Sound.UI_TOAST_CHALLENGE_COMPLETE : Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
         Location cl = chicken != null ? chicken.getLocation() : p.getLocation();
         if (chicken != null) McmFx.soundAt(cl, Sound.ENTITY_CHICKEN_HURT, 1.5f, 1.2f);
@@ -1030,7 +1029,7 @@ final class RaceGame implements McmGame {
             // MCC team pool "shared amongst team members": each online member gets the MCC share (pool / 4)
             int share = (int) Math.round(ctx.teamShare(bonus, on));
             int total = share * on;
-            ctx.addSidePoints(e.getKey(), total, "Race team finish bonus");
+            ctx.addSidePoints(e.getKey(), total, "Your whole team finished the race!");
             roundSidePts.merge(e.getKey(), total, Integer::sum);
             for (UUID u : e.getValue()) { Racer r = racers.get(u); if (r != null && online.contains(u)) { r.points += share; sideShare.merge(u, share, Integer::sum); } }
             ctx.broadcast("§b★ " + McmFx.sideLabel(ctx, e.getKey()) + " §7all made it! §bTeam bonus +" + bonus + " §8(split)");

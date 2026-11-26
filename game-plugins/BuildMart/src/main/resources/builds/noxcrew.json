@@ -1,0 +1,58 @@
+{
+  "id": "noxcrew",
+  "name": "Noxcrew",
+  "debut": "MCC 4",
+  "stars": 4,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Noxcrew.png",
+  "floor": [
+    "wwwwwww",
+    "wwwwwww",
+    "wwwwwww",
+    "wwwwwww",
+    "wwwwwww",
+    "wwwwwww",
+    "wwwwwww"
+  ],
+  "palette": {
+    "w": "minecraft:white_concrete",
+    "r": "minecraft:nether_wart_block",
+    "g": "minecraft:white_stained_glass"
+  },
+  "layers": [
+    [
+      ".......",
+      ".rrrrrr",
+      ".rrrrrr",
+      ".rrrrrr",
+      ".rrrrrr",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".rrrrrr",
+      ".rrrrrr",
+      ".rrrrrr",
+      ".rrrrrr",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".gg...g",
+      ".g.g..g",
+      ".g..g.g",
+      ".g...gg",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "build read as the Noxcrew logo: a red nether wart block platform with a white stained glass 'N' laid flat on top",
+    "the render is a low front view, so the exact letter shape/diagonal is inferred; a plain 1-wide N was used",
+    "platform read as 6 wide x 4 deep x 2 tall; its back/right depth estimated",
+    "floor read as white concrete (the dark patches at the front corners are read as shadows)",
+    "stars taken from bm-3/downloads/revamped_stars.json (Noxcrew, P25 rating 4)"
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "id": "railways",
+  "name": "Railways",
+  "debut": "MCC 14",
+  "stars": 3,
+  "status": "done",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Railways.png",
+  "floor": [
+    "ggcdddc",
+    "ggcdddc",
+    "ggcdddc",
+    "ggcdddc",
+    "ggcdddc",
+    "ggcdddc",
+    "ggcdddc"
+  ],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "c": "minecraft:coarse_dirt",
+    "d": "minecraft:black_concrete",
+    "r": "minecraft:rail",
+    "s": "minecraft:stone_bricks",
+    "l": "minecraft:smooth_stone_slab[type=bottom]",
+    "t": "minecraft:redstone_torch[lit=true]",
+    "f": "minecraft:cornflower"
+  },
+  "layers": [
+    [
+      ".......",
+      "...r...",
+      ".f.....",
+      ".f.....",
+      "sf...r.",
+      ".......",
+      "...r..."
+    ],
+    [
+      ".......",
+      "...r...",
+      ".......",
+      ".......",
+      "s....r.",
+      ".......",
+      "...r..."
+    ],
+    [
+      ".......",
+      "...r...",
+      ".......",
+      ".......",
+      "stlllr.",
+      ".......",
+      "...r..."
+    ]
+  ],
+  "guessed": [
+    "the signal post is 2 stone-brick blocks tall with a redstone torch on top and a smooth-stone slab arm reaching east over the track",
+    "the rail runs the full depth of the plot on a 3-block-wide black concrete bed",
+    "grass bank down the left two columns with coarse dirt ballast beside the track on both sides",
+    "the back half of the floor is hidden behind the signal post; filled with the same columns"
+  ]
+}

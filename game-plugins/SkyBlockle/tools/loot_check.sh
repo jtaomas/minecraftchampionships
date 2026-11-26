@@ -5,7 +5,7 @@
 set -e
 cd "$(dirname "$0")/.."
 OUT=tools/out/lootcheck
-J=/c/Users/USER/Desktop/java/bin
+J=/c/Users/LeonS/Desktop/java/bin
 YAML="$(cygpath -w "$HOME/.m2/repository/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar")"
 rm -rf "$OUT"; mkdir -p "$OUT"
 S=src/main/java/com/mcm/games/skyblockle

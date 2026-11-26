@@ -1,0 +1,103 @@
+{
+  "id": "robomingos",
+  "name": "ROBOMINGOS",
+  "debut": "MCC AF",
+  "stars": 4,
+  "status": "approximate",
+  "gold": true,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM_-_ROBOMINGOS.png",
+  "floor": [
+    "ggggggg",
+    "gwwwwwg",
+    "gwwwwwg",
+    "gwwwwwg",
+    "gwwwwwg",
+    "gwwwwwg",
+    "ggggggg"
+  ],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "w": "minecraft:water",
+    "y": "minecraft:yellow_stained_glass",
+    "c": "minecraft:cobblestone",
+    "s": "minecraft:sand",
+    "C": "minecraft:oxidized_cut_copper",
+    "H": "minecraft:oxidized_copper",
+    "K": "minecraft:copper_block",
+    "R": "minecraft:lightning_rod[facing=up]",
+    "e": "minecraft:polished_blackstone_button[face=wall,facing=south,powered=false]",
+    "f": "minecraft:oxeye_daisy"
+  },
+  "layers": [
+    [
+      "yyyyyyy",
+      "ygggssy",
+      "ygggssy",
+      "yg.cc.y",
+      "yg.cc.y",
+      "yg.cc.y",
+      "yyyyyyy"
+    ],
+    [
+      ".......",
+      "...f...",
+      ".....R.",
+      ".......",
+      "...R...",
+      ".f.....",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".....R.",
+      ".......",
+      ".CCCC..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...CCC.",
+      ".......",
+      ".CCCC..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      "...CCC.",
+      ".......",
+      "...KR..",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".....R.",
+      ".......",
+      "...KH..",
+      "....e..",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".....HK",
+      ".....e.",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the pond base is the same as Fancy Flamingos: yellow stained glass rim, grass banks, water, cobblestone island, sand mound and two oxeye daisies; layout estimated",
+    "robot bodies read as oxidized cut copper (4x2 front, 3x2 back), heads as oxidized copper, beaks as copper block with a lower tip block",
+    "legs and necks read as lightning rods (their segmented copper look); hidden legs assumed",
+    "eyes are item-frame-like art in the render; substituted with polished blackstone buttons",
+    "exact heights (front body layers 3-4, back body layers 4-5) inferred from the perspective"
+  ]
+}

@@ -72,9 +72,9 @@ public final class ImportedBbLoader {
                 out.add(a);
                 if (log != null) {
                     log.info(String.format(Locale.ROOT,
-                            "Imported Battle Box arena %s (\"%s\"): %d blocks, %d palette, centre=(%d,%d,%d), spawns=(%d,%d,%d)/(%d,%d,%d), %d stripped, loaded in %d ms",
-                            a.id, a.name, a.blockCount, a.palette.length,
-                            a.centreX, a.centreY, a.centreZ,
+                            "Imported Battle Box arena %s (\"%s\", by %s): %d blocks, %d palette, centre=(%d,%d,%d) %dx%d, gates=%d/%d, spawns=(%d,%d,%d)/(%d,%d,%d), %d stripped, loaded in %d ms",
+                            a.id, a.name, a.credit == null ? "unknown" : a.credit, a.blockCount, a.palette.length,
+                            a.centreX, a.centreY, a.centreZ, a.centreW, a.centreD, a.gatesA.size(), a.gatesB.size(),
                             a.spawnAX, a.spawnAY, a.spawnAZ,
                             a.spawnBX, a.spawnBY, a.spawnBZ,
                             a.removedBlocks, (System.nanoTime() - t0) / 1_000_000));
@@ -111,6 +111,14 @@ public final class ImportedBbLoader {
         check(spawnA[0], spawnA[1], spawnA[2]);
         check(spawnB[0], spawnB[1], spawnB[2]);
 
+        int[] cs = y.containsKey("centre_size") ? pair(y.get("centre_size"), "centre_size") : new int[]{3, 3};
+        if (cs[0] < 1 || cs[1] < 1 || cs[0] > 12 || cs[1] > 12) throw new IOException("centre_size must be 1..12 per side");
+        List<int[]> gatesA = boxes(y.get("gates_a"), "gates_a");
+        List<int[]> gatesB = boxes(y.get("gates_b"), "gates_b");
+        String credit = text(str(y, "credit", ""), 200);
+        String license = text(str(y, "license", ""), 120);
+        if (!license.isEmpty()) credit = credit.isEmpty() ? license : credit + " (" + license + ")";
+
         String bfName = str(y, "blocks", "blocks.mcmi.gz");
         if (!FILE_NAME.matcher(bfName).matches() || bfName.contains("..")) {
             throw new IOException("blocks: must be a plain file name");
@@ -129,6 +137,7 @@ public final class ImportedBbLoader {
                 centre[0], centre[1], centre[2],
                 spawnA[0], spawnA[1], spawnA[2],
                 spawnB[0], spawnB[1], spawnB[2],
+                cs[0], cs[1], gatesA, gatesB, credit.isEmpty() ? null : credit,
                 p.bounds, b.removed, p.keys, p.pal, p.palette);
     }
 
@@ -306,6 +315,31 @@ public final class ImportedBbLoader {
             throw new IOException(what + ": number expected");
         }
         return (int) Math.floor(n.doubleValue());
+    }
+
+    private static int[] pair(Object o, String what) throws IOException {
+        if (!(o instanceof List<?> l) || l.size() != 2) throw new IOException(what + " must be [w,d]");
+        return new int[]{intOf(l.get(0), what), intOf(l.get(1), what)};
+    }
+
+    /** Optional list of gate boxes {@code [[x1,y1,z1,x2,y2,z2], ...]} (at most 8 boxes of at most 600 blocks each). */
+    private static List<int[]> boxes(Object o, String what) throws IOException {
+        if (o == null) return List.of();
+        if (!(o instanceof List<?> l) || l.size() > 8) throw new IOException(what + " must be a list of at most 8 boxes");
+        List<int[]> out = new ArrayList<>();
+        for (Object e : l) {
+            if (!(e instanceof List<?> b) || b.size() != 6) throw new IOException(what + ": each box is [x1,y1,z1,x2,y2,z2]");
+            int[] v = new int[6];
+            for (int i = 0; i < 6; i++) v[i] = intOf(b.get(i), what);
+            int[] box = {Math.min(v[0], v[3]), Math.min(v[1], v[4]), Math.min(v[2], v[5]),
+                    Math.max(v[0], v[3]), Math.max(v[1], v[4]), Math.max(v[2], v[5])};
+            check(box[0], box[1], box[2]);
+            check(box[3], box[4], box[5]);
+            long vol = (long) (box[3] - box[0] + 1) * (box[4] - box[1] + 1) * (box[5] - box[2] + 1);
+            if (vol > 600) throw new IOException(what + ": a gate box has " + vol + " blocks (max 600)");
+            out.add(box);
+        }
+        return List.copyOf(out);
     }
 
     private static int[] vec3(Object o, String what) throws IOException {

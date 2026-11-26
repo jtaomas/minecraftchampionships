@@ -485,12 +485,8 @@ public final class SkyBattleGame implements McmGame, Listener {
             ctx.broadcast(ChatColor.GRAY + "☠ " + coloured(victim) + ChatColor.GRAY + " was eliminated by " + coloured(killer)
                     + ChatColor.GRAY + " (" + cause + ")");
             kills.merge(killer, 1, Integer::sum);
-            if (KILL_POINTS > 0) ctx.addCoins(killer, KILL_POINTS, "Sky Battle elimination");
-            Player kp = Bukkit.getPlayer(killer);
-            if (kp != null) {
-                kp.sendTitle("", ChatColor.RED + "⚔ Eliminated " + names.getOrDefault(victim, "?"), 0, 30, 10);
-                kp.playSound(kp.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.2f);
-            }
+            String victimName = names.getOrDefault(victim, "a player");
+            if (KILL_POINTS > 0) ctx.addKillCoins(killer, KILL_POINTS, victim, victimName, "You eliminated " + victimName);
         } else {
             ctx.broadcast(ChatColor.GRAY + "☠ " + coloured(victim) + ChatColor.GRAY + " " + cause);
         }
@@ -498,7 +494,7 @@ public final class SkyBattleGame implements McmGame, Listener {
         // survival points to every player still alive
         if (state == State.LIVE) {
             for (UUID u : new ArrayList<>(alive)) {
-                if (survivalPoints > 0) ctx.addCoins(u, survivalPoints, "Sky Battle survival");
+                if (survivalPoints > 0) ctx.addCoins(u, survivalPoints, names.getOrDefault(victim, "A player") + " was eliminated");
             }
         }
 

@@ -1,0 +1,72 @@
+{
+  "id": "construction_materials",
+  "name": "Construction Materials",
+  "debut": "MCC R",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Construction_Materials.png",
+  "floor": [
+    "YYBBYYB",
+    "YBBYYBB",
+    "BBYYBBY",
+    "BYYBBYY",
+    "QQQQYYB",
+    "QQQQYBB",
+    "BBYYBBY"
+  ],
+  "palette": {
+    "Y": "minecraft:yellow_concrete",
+    "B": "minecraft:black_concrete",
+    "Q": "minecraft:quartz_bricks",
+    "O": "minecraft:orange_terracotta",
+    "S": "minecraft:stone_bricks",
+    "T": "minecraft:stone_brick_stairs[facing=south,half=bottom]",
+    "L": "minecraft:oak_log[axis=y]"
+  },
+  "layers": [
+    [
+      ".......",
+      "....SSS",
+      "L.OOSSS",
+      "..O.T..",
+      "......L",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "....SSS",
+      "..O.SSS",
+      "..O....",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "....SS.",
+      "..O.SS.",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      "....S..",
+      "....S..",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "floor is a diagonal yellow/black hazard stripe pattern (approximated with 2-wide diagonal bands) with a white walkway in front of the orange pile; exact stripe phase estimated",
+    "white walkway read as quartz bricks (small white/grey brick texture); could be white concrete or bone block",
+    "orange pile read as orange terracotta (texture has no brick courses); stone pile read as stone bricks",
+    "pile depths and the small orange block behind the pile inferred from the low camera; the stone pile back rows hidden",
+    "the two posts read as oak logs, 2 tall; their exact depth estimated",
+    "the stone step at the front of the stone pile read as a stone brick stair"
+  ]
+}

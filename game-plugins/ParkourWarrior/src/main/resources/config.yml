@@ -8,6 +8,13 @@ map:
   offset-y: 0
   offset-z: 0
   blocks-per-tick: 30000
+  # Maps: 'classic' (the built-in course) plus private imported maps, each a sub-folder of maps-folder (relative to
+  # plugins/McmParkourWarrior/) holding course.txt + its *.mcmi.gz pieces. Those files are third-party data: they stay
+  # on the server only, never in git or the jar. Each game picks one map at random from the pool (empty = classic and
+  # every map found); '/pw map <id>' forces the next games' map ('/pw map random' undoes it).
+  maps-folder: maps
+  # mcc6_full = the MCC 6 replica imported 1:1 (one line of 24 sections, checkpoints done by the plugin); see tools/mcc6_import.py
+  pool: [classic, mcc6_replica, mcc10_replica, mcc6_full]
 
 game:
   countdown-seconds: 10            # default
@@ -39,20 +46,27 @@ spectators:
 timed:
   warn-particle: DUST
 
-# MCC coins, Parkour Warrior Dojo (the current, medal-based PW; base x1.0, the core applies the event multiplier).
-# Source: MCC wiki, Parkour Warrior "Coin Rewards" (https://mcchampionship.fandom.com/wiki/Parkour_Warrior;
-# research/mcc_archive/parkour_warrior/pw-1/notes.md). See game-plugins/COINS.md.
-scoring:
-  stone: 2                     # MCC: per stone medal (main challenge)
-  bronze: [5, 15, 25, 40, 60]  # MCC: total for holding 1..5 medals of that tier (paid as the difference)
-  silver: [10, 25, 45, 70, 100]
-  gold: [15, 30, 55, 90, 140]
-  multiplier:
-    easy: 0.15
-    medium: 0.35
-    hard: 0.80
-  share-weight:
-    none: 0.40
-    easy: 0.45
-    medium: 0.65
-    hard: 1.10
+# Coins (no medals, no team multiplier): every challenge pays straight away; base x1.0, the core applies the event multiplier.
+# The old medal-based tables (stone/bronze/silver/gold, team multiplier) are gone. See game-plugins/COINS.md.
+# Main challenge = main coins; bonus track 1/2/3 of a hub (bronze/silver/gold) pays more; both grow by stage-scale per stage above 1.
+# Finishing an ending (Easy / Medium / Hard) pays a finish bonus.
+coins:
+  main: 4
+  stage-scale: 0.15
+  bonus:
+    bronze: 4
+    silver: 6
+    gold: 8
+  ending:
+    easy: 10
+    medium: 20
+    hard: 40
+  # A linear replica map (format linear, one line of sections, no branches or difficulty multipliers) pays from its own block,
+  # keyed by the map id: checkpoints = coins per checkpoint in course order (the last entry repeats), or checkpoint = one value
+  # for all; finish = the course completion. Missing = coins.main x stage-scale per stage / ending.hard. Reason lines read
+  # "Checkpoint N completed" and "Course completed".
+  course:
+    mcc6_full:
+      # 23 checkpoints, 8 stages of 3 sections (stage 1: 4 coins ... stage 8: 8 coins), the stage scale of coins.main
+      checkpoints: [4, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 7, 7, 7, 8, 8, 8, 8, 8]
+      finish: 40       # the last section, The Final Tower (= the hard-ending value; there is one ending)

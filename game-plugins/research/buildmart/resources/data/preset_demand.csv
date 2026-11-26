@@ -1,0 +1,66 @@
+preset,blocks,stars,shop_blocks,material,count
+Pixel Heart,13,2,0,RED_WOOL,13
+Pumpkin Patch,9,1,0,GREEN_WOOL,4
+Pumpkin Patch,9,1,0,PUMPKIN,4
+Pumpkin Patch,9,1,0,HAY_BLOCK,1
+Traffic Light,11,1,0,BLACK_WOOL,8
+Traffic Light,11,1,0,LIME_WOOL,1
+Traffic Light,11,1,0,YELLOW_WOOL,1
+Traffic Light,11,1,0,RED_WOOL,1
+Snowman,11,1,0,SNOW_BLOCK,10
+Snowman,11,1,0,PUMPKIN,1
+Flag,13,2,0,OAK_LOG,5
+Flag,13,2,0,BLUE_WOOL,4
+Flag,13,2,0,WHITE_WOOL,4
+Small Tree,16,2,0,OAK_LEAVES,13
+Small Tree,16,2,0,OAK_LOG,3
+Mushroom,16,2,0,RED_WOOL,13
+Mushroom,16,2,0,QUARTZ_BLOCK,2
+Mushroom,16,2,0,WHITE_WOOL,1
+Cactus,13,2,0,GREEN_WOOL,12
+Cactus,13,2,0,YELLOW_WOOL,1
+Fruit Stand,16,2,0,OAK_PLANKS,6
+Fruit Stand,16,2,0,OAK_LOG,4
+Fruit Stand,16,2,0,MELON,3
+Fruit Stand,16,2,0,PUMPKIN,3
+Brick Chimney,13,3,8,BRICKS,8
+Brick Chimney,13,3,8,COBBLESTONE,4
+Brick Chimney,13,3,8,WHITE_WOOL,1
+Stone Well,21,3,0,OAK_PLANKS,9
+Stone Well,21,3,0,COBBLESTONE,8
+Stone Well,21,3,0,OAK_LOG,4
+Tiny Hut,23,3,0,OAK_PLANKS,15
+Tiny Hut,23,3,0,OAK_LOG,8
+Smiley,21,3,0,YELLOW_WOOL,16
+Smiley,21,3,0,BLACK_WOOL,5
+Rocket,17,2,1,WHITE_WOOL,11
+Rocket,17,2,1,ORANGE_WOOL,4
+Rocket,17,2,1,GLASS,1
+Rocket,17,2,1,RED_WOOL,1
+Golden Trophy,19,4,10,GOLD_BLOCK,10
+Golden Trophy,19,4,10,QUARTZ_BLOCK,9
+Penguin,23,3,0,BLACK_WOOL,18
+Penguin,23,3,0,ORANGE_WOOL,3
+Penguin,23,3,0,WHITE_WOOL,2
+Bumble Bee,20,3,0,YELLOW_WOOL,8
+Bumble Bee,20,3,0,BLACK_WOOL,8
+Bumble Bee,20,3,0,WHITE_WOOL,4
+Piggy,22,3,0,PINK_WOOL,22
+Fountain,23,3,0,COBBLESTONE,16
+Fountain,23,3,0,LIGHT_BLUE_WOOL,5
+Fountain,23,3,0,QUARTZ_BLOCK,2
+Creeper Head,27,3,0,LIME_WOOL,22
+Creeper Head,27,3,0,BLACK_WOOL,5
+Watchtower,25,3,0,SPRUCE_PLANKS,13
+Watchtower,25,3,0,COBBLESTONE,12
+Desert Pyramid,35,4,1,SANDSTONE,34
+Desert Pyramid,35,4,1,GOLD_BLOCK,1
+Igloo,36,4,0,SNOW_BLOCK,36
+Lighthouse,38,5,8,RED_WOOL,21
+Lighthouse,38,5,8,WHITE_WOOL,8
+Lighthouse,38,5,8,GLASS,8
+Lighthouse,38,5,8,GLOWSTONE,1
+Cottage,55,5,5,RED_WOOL,25
+Cottage,55,5,5,OAK_PLANKS,17
+Cottage,55,5,5,OAK_LOG,8
+Cottage,55,5,5,GLASS,5

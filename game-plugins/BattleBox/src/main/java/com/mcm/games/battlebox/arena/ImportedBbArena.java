@@ -14,6 +14,9 @@ public final class ImportedBbArena {
     public final int spawnAX, spawnAY, spawnAZ;
     public final int spawnBX, spawnBY, spawnBZ;
     public final int minX, minY, minZ, maxX, maxY, maxZ;
+    public final int centreW, centreD;
+    public final java.util.List<int[]> gatesA, gatesB;
+    public final String credit;
     public final int blockCount;
     public final int removedBlocks;
     public final long[] keys;
@@ -26,6 +29,7 @@ public final class ImportedBbArena {
             int centreX, int centreY, int centreZ,
             int spawnAX, int spawnAY, int spawnAZ,
             int spawnBX, int spawnBY, int spawnBZ,
+            int centreW, int centreD, java.util.List<int[]> gatesA, java.util.List<int[]> gatesB, String credit,
             int[] bounds, int removedBlocks,
             long[] keys, int[] pal, String[] palette) {
         this.id = id;
@@ -44,6 +48,11 @@ public final class ImportedBbArena {
         this.spawnBX = spawnBX;
         this.spawnBY = spawnBY;
         this.spawnBZ = spawnBZ;
+        this.centreW = centreW;
+        this.centreD = centreD;
+        this.gatesA = gatesA;
+        this.gatesB = gatesB;
+        this.credit = credit;
         this.minX = bounds[0];
         this.minY = bounds[1];
         this.minZ = bounds[2];

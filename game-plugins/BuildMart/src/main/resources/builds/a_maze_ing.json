@@ -1,0 +1,51 @@
+{
+  "id": "a_maze_ing",
+  "name": "a-Maze-ing",
+  "debut": "MCC P23",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM_-_a-Maze-ing.png",
+  "floor": [
+    "gdggggg",
+    "gdddddg",
+    "gdggdgg",
+    "gdggdgg",
+    "gwdddgg",
+    "gggdggg",
+    "gggdggg"
+  ],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "d": "minecraft:dirt",
+    "w": "minecraft:water",
+    "m": "minecraft:moss_block",
+    "l": "minecraft:lantern[hanging=true]"
+  },
+  "layers": [
+    [
+      "m.mmmmm",
+      "m.....m",
+      "m.mm.mm",
+      "m.mm.mm",
+      "m....mm",
+      "mmm.mmm",
+      "mmm.mmm"
+    ],
+    [
+      "m.mmmmm",
+      "m..l..m",
+      "m.mm.mm",
+      "m.mm.mm",
+      "m....mm",
+      "mmm.mmm",
+      "mmm.mmm"
+    ]
+  ],
+  "guessed": [
+    "maze corridors behind the 2-high hedges are hidden; the path is rebuilt as a loop: entrance (col 3) turns west at row 4, runs north up col 1 to the water pool, along the back lane (row 1) and south down col 4",
+    "all hedges read as moss blocks (mottled top, hanging-strand sides); they may be leaves in the original",
+    "the pool is a water block set into the floor at the end of the left corridor",
+    "the lantern hangs on the south face of the back hedge at the lane (height 2); a lantern is the closest match for the small gold hanging object",
+    "the back-left hedge is separated from the mass by the left corridor reaching the back edge; the notch at the back right is read as the lane opening at col 5"
+  ]
+}

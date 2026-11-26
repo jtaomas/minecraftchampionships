@@ -158,7 +158,7 @@ final class Gear {
         ItemStack it = new ItemStack(Side.centreBlock(dye, wool), n);
         ItemMeta m = it.getItemMeta();
         m.setDisplayName(Side.chatFor(dye) + "" + ChatColor.BOLD + "Centre Blocks");
-        m.setLore(List.of(ChatColor.GRAY + "Place on the 3x3 centre pad.", ChatColor.GRAY + "Fill all 9 to win the round!"));
+        m.setLore(List.of(ChatColor.GRAY + "Place on the centre pad.", ChatColor.GRAY + "Fill every cell to win the round!"));
         it.setItemMeta(m);
         return it;
     }

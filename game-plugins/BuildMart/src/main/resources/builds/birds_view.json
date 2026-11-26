@@ -1,0 +1,60 @@
+{
+  "id": "birds_view",
+  "name": "Bird's View",
+  "debut": "MCC 4",
+  "stars": 2,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Birds_View.png",
+  "floor": [
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "wwwwwww",
+    "gggggwg",
+    "gggggwg"
+  ],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "w": "minecraft:water",
+    "d": "minecraft:coarse_dirt",
+    "s": "minecraft:stone",
+    "a": "minecraft:allium",
+    "D": "minecraft:oxeye_daisy"
+  },
+  "layers": [
+    [
+      ".ddd.ss",
+      ".ddd.ss",
+      ".ddd...",
+      "D..DD..",
+      ".......",
+      "..aa...",
+      ".a....."
+    ],
+    [
+      "..dd..s",
+      "..dd...",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      "..d....",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the stream is read as one full row of water with a one-block branch running to the front on the east side; the render shows the water one block lower, which the flat floor cannot do",
+    "the dirt and stone hill footprints and their back rows are hidden behind the hills; filled as symmetric 2-3 deep mounds",
+    "flower cells placed from their stem bases; the exact row of each flower may be off by one",
+    "coarse dirt chosen for the brown hill from its dark-speckled texture"
+  ]
+}

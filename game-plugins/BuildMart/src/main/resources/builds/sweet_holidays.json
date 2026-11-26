@@ -1,0 +1,105 @@
+{
+  "id": "sweet_holidays",
+  "name": "Sweet Holidays",
+  "debut": "MCC 13",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Sweet_Holidays.png",
+  "floor": [
+    "yymmccr",
+    "yymmcco",
+    "mmccrry",
+    "mmccrry",
+    "ccrryym",
+    "ccrryym",
+    "rryymmc"
+  ],
+  "palette": {
+    "y": "minecraft:yellow_concrete",
+    "m": "minecraft:magenta_concrete",
+    "c": "minecraft:cyan_concrete",
+    "r": "minecraft:red_concrete",
+    "o": "minecraft:orange_concrete",
+    "W": "minecraft:white_concrete",
+    "R": "minecraft:red_concrete"
+  },
+  "layers": [
+    [
+      ".......",
+      ".......",
+      ".......",
+      "....W..",
+      "..W....",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "....R..",
+      "..R....",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "....W..",
+      "..W....",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "....R..",
+      "..R....",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "....W..",
+      "W.W....",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "....R..",
+      "RWR....",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "....W.W",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".......",
+      ".......",
+      "....RWR",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the candy canes read as 1-wide alternating white/red concrete columns with 3-wide hooks (left cane 6 tall hooking left, right cane 8 tall hooking right); the exact stripe count and hook overhang are estimated",
+    "the floor is a patchwork of bright concrete tiles (yellow, magenta, cyan, red, orange) in 2x2 blocks; the exact patch layout is partly hidden by the canes and is a best-fit",
+    "the white cane blocks could be quartz or white terracotta rather than white concrete"
+  ]
+}

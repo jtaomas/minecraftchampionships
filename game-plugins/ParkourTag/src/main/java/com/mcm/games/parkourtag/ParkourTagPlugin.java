@@ -14,6 +14,12 @@ public final class ParkourTagPlugin extends JavaPlugin {
         game = new ParkourTagGame(this);
         getServer().getPluginManager().registerEvents(game, this);
         McmApi.registerGame(this, game);
+        PtOverlay.init(this);
+        try {
+            McmApi.registerMapEditable(this, game.id(), new PtEdit(game));   // core /mcm mapedit (Map Edit core; older cores skip it)
+        } catch (Throwable t) {
+            getLogger().info("Map Edit is not available on this core (" + t.getClass().getSimpleName() + ").");
+        }
     }
 
     @Override
@@ -34,7 +40,11 @@ public final class ParkourTagPlugin extends JavaPlugin {
             catch (NumberFormatException e) { sender.sendMessage("Usage: /parkourtag hunts <player> <n>"); }
             return true;
         }
-        sender.sendMessage("Usage: /parkourtag status | hunts <player> <n>");
+        if (args.length >= 2 && args[0].equalsIgnoreCase("map")) {
+            sender.sendMessage(game.forceNextMap(args[1]) ? "Next game uses " + args[1] : "Unknown map " + args[1] + " (" + game.maps() + ")");
+            return true;
+        }
+        sender.sendMessage("Usage: /parkourtag status | hunts <player> <n> | map <id>");
         return true;
     }
 }

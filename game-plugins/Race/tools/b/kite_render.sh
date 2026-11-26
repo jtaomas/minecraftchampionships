@@ -5,7 +5,7 @@
 cd "$(dirname "$0")/../.."
 OUT=tools/b/out
 CL=$OUT/kite_classes
-J=/c/Users/USER/Desktop/java/bin
+J=/c/Users/LeonS/Desktop/java/bin
 rm -rf "$CL"; mkdir -p "$CL" previews
 "$J/javac" -encoding UTF-8 -d "$CL" src/main/java/com/mcm/games/race/model/*.java \
   src/main/java/com/mcm/games/race/maps/b/util/*.java src/main/java/com/mcm/games/race/maps/b/Kite*.java \
@@ -13,7 +13,7 @@ rm -rf "$CL"; mkdir -p "$CL" previews
 "$J/java" -Xmx3g -cp "$CL" KiteMain "$OUT" "$@"
 RC=$?
 [ -n "$NORENDER" ] && exit $RC
-R=/c/Users/USER/Desktop/Mcc/tools/render_preview.py
+R=/c/Users/LeonS/Desktop/Mcc/tools/render_preview.py
 D=$OUT/kite_festival.mcmdump.gz
 python "$R" "$D" previews/kite_festival_top.png --top > /dev/null &
 python "$R" "$D" previews/kite_festival_iso.png --angle 1 > /dev/null &

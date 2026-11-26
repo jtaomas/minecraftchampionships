@@ -1,0 +1,54 @@
+V4-C  team section - generated report
+
+total blocks                8,110
+bbox x (-22, 22)  z (-112, -36)  max y 133
+below y121                  0
+inside dome radius 30       0
+outside x/z +-150           0
+columns 3x3x7               10 / 10
+columns with 4 heads        10 / 10
+plots with deck             10 / 10
+plots with 4 statues        10 / 10
+named heads                 6
+placeholder heads           74
+wall signs                  20
+team order                  red, orange, yellow, lime, green, cyan, aqua, blue, purple, pink
+
+per column:
+  red     at (-6,-42) side W shaft 63/63  heads 4
+  orange  at (-6,-58) side W shaft 63/63  heads 4
+  yellow  at (-6,-74) side W shaft 63/63  heads 4
+  lime    at (-6,-90) side W shaft 63/63  heads 4
+  green   at (-6,-106) side W shaft 63/63  heads 4
+  cyan    at (6,-106) side E shaft 63/63  heads 4
+  aqua    at (6,-90) side E shaft 63/63  heads 4
+  blue    at (6,-74) side E shaft 63/63  heads 4
+  purple  at (6,-58) side E shaft 63/63  heads 4
+  pink    at (6,-42) side E shaft 63/63  heads 4
+
+per plot:
+  red     zc  -42 side W deck 156/156  heads 4
+  orange  zc  -58 side W deck 156/156  heads 4
+  yellow  zc  -74 side W deck 156/156  heads 4
+  lime    zc  -90 side W deck 156/156  heads 4
+  green   zc -106 side W deck 156/156  heads 4
+  cyan    zc -106 side E deck 156/156  heads 4
+  aqua    zc  -90 side E deck 156/156  heads 4
+  blue    zc  -74 side E deck 156/156  heads 4
+  purple  zc  -58 side E deck 156/156  heads 4
+  pink    zc  -42 side E deck 156/156  heads 4
+
+function files:
+  00_columns                390 commands     870 blocks
+  10_plot_red               184 commands     724 blocks
+  11_plot_orange            184 commands     724 blocks
+  12_plot_yellow            184 commands     724 blocks
+  13_plot_lime              184 commands     724 blocks
+  14_plot_green             184 commands     724 blocks
+  15_plot_cyan              184 commands     724 blocks
+  16_plot_aqua              184 commands     724 blocks
+  17_plot_blue              184 commands     724 blocks
+  18_plot_purple            184 commands     724 blocks
+  19_plot_pink              184 commands     724 blocks
+
+RESULT: PASS

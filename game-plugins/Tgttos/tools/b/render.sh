@@ -4,14 +4,14 @@
 # Usage: sh tools/b/render.sh [mapId ...]      (NORENDER=1 skips the PNGs)
 cd "$(dirname "$0")/../.."
 OUT=tools/b/out
-J=/c/Users/USER/Desktop/java/bin
+J=/c/Users/LeonS/Desktop/java/bin
 rm -rf "$OUT/classes"; mkdir -p "$OUT/classes" previews
 "$J/javac" -encoding UTF-8 -d "$OUT/classes" src/main/java/com/mcm/games/tgttos/model/*.java \
   src/main/java/com/mcm/games/tgttos/maps/b/util/*.java src/main/java/com/mcm/games/tgttos/maps/b/*.java tools/b/*.java || exit 1
 "$J/java" -Xmx3g -cp "$OUT/classes" PreviewMain "$OUT" "$@"
 RC=$?
 [ -n "$NORENDER" ] && exit $RC
-R=/c/Users/USER/Desktop/Mcc/tools/render_preview.py
+R=/c/Users/LeonS/Desktop/Mcc/tools/render_preview.py
 V=tools/b/views.py
 IDS="$@"; [ -z "$IDS" ] && IDS="ticket_gates"
 for id in $IDS; do

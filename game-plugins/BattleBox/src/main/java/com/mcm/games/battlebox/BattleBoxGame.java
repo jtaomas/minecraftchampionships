@@ -555,13 +555,14 @@ public final class BattleBoxGame implements McmGame {
         if (queue != null) queue.cancel();
         queue = new McmBuild.BuildQueue(plugin);
         long seed = random.nextLong();
+        BbOverlay.Layer layer = BbOverlay.of(theme, geo);   // Map Edit overlay, same for every arena copy
         for (Match m : matches) {
             Grid g = theme.generate(geo, seed, Side.colourName(m.dyeA), Side.colourName(m.dyeB),
                     Side.centreBlock(m.neutral, woolMode).getKey().getKey());
             Location o = arenaOrigin(world, m.arena);
             ArenaPlacer.enqueue(queue, world, o.getBlockX(), o.getBlockY(), o.getBlockZ(), g,
-                    slotBounds.get(m.arena), plugin.getLogger());
-            slotBounds.put(m.arena, new int[]{g.minX, g.minY, g.minZ, g.maxX, g.maxY, g.maxZ});
+                    slotBounds.get(m.arena), plugin.getLogger(), layer);
+            slotBounds.put(m.arena, ArenaPlacer.footprint(g, layer));
         }
         queue.then(() -> {
             if (!running || token != buildToken) return;
@@ -575,7 +576,7 @@ public final class BattleBoxGame implements McmGame {
                 + " sides, " + totalRounds + " round" + (totalRounds == 1 ? "" : "s") + ", a new arena every round.");
         ctx.broadcast(ChatColor.YELLOW + " Pick a kit, then the gates open. One life per round"
                 + (fightSeconds > 0 ? ", " + fightSeconds + " seconds." : ", no time limit."));
-        ctx.broadcast(ChatColor.YELLOW + " Fill the " + ChatColor.WHITE + "3x3 centre" + ChatColor.YELLOW
+        ctx.broadcast(ChatColor.YELLOW + " Fill the " + ChatColor.WHITE + "centre pad" + ChatColor.YELLOW
                 + " with your " + (woolMode ? "wool" : "concrete") + " to win"
                 + (fightSeconds > 0 ? " instantly; at time-out the most centre blocks wins." : " - the round lasts until a side does."));
         ctx.broadcast(ChatColor.GRAY + " Coins: " + killCoins + " per elimination, " + winCoins + " shared by the team for a round win, "
@@ -672,6 +673,9 @@ public final class BattleBoxGame implements McmGame {
                 p.sendMessage(ChatColor.GOLD + "Round " + (round + 1) + "/" + totalRounds + ChatColor.GRAY + " - "
                         + ChatColor.WHITE + theme.displayName() + ChatColor.GRAY + ": you are " + s.label + ChatColor.GRAY
                         + " vs " + opp.label + ChatColor.GRAY + ". Pick a kit (menu or the star in your hotbar).");
+                if (theme != null && theme.credit() != null) {
+                    p.sendMessage(ChatColor.DARK_GRAY + "Map by " + theme.credit() + ".");
+                }
                 McmFx.sound(p, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1.2f);
                 final int gt = gameToken;
                 final int r = round;
@@ -735,6 +739,17 @@ public final class BattleBoxGame implements McmGame {
         Location o = arenaOrigin(world, m.arena);
         if (theme != null && theme.isImported()) {
             for (boolean b : new boolean[]{false, true}) {
+                for (int[] box : theme.gates(b)) {
+                    for (int x = box[0]; x <= box[3]; x++)
+                        for (int y = box[1]; y <= box[4]; y++)
+                            for (int z = box[2]; z <= box[5]; z++) {
+                                Block gb = world.getBlockAt(o.getBlockX() + x, o.getBlockY() + y, o.getBlockZ() + z);
+                                if (gb.getType().isAir()) continue;
+                                Location c = gb.getLocation().add(0.5, 0.5, 0.5);
+                                world.spawnParticle(Particle.BLOCK, c, 6, 0.3, 0.3, 0.3, 0.1, gb.getBlockData());
+                                gb.setType(Material.AIR, false);
+                            }
+                }
                 double[] sp = theme.spawn(geo, b, 0);
                 Location g = o.clone().add(sp[0], sp[1] + 1.0, sp[2]);
                 world.spawnParticle(Particle.CLOUD, g, 12, 0.6, 0.6, 0.6, 0.04);
@@ -812,7 +827,7 @@ public final class BattleBoxGame implements McmGame {
         for (Match m : new ArrayList<>(matches)) {
             if (m.done) continue;
             int[] c = centreCounts(m);
-            if (m.b.dummy) { endMatch(m, c[0] == 9 ? m.a : null, "time ran out (" + c[0] + "/9 centre)"); continue; }
+            if (m.b.dummy) { endMatch(m, c[0] == centreCells() ? m.a : null, "time ran out (" + c[0] + "/" + centreCells() + " centre)"); continue; }
             int aa = m.aliveOf(m.a), ab = m.aliveOf(m.b);
             if (c[0] != c[1]) endMatch(m, c[0] > c[1] ? m.a : m.b, "more centre blocks (" + Math.max(c[0], c[1]) + " vs " + Math.min(c[0], c[1]) + ")");
             else if (aa > 0 && ab == 0) endMatch(m, m.a, "centre tied - last side standing");
@@ -833,15 +848,24 @@ public final class BattleBoxGame implements McmGame {
     // match logic
     // =====================================================================
 
+    private int centreSizeX() { return theme != null ? theme.centreSizeX() : 3; }
+
+    private int centreSizeZ() { return theme != null ? theme.centreSizeZ() : 3; }
+
+    /** Number of centre cells of the current arena (9 for the 3x3 pad). */
+    private int centreCells() { return centreSizeX() * centreSizeZ(); }
+
     int[] centreCounts(Match m) {
         int ca = 0, cb = 0;
         Location o = arenaOrigin(world, m.arena);
         int cx = theme != null ? theme.centreX() : 0;
         int cy = theme != null ? theme.centreY(geo) : geo.CENTRE_Y;
         int cz = theme != null ? theme.centreZ() : 0;
-        for (int x = -1; x <= 1; x++)
-            for (int z = -1; z <= 1; z++) {
-                Block b = world.getBlockAt(o.getBlockX() + cx + x, o.getBlockY() + cy, o.getBlockZ() + cz + z);
+        int x0 = theme != null ? theme.centreMinX() : -1;
+        int z0 = theme != null ? theme.centreMinZ() : -1;
+        for (int x = 0; x < centreSizeX(); x++)
+            for (int z = 0; z < centreSizeZ(); z++) {
+                Block b = world.getBlockAt(o.getBlockX() + x0 + x, o.getBlockY() + cy, o.getBlockZ() + z0 + z);
                 DyeColor d = Side.dyeOfCentre(b.getType());
                 if (d == null) continue;
                 if (d == m.dyeA) ca++;
@@ -865,7 +889,7 @@ public final class BattleBoxGame implements McmGame {
             Side out = a == 0 ? m.a : m.b;
             for (Player p : players()) {
                 if (!m.contains(p.getUniqueId())) continue;
-                McmFx.title(p, "", out.label + ChatColor.GRAY + " is wiped out - fill the centre!", 0, 40, 10);
+                p.sendMessage(out.label + ChatColor.GRAY + " is wiped out - fill the centre!");   // chat, so it never replaces the kill banner
             }
         }
     }
@@ -873,8 +897,8 @@ public final class BattleBoxGame implements McmGame {
     void checkCentre(Match m) {
         if (!running || m.done || phase != Phase.FIGHT || world == null) return;
         int[] c = centreCounts(m);
-        if (c[0] == 9) endMatch(m, m.a, "filled the centre");
-        else if (c[1] == 9 && !m.b.dummy) endMatch(m, m.b, "filled the centre");
+        if (c[0] == centreCells()) endMatch(m, m.a, "filled the centre");
+        else if (c[1] == centreCells() && !m.b.dummy) endMatch(m, m.b, "filled the centre");
     }
 
     private void endMatch(Match m, Side winner, String reason) {
@@ -966,7 +990,9 @@ public final class BattleBoxGame implements McmGame {
         McmFx.eliminated(victim, killer, ctx);
         if (killer != null) {
             kills.merge(killer.getUniqueId(), 1, Integer::sum);
-            award(killer.getUniqueId(), killCoins, "elimination");
+            if (ctx != null && killCoins > 0) {
+                ctx.addKillCoins(killer.getUniqueId(), killCoins, vu, victim.getName(), "You eliminated " + victim.getName());
+            }
         }
         if (!dead) toSpectator(victim, m);
         checkAlive(m);
@@ -1000,7 +1026,7 @@ public final class BattleBoxGame implements McmGame {
     boolean woolMode() { return woolMode; }
 
     boolean freezeMovementDuringKit() {
-        return phase == Phase.KIT && theme != null && theme.isImported();
+        return phase == Phase.KIT && theme != null && theme.isImported() && !theme.hasGates();
     }
 
     boolean isAliveFighter(Player p) {
@@ -1203,8 +1229,9 @@ public final class BattleBoxGame implements McmGame {
         adminTheme = t;
         ArenaGeo g = new ArenaGeo();
         Grid grid = t.generate(g, System.nanoTime(), "red", "blue", "white_concrete");
-        ArenaPlacer.enqueue(adminQueue, w, ADMIN_X, ARENA_Y, ADMIN_Z, grid, slotBounds.get(-1), plugin.getLogger());
-        slotBounds.put(-1, new int[]{grid.minX, grid.minY, grid.minZ, grid.maxX, grid.maxY, grid.maxZ});
+        BbOverlay.Layer layer = BbOverlay.of(t, g);
+        ArenaPlacer.enqueue(adminQueue, w, ADMIN_X, ARENA_Y, ADMIN_Z, grid, slotBounds.get(-1), plugin.getLogger(), layer);
+        slotBounds.put(-1, ArenaPlacer.footprint(grid, layer));
         long n = grid.count();
         p.sendMessage(ChatColor.YELLOW + "Building " + t.displayName() + " (" + n + " blocks, " + grid.distinctIds() + " block types)...");
         adminQueue.then(() -> {
@@ -1335,7 +1362,7 @@ public final class BattleBoxGame implements McmGame {
                     int theirs = m.isB(s) ? c[0] : c[1];
                     ChatColor my = Side.chatFor(m.dyeOf(s)), th = Side.chatFor(m.dyeOf(opp));
                     StringBuilder sq = new StringBuilder();
-                    sq.append(my).append("■".repeat(mine)).append(ChatColor.DARK_GRAY).append("□".repeat(Math.max(0, 9 - mine - theirs)))
+                    sq.append(my).append("■".repeat(mine)).append(ChatColor.DARK_GRAY).append("□".repeat(Math.max(0, centreCells() - mine - theirs)))
                             .append(th).append("■".repeat(theirs));
                     bar = ChatColor.WHITE + "vs " + opp.label + ChatColor.DARK_GRAY + " | " + ChatColor.WHITE + "⚔ " + ChatColor.YELLOW
                             + kills.getOrDefault(u, 0) + ChatColor.DARK_GRAY + " | " + my + mine + " " + sq + " " + th + theirs;

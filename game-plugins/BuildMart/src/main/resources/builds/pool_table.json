@@ -1,0 +1,35 @@
+{
+  "id": "pool_table",
+  "name": "Pool Table",
+  "debut": "MCC 13",
+  "stars": 3,
+  "status": "approximate",
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Pool_Table.png",
+  "floor": [
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg",
+    "ggggggg"
+  ],
+  "palette": {
+    "g": "minecraft:grass_block",
+    "f": "minecraft:birch_planks",
+    "c": "minecraft:lime_concrete",
+    "w": "minecraft:white_concrete",
+    "p": "minecraft:gray_concrete"
+  },
+  "layers": [
+    ["fffffff", "fpfffpf", "fffffff", "fpfffpf", "fwfwfwf", ".......", "......."],
+    ["fffffff", "f.ccc.f", "fcccccf", "f.ccc.f", "fffffff", ".......", "......."]
+  ],
+  "guessed": [
+    "table filled the plot width (7 blocks) with a 5-wide felt and one-block rails; the rails look thinner than a block in the render",
+    "four 1x1 corner pockets recessed one block into the grey bed, with the felt cut around them",
+    "front apron drawn as alternating white concrete panels and birch plank posts; the render has more, thinner panels",
+    "birch planks for the pale frame, lime concrete for the felt (colour matches), white concrete panels, gray concrete pocket beds",
+    "table depth 5 rows and the hidden back/underside assumed solid birch"
+  ]
+}

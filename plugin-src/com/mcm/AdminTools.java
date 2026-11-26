@@ -277,6 +277,8 @@ final class AdminTools implements Listener {
                 ChatColor.GRAY + "Play one game on its own (stops the current one).", ChatColor.DARK_GRAY + "/mcm play <game>"));
         inv.setItem(16, button(Material.BARRIER, ChatColor.RED + "" + ChatColor.BOLD + "Stop game",
                 ChatColor.GRAY + "Stop everything and return to the lobby.", ChatColor.DARK_GRAY + "/mcm stop"));
+        inv.setItem(18, button(Material.DIAMOND_PICKAXE, ChatColor.GREEN + "" + ChatColor.BOLD + "Map Edit",
+                ChatColor.GRAY + "Open a game map in creative; your changes are", ChatColor.GRAY + "saved as an overlay the game plays.", ChatColor.DARK_GRAY + "/mcm mapedit"));
         inv.setItem(20, button(Material.GRASS_BLOCK, ChatColor.GREEN + "" + ChatColor.BOLD + "MM lobby",
                 ChatColor.GRAY + "Teleport to the Minecraft Monday lobby.", ChatColor.DARK_GRAY + "/mcm lobby mm"));
         inv.setItem(22, button(Material.COMPASS, ChatColor.GOLD + "" + ChatColor.BOLD + "Tournament Controller",
@@ -347,6 +349,7 @@ final class AdminTools implements Listener {
                     case 14 -> { p.closeInventory(); plugin.cmdSkipEvent(p); }
                     case 15 -> openGamePicker(p, Kind.START_PICK);
                     case 16 -> { p.closeInventory(); plugin.cmdStop(p); }
+                    case 18 -> plugin.openMapEdit(p);
                     case 20 -> plugin.goMm(p);
                     case 22 -> plugin.openController(p);
                     case 24 -> { if (plugin.hasHub()) plugin.goHub(p); }

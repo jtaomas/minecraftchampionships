@@ -1,0 +1,61 @@
+{
+  "id": "treasure",
+  "name": "Treasure",
+  "debut": "MCC 5",
+  "stars": 3,
+  "status": "approximate",
+  "gold": true,
+  "reference": "mcc_archive/build_mart/bm-2/frames/builds/BSABM-Treasure.png",
+  "floor": [
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss",
+    "sssssss"
+  ],
+  "palette": {
+    "s": "minecraft:sand",
+    "p": "minecraft:barrel[facing=up]",
+    "G": "minecraft:gold_block",
+    "g": "minecraft:green_glazed_terracotta",
+    "r": "minecraft:redstone_block"
+  },
+  "layers": [
+    [
+      ".......",
+      ".ppppp.",
+      ".p.G.p.",
+      ".pggGp.",
+      ".ppppp.",
+      ".r.....",
+      "......."
+    ],
+    [
+      ".......",
+      ".ppppp.",
+      ".p.G.p.",
+      ".p...p.",
+      ".......",
+      ".......",
+      "......."
+    ],
+    [
+      ".......",
+      ".ppppp.",
+      ".......",
+      ".......",
+      ".......",
+      ".......",
+      "......."
+    ]
+  ],
+  "guessed": [
+    "the chest is block-built: walls read as barrel sides (vertical staves with dark iron bands); barrels facing up used to reproduce that texture",
+    "chest read as 5 wide x 4 deep with a 1-high front wall, 3-high back/lid and 2-high sides; hidden depth and interior guessed",
+    "the contents read as two green glazed terracotta blocks (a folded map) and a 2-tall gold block plus a loose gold block beside the chest",
+    "the red cube read as a redstone block (bright red with darker speckle); it is left as a normal block, no redstone wire",
+    "the loose gold block placed on the sand to the right of the chest; exact positions of the loose blocks estimated"
+  ]
+}

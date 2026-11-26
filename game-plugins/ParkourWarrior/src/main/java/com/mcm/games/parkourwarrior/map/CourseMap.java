@@ -51,6 +51,7 @@ public final class CourseMap {
      * without a usable section keep the built-in obstacle. A missing folder gives exactly the built-in course.
      */
     public static CourseModel generate(long seed, java.io.File importDir) {
+        if (FullCourse.isLinear(importDir)) return FullCourse.load(seed, importDir);   // a replica imported 1:1 (format linear)
         return build(seed, ImportedCourse.load(importDir)).model;
     }
 
@@ -58,7 +59,20 @@ public final class CourseMap {
 
     /** Full build (model + generator bookkeeping, used by the offline tools); ic = imported sections or null. */
     static W build(long seed, ImportedCourse ic) {
+        W w = buildOnce(seed, ic, null);
+        if (ic == null) return w;
+        // pass 2: leave out whole replica props that would clip through another structure (hub, spur end, shrine, classic
+        // obstacle, a neighbouring section): nothing is cut, props are dropped entirely
+        java.util.Map<String, java.util.Set<Long>> skip = w.decorConflicts();
+        if (skip.isEmpty()) return w;
+        W w2 = buildOnce(seed, ic, skip);
+        w2.model.notes.put("dropped scenery", skip.values().stream().mapToInt(java.util.Set::size).sum() + " blocks of replica props that touched other structures");
+        return w2;
+    }
+
+    static W buildOnce(long seed, ImportedCourse ic, java.util.Map<String, java.util.Set<Long>> skip) {
         W w = new W(seed);
+        w.skipOwner = skip;
         CourseModel m = w.model;
         Mk[][] mains = mains(), bon = bonuses(), ends = endings();
         int cx = 0, cy = BASE_Y, cz = 0;
@@ -73,7 +87,10 @@ public final class CourseMap {
                 int nx = o.wx(o.endX, o.endZ), nz = o.wz(o.endX, o.endZ);
                 bx = nx; by = o.wy(o.endY); bz = nz;
             }
+            w.cur = "spur-end" + s;
+            w.softMode = ic != null;
             Frame.spurEnd(w, bx, by, bz, 1, 0);
+            w.softMode = false;
             // main line along +z
             int mx = cx, my = cy, mz = cz + r - 1;
             for (int i = 1; i <= 3; i++) {
@@ -81,13 +98,30 @@ public final class CourseMap {
                 mx = o.wx(o.endX, o.endZ); my = o.wy(o.endY); mz = o.wz(o.endX, o.endZ);
             }
             cx = mx; cy = my; cz = mz + (s < 5 ? HUB_R - 1 : 7);
+            if (ic != null) {
+                // imported sections bring their own scenery: push the hub (or the fork) forward until its box is clear of it
+                // and join it to the last pad with a short walkway, so no structure cuts into another
+                int xr = s < 5 ? HUB_R + 2 : 22, zr = s < 5 ? HUB_R + 2 : 10;
+                int d = 0;
+                while (d < 40 && occupied(w, mx, my, mz, cz + d, xr, zr)) d += 2;
+                if (d > 0) {
+                    int zEdge = cz + d - (s < 5 ? HUB_R - 1 : 9) + 1;
+                    for (int z = mz + 2; z <= zEdge; z++) for (int x = mx - 1; x <= mx + 1; x++) {
+                        w.cur = "walkway" + s;
+                        if (w.air(x, my, z)) { w.set(x, my, z, x == mx ? "polished_andesite" : "stone_bricks"); w.frameWalk.add(W.key(x, my, z)); }
+                    }
+                    cz += d;
+                }
+            }
         }
         // hubs are built after the obstacles so their decks fit around the pads
         for (int s = 1; s <= 5; s++) {
             int[] h = hubs.get(s - 1);
+            w.cur = "hub" + s;
             Frame.hub(w, h[0], h[1], h[2], h[3], ZONE_BANNER[s - 1], s == 1);
         }
         int fx = cx, fy = cy, fz = cz;
+        w.cur = "fork";
         Frame.fork(w, fx, fy, fz);
         CourseModel.Difficulty[] D = CourseModel.Difficulty.values();
         int[][] finish = new int[3][];
@@ -98,8 +132,12 @@ public final class CourseMap {
                 ex = o.wx(o.endX, o.endZ); ey = o.wy(o.endY); ez = o.wz(o.endX, o.endZ);
             }
             finish[d] = new int[]{ex, ey, ez};
+            w.cur = "shrine" + d;
+            w.softMode = ic != null;
             Frame.shrine(w, ex, ey, ez, Frame.GATE_COL[d]);
+            w.softMode = false;
         }
+        w.cur = "backdrop";
         Backdrop.build(w, hubs, new int[]{fx, fy, fz}, finish);
 
         // ---- model
@@ -107,25 +145,43 @@ public final class CourseMap {
             int[] h = hubs.get(s - 1);
             CourseModel.Pos resp = CourseModel.Pos.block(h[0], h[1] + 1, h[2] + 4, 0f);
             CourseModel.Pos bonus = CourseModel.Pos.block(h[0] + h[3] - 1, h[1] + 1, h[2], 270f);
-            m.hubs.add(new CourseModel.Hub(s, resp, bonus, ZONES[s - 1]));
+            String zn = ic != null && ic.zones.containsKey(s) ? ic.zones.get(s) : ZONES[s - 1];
+            m.hubs.add(new CourseModel.Hub(s, resp, bonus, zn));
             m.labels.add(new CourseModel.Label(new CourseModel.Pos(h[0] + 0.5, h[1] + 5.2, h[2] + h[3] - 1.5, 0f),
-                    ZONE_COLOUR[s - 1] + "&lStage " + s + ": " + ZONES[s - 1]));
+                    ZONE_COLOUR[s - 1] + "&lStage " + s + ": " + zn));
             m.labels.add(new CourseModel.Label(new CourseModel.Pos(h[0] + h[3] + 0.5, h[1] + 8.3, h[2] + 0.5, 270f), "&d&lBONUS PATH &7>>"));
         }
         // start spawns: a ring on the start island avoiding the statue and the columns
         int[] h1 = hubs.get(0);
-        for (int dx = -6; dx <= 6; dx += 2) for (int dz = -6; dz <= 6; dz += 2) {
-            double d = Math.hypot(dx, dz);
-            if (d < 3.5 || d > 7.2 || (Math.abs(dx) == 6 && Math.abs(dz) == 6)) continue;
-            if (Math.abs(Math.abs(dx) - 5) <= 1 && Math.abs(Math.abs(dz) - 5) <= 1) continue;
-            m.spawns.add(CourseModel.Pos.block(h1[0] + dx, h1[1] + 1, h1[2] + dz, 0f));
+        // three rings (radius 4.5 / 6.5 / 8.2, 12 + 18 + 26 spots) so a full 40-player lobby never shares a spot; the first
+        // 40 are spread over all rings by a fixed shuffle
+        java.util.List<CourseModel.Pos> ring = new java.util.ArrayList<>();
+        java.util.Set<Long> seen = new java.util.HashSet<>();
+        double[] radii = {4.5, 6.5, 8.2};
+        int[] counts = {12, 18, 26};
+        for (int k = 0; k < radii.length; k++) for (int i = 0; i < counts[k]; i++) {
+            double a = 2 * Math.PI * (i + (k == 1 ? 0.5 : 0)) / counts[k];
+            int dx = (int) Math.round(radii[k] * Math.cos(a)), dz = (int) Math.round(radii[k] * Math.sin(a));
+            if (Math.hypot(dx, dz) < 3.5 || Math.abs(dx) > 8 || Math.abs(dz) > 8) continue;
+            if (Math.abs(Math.abs(dx) - 5) <= 1 && Math.abs(Math.abs(dz) - 5) <= 1) continue;   // quartz columns
+            if (!seen.add(((long) dx << 32) ^ (dz & 0xffffffffL))) continue;
+            ring.add(CourseModel.Pos.block(h1[0] + dx, h1[1] + 1, h1[2] + dz, 0f));
         }
+        java.util.Collections.shuffle(ring, new java.util.Random(7));
+        m.spawns.addAll(ring);
         m.fork = CourseModel.Pos.block(fx, fy + 1, fz + 2, 0f);
+        if (ic != null) {
+            m.mapId = ic.mapId;
+            m.credit = ic.mapCredit;
+            if (!ic.mapCredit.isEmpty())
+                m.labels.add(new CourseModel.Label(new CourseModel.Pos(h1[0] + 0.5, h1[1] + 3.2, h1[2] - 6.5, 180f), "&7Course sections: &f" + ic.mapCredit));
+        }
         for (int d = 0; d < 3; d++) {
             Ob last = find(w, CourseModel.endingId(D[d], 2));
             m.finishes.put(D[d], last.padBox);
             m.finishStands.put(D[d], CourseModel.Pos.block(finish[d][0], finish[d][1] + 1, finish[d][2] - 2, 180f));
-            String[] txt = {"&a&lEASY &a★ &fMeadow & Beehive", "&6&lMEDIUM &6★★ &fFrozen Harbour", "&c&lHARD &c★★★ &fLibrary Tower"};
+            String[] txt = {"&a&lEASY &a★ &f" + endName(ic, "EASY", "Meadow & Beehive"), "&6&lMEDIUM &6★★ &f" + endName(ic, "MEDIUM", "Frozen Harbour"),
+                    "&c&lHARD &c★★★ &f" + endName(ic, "HARD", "Library Tower")};
             m.labels.add(new CourseModel.Label(new CourseModel.Pos(fx + Frame.GATES[d] + 0.5, fy + 10.3, fz + 7.5, 0f), txt[d]));
             m.labels.add(new CourseModel.Label(new CourseModel.Pos(finish[d][0] + 0.5, finish[d][1] + 3.5, finish[d][2] + 0.5, 180f),
                     new String[]{"&a", "&6", "&c"}[d] + "&lFINISH"));
@@ -176,8 +232,59 @@ public final class CourseMap {
     }
 
     static Ob make(W w, ImportedCourse ic, Mk builtIn, Ob.Slot s) {
+        Ob o = make0(w, ic, builtIn, s);
+        if (ic != null) o.imported = true;   // inside an imported map every obstacle sits among foreign scenery: decoy / object-size / neo-tier findings are warnings
+        return o;
+    }
+
+    private static Ob make0(W w, ImportedCourse ic, Mk builtIn, Ob.Slot s) {
+        if (ic != null) {
+            String[] b = ic.builtins.get(s.id());
+            if (b != null) {
+                Ob o = Mechanics.make(b[0], w, s, Mechanics.theme(b[1]), Integer.parseInt(b[2]));
+                if (o != null) {
+                    if (s.kind() == CourseModel.Kind.BONUS) o.difficultyTag = s.index() == 1 ? "MEDIUM" : "HARD";
+                    return o;
+                }
+                ic.problems.add(s.id() + ": unknown builtin " + b[0]);
+            }
+            String c = ic.classics.get(s.id());
+            if (c != null) {
+                Mk k = classic(c);
+                if (k != null) return k.make(w, s);
+                ic.problems.add(s.id() + ": unknown classic slot " + c);
+            }
+        }
         Ob o = ic == null ? null : ic.make(w, s);
         return o != null ? o : builtIn.make(w, s);
+    }
+
+    /** The classic course's obstacle maker of a slot id (M1-1 .. B5-3, E-EASY-1 ..), or null. */
+    static Mk classic(String id) {
+        try {
+            if (id.startsWith("M")) { String[] p = id.substring(1).split("-"); return mains()[Integer.parseInt(p[0]) - 1][Integer.parseInt(p[1]) - 1]; }
+            if (id.startsWith("B")) { String[] p = id.substring(1).split("-"); return bonuses()[Integer.parseInt(p[0]) - 1][Integer.parseInt(p[1]) - 1]; }
+            if (id.startsWith("E-")) {
+                String[] p = id.split("-");
+                return endings()[CourseModel.Difficulty.valueOf(p[1]).ordinal()][Integer.parseInt(p[2]) - 1];
+            }
+        } catch (RuntimeException ignored) {}
+        return null;
+    }
+
+    static String endName(ImportedCourse ic, String d, String def) {
+        return ic != null && ic.endNames.containsKey(d) ? ic.endNames.get(d) : def;
+    }
+
+    /** Any block in the hub / fork box around (mx, cz), ignoring the last pad's own corner (padZ). */
+    static boolean occupied(W w, int mx, int y, int padZ, int cz, int xr, int zr) {
+        // generous box (5 blocks of air all round, 30 up and down): the hub must not be reachable by a jump from the last
+        // section's islands, only along the walkway that starts at the checkpoint pad, so the pad cannot be skipped
+        for (int x = mx - xr - 5; x <= mx + xr + 5; x++) for (int z = cz - zr - 5; z <= cz + zr + 5; z++) for (int yy = y - 30; yy <= y + 30; yy++) {
+            if (Math.abs(x - mx) <= 2 && z <= padZ + 2) continue;
+            if (!w.air(x, yy, z)) return true;
+        }
+        return false;
     }
 
     static Ob find(W w, String id) {
