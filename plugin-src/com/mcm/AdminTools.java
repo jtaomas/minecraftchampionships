@@ -279,6 +279,18 @@ final class AdminTools implements Listener {
                 ChatColor.GRAY + "Stop everything and return to the lobby.", ChatColor.DARK_GRAY + "/mcm stop"));
         inv.setItem(18, button(Material.DIAMOND_PICKAXE, ChatColor.GREEN + "" + ChatColor.BOLD + "Map Edit",
                 ChatColor.GRAY + "Open a game map in creative; your changes are", ChatColor.GRAY + "saved as an overlay the game plays.", ChatColor.DARK_GRAY + "/mcm mapedit"));
+        inv.setItem(19, button(Material.BEACON, ChatColor.GOLD + "" + ChatColor.BOLD + "Start tournament",
+                ChatColor.GRAY + "Starts the full championship: Decision Dome vote,",
+                ChatColor.GRAY + "then every game in the playlist, Dodgebolt finale.",
+                ChatColor.DARK_GRAY + "/mcm start"));
+        inv.setItem(21, button(Material.WHITE_BANNER, ChatColor.GOLD + "" + ChatColor.BOLD + "Teams",
+                ChatColor.GRAY + "Print every team and its registered players",
+                ChatColor.GRAY + "(online or not) to chat.",
+                ChatColor.DARK_GRAY + "/mcm team list"));
+        inv.setItem(23, button(Material.GLASS_PANE, ChatColor.AQUA + "" + ChatColor.BOLD + "Spectator / staff toggle",
+                ChatColor.GRAY + "Toggle yourself between player and staff.",
+                ChatColor.GRAY + "Staff are never put on a team or into a side.",
+                ChatColor.DARK_GRAY + "/mcm spectate on|off"));
         inv.setItem(20, button(Material.GRASS_BLOCK, ChatColor.GREEN + "" + ChatColor.BOLD + "MM lobby",
                 ChatColor.GRAY + "Teleport to the Minecraft Monday lobby.", ChatColor.DARK_GRAY + "/mcm lobby mm"));
         inv.setItem(22, button(Material.COMPASS, ChatColor.GOLD + "" + ChatColor.BOLD + "Tournament Controller",
@@ -350,6 +362,9 @@ final class AdminTools implements Listener {
                     case 15 -> openGamePicker(p, Kind.START_PICK);
                     case 16 -> { p.closeInventory(); plugin.cmdStop(p); }
                     case 18 -> plugin.openMapEdit(p);
+                    case 19 -> { p.closeInventory(); plugin.adminStartChampionship(p); }
+                    case 21 -> plugin.adminTeamList(p);
+                    case 23 -> { plugin.adminToggleSpectate(p); openMain(p); }
                     case 20 -> plugin.goMm(p);
                     case 22 -> plugin.openController(p);
                     case 24 -> { if (plugin.hasHub()) plugin.goHub(p); }

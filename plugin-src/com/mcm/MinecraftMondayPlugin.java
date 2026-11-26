@@ -1490,6 +1490,29 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         if (!startById(id)) p.sendMessage(ChatColor.RED + "Unknown game. Options: " + String.join(", ", allGameIds()));
     }
 
+    /** Admin Tools: start the full championship from the feather. */
+    void adminStartChampionship(Player p) { startChampionship(false); }
+
+    /** Admin Tools: print the team list (registered members, online or not) to the op. */
+    void adminTeamList(Player p) {
+        p.sendMessage(ChatColor.GOLD + "Teams: " + ChatColor.YELLOW + scoring.getActiveTeams() + " x " + scoring.getMaxTeamSize());
+        for (int i = 0; i < scoring.getActiveTeams(); i++) {
+            String t = TeamScoring.TEAM_NAMES[i];
+            List<UUID> mem = scoring.registeredMembers(t);
+            StringBuilder sb = new StringBuilder(scoring.teamColor(t) + t + ChatColor.GRAY + " " + mem.size() + "/" + scoring.getMaxTeamSize() + " - ");
+            if (mem.isEmpty()) sb.append(ChatColor.DARK_GRAY).append("empty");
+            for (UUID m : mem) sb.append(Bukkit.getPlayer(m) != null ? ChatColor.WHITE : ChatColor.DARK_GRAY).append(scoring.nameOf(m)).append(" ");
+            p.sendMessage(sb.toString());
+        }
+    }
+
+    /** Admin Tools: toggle the op between player and staff/spectator. */
+    void adminToggleSpectate(Player p) {
+        boolean on = scoring.isMarkedSpectator(p.getUniqueId());
+        scoring.setMarkedSpectator(p.getUniqueId(), !on);
+        p.sendMessage(ChatColor.AQUA + "Spectator/staff mode: " + (!on ? ChatColor.GREEN + "ON" : ChatColor.RED + "OFF"));
+    }
+
     boolean hasHub() { return hub != null; }
     void goHub(Player p) { travelToHub(p); }
     void goMm(Player p) { travelToMm(p); }
