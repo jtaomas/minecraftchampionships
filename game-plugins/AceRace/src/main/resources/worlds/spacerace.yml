@@ -2,7 +2,7 @@
 # hoop: flying through a diamond ring gives the elytra (the map's own ring check only works on two of its four rings).
 name: "Space Race"
 world: mcc_spacerace
-laps: 1
+laps: 3
 time-limit: 600
 start: [17.5, 115.0, 27.5, 180.0]
 pen: [7, 115, 25, 27, 115, 29]

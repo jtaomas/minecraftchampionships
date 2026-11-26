@@ -63,7 +63,7 @@ public final class ParkourTagGame implements McmGame, Listener {
     static final int WAIT_X = -80, WAIT_Y = 100, WAIT_Z = 20;
 
     private static final int MIN_ROUNDS = 4;
-    private static final int MAX_ROUNDS = 9;
+    private static final int MAX_ROUNDS = 4;
     private static final int ROUND_SECONDS = 60;
     private static final int PREP_SECONDS = 5;
     private static final int HUNTER_DELAY_SECONDS = 3;
@@ -398,8 +398,7 @@ public final class ParkourTagGame implements McmGame, Listener {
 
     private PtMap chooseMap() {
         List<PtMap> all = new ArrayList<>(Maps.all());
-        all.add(new LegacyArenaMap());
-        if (forcedMap != null) {
+                if (forcedMap != null) {
             String f = forcedMap;
             forcedMap = null;
             for (PtMap m : all) if (m.id().equalsIgnoreCase(f)) return m;
@@ -434,7 +433,6 @@ public final class ParkourTagGame implements McmGame, Listener {
     public List<String> maps() {
         List<String> out = new ArrayList<>();
         for (PtMap m : Maps.all()) out.add(m.id() + (m.finished() ? "" : " (unfinished)"));
-        out.add("legacy (old practice arena)");
         return out;
     }
 
@@ -442,7 +440,6 @@ public final class ParkourTagGame implements McmGame, Listener {
     public boolean forceNextMap(String id) {
         if (id == null) return false;
         String clean = id.trim().split(" ")[0];
-        if (clean.equalsIgnoreCase("legacy")) { forcedMap = "legacy"; return true; }
         for (PtMap m : Maps.all()) if (m.id().equalsIgnoreCase(clean)) { forcedMap = m.id(); return true; }
         return false;
     }

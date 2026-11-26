@@ -6,7 +6,7 @@ description: All-in-one Minecraft Monday / Championship tournament server plugin
 commands:
   mcm:
     description: Open the Minecraft Monday Tournament Controller or run admin commands.
-    usage: /mcm [help|start [mcc]|play <game>|fast [on|off]|skipwait|skip (round)|next (whole game)|map [game] [id]|mapedit [game map|list|save|leave|reset ...]|tools|stop|reset|games|teamsize <1-5>|team [list|balance|clear|count <n>|set <player> <team|none>]|spectate [on|off|list] [player]|lobby [tp|mm|rebuild|status]|preview <x1> <y1> <z1> <x2> <y2> <z2> [name]]
+    usage: /mcm [help|start [mcc]|play <game>|fast [on|off]|skipwait|skip (round)|next (whole game)|map [game] [id]|mapedit [game map|list|save|leave|reset ...]|tools|stop|reset|games|teamsize <1-5>|team [list|add <player> [team]|balance|clear|count <n>|set <player> <team|none>]|spectate [on|off|list] [player]|lobby [tp|mm|rebuild|status]|preview <x1> <y1> <z1> <x2> <y2> <z2> [name]]
     aliases: [mcc, tournament]
   team:
     description: Open the Team Selector GUI.

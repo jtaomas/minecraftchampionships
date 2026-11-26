@@ -188,6 +188,33 @@ public class TeamScoring {
         return true;
     }
 
+    /**
+     * Team a new/unassigned player should fill: among the active teams with room, the one with the most free slots
+     * (fewest registered members, online or not), first in {@link #TEAM_NAMES} order on a tie. Never a team outside
+     * {@code teams.count}, never a ninth team while one of the eight has room. Null when every active team is full.
+     */
+    public String bestTeamFor(UUID id) {
+        String best = null;
+        int bestCount = Integer.MAX_VALUE;
+        for (int i = 0; i < activeTeams; i++) {
+            String t = TEAM_NAMES[i];
+            if (id != null && t.equals(playerTeams.get(id))) continue;
+            int n = registeredCount(t);
+            if (n >= maxTeamSize) continue;
+            if (n < bestCount) { best = t; bestCount = n; }
+        }
+        return best;
+    }
+
+    /** Puts an unteamed player on {@link #bestTeamFor} its best team; returns the team, the existing one, or null. */
+    public String placeInBestTeam(UUID id) {
+        String current = playerTeams.get(id);
+        if (current != null) return current;
+        String team = bestTeamFor(id);
+        if (team != null) setTeam(id, team);
+        return team;
+    }
+
     /** Online player, registered player or cached offline player with that name; null if unknown. */
     public UUID findByName(String name) {
         if (name == null) return null;

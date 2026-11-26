@@ -811,6 +811,49 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                         + (freed > 0 ? ChatColor.GRAY + " " + freed + " player(s) of closed teams are unteamed." : ""));
                 refreshTeamViews();
             }
+            case "add" -> {
+                // /mcm team add <player> [team]: fill a partly filled team, best team when no team is named
+                if (args.length < 3) { s.sendMessage(ChatColor.YELLOW + "Usage: /mcm team add <player> [team]"); return; }
+                UUID id = scoring.findByName(args[2]);
+                if (id == null) { s.sendMessage(ChatColor.RED + "Unknown player: " + args[2] + " (they must have joined once)."); return; }
+                String name = scoring.nameOf(id);
+                Player online = Bukkit.getPlayer(id);
+                if (scoring.isMarkedSpectator(id) || (online != null && isStaff(online))) {
+                    s.sendMessage(ChatColor.RED + name + " is staff/spectator (/mcm spectate off first).");
+                    return;
+                }
+                String existing = scoring.getTeam(id);
+                if (args.length <= 3 && existing != null) {
+                    s.sendMessage(ChatColor.YELLOW + name + " is already on " + scoring.teamColor(existing) + existing + " Team"
+                            + ChatColor.YELLOW + " (" + scoring.registeredCount(existing) + "/" + scoring.getMaxTeamSize() + ").");
+                    return;
+                }
+                String team = null;
+                if (args.length > 3) {
+                    for (String t : TeamScoring.TEAM_NAMES) if (t.equalsIgnoreCase(args[3])) team = t;
+                    if (team == null || !scoring.isTeamActive(team)) {
+                        s.sendMessage(ChatColor.RED + "Unknown or inactive team: " + args[3] + ". Teams in use: "
+                                + String.join(", ", Arrays.copyOf(TeamScoring.TEAM_NAMES, scoring.getActiveTeams())));
+                        return;
+                    }
+                } else {
+                    team = scoring.bestTeamFor(id);
+                    if (team == null) {
+                        s.sendMessage(ChatColor.RED + "Every team is full (" + scoring.getActiveTeams() + " x " + scoring.getMaxTeamSize()
+                                + ", registered online or not). Remove someone or raise teams.count.");
+                        return;
+                    }
+                }
+                if (!scoring.trySetTeam(id, team)) {
+                    s.sendMessage(ChatColor.RED + team + " is full (" + scoring.registeredCount(team) + "/" + scoring.getMaxTeamSize()
+                            + " registered, online or not). Use /mcm team add " + name + " for the best partial team.");
+                    return;
+                }
+                s.sendMessage(ChatColor.GREEN + name + " is now on " + scoring.teamColor(team) + team + " Team" + ChatColor.GREEN + " ("
+                        + scoring.registeredCount(team) + "/" + scoring.getMaxTeamSize() + ").");
+                if (online != null) online.sendMessage(ChatColor.YELLOW + "An admin put you on " + scoring.teamColor(team) + team + " Team" + ChatColor.YELLOW + ".");
+                refreshTeamViews();
+            }
             case "set" -> {
                 if (args.length < 4) { s.sendMessage(ChatColor.YELLOW + "Usage: /mcm team set <player> <team|none> [force]"); return; }
                 UUID id = scoring.findByName(args[2]);
@@ -1248,7 +1291,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         s.sendMessage(y + "/mcm mapedit" + g + " - Map Edit: open a game map in creative and save it as an overlay the game applies (" + y + "/mcm mapedit help" + g + ")");
         s.sendMessage(y + "/mcm stop" + g + " - stop & return to lobby   " + y + "/mcm reset" + g + " - reset scores   " + y + "/mcm games" + g + " - list games");
         s.sendMessage(y + "/mcm teamsize <1-5>" + g + ", " + y + "/mcm lobby [tp|mm|rebuild|status]" + g + ", " + y + "/mcm preview ..." + g + ", " + y + "/mcm selftest");
-        s.sendMessage(y + "/mcm team list|balance|clear|count <n>|set <player> <team|none>" + g + " - teams (set also works while /team is locked in a championship)");
+        s.sendMessage(y + "/mcm team list|add <player> [team]|balance|clear|count <n>|set <player> <team|none>" + g + " - teams (set/add also work while /team is locked in a championship)");
         s.sendMessage(y + "/mcm spectate [on|off|list] [player]" + g + " - mark staff/spectators: never on a team, never a game side");
     }
 
@@ -1472,7 +1515,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                     "teamsize", "team", "spectate", "lobby", "preview", "selftest", "help"));
         } else if (args.length == 2) {
             switch (args[0].toLowerCase(Locale.ROOT)) {
-                case "team" -> out.addAll(List.of("list", "set", "balance", "clear", "count"));
+                case "team" -> out.addAll(List.of("list", "add", "set", "balance", "clear", "count"));
                 case "spectate" -> out.addAll(List.of("on", "off", "list"));
                 case "fast" -> out.addAll(List.of("on", "off"));
                 case "start", "championship" -> out.add("mcc");
@@ -1491,9 +1534,10 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             return mapEdit.tab(sender, args);
         } else if (args.length == 3 && (args[0].equalsIgnoreCase("map") || args[0].equalsIgnoreCase("maps")) && isGameId(args[1])) {
             out.addAll(mapsOf(canonicalGameId(args[1])));
-        } else if (args.length == 3 && args[0].equalsIgnoreCase("team") && args[1].equalsIgnoreCase("set")) {
+        } else if (args.length == 3 && args[0].equalsIgnoreCase("team") && (args[1].equalsIgnoreCase("set") || args[1].equalsIgnoreCase("add"))) {
             for (Player op : Bukkit.getOnlinePlayers()) out.add(op.getName());
-        } else if (args.length == 4 && args[0].equalsIgnoreCase("team") && args[1].equalsIgnoreCase("set")) {
+        } else if (args.length == 4 && args[0].equalsIgnoreCase("team")
+                && (args[1].equalsIgnoreCase("set") || args[1].equalsIgnoreCase("add"))) {
             out.add("none");
             for (int i = 0; i < scoring.getActiveTeams(); i++) out.add(TeamScoring.TEAM_NAMES[i]);
         } else if (args.length == 3 && args[0].equalsIgnoreCase("spectate")) {
@@ -2674,8 +2718,22 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         Player p = e.getPlayer();
         scoring.ensurePlayer(p.getUniqueId());
         scoring.rememberName(p.getUniqueId(), p.getName());
-        final String rejoinTeam = scoring.getTeam(p.getUniqueId());
         final boolean staff = isStaff(p);
+        // Late joiner during a championship: fill the partly filled team (3/4) before deciding whether he plays,
+        // so he gets the team colour, tab, sidebar and the game's late-join path like a reconnecting player.
+        if (championshipMode && !staff && scoring.getTeam(p.getUniqueId()) == null) {
+            String placed = scoring.placeInBestTeam(p.getUniqueId());
+            if (placed != null) {
+                p.sendMessage(ChatColor.AQUA + "Late join: you are on " + scoring.teamColor(placed) + ChatColor.BOLD + placed
+                        + " Team" + ChatColor.AQUA + " (" + scoring.registeredCount(placed) + "/" + scoring.getMaxTeamSize() + ").");
+                getLogger().info("Late join: " + p.getName() + " placed on " + placed + " ("
+                        + scoring.registeredCount(placed) + "/" + scoring.getMaxTeamSize() + ")");
+            } else {
+                p.sendMessage(ChatColor.RED + "All " + scoring.getActiveTeams() + " teams are full (" + scoring.getMaxTeamSize()
+                        + " each) - you are spectating. Ask an admin to make room.");
+            }
+        }
+        final String rejoinTeam = scoring.getTeam(p.getUniqueId());
         if (currentGame == GameType.LOBBY) {
             resetPlayer(p, GameMode.ADVENTURE);
             Location dest = defaultLobby();
@@ -2690,8 +2748,12 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             boolean eventPlayer = isEventPlayer(p);
             if (eventPlayer && currentGame == GameType.EXTERNAL && activeExternal != null && activeCtx != null) {
                 try { handled = activeExternal.onLateJoin(p, activeCtx); } catch (Throwable t) { getLogger().log(Level.WARNING, "onLateJoin failed", t); }
-                // a rejoiner the running game took back is a participant again (ctx.participants()/sides())
-                if (handled && externalRoster.contains(p.getUniqueId())) externalParticipants.add(p.getUniqueId());
+                // A starter the running game took back is a participant again, and so is anyone the game put back
+                // into play (not SPECTATOR). A new late joiner the game only seats in the stands is not a side:
+                // he must not earn team coins while watching and plays from the next game.
+                if (handled && (externalRoster.contains(p.getUniqueId()) || p.getGameMode() != GameMode.SPECTATOR)) {
+                    externalParticipants.add(p.getUniqueId());
+                }
             }
             if (!eventPlayer && currentGame == GameType.EXTERNAL) {
                 p.sendMessage(ChatColor.YELLOW + (staff ? "You are staff/spectator: watching " + currentDisplay() + "."
@@ -4170,7 +4232,10 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             List<UUID> members = sideMembers(sideKey);
             if (members.isEmpty()) return;
             double each = points / (double) members.size();
-            // the side total is already split across its members: no short-team factor on top
+            // A side total is a pool for the whole side (a team bonus, a team-wide objective): the short-team factor
+            // makes a trio's total equal a full team's, then it is split per member. Games that already paid a pool
+            // through addCoins per member must not use this path (they would be scaled twice).
+            if (points > 0) each *= scoring.teamCoinFactor(members.get(0));
             for (UUID u : members) pay(u, each, reason, false);
         }
 

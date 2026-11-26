@@ -1,7 +1,7 @@
 # Clouds 2 - Electric Boogaloo, played in the imported world. Rules are the map's own command blocks, per player.
 name: "Clouds 2"
 world: mcc_clouds2
-laps: 1
+laps: 3
 time-limit: 600
 start: [5.5, 4.0, 24.5, 180.0]
 pen: [-1, 4, 22, 11, 4, 27]

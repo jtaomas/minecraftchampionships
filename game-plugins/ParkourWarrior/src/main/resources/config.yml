@@ -14,11 +14,11 @@ map:
   # every map found); '/pw map <id>' forces the next games' map ('/pw map random' undoes it).
   maps-folder: maps
   # mcc6_full = the MCC 6 replica imported 1:1 (one line of 24 sections, checkpoints done by the plugin); see tools/mcc6_import.py
-  pool: [classic, mcc6_replica, mcc10_replica, mcc6_full]
+  pool: [mcc6_mixed]
 
 game:
   countdown-seconds: 10            # default
-  time-seconds: 600                # researched: 10:00
+  time-seconds: 360                # researched: 10:00
   overtime-seconds: 30             # researched: 30 s, a fall ends the run
   scroll-removed-at-seconds-left: 30      # researched (30 s mark)
   ending-switch-until-seconds-left: 30    # researched (30 s mark)

@@ -16,7 +16,7 @@ random-seeds: false
 
 debug-timing: true           # log ms per map-paste tick (chunks loaded async, <= 15 ms of block writes per tick)
 
-rounds: 5                    # five TGTTOS maps since the Race split (feedback 3)
+rounds: 7                    # five TGTTOS maps since the Race split (feedback 3)
 round-seconds: 300
 pre-round-seconds: 15        # in the start strip with the kit in hand; the last 3 s are the 3-2-1 title
 intermission-seconds: 6      # round results before the next map
