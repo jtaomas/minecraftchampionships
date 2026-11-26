@@ -1,16 +1,24 @@
-# Dodgebolt finale settings
-rounds-to-win: 3        # first to N round wins
-win-by-two: false       # if true, a side must also lead by 2 rounds (until max-rounds)
-max-rounds: 7           # hard cap on rounds played (draws count)
-round-seconds: 120      # round time limit
-overtime-at: 60         # seconds into a round when the floor starts shrinking
-ring-interval: 4        # seconds between ring drops in overtime
-countdown-seconds: 5
-intermission-seconds: 6
-start-arrows-per-side: 1
-extra-arrow-interval: 30   # every N seconds one more arrow spawns on each side...
-max-arrows: 4              # ...until this many arrows are in play
-points:
+# Dodgebolt finale settings.
+# [MCC] = taken from MCC research (game-plugins/research/mcc_archive/dodgebolt/db-1).
+# [default] = not researched; a sensible choice the owner can change after playtesting.
+rounds-to-win: 3        # [MCC] best of 5, first to 3 round wins
+win-by-two: false       # [default] if true, a side must also lead by 2 rounds (until max-rounds)
+max-rounds: 7           # [default] hard cap on rounds played (timed-out draws count)
+round-seconds: 180      # [default] MCC has no round timer; this safety cap ends a stalled round (more players standing wins)
+countdown-seconds: 3    # [MCC] "Starting in 3 ... 2 ... 1"
+intermission-seconds: 15  # [MCC] observed "NEXT ROUND IN: 00:17" / "00:20" between rounds
+arrows-in-play: 2       # [MCC] "There are only ever 2 arrows in play"; behind side gets both, tied = one per side
+crowd-in-stands: true   # [MCC] everyone not playing watches from the stands (adventure mode); false = spectator mode
+glowing-bolts: true     # [default] dropped arrows glow so they are easy to find
+shrink:
+  first-kills: [2, 2, 1]  # [MCC] blocks the arena shrinks for the 1st, 2nd and 3rd elimination of a round
+  per-later-kill: 1       # [MCC] blocks per elimination after the third
+  shots-per-shrink: 6     # [MCC] one block for every 6 shots fired
+  max-blocks: 8           # [MCC] the arena stops shrinking after 8 blocks
+  warning-ticks: 40       # [default] how long the outer ring shows red before it drops into the lava
+  gap-ticks: 20           # [MCC] one second between consecutive shrinks
+  idle-seconds: 30        # [default, not MCC] shrink one block if nothing else shrank the arena for this long (0 = off)
+points:                 # [default] MCC awards no coins in Dodgebolt; these keep the core standings in line with the winner
   elimination: 4        # to the shooter
   round-win: 8          # to every member of the round-winning side
   match-win: 25         # to every member of the champion side

@@ -1,0 +1,13 @@
+# Permanent world slot of every TGTTOS map (slot n sits at x = n * map-spacing).
+# Never edit or reuse a number: the world still holds the blocks of whatever map had that slot.
+
+laundry_line: 0
+dam_face: 1
+bookshelf_run: 2
+ticket_gates: 3
+quarry_steps: 4
+tg_badlands: 5
+tg_industry: 6
+tg_pits: 7
+sky_race_orange: 8
+sky_race_red: 9

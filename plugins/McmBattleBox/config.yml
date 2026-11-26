@@ -1,18 +1,14 @@
 # Battle Box v2 settings
 # Centre block type: concrete (pickaxe, default - like the current event) or wool (shears).
 centre-block: concrete
-# Efficiency level (0-5) on the centre tool. 0 = plain iron pickaxe / plain shears, mining at normal vanilla speed
-# (white concrete ~0.45 s with an iron pickaxe; wool ~0.25 s with shears). Default, not researched - adjust after playtesting.
-centre-tool-efficiency: 0
 # Pick a new random arena theme every round (map rotation). false = one random theme for the whole game.
 rotate-maps-each-round: true
 # Force one theme for every round: greenhouse, toyworkshop, skilodge (empty = off). Also /bb theme <id|off>.
 force-theme: ""
+# Inner floor half-size: 14 gives the 29x29 floor. Allowed 11..18 (props are laid out for 14).
+arena-half-size: 14
 first-kit-seconds: 20
 kit-seconds: 15
-# Fight time limit per round in seconds. 0 = no limit (default, owner request round 3): the round ends only when a
-# side fills the centre, both sides are out (or the practice side is out), or an admin uses /mcm skip.
-# Any value > 0 (minimum 15) brings back the old timed round with the time-out tiebreak (old default 60).
 fight-seconds: 0
 end-seconds: 5
 max-rounds: 9

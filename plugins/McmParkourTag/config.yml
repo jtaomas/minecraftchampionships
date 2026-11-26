@@ -1,0 +1,15 @@
+# McmParkourTag settings.
+# MCC coins (base x1.0; the core applies the event multiplier). Source: MCC wiki, Parkour Tag "Coin Rewards"
+# (https://mcchampionship.fandom.com/wiki/Parkour_Tag; research/mcc_archive/parkour_tag/pt-1/notes.md). COINS.md.
+# "Shared" pools pay each player the MCC per-player share: a runner pool / 3 (MCC has 3 runners per team),
+# a team pool / 4.
+coins:
+  survive-10s: 2           # MCC: every 10 seconds a hunted runner survives
+  survive-round: 0         # MCC: nothing extra for being alive at 0:00 (OURS if > 0)
+  runners-survive-pool: 60 # MCC: shared amongst the runners if any runner survives until the end of the round
+  tag: 6                   # MCC: per tag, decreasing by 1 every 10 seconds (min 1)
+  tag-all: 42              # MCC: hunter tags all runners, decreasing by 7 every 10 seconds
+  tag-all-step: 7
+  first-clear-pool: 120    # MCC: shared amongst the team if their hunter tags all enemy runners first
+  mcc-runners: 3           # MCC runners per team (runner pool share divisor)
+  mcc-team-size: 4         # MCC team size (team pool share divisor)

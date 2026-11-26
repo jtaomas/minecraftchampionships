@@ -1,0 +1,36 @@
+h4rs_end:
+  slot: 0
+  box:
+  - -1130
+  - 4
+  - 5160
+  - -1070
+  - 255
+  - 5188
+  hash: ea7c6852b98a4a654ee832fc0bc01d51
+  oy: 64
+  name: 'The Dropper: End Shaft'
+h4rs_nether:
+  slot: 1
+  box:
+  - -1430
+  - 4
+  - 5160
+  - -1370
+  - 253
+  - 5188
+  hash: 7fccdcbfbe326df10031e07826b0610c
+  oy: 64
+  name: 'The Dropper: Nether Shaft'
+thedrop_trees:
+  slot: 2
+  box:
+  - -1738
+  - -60
+  - 5124
+  - -1662
+  - 318
+  - 5218
+  hash: bb77c810e69e3440c715733e9f40090d
+  oy: 64
+  name: 'The Drop: Treefall'

@@ -3,6 +3,7 @@ map:
   # auto = use com.mcm.games.parkourwarrior.map.CourseMap when present, else the stub course; coursemap; stub
   generator: auto
   seed: 20261124
+  pool: [mcc6_mixed]
   # world position of local course coordinates (default: local == world)
   offset-x: 0
   offset-y: 0
@@ -11,7 +12,7 @@ map:
 
 game:
   countdown-seconds: 10            # default
-  time-seconds: 600                # researched: 10:00
+  time-seconds: 360                # researched: 10:00
   overtime-seconds: 30             # researched: 30 s, a fall ends the run
   scroll-removed-at-seconds-left: 30      # researched (30 s mark)
   ending-switch-until-seconds-left: 30    # researched (30 s mark)

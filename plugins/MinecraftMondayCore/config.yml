@@ -1,11 +1,94 @@
-championship-playlist: []
-mcc-championship-playlist: []
-fast-test: false
-admin-tools-item: true
-admin-tools-hidden-in-games:
-- bingo
-- skyblockle
-minecraft-monday-external-games:
-- findthebutton
+staff: # Player names that are staff/spectators: never put on a team or into a game as a solo side. Same as /mcm spectate on, or the permission mcm.staff.
+  []
+finale-game: dodgebolt # Played last, between the top two teams, and never a Decision Dome vote option (MCC: Dodgebolt). Empty = none.
+hidden-games: # Installed games kept out of the menus, map picker and championship playlists (still startable with /mcm play <id>).
+  - footrace
+  - decisiondome
+  - sandsoftime
+  - gridrunners
+  - dodgebolt
+default-lobby: mcc # Where players spawn: mcc = the Block Showdown MCC hub (when built), mm = the Minecraft Monday lobby. The other one is reached from the compass.
+admin-tools-item: true # Give ops the Admin Tools feather (hotbar slot 9 + inventory slot 18) that opens /mcm tools.
+admin-tools-hidden-in-games: # Game ids during which the Admin Tools feather is removed (they scan inventories, e.g. Bingo counts feathers). Use /mcm tools then.
+  - bingo
+  - skyblockle
+minecraft-monday-external-games: # Ids of installed external games that belong to Minecraft Monday (with the 7 built-ins, MM lobby, /mcm start),
+                                 # not MCC (excluded from the MCC hub list, /mcm start mcc and the Decision Dome vote).
+  - findthebutton
+mcc-championship-playlist: # MCC game ids for /mcm start mcc. Empty = every installed MCC game.
+  - tgttos
+  - hungergames
+  - skyblockle
+  - rocketspleef
+  - parkourwarrior
+  - parkourtag
+  - hitw
+  - footrace
+  - bingo
+  - battlebox
+  - acerace
+  - buildmart
+  - dodgebolt
+championship-playlist: # Game ids in order. Empty = the 7 built-in events followed by every installed MCC game.
+                       # Built-ins: sg, parkour, dropper, tntrun, spleef, kitpvp, survival, oneshot. Run /mcm games for MCC game ids.
+  - sg
+  - parkour
+  - dropper
+  - tntrun
+  - spleef
+  - kitpvp
+  - survival
+  - findthebutton
+  - tgttos
+  - hungergames
+  - skyblockle
+  - rocketspleef
+  - parkourwarrior
+  - parkourtag
+  - hitw
+  - footrace
+  - bingo
+  - battlebox
+  - acerace
+  - buildmart
+  - dodgebolt
 mcc-hub:
-  enabled: true
+  ambient-fireworks-per-minute: 3.0 # Average ambient fireworks per minute over the MCC hub between games (0 = none). Game wins, the podium and the vote reveal still fire.
+  enabled: true # Build/load the MCC hub island (world mcc_lobby) as the lobby for MCC games.
+fast-test: false # Admin fast-test mode (/mcm fast on|off): every core wait (countdowns, intermissions, votes, reveals) is cut to <= 1 s.
+dropper:
+  stage-count: 5 # Stages per Multi-Stage Dropper round (1-12, capped by the stages available).
+  imported-stages: always # Imported shafts from plugins/MinecraftMondayCore/imported-droppers/: always = every ready one is in the round, the rest
+                          # built-in stages; mixed = shuffled into one pool with the built-ins; off = built-in stages only.
+hud:
+  event-name: BLOCK SHOWDOWN # Event name at the top of the MCC-style sidebar and tab list.
+teams:
+  size: 4 # Players per full team (/mcm teamsize <n> changes and saves it). Auto-balance and the team cap count registered members, online or not.
+  count: 8 # How many teams are in use (1-10, in the order Red, Orange, Yellow, Lime, Green, Cyan, Aqua, Blue, Purple, Pink): team pads, /team slots, auto-balance, Decision Dome pods.
+coins:
+  mcc-team-size: 4 # MCC team size. A team pool ('160 coins shared amongst the team') pays pool / this to each member, the MCC per-member share.
+  team-pool-split: mcc # mcc = each member gets pool / coins.mcc-team-size (default); team = the pool is split across the side's online members.
+  short-team-bonus: true # Short-team bonus: every coin a player earns is multiplied by teams.size / registered team size (a team of 3 = x1.33, a duo = x2).
+                         # The size is snapshotted at the start of each game. Team pools and split side points are not scaled twice.
+  event-multiplier:
+    enabled: true # MCC coin multiplier per game slot of a championship (game-plugins/COINS.md). Games award base (x1.0) MCC coins.
+    eight-games: # MCC regular event: game 1 x1.0, 2-3 x1.5, 4-5 x2.0, 6-7 x2.5, 8 x3.0. Other playlist lengths (except 6) map proportionally onto this list.
+      - 1.0
+      - 1.5
+      - 1.5
+      - 2.0
+      - 2.0
+      - 2.5
+      - 2.5
+      - 3.0
+    six-games: # MCC 6-game event: x1.0, x1.5, x2.0, x2.0, x2.5, x3.0.
+      - 1.0
+      - 1.5
+      - 2.0
+      - 2.0
+      - 2.5
+      - 3.0
+    no-coin-games: # Playlist games that award no coins (Dodgebolt, the dome): skipped when counting game slots, always x1.0.
+      - dodgebolt
+      - decisiondome
+    outside-championship: 1.0 # Multiplier for a single game started with /mcm play (not part of a championship). Staging tests can set e.g. 2.5.

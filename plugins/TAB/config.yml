@@ -1,6 +1,6 @@
 # https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Header-&-Footer
 header-footer:
-  enabled: true
+  enabled: false
   designs:
     world-test:
       display-condition: "%world%=test"
@@ -26,7 +26,7 @@ header-footer:
 
 # https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Tablist-name-formatting
 tablist-name-formatting:
-  enabled: true
+  enabled: false
   disable-condition: '%world%=disabledworld'
 
 # https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Nametags
@@ -44,7 +44,7 @@ scoreboard-teams:
 
 # https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Playerlist-Objective
 playerlist-objective:
-  enabled: true
+  enabled: false
   value: "%ping%"
   fancy-value: "&7Ping: %ping%"
   title: "TAB" # Only visible on Bedrock Edition

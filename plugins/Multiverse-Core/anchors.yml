@@ -1,1 +1,3 @@
-anchors: {}
+anchors:
+  test_hub: mcc_lobby_official:5000.00,121.00,5000.00:0.00:0.00
+  mcc_official_hub: mcc_lobby_official:2145.00,110.00,2144.00:0.00:0.00
