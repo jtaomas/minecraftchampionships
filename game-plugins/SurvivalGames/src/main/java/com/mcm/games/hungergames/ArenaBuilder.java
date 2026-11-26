@@ -26,6 +26,7 @@ public final class ArenaBuilder {
     private static final int BLOCKS_PER_TICK = 35_000;
 
     private final BitSet prevOccupied = new BitSet(SgCanvas.SIZE * SgCanvas.HEIGHT * SgCanvas.SIZE);
+    private final BitSet inFlightOccupied = new BitSet(SgCanvas.SIZE * SgCanvas.HEIGHT * SgCanvas.SIZE);
     private final List<Location> pedestals = new ArrayList<>();
     private final List<SgCanvas.ChestEntry> chests = new ArrayList<>();
     private final List<SgCanvas.AirdropSpot> airdrops = new ArrayList<>();
@@ -52,6 +53,9 @@ public final class ArenaBuilder {
         if (buildTask != null) {
             buildTask.cancel();
             buildTask = null;
+            // Preserve any blocks that may have been placed before cancellation so the next build clears them.
+            prevOccupied.or(inFlightOccupied);
+            inFlightOccupied.clear();
         }
     }
 
@@ -69,7 +73,10 @@ public final class ArenaBuilder {
         chests.addAll(canvas.getChests());
         airdrops.addAll(canvas.getAirdrops());
 
-        List<SgCanvas.BlockEdit> edits = canvas.exportDiff(prevOccupied);
+        BitSet working = (BitSet) prevOccupied.clone();
+        List<SgCanvas.BlockEdit> edits = canvas.exportDiff(working);
+        inFlightOccupied.clear();
+        inFlightOccupied.or(working);
         final int[] index = {0};
 
         buildTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
@@ -83,7 +90,13 @@ public final class ArenaBuilder {
             }
             index[0] = end;
             if (index[0] >= edits.size()) {
-                cancel();
+                if (buildTask != null) {
+                    buildTask.cancel();
+                    buildTask = null;
+                }
+                prevOccupied.clear();
+                prevOccupied.or(working);
+                inFlightOccupied.clear();
                 refillChests(world);
                 onComplete.run();
             }
@@ -105,8 +118,7 @@ public final class ArenaBuilder {
     public int findSafeTopY(World world, int x, int z) {
         for (int y = SgCanvas.MAX_Y; y >= SgCanvas.MIN_Y; y--) {
             Material m = world.getBlockAt(x, y, z).getType();
-            if (m != Material.AIR && m != Material.WATER && m != Material.OAK_LEAVES
-                    && m != Material.BIRCH_LEAVES && m != Material.SPRUCE_LEAVES) {
+            if (!m.isAir() && m != Material.WATER && m != Material.LAVA && !m.name().endsWith("_LEAVES")) {
                 return y;
             }
         }

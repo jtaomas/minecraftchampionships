@@ -1,27 +1,32 @@
-# Modern MCC-style Hunger Games / Survival Games (hungergames)
-# Small numeric defaults not fixed by research can be tuned here.
+# Modern 1.21.1 MCC-faithful Survival Games / Hunger Games (hungergames)
+# Wiki-researched MCC rules vs configurable defaults are documented in README.md.
 
 prefer-imported-maps: true
+default-map: turbulence
 
 timings:
   countdown-seconds: 10
-  grace-seconds: 15
-  game-seconds: 300
-  refill-at-elapsed-seconds: 135
-  airdrop-interval-seconds: 65
-  deathmatch-at-remaining-seconds: 60
+  grace-seconds: 25                    # MCC 16+: 25s grace period
+  game-seconds: 660                    # MCC 17+: 11 minutes
+  refill-at-elapsed-seconds: 270       # Configurable default (0 to disable)
+  crate-count: 4                       # MCC 18+: 4 Coin Crates per game
+  crate-drop-seconds: 20               # Configurable drop countdown (MCC 19+: longer descent)
+  crate-break-seconds: 6               # Configurable fixed break duration (tools do not speed up)
+  last-stand-at-remaining-seconds: 90  # MCC 25+: Last Stand phase
+  last-stand-decay-interval-seconds: 3 # MCC 25+: -0.5 heart every 3s down to 1 heart
 
 border:
   initial-radius: 124
-  final-radius: 16
-  deathmatch-radius: 22
+  last-stand-radius: 20                # MCC 25+: larger Last Stand arena (not 1 block)
 
-# MCC coins (base x1.0; the core applies the event multiplier). Source: MCC wiki, Survival Games "Coin Rewards"
-# (https://mcchampionship.fandom.com/wiki/Survival_Games; research/mcc_archive/survival_games). See game-plugins/COINS.md.
-# Team pools are shared amongst the team: each member gets the MCC per-member share (pool / 4).
+combat:
+  mace-max-damage: 11.0                # Nerfed cap on 1.21 Mace raw hit damage (5.5 hearts pre-armor)
+  kill-assist-window-seconds: 10       # Attribute knockback/border/wind-charge deaths to last attacker
+  tnt-fuse-ticks: 45                   # Auto-igniting tactical TNT (player damage only, zero map grief)
+
+# MCC coins (base x1.0; core applies event multiplier). Source: MCC Wiki Survival Games (MCC 19+).
 coins:
-  kill: 65                 # MCC: personal elimination
-  outlive: 3               # MCC: every time another player is eliminated and you are still alive
-  airdrop: 180             # MCC: team pool for breaking open an airdrop crate
-  # MCC team placement by how long the team survived: 1st 650 ... 10th 330 (later teams get the last value)
+  kill: 65
+  outlive: 3
+  airdrop: 180
   placement: [650, 600, 560, 520, 480, 450, 420, 390, 360, 330]

@@ -1,6 +1,7 @@
 package com.mcm.games.hungergames;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
+import com.mcm.api.McmCoins;
 import com.mcm.api.McmGame;
 import com.mcm.api.McmGameContext;
 import com.mcm.api.Waits;
@@ -22,17 +23,22 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.WorldCreator;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Firework;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -41,16 +47,29 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.EntityPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.world.EntitiesLoadEvent;
+import org.bukkit.inventory.AnvilInventory;
+import org.bukkit.inventory.EnchantingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
@@ -65,10 +84,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -76,26 +97,62 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 /**
- * Modern 1.21 MCC-style Survival Games / Hunger Games (id: hungergames).
+ * Modern 1.21.1 MCC-faithful Survival Games / Hunger Games (id: hungergames).
  */
 public final class SurvivalGamesGame implements McmGame, Listener {
-    private enum Phase { IDLE, BUILDING, COUNTDOWN, GRACE, ACTIVE, DEATHMATCH }
+    private enum Phase { IDLE, BUILDING, COUNTDOWN, GRACE, ACTIVE, LAST_STAND }
+
+    private enum CrateState { INCOMING, LANDED, BREAKING }
 
     private record ImportedChest(int x, int y, int z, LootTable.Tier tier) {}
 
+    private record AttackRecord(UUID attackerId, long timestampMs) {}
+
+    private static final class CoinCrate {
+        final Location loc;
+        CrateState state;
+        int dropSecondsLeft;
+        UUID breakerId;
+        int breakTicksDone;
+        final int breakTicksTotal;
+
+        CoinCrate(Location loc, int dropSecondsLeft, int breakTicksTotal) {
+            this.loc = loc;
+            this.state = CrateState.INCOMING;
+            this.dropSecondsLeft = dropSecondsLeft;
+            this.breakTicksTotal = breakTicksTotal;
+        }
+
+        Location center() {
+            return loc.clone().add(0.5, 0.5, 0.5);
+        }
+    }
+
     private static final int INFINITE_XP_LEVEL = 30;
     private static final int IMPORTED_CHEST_SCAN_CAP = 140;
-    private static final int CHUNKS_SCANNED_PER_TICK = 24;
+    private static final int MAX_CHUNKS_SCANNED_PER_TICK = 8;
+    private static final long CHUNK_SCAN_BUDGET_NANOS = 12_000_000L;
+    private static final double DEFAULT_MAX_HEALTH = 20.0;
+    private static final double LAST_STAND_MIN_HEALTH = 2.0;
+    private static final double CRATE_BREAK_RANGE_SQ = 4.5 * 4.5;
+
     private static final Set<String> SKIPPED_WORLD_ENTRIES = Set.of(
             "uid.dat", "session.lock", "map.yml", "level.dat_old", "playerdata", "stats", "entities"
     );
     private static final Set<Material> PLACEABLE_BLOCKS = Set.of(
-            Material.OAK_PLANKS, Material.COBBLESTONE, Material.COBWEB, Material.FIRE
+            Material.OAK_PLANKS, Material.COBBLESTONE, Material.COBWEB, Material.FIRE, Material.TNT
+    );
+    private static final Set<PotionEffectType> HARMFUL_POTION_EFFECTS = Set.of(
+            PotionEffectType.INSTANT_DAMAGE,
+            PotionEffectType.POISON,
+            PotionEffectType.SLOWNESS,
+            PotionEffectType.WEAKNESS
     );
 
     private final SurvivalGamesPlugin plugin;
     private final ArenaBuilder arenaBuilder = new ArenaBuilder();
     private final Object importedIoLock = new Object();
+    private final Map<String, Integer> runtimeWorldGen = new HashMap<>();
 
     private volatile boolean running;
     private volatile Phase phase = Phase.IDLE;
@@ -105,28 +162,36 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     private McmGameContext ctx;
     private World world;
     private World importedRuntimeWorld;
+    private int importedRuntimeGen;
     private SgMap activeMap;
     private ImportedSgWorld activeImported;
     private String forcedMap;
     private BukkitTask mainTask;
     private BukkitTask importedScanTask;
+    private BukkitTask crateVisualTask;
 
     private final List<Location> importedPedestals = new ArrayList<>();
     private final List<ImportedChest> importedChests = new ArrayList<>();
     private final Set<UUID> alive = new LinkedHashSet<>();
     private final Map<UUID, String> sideOfPlayer = new HashMap<>();
     private final List<String> eliminationOrder = new ArrayList<>();
-    private final Set<Location> activeAirdrops = new HashSet<>();
+    private final Map<UUID, AttackRecord> lastAttacker = new HashMap<>();
     private final Set<Location> playerPlacedBlocks = new HashSet<>();
+    private final Set<UUID> playerPlacedBoats = new HashSet<>();
 
-    private Location pendingAirdropLoc;
-    private int pendingAirdropCountdown;
+    private final List<CoinCrate> activeCrates = new ArrayList<>();
+    private final List<Integer> scheduledCrateElapsed = new ArrayList<>();
+    private int nextCrateScheduleIdx;
 
     private int phaseSecondsLeft;
     private int gameSecondsLeft;
     private int gameTotalSeconds;
     private boolean chestsRefilled;
-    private boolean deathmatchStarted;
+    private boolean lastStandStarted;
+    private int lastStandDecayTick;
+    private double borderStartRadius;
+    private double borderLastStandRadius;
+    private int borderShrinkTotalSeconds;
 
     public SurvivalGamesGame(SurvivalGamesPlugin plugin) {
         this.plugin = plugin;
@@ -149,7 +214,7 @@ public final class SurvivalGamesGame implements McmGame, Listener {
 
     @Override
     public String description() {
-        return "Modern MCC Survival Games with enchanting, shrinking border, airdrops, and Cornucopia deathmatch.";
+        return "1.21.1 MCC Survival Games with infinite XP enchanting, 3-state Coin Crates, and Last Stand.";
     }
 
     @Override
@@ -237,14 +302,17 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         this.alive.clear();
         this.sideOfPlayer.clear();
         this.eliminationOrder.clear();
-        this.activeAirdrops.clear();
+        this.lastAttacker.clear();
+        this.activeCrates.clear();
+        this.scheduledCrateElapsed.clear();
+        this.nextCrateScheduleIdx = 0;
         this.playerPlacedBlocks.clear();
+        this.playerPlacedBoats.clear();
         this.importedPedestals.clear();
         this.importedChests.clear();
-        this.pendingAirdropLoc = null;
-        this.pendingAirdropCountdown = 0;
         this.chestsRefilled = false;
-        this.deathmatchStarted = false;
+        this.lastStandStarted = false;
+        this.lastStandDecayTick = 0;
         this.activeImported = null;
         this.activeMap = null;
 
@@ -256,12 +324,24 @@ public final class SurvivalGamesGame implements McmGame, Listener {
                 this.activeMap = SgMapRegistry.byId(forcedMap);
             }
             this.forcedMap = null;
-        } else if (plugin.getConfig().getBoolean("prefer-imported-maps", true) && !imported.isEmpty()) {
-            List<ImportedSgWorld> list = new ArrayList<>(imported.values());
-            this.activeImported = list.get(ThreadLocalRandom.current().nextInt(list.size()));
         } else {
-            List<SgMap> allMaps = SgMapRegistry.all();
-            this.activeMap = allMaps.get(ThreadLocalRandom.current().nextInt(allMaps.size()));
+            String configuredDefault = plugin.getConfig().getString("default-map", "").trim().toLowerCase(Locale.ROOT);
+            if (!configuredDefault.isEmpty()) {
+                if (imported.containsKey(configuredDefault)) {
+                    this.activeImported = imported.get(configuredDefault);
+                } else if (SgMapRegistry.ids().contains(configuredDefault)) {
+                    this.activeMap = SgMapRegistry.byId(configuredDefault);
+                }
+            }
+            if (this.activeImported == null && this.activeMap == null) {
+                if (plugin.getConfig().getBoolean("prefer-imported-maps", true) && !imported.isEmpty()) {
+                    List<ImportedSgWorld> list = new ArrayList<>(imported.values());
+                    this.activeImported = list.get(ThreadLocalRandom.current().nextInt(list.size()));
+                } else {
+                    List<SgMap> allMaps = SgMapRegistry.all();
+                    this.activeMap = allMaps.get(ThreadLocalRandom.current().nextInt(allMaps.size()));
+                }
+            }
         }
 
         for (Map.Entry<String, List<Player>> entry : ctx.sides().entrySet()) {
@@ -281,6 +361,7 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         this.world = plugin.getGameWorld();
         WorldBorder border = world.getWorldBorder();
         int initialRadius = plugin.getConfig().getInt("border.initial-radius", activeMap.radius());
+        this.borderStartRadius = initialRadius;
         border.setCenter(0.5, 0.5);
         border.setSize(initialRadius * 2.0);
         border.setDamageBuffer(1.0);
@@ -299,16 +380,18 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         if (existing != null) {
             Location fallback = Bukkit.getWorlds().get(0).getSpawnLocation();
             for (Player p : new ArrayList<>(existing.getPlayers())) {
+                p.leaveVehicle();
                 p.teleport(fallback);
             }
             if (!Bukkit.unloadWorld(existing, false)) {
                 plugin.getLogger().warning("Could not unload existing runtime world '" + runtimeName + "'; aborting load.");
-                if (ctx != null) {
-                    ctx.broadcast(ChatColor.RED + "Failed to unload previous instance of '" + imp.id() + "'.");
-                }
-                stop();
+                endGame("Failed to unload previous instance of '" + imp.id() + "'.");
                 return;
             }
+        }
+
+        synchronized (importedIoLock) {
+            runtimeWorldGen.put(runtimeName, gen);
         }
 
         Path targetDir = plugin.getServer().getWorldContainer().toPath().resolve(runtimeName);
@@ -317,15 +400,15 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             try {
                 synchronized (importedIoLock) {
                     if (!running || buildGeneration != gen) return;
+                    runtimeWorldGen.put(runtimeName, gen);
                     deleteRecursivelyWithRetry(targetDir);
                     copyWorldTemplate(imp.templateDir(), targetDir);
                 }
             } catch (IOException ex) {
                 plugin.getLogger().severe("Failed to copy imported SG world '" + imp.id() + "': " + ex.getMessage());
                 Bukkit.getScheduler().runTask(plugin, () -> {
-                    if (running && buildGeneration == gen && ctx != null) {
-                        ctx.broadcast(ChatColor.RED + "Failed to load imported map '" + imp.id() + "'.");
-                        stop();
+                    if (running && buildGeneration == gen) {
+                        endGame("Failed to load imported map '" + imp.id() + "'.");
                     }
                 });
                 return;
@@ -335,23 +418,22 @@ public final class SurvivalGamesGame implements McmGame, Listener {
                 if (!running || buildGeneration != gen) return;
                 if (Bukkit.getWorld(runtimeName) != null) {
                     plugin.getLogger().warning("Runtime world '" + runtimeName + "' already loaded before createWorld().");
-                    stop();
+                    endGame("Runtime world conflict for '" + imp.id() + "'.");
                     return;
                 }
                 World loaded = new WorldCreator(runtimeName).createWorld();
                 if (loaded == null) {
-                    if (ctx != null) {
-                        ctx.broadcast(ChatColor.RED + "WorldCreator returned null for '" + runtimeName + "'.");
-                    }
-                    stop();
+                    endGame("WorldCreator failed for '" + imp.id() + "'.");
                     return;
                 }
                 this.world = loaded;
                 this.importedRuntimeWorld = loaded;
+                this.importedRuntimeGen = gen;
                 plugin.configureWorld(loaded);
                 loaded.setAutoSave(false);
 
                 WorldBorder border = loaded.getWorldBorder();
+                this.borderStartRadius = imp.radius();
                 border.setCenter(imp.centerX() + 0.5, imp.centerZ() + 0.5);
                 border.setSize(imp.radius() * 2.0);
                 border.setDamageBuffer(1.0);
@@ -399,9 +481,14 @@ public final class SurvivalGamesGame implements McmGame, Listener {
                 }
                 return;
             }
-            int end = Math.min(idx[0] + CHUNKS_SCANNED_PER_TICK, chunks.size());
-            for (int i = idx[0]; i < end; i++) {
-                int[] coord = chunks.get(i);
+            long tickStart = System.nanoTime();
+            int scannedThisTick = 0;
+            while (idx[0] < chunks.size() && scannedThisTick < MAX_CHUNKS_SCANNED_PER_TICK) {
+                if (scannedThisTick > 0 && (System.nanoTime() - tickStart) >= CHUNK_SCAN_BUDGET_NANOS) {
+                    break;
+                }
+                int[] coord = chunks.get(idx[0]++);
+                scannedThisTick++;
                 Chunk chunk = loaded.getChunkAt(coord[0], coord[1]);
                 for (Entity ent : chunk.getEntities()) {
                     purgeUnsafeLegacyEntity(ent);
@@ -415,7 +502,6 @@ public final class SurvivalGamesGame implements McmGame, Listener {
                     }
                 }
             }
-            idx[0] = end;
             if (idx[0] >= chunks.size()) {
                 importedScanTask.cancel();
                 importedScanTask = null;
@@ -600,34 +686,57 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     }
 
     private List<Location> activePedestals() {
-        return activeImported != null ? importedPedestals : arenaBuilder.getPedestals();
+        List<Location> list = activeImported != null ? importedPedestals : arenaBuilder.getPedestals();
+        if (!list.isEmpty()) return list;
+        return List.of(new Location(world, activeCenterX() + 0.5, activeCenterY() + 1.0, activeCenterZ() + 0.5));
     }
 
     private void onArenaBuilt() {
         if (!running || ctx == null) return;
 
         List<Location> pedestals = activePedestals();
-        List<Player> players = new ArrayList<>(ctx.participants());
-        for (int i = 0; i < players.size(); i++) {
-            Player p = players.get(i);
+        // Order participants grouped by team side so teammates spawn on adjacent pedestals (MCC style).
+        List<Player> orderedPlayers = new ArrayList<>();
+        Set<UUID> added = new HashSet<>();
+        for (List<Player> sidePlayers : ctx.sides().values()) {
+            for (Player p : sidePlayers) {
+                if (p != null && p.isOnline() && added.add(p.getUniqueId())) {
+                    orderedPlayers.add(p);
+                }
+            }
+        }
+        for (Player p : ctx.participants()) {
+            if (p != null && p.isOnline() && added.add(p.getUniqueId())) {
+                orderedPlayers.add(p);
+            }
+        }
+
+        for (int i = 0; i < orderedPlayers.size(); i++) {
+            Player p = orderedPlayers.get(i);
             Location spawn = pedestals.get(i % pedestals.size()).clone();
             if (i >= pedestals.size()) {
                 double offsetAngle = (2.0 * Math.PI * (i / pedestals.size())) / 4.0;
                 spawn.add(Math.cos(offsetAngle) * 0.35, 0.0, Math.sin(offsetAngle) * 0.35);
             }
+            p.leaveVehicle();
             p.teleport(spawn);
             p.setGameMode(GameMode.SURVIVAL);
-            p.setHealth(20.0);
+            resetMaxHealth(p);
+            p.setHealth(DEFAULT_MAX_HEALTH);
             p.setFoodLevel(20);
-            p.setSaturation(5f);
+            p.setSaturation(20.0f); // MCC 8+: full saturation at start
             p.setLevel(INFINITE_XP_LEVEL);
             p.setExp(0f);
             p.getInventory().clear();
             giveStarterKit(p);
         }
 
-        gameTotalSeconds = plugin.getConfig().getInt("timings.game-seconds", 300);
+        gameTotalSeconds = Math.max(30, plugin.getConfig().getInt("timings.game-seconds", 660));
         gameSecondsLeft = gameTotalSeconds;
+        borderLastStandRadius = plugin.getConfig().getDouble("border.last-stand-radius", 20.0);
+        int lastStandAt = getLastStandTriggerRemainingSeconds();
+        borderShrinkTotalSeconds = Math.max(15, gameTotalSeconds - lastStandAt);
+        scheduleCoinCrates(lastStandAt);
 
         int countdown = Waits.seconds(plugin.getConfig().getInt("timings.countdown-seconds", 10));
         if (countdown <= 0) {
@@ -640,18 +749,49 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         startTickLoop();
     }
 
+    private int getLastStandTriggerRemainingSeconds() {
+        int configured = plugin.getConfig().getInt("timings.last-stand-at-remaining-seconds", 90);
+        return Math.max(5, Math.min(gameTotalSeconds - 10, configured));
+    }
+
+    private void scheduleCoinCrates(int lastStandAt) {
+        scheduledCrateElapsed.clear();
+        nextCrateScheduleIdx = 0;
+        int crateCount = Math.max(0, plugin.getConfig().getInt("timings.crate-count", 4));
+        if (crateCount == 0) return;
+
+        int dropSeconds = Math.max(3, plugin.getConfig().getInt("timings.crate-drop-seconds", 20));
+        int activeSpan = Math.max(10, gameTotalSeconds - lastStandAt);
+        int earliest = Math.min(35, Math.max(6, activeSpan / 5));
+        int latest = Math.max(earliest, activeSpan - dropSeconds - 4);
+
+        if (crateCount == 1 || latest <= earliest) {
+            scheduledCrateElapsed.add((earliest + latest) / 2);
+            return;
+        }
+        double step = (double) (latest - earliest) / (crateCount - 1);
+        for (int i = 0; i < crateCount; i++) {
+            int t = (int) Math.round(earliest + step * i);
+            if (scheduledCrateElapsed.isEmpty() || t > scheduledCrateElapsed.get(scheduledCrateElapsed.size() - 1)) {
+                scheduledCrateElapsed.add(t);
+            } else {
+                scheduledCrateElapsed.add(scheduledCrateElapsed.get(scheduledCrateElapsed.size() - 1) + 2);
+            }
+        }
+    }
+
     private void giveStarterKit(Player p) {
         ItemStack compass = new ItemStack(Material.COMPASS, 1);
         ItemMeta meta = compass.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(ChatColor.AQUA + "Player Tracker");
+            meta.setDisplayName(ChatColor.AQUA + "Crate Tracker");
+            meta.setLore(List.of(ChatColor.GRAY + "Points to active Coin Crates"));
             compass.setItemMeta(meta);
         }
         p.getInventory().addItem(compass);
         if (activeBoatRecommended()) {
             p.getInventory().addItem(new ItemStack(Material.OAK_BOAT, 1));
         }
-        p.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 4));
 
         ItemStack boots = new ItemStack(Material.LEATHER_BOOTS);
         if (boots.getItemMeta() instanceof LeatherArmorMeta lMeta) {
@@ -659,6 +799,13 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             boots.setItemMeta(lMeta);
         }
         p.getInventory().setBoots(boots);
+    }
+
+    private static void resetMaxHealth(Player p) {
+        AttributeInstance attr = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        if (attr != null && attr.getBaseValue() != DEFAULT_MAX_HEALTH) {
+            attr.setBaseValue(DEFAULT_MAX_HEALTH);
+        }
     }
 
     private Color teamColorToBukkit(ChatColor cc) {
@@ -679,14 +826,14 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     }
 
     private void startGraceOrActive() {
-        int grace = Waits.seconds(plugin.getConfig().getInt("timings.grace-seconds", 15));
+        int grace = Waits.seconds(plugin.getConfig().getInt("timings.grace-seconds", 25));
         if (grace <= 0) {
             startActivePhase();
             return;
         }
         phase = Phase.GRACE;
         phaseSecondsLeft = grace;
-        ctx.broadcast(ChatColor.GREEN + "GO! " + ChatColor.YELLOW + "Grace period active for " + grace + "s! Enchanting tables give infinite Lv.30!");
+        ctx.broadcast(ChatColor.GREEN + "GO! " + ChatColor.YELLOW + "Grace period active for " + grace + "s! Enchanting & anvils have infinite Lv.30!");
         for (Player p : ctx.participants()) {
             p.playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.6f, 1.2f);
         }
@@ -703,9 +850,10 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         }
 
         WorldBorder border = world.getWorldBorder();
-        double finalDiameter = plugin.getConfig().getInt("border.final-radius", 16) * 2.0;
-        border.setSize(finalDiameter, Math.max(30, gameSecondsLeft - 20));
+        double targetDiameter = Math.min(border.getSize(), borderLastStandRadius * 2.0);
+        border.setSize(targetDiameter, Math.max(15, borderShrinkTotalSeconds));
 
+        startCrateVisualTask();
         if (mainTask == null) {
             startTickLoop();
         }
@@ -714,6 +862,11 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     private void startTickLoop() {
         if (mainTask != null) mainTask.cancel();
         mainTask = Bukkit.getScheduler().runTaskTimer(plugin, this::tickSecond, 20L, 20L);
+    }
+
+    private void startCrateVisualTask() {
+        if (crateVisualTask != null) crateVisualTask.cancel();
+        crateVisualTask = Bukkit.getScheduler().runTaskTimer(plugin, this::tickCrates5Ticks, 5L, 5L);
     }
 
     private void tickSecond() {
@@ -742,29 +895,33 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             return;
         }
 
-        // ACTIVE or DEATHMATCH
+        // ACTIVE or LAST_STAND
         gameSecondsLeft--;
         ctx.setTimer(Math.max(0, gameSecondsLeft), gameTotalSeconds);
 
         int elapsed = gameTotalSeconds - gameSecondsLeft;
-        int refillAt = plugin.getConfig().getInt("timings.refill-at-elapsed-seconds", 135);
-        if (!chestsRefilled && elapsed >= refillAt) {
+        int refillAt = plugin.getConfig().getInt("timings.refill-at-elapsed-seconds", 270);
+        if (refillAt > 0 && !chestsRefilled && elapsed >= refillAt) {
             chestsRefilled = true;
             refillActiveChests();
             ctx.broadcast(ChatColor.AQUA + "★ ALL CHESTS REFILLED WITH UPGRADED LOOT! ★");
         }
 
-        int airdropInterval = plugin.getConfig().getInt("timings.airdrop-interval-seconds", 65);
-        if (elapsed > 25 && elapsed % airdropInterval == 0 && phase == Phase.ACTIVE && pendingAirdropLoc == null) {
-            announceAirdrop();
+        if (phase == Phase.ACTIVE
+                && nextCrateScheduleIdx < scheduledCrateElapsed.size()
+                && elapsed >= scheduledCrateElapsed.get(nextCrateScheduleIdx)) {
+            nextCrateScheduleIdx++;
+            announceCoinCrate();
         }
 
-        tickPendingAirdrop();
-        tickActiveAirdropBeacons();
+        tickIncomingCrates();
 
-        int dmAt = plugin.getConfig().getInt("timings.deathmatch-at-remaining-seconds", 60);
-        if (!deathmatchStarted && gameSecondsLeft <= dmAt) {
-            startDeathmatch();
+        int lastStandAt = getLastStandTriggerRemainingSeconds();
+        if (!lastStandStarted && gameSecondsLeft <= lastStandAt) {
+            startLastStand();
+        }
+        if (phase == Phase.LAST_STAND) {
+            tickLastStandDecay();
         }
 
         updateCompassAndActionBar();
@@ -796,143 +953,300 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         int maxY = Math.min(world.getMaxHeight() - 2, activeImported.maxY());
         for (int y = maxY; y >= minY; y--) {
             Material m = world.getBlockAt(x, y, z).getType();
-            if (m != Material.AIR && m != Material.WATER && !m.name().endsWith("_LEAVES")) {
+            if (!m.isAir() && m != Material.WATER && m != Material.LAVA && !m.name().endsWith("_LEAVES")) {
                 return y;
             }
         }
         return activeImported.centerY();
     }
 
-    private void announceAirdrop() {
-        double maxR = Math.max(18.0, (world.getWorldBorder().getSize() / 2.0) - 10.0);
+    private void announceCoinCrate() {
+        int dropSeconds = Math.max(3, plugin.getConfig().getInt("timings.crate-drop-seconds", 20));
+        int breakSeconds = Math.max(1, plugin.getConfig().getInt("timings.crate-break-seconds", 6));
+
+        double currentRadius = world.getWorldBorder().getSize() / 2.0;
+        double ratePerSec = borderShrinkTotalSeconds > 0
+                ? Math.max(0.0, (borderStartRadius - borderLastStandRadius) / borderShrinkTotalSeconds)
+                : 0.0;
+        double projectedRadius = Math.max(borderLastStandRadius,
+                currentRadius - ratePerSec * (dropSeconds + breakSeconds + 4));
+        double maxR = Math.max(4.0, projectedRadius - 6.0);
+        double minR = Math.min(6.0, maxR * 0.4);
+
         int cx = activeCenterX();
         int cz = activeCenterZ();
-        int x, z;
-        if (activeImported == null) {
-            List<SgCanvas.AirdropSpot> candidates = new ArrayList<>();
-            for (SgCanvas.AirdropSpot spot : arenaBuilder.getAirdrops()) {
-                if (Math.hypot(spot.x() - cx, spot.z() - cz) <= maxR) {
-                    candidates.add(spot);
-                }
-            }
-            if (!candidates.isEmpty()) {
-                SgCanvas.AirdropSpot chosen = candidates.get(ThreadLocalRandom.current().nextInt(candidates.size()));
-                x = chosen.x();
-                z = chosen.z();
-            } else {
-                double angle = ThreadLocalRandom.current().nextDouble() * Math.PI * 2.0;
-                double dist = 10.0 + ThreadLocalRandom.current().nextDouble() * Math.max(5.0, maxR - 10.0);
-                x = cx + (int) Math.round(Math.cos(angle) * dist);
-                z = cz + (int) Math.round(Math.sin(angle) * dist);
-            }
-        } else {
+        Location chosen = null;
+
+        for (int attempt = 0; attempt < 28; attempt++) {
             double angle = ThreadLocalRandom.current().nextDouble() * Math.PI * 2.0;
-            double dist = 10.0 + ThreadLocalRandom.current().nextDouble() * Math.max(5.0, maxR - 10.0);
-            x = cx + (int) Math.round(Math.cos(angle) * dist);
-            z = cz + (int) Math.round(Math.sin(angle) * dist);
+            double dist = minR + ThreadLocalRandom.current().nextDouble() * Math.max(1.0, maxR - minR);
+            int x = cx + (int) Math.round(Math.cos(angle) * dist);
+            int z = cz + (int) Math.round(Math.sin(angle) * dist);
+            int topY = findSafeTopY(x, z);
+            Block ground = world.getBlockAt(x, topY, z);
+            Block cratePos = world.getBlockAt(x, topY + 1, z);
+            Block headPos = world.getBlockAt(x, topY + 2, z);
+            if (ground.getType().isSolid()
+                    && !ground.isLiquid()
+                    && cratePos.isPassable() && !cratePos.isLiquid()
+                    && headPos.isPassable() && !headPos.isLiquid()
+                    && findCrateAt(cratePos.getLocation()) == null) {
+                chosen = cratePos.getLocation();
+                break;
+            }
+        }
+        if (chosen == null) {
+            int topY = findSafeTopY(cx, cz);
+            chosen = new Location(world, cx, topY + 1, cz);
         }
 
-        int topY = findSafeTopY(x, z);
-        pendingAirdropLoc = new Location(world, x, topY + 1, z);
-        pendingAirdropCountdown = 15;
+        CoinCrate crate = new CoinCrate(chosen, dropSeconds, breakSeconds * 20);
+        activeCrates.add(crate);
 
-        ctx.broadcast(ChatColor.LIGHT_PURPLE + "★ SUPPLY AIRDROP incoming in 15s at "
-                + ChatColor.AQUA + x + ", " + (topY + 1) + ", " + z + ChatColor.LIGHT_PURPLE + "!");
+        ctx.broadcast(ChatColor.WHITE + "★ COIN CRATE incoming in " + dropSeconds + "s at "
+                + ChatColor.AQUA + chosen.getBlockX() + ", " + chosen.getBlockY() + ", " + chosen.getBlockZ()
+                + ChatColor.GRAY + " (White Beacon — follow your Compass!)");
     }
 
-    private void tickPendingAirdrop() {
-        if (pendingAirdropLoc == null) return;
-        world.spawnParticle(Particle.END_ROD, pendingAirdropLoc.clone().add(0.5, 4.0, 0.5), 18, 0.4, 4.0, 0.4, 0.02);
-        pendingAirdropCountdown--;
-        if (pendingAirdropCountdown <= 0) {
-            spawnAirdropCrate(pendingAirdropLoc);
-            pendingAirdropLoc = null;
+    private void tickIncomingCrates() {
+        for (CoinCrate crate : activeCrates) {
+            if (crate.state != CrateState.INCOMING) continue;
+            crate.dropSecondsLeft--;
+            if (crate.dropSecondsLeft <= 0) {
+                landCoinCrate(crate);
+            }
         }
     }
 
-    private void spawnAirdropCrate(Location loc) {
-        Block base = world.getBlockAt(loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ());
-        if (base.getType() == Material.AIR || base.getType() == Material.WATER) {
+    private void landCoinCrate(CoinCrate crate) {
+        crate.state = CrateState.LANDED;
+        Block base = world.getBlockAt(crate.loc.getBlockX(), crate.loc.getBlockY() - 1, crate.loc.getBlockZ());
+        if (!base.getType().isSolid() || base.isLiquid()) {
             base.setType(Material.GOLD_BLOCK, false);
         }
-        Block crate = world.getBlockAt(loc);
-        crate.setType(Material.CHEST, false);
-        if (crate.getState() instanceof Chest chest) {
-            LootTable.fill(chest.getBlockInventory(), LootTable.Tier.AIRDROP);
-        }
-        activeAirdrops.add(crate.getLocation());
+        Block block = world.getBlockAt(crate.loc);
+        playerPlacedBlocks.remove(block.getLocation());
+        block.setType(Material.BARREL, false);
 
-        Firework fw = (Firework) world.spawnEntity(loc.clone().add(0.5, 1.5, 0.5), EntityType.FIREWORK_ROCKET);
+        Firework fw = (Firework) world.spawnEntity(crate.center().add(0.0, 1.0, 0.0), EntityType.FIREWORK_ROCKET);
         FireworkMeta meta = fw.getFireworkMeta();
-        meta.addEffect(FireworkEffect.builder().withColor(Color.AQUA, Color.YELLOW).with(FireworkEffect.Type.BALL_LARGE).build());
+        meta.addEffect(FireworkEffect.builder().withColor(Color.LIME, Color.YELLOW).with(FireworkEffect.Type.BALL_LARGE).build());
         meta.setPower(1);
         fw.setFireworkMeta(meta);
 
-        ctx.broadcast(ChatColor.LIGHT_PURPLE + "★ SUPPLY AIRDROP LANDED at "
-                + ChatColor.AQUA + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ()
-                + ChatColor.LIGHT_PURPLE + "!");
+        ctx.broadcast(ChatColor.GREEN + "★ COIN CRATE LANDED at "
+                + ChatColor.AQUA + crate.loc.getBlockX() + ", " + crate.loc.getBlockY() + ", " + crate.loc.getBlockZ()
+                + ChatColor.GRAY + " (Green Beacon — break to claim +180 team coins!)");
     }
 
-    private void tickActiveAirdropBeacons() {
-        for (Location loc : activeAirdrops) {
-            world.spawnParticle(Particle.TOTEM_OF_UNDYING, loc.clone().add(0.5, 1.2, 0.5), 10, 0.3, 1.5, 0.3, 0.05);
-        }
-    }
+    private void tickCrates5Ticks() {
+        if (!running || world == null) return;
+        Iterator<CoinCrate> it = activeCrates.iterator();
+        while (it.hasNext()) {
+            CoinCrate crate = it.next();
+            Color beamColor = switch (crate.state) {
+                case INCOMING -> Color.WHITE;
+                case LANDED -> Color.LIME;
+                case BREAKING -> Color.RED;
+            };
+            spawnBeaconBeam(crate.center(), beamColor);
 
-    private void startDeathmatch() {
-        deathmatchStarted = true;
-        phase = Phase.DEATHMATCH;
-        ctx.broadcast(ChatColor.DARK_RED + "⚔ CORNUCOPIA DEATHMATCH! " + ChatColor.RED + "Teleporting survivors to center!");
-        List<Location> pedestals = activePedestals();
-        int idx = 0;
-        for (UUID uuid : new ArrayList<>(alive)) {
-            Player p = Bukkit.getPlayer(uuid);
-            if (p != null && p.isOnline()) {
-                p.teleport(pedestals.get(idx % pedestals.size()).clone());
-                p.playSound(p.getLocation(), Sound.ENTITY_WITHER_AMBIENT, 0.7f, 1.0f);
-                idx++;
+            if (crate.state != CrateState.BREAKING) continue;
+
+            Player breaker = crate.breakerId != null ? Bukkit.getPlayer(crate.breakerId) : null;
+            if (breaker == null
+                    || !breaker.isOnline()
+                    || !alive.contains(breaker.getUniqueId())
+                    || breaker.getGameMode() == GameMode.SPECTATOR
+                    || !breaker.getWorld().equals(world)
+                    || breaker.getLocation().distanceSquared(crate.center()) > CRATE_BREAK_RANGE_SQ) {
+                crate.state = CrateState.LANDED;
+                crate.breakerId = null;
+                crate.breakTicksDone = 0;
+                continue;
+            }
+
+            crate.breakTicksDone += 5;
+            if (crate.breakTicksDone % 10 == 0) {
+                world.playSound(crate.center(), Sound.BLOCK_WOOD_HIT, 0.9f, 1.1f);
+                world.spawnParticle(Particle.CRIT, crate.center().add(0.0, 0.4, 0.0), 8, 0.25, 0.25, 0.25, 0.05);
+            }
+            int pct = Math.min(100, (crate.breakTicksDone * 100) / Math.max(1, crate.breakTicksTotal));
+            sendBreakProgressBar(breaker, pct);
+
+            if (crate.breakTicksDone >= crate.breakTicksTotal) {
+                completeCoinCrateBreak(crate, breaker);
+                it.remove();
             }
         }
-        double dmDiameter = plugin.getConfig().getInt("border.deathmatch-radius", 22) * 2.0;
-        WorldBorder border = world.getWorldBorder();
-        double targetDiameter = Math.min(border.getSize(), dmDiameter);
-        border.setSize(targetDiameter, 20);
+    }
+
+    private void spawnBeaconBeam(Location center, Color color) {
+        Particle.DustOptions dust = new Particle.DustOptions(color, 1.8f);
+        for (double dy = 0.8; dy <= 34.0; dy += 1.6) {
+            world.spawnParticle(Particle.DUST, center.getX(), center.getY() + dy, center.getZ(), 1, 0.08, 0.1, 0.08, 0.0, dust);
+        }
+    }
+
+    private static void sendBreakProgressBar(Player breaker, int pct) {
+        int filled = Math.max(0, Math.min(10, pct / 10));
+        StringBuilder bar = new StringBuilder();
+        bar.append(ChatColor.RED).append("Breaking Coin Crate ").append(ChatColor.DARK_GRAY).append("[");
+        bar.append(ChatColor.GREEN);
+        for (int i = 0; i < filled; i++) bar.append('█');
+        bar.append(ChatColor.GRAY);
+        for (int i = filled; i < 10; i++) bar.append('░');
+        bar.append(ChatColor.DARK_GRAY).append("] ").append(ChatColor.YELLOW).append(pct).append("%");
+        breaker.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(bar.toString()));
+    }
+
+    private void completeCoinCrateBreak(CoinCrate crate, Player breaker) {
+        world.getBlockAt(crate.loc).setType(Material.AIR, false);
+        world.playSound(crate.center(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.2f);
+        world.spawnParticle(Particle.TOTEM_OF_UNDYING, crate.center(), 24, 0.4, 0.5, 0.4, 0.1);
+
+        String side = sideOfPlayer.get(breaker.getUniqueId());
+        int pts = plugin.getConfig().getInt("coins.airdrop", 180);
+        if (side != null) {
+            if (pts > 0) ctx.addTeamCoins(side, pts, "Coin Crate");
+            ctx.broadcast(ctx.sideLabel(side) + ChatColor.LIGHT_PURPLE + " broke open a Coin Crate! (+" + pts + " team coins)");
+        }
+
+        Location dropOrigin = crate.center().add(0.0, 0.25, 0.0);
+        for (ItemStack item : LootTable.createCrateBurst()) {
+            world.dropItemNaturally(dropOrigin, item);
+        }
+    }
+
+    private CoinCrate findCrateAt(Location blockLoc) {
+        for (CoinCrate c : activeCrates) {
+            if (c.loc.getBlockX() == blockLoc.getBlockX()
+                    && c.loc.getBlockY() == blockLoc.getBlockY()
+                    && c.loc.getBlockZ() == blockLoc.getBlockZ()) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    private boolean isNearAnyCrate(Location blockLoc) {
+        for (CoinCrate c : activeCrates) {
+            if (Math.abs(c.loc.getBlockX() - blockLoc.getBlockX()) <= 1
+                    && Math.abs(c.loc.getBlockZ() - blockLoc.getBlockZ()) <= 1
+                    && blockLoc.getBlockY() >= c.loc.getBlockY()
+                    && blockLoc.getBlockY() <= c.loc.getBlockY() + 2) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void startLastStand() {
+        lastStandStarted = true;
+        lastStandDecayTick = 0;
+        phase = Phase.LAST_STAND;
+        int interval = Math.max(1, plugin.getConfig().getInt("timings.last-stand-decay-interval-seconds", 3));
+        ctx.broadcast(ChatColor.DARK_RED + "⚔ LAST STAND! " + ChatColor.RED
+                + "Max health now decays by 0.5❤ every " + interval + "s down to 1❤!");
+        for (Player p : ctx.participants()) {
+            p.playSound(p.getLocation(), Sound.ENTITY_WITHER_AMBIENT, 0.7f, 1.0f);
+        }
+    }
+
+    private void tickLastStandDecay() {
+        int interval = Math.max(1, plugin.getConfig().getInt("timings.last-stand-decay-interval-seconds", 3));
+        lastStandDecayTick++;
+        if (lastStandDecayTick % interval != 0) return;
+
+        for (UUID uuid : alive) {
+            Player p = Bukkit.getPlayer(uuid);
+            if (p == null || !p.isOnline() || !p.getWorld().equals(world)) continue;
+            AttributeInstance attr = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+            if (attr == null) continue;
+            double curMax = attr.getBaseValue();
+            if (curMax > LAST_STAND_MIN_HEALTH) {
+                double nextMax = Math.max(LAST_STAND_MIN_HEALTH, curMax - 1.0);
+                attr.setBaseValue(nextMax);
+                if (p.getHealth() > nextMax) {
+                    p.setHealth(nextMax);
+                }
+                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.45f, 0.75f);
+            }
+        }
     }
 
     private void updateCompassAndActionBar() {
+        CoinCrate focusCrate = findFocusCrate();
+        Location centerLoc = new Location(world, activeCenterX() + 0.5, activeCenterY(), activeCenterZ() + 0.5);
+
         for (UUID uuid : alive) {
             Player p = Bukkit.getPlayer(uuid);
             if (p == null || !p.isOnline()) continue;
-            Player nearest = findNearestEnemy(p);
-            if (nearest != null) {
-                p.setCompassTarget(nearest.getLocation());
-                int dist = (int) Math.round(p.getLocation().distance(nearest.getLocation()));
-                p.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-                        new TextComponent(ChatColor.AQUA + "Nearest Enemy: " + ChatColor.WHITE + nearest.getName()
-                                + ChatColor.GRAY + " (" + dist + "m)"));
+
+            if (focusCrate != null) {
+                p.setCompassTarget(focusCrate.loc);
             } else {
-                p.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-                        new TextComponent(ChatColor.GREEN + "No enemies remaining"));
+                p.setCompassTarget(centerLoc);
             }
+
+            if (isBreakingAnyCrate(uuid)) {
+                continue;
+            }
+
+            String barText;
+            if (phase == Phase.GRACE) {
+                barText = ChatColor.GREEN + "GRACE PERIOD: " + ChatColor.WHITE + phaseSecondsLeft + "s"
+                        + ChatColor.GRAY + " • Loot & Enchant (Lv.30)";
+            } else if (focusCrate != null) {
+                int dist = p.getWorld().equals(world)
+                        ? (int) Math.round(p.getLocation().distance(focusCrate.center()))
+                        : 0;
+                if (focusCrate.state == CrateState.INCOMING) {
+                    barText = ChatColor.WHITE + "Coin Crate incoming in " + focusCrate.dropSecondsLeft + "s"
+                            + ChatColor.GRAY + " (" + dist + "m)";
+                } else if (focusCrate.state == CrateState.BREAKING) {
+                    barText = ChatColor.RED + "Coin Crate CONTESTED at "
+                            + focusCrate.loc.getBlockX() + ", " + focusCrate.loc.getBlockZ()
+                            + ChatColor.GRAY + " (" + dist + "m)";
+                } else {
+                    barText = ChatColor.GREEN + "Coin Crate LANDED at "
+                            + focusCrate.loc.getBlockX() + ", " + focusCrate.loc.getBlockZ()
+                            + ChatColor.GRAY + " (" + dist + "m)";
+                }
+            } else if (phase == Phase.LAST_STAND) {
+                AttributeInstance attr = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                double hearts = attr != null ? attr.getBaseValue() / 2.0 : 10.0;
+                int borderR = (int) (world.getWorldBorder().getSize() / 2.0);
+                barText = ChatColor.DARK_RED + "⚔ LAST STAND" + ChatColor.GRAY + " • "
+                        + ChatColor.RED + String.format(Locale.ROOT, "Max %.1f❤", hearts)
+                        + ChatColor.GRAY + " • Border " + ChatColor.AQUA + borderR + "m";
+            } else {
+                int borderR = (int) (world.getWorldBorder().getSize() / 2.0);
+                int elapsed = gameTotalSeconds - gameSecondsLeft;
+                String nextStr = nextCrateScheduleIdx < scheduledCrateElapsed.size()
+                        ? " • Next Crate in " + Math.max(0, scheduledCrateElapsed.get(nextCrateScheduleIdx) - elapsed) + "s"
+                        : "";
+                barText = ChatColor.AQUA + "Border: " + borderR + "m" + ChatColor.GRAY + nextStr;
+            }
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(barText));
         }
     }
 
-    private Player findNearestEnemy(Player viewer) {
-        String mySide = sideOfPlayer.get(viewer.getUniqueId());
-        Player best = null;
-        double bestDistSq = Double.MAX_VALUE;
-        for (UUID uuid : alive) {
-            if (uuid.equals(viewer.getUniqueId())) continue;
-            if (mySide != null && mySide.equals(sideOfPlayer.get(uuid))) continue;
-            Player other = Bukkit.getPlayer(uuid);
-            if (other == null || !other.isOnline() || !other.getWorld().equals(world)) continue;
-            double d = viewer.getLocation().distanceSquared(other.getLocation());
-            if (d < bestDistSq) {
-                bestDistSq = d;
-                best = other;
-            }
+    private CoinCrate findFocusCrate() {
+        for (CoinCrate c : activeCrates) {
+            if (c.state == CrateState.BREAKING) return c;
         }
-        return best;
+        for (CoinCrate c : activeCrates) {
+            if (c.state == CrateState.LANDED) return c;
+        }
+        return activeCrates.isEmpty() ? null : activeCrates.get(0);
+    }
+
+    private boolean isBreakingAnyCrate(UUID playerId) {
+        for (CoinCrate c : activeCrates) {
+            if (c.state == CrateState.BREAKING && playerId.equals(c.breakerId)) return true;
+        }
+        return false;
     }
 
     private void updateSidebar() {
@@ -949,25 +1263,43 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     private void handleElimination(UUID victimId, Player killer) {
         if (!alive.remove(victimId)) return;
 
-        // MCC coins (base x1.0; the core applies the event multiplier). See game-plugins/COINS.md.
-        int killPts = plugin.getConfig().getInt("coins.kill", 65);       // MCC: personal elimination
-        int survPts = plugin.getConfig().getInt("coins.outlive", 3);     // MCC: another player eliminated, you alive
+        Player resolvedKiller = killer;
+        if (resolvedKiller == null || resolvedKiller.getUniqueId().equals(victimId)) {
+            resolvedKiller = resolveRecentAttacker(victimId);
+        }
+
+        int killPts = plugin.getConfig().getInt("coins.kill", 65);
+        int survPts = plugin.getConfig().getInt("coins.outlive", 3);
 
         Player victimPlayer = Bukkit.getPlayer(victimId);
         String victimName = victimPlayer != null ? victimPlayer.getName() : "a player";
-        if (killer != null && !killer.getUniqueId().equals(victimId) && killPts > 0) {
-            ctx.addKillCoins(killer.getUniqueId(), killPts, victimId, victimName, "You eliminated " + victimName);
+        if (resolvedKiller != null && !resolvedKiller.getUniqueId().equals(victimId) && killPts > 0) {
+            ctx.addKillCoins(resolvedKiller.getUniqueId(), killPts, victimId, victimName, "You eliminated " + victimName);
         }
-        if (survPts > 0) for (UUID survivor : alive) {
-            ctx.addCoins(survivor, survPts, victimName + " was eliminated");
+        if (survPts > 0) {
+            for (UUID survivor : alive) {
+                ctx.addCoins(survivor, survPts, victimName + " was eliminated");
+            }
         }
 
         String victimSide = sideOfPlayer.get(victimId);
         if (victimSide != null && !isSideAlive(victimSide) && !eliminationOrder.contains(victimSide)) {
             eliminationOrder.add(victimSide);
+            int remainingSides = countLivingSides();
+            ctx.broadcast(ChatColor.RED + "☠ " + ctx.sideLabel(victimSide) + ChatColor.RED
+                    + " has been eliminated! (" + remainingSides + " teams remaining)");
         }
 
         checkWinCondition();
+    }
+
+    private Player resolveRecentAttacker(UUID victimId) {
+        AttackRecord rec = lastAttacker.remove(victimId);
+        if (rec == null) return null;
+        long windowMs = Math.max(1L, plugin.getConfig().getLong("combat.kill-assist-window-seconds", 10L)) * 1000L;
+        if (System.currentTimeMillis() - rec.timestampMs() > windowMs) return null;
+        Player p = Bukkit.getPlayer(rec.attackerId());
+        return (p != null && p.isOnline()) ? p : null;
     }
 
     private boolean isSideAlive(String side) {
@@ -977,9 +1309,18 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         return false;
     }
 
+    private int countLivingSides() {
+        Set<String> livingSides = new LinkedHashSet<>();
+        for (UUID uuid : alive) {
+            String side = sideOfPlayer.get(uuid);
+            if (side != null) livingSides.add(side);
+        }
+        return livingSides.size();
+    }
+
     private void checkWinCondition() {
         if (!running || finished.get()) return;
-        if (ctx.participants().size() <= 1) return; // Solo admin testing
+        if (ctx.sides().size() <= 1) return; // Solo or single-team admin testing
 
         Set<String> livingSides = new LinkedHashSet<>();
         for (UUID uuid : alive) {
@@ -993,27 +1334,48 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     }
 
     private void awardTeamPlacements() {
-        if (ctx.participants().size() <= 1) return;
-        List<String> ranked = new ArrayList<>();
-        // Living sides tie/rank at top
-        Set<String> living = new LinkedHashSet<>();
+        if (ctx.sides().size() <= 1 || phase == Phase.BUILDING) return;
+
+        List<String> living = new ArrayList<>();
+        Set<String> livingSet = new LinkedHashSet<>();
         for (UUID uuid : alive) {
             String side = sideOfPlayer.get(uuid);
-            if (side != null) living.add(side);
-        }
-        ranked.addAll(living);
-        // Eliminated sides in reverse order (last eliminated = highest remaining rank)
-        for (int i = eliminationOrder.size() - 1; i >= 0; i--) {
-            String s = eliminationOrder.get(i);
-            if (!ranked.contains(s)) ranked.add(s);
+            if (side != null && livingSet.add(side)) living.add(side);
         }
 
-        // MCC team placement by how long the team survived: 1st 650 ... 10th 330, shared amongst the team
-        int[] bonuses = com.mcm.api.McmCoins.toIntArray(plugin.getConfig().getList("coins.placement"),
+        List<String> eliminatedRanked = new ArrayList<>();
+        for (int i = eliminationOrder.size() - 1; i >= 0; i--) {
+            String s = eliminationOrder.get(i);
+            if (!livingSet.contains(s) && !eliminatedRanked.contains(s)) {
+                eliminatedRanked.add(s);
+            }
+        }
+
+        int[] bonuses = McmCoins.toIntArray(plugin.getConfig().getList("coins.placement"),
                 new int[]{650, 600, 560, 520, 480, 450, 420, 390, 360, 330});
-        for (int i = 0; i < ranked.size(); i++) {
-            int pool = com.mcm.api.McmCoins.placementOrLast(bonuses, i + 1);
-            if (pool > 0) ctx.addTeamCoins(ranked.get(i), pool, "Team Placement #" + (i + 1));
+
+        // Tie-average placement pool across surviving teams if time expires with multiple teams alive.
+        if (!living.isEmpty()) {
+            double totalPool = 0.0;
+            for (int r = 1; r <= living.size(); r++) {
+                totalPool += McmCoins.placementOrLast(bonuses, r);
+            }
+            double avgPool = totalPool / living.size();
+            String label = living.size() == 1 ? "Team Placement #1" : "Team Placement #1 (Tied)";
+            if (avgPool > 0) {
+                for (String side : living) {
+                    ctx.addTeamCoins(side, avgPool, label);
+                }
+            }
+        }
+
+        int rankOffset = living.size();
+        for (int i = 0; i < eliminatedRanked.size(); i++) {
+            int rank = rankOffset + i + 1;
+            int pool = McmCoins.placementOrLast(bonuses, rank);
+            if (pool > 0) {
+                ctx.addTeamCoins(eliminatedRanked.get(i), pool, "Team Placement #" + rank);
+            }
         }
     }
 
@@ -1031,6 +1393,10 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             importedScanTask.cancel();
             importedScanTask = null;
         }
+        if (crateVisualTask != null) {
+            crateVisualTask.cancel();
+            crateVisualTask = null;
+        }
         arenaBuilder.cancel();
         ctx.finish(reason);
         unloadImportedRuntimeWorld();
@@ -1039,11 +1405,18 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     private void cleanupWorldState() {
         if (ctx != null) {
             for (Player p : ctx.participants()) {
+                p.leaveVehicle();
+                resetMaxHealth(p);
                 p.setLevel(0);
                 p.setExp(0f);
             }
         }
         if (world != null) {
+            for (CoinCrate c : activeCrates) {
+                if (c.state != CrateState.INCOMING) {
+                    world.getBlockAt(c.loc).setType(Material.AIR, false);
+                }
+            }
             for (Location loc : playerPlacedBlocks) {
                 world.getBlockAt(loc).setType(Material.AIR, false);
             }
@@ -1054,19 +1427,24 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             }
             world.getWorldBorder().reset();
         }
+        activeCrates.clear();
         playerPlacedBlocks.clear();
+        playerPlacedBoats.clear();
+        lastAttacker.clear();
     }
 
     private void unloadImportedRuntimeWorld() {
         if (importedRuntimeWorld == null) return;
         World toUnload = importedRuntimeWorld;
         String runtimeName = toUnload.getName();
+        int myGen = importedRuntimeGen;
         importedRuntimeWorld = null;
         if (world == toUnload) {
             world = null;
         }
         Location fallback = Bukkit.getWorlds().get(0).getSpawnLocation();
         for (Player p : new ArrayList<>(toUnload.getPlayers())) {
+            p.leaveVehicle();
             p.teleport(fallback);
         }
         boolean unloaded = Bukkit.unloadWorld(toUnload, false);
@@ -1078,6 +1456,9 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         if (plugin.isEnabled()) {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                 synchronized (importedIoLock) {
+                    if (!Objects.equals(runtimeWorldGen.get(runtimeName), myGen)) {
+                        return;
+                    }
                     try {
                         deleteRecursivelyWithRetry(runtimeDir);
                     } catch (IOException ex) {
@@ -1101,19 +1482,33 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             importedScanTask.cancel();
             importedScanTask = null;
         }
+        if (crateVisualTask != null) {
+            crateVisualTask.cancel();
+            crateVisualTask = null;
+        }
         arenaBuilder.cancel();
+        if (ctx != null) {
+            for (Player p : ctx.participants()) {
+                p.leaveVehicle();
+                resetMaxHealth(p);
+                p.setLevel(0);
+                p.setExp(0f);
+            }
+        }
         alive.clear();
         sideOfPlayer.clear();
         eliminationOrder.clear();
-        activeAirdrops.clear();
+        lastAttacker.clear();
+        activeCrates.clear();
+        scheduledCrateElapsed.clear();
         importedPedestals.clear();
         importedChests.clear();
-        pendingAirdropLoc = null;
         if (world != null) {
             for (Location loc : playerPlacedBlocks) {
                 world.getBlockAt(loc).setType(Material.AIR, false);
             }
             playerPlacedBlocks.clear();
+            playerPlacedBoats.clear();
             for (Entity e : world.getEntities()) {
                 if (!(e instanceof Player)) {
                     e.remove();
@@ -1138,7 +1533,9 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
         if (!isInGameWorld(e.getPlayer())) return;
-        if (phase == Phase.COUNTDOWN && e.getPlayer().getGameMode() != GameMode.SPECTATOR && e.getTo() != null) {
+        if ((phase == Phase.BUILDING || phase == Phase.COUNTDOWN)
+                && e.getPlayer().getGameMode() != GameMode.SPECTATOR
+                && e.getTo() != null) {
             if (e.getFrom().getX() != e.getTo().getX() || e.getFrom().getZ() != e.getTo().getZ()) {
                 Location back = e.getFrom().clone();
                 back.setYaw(e.getTo().getYaw());
@@ -1150,7 +1547,9 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             int cx = activeCenterX();
             int cz = activeCenterZ();
             if (Math.hypot(e.getTo().getX() - cx, e.getTo().getZ() - cz) > maxR) {
-                e.setTo(new Location(world, cx + 0.5, activeCenterY() + 14.0, cz + 0.5));
+                Location clamped = new Location(world, cx + 0.5, activeCenterY() + 14.0, cz + 0.5,
+                        e.getTo().getYaw(), e.getTo().getPitch());
+                e.setTo(clamped);
             }
         }
     }
@@ -1168,15 +1567,18 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         if (!isInGameWorld(e.getEntity())) return;
         if (!(e.getEntity() instanceof Player victim)) return;
 
-        Player attacker = null;
-        if (e.getDamager() instanceof Player p) {
-            attacker = p;
-        } else if (e.getDamager() instanceof Projectile proj && proj.getShooter() instanceof Player p) {
-            attacker = p;
-        }
+        Player attacker = resolveAttacker(e.getDamager());
         if (attacker == null) return;
 
-        if (phase != Phase.ACTIVE && phase != Phase.DEATHMATCH) {
+        // Allow self-inflicted damage (e.g., Ender Pearls, Wind Charge self-plays) during active play.
+        if (attacker.getUniqueId().equals(victim.getUniqueId())) {
+            if (phase != Phase.ACTIVE && phase != Phase.LAST_STAND) {
+                e.setCancelled(true);
+            }
+            return;
+        }
+
+        if (phase != Phase.ACTIVE && phase != Phase.LAST_STAND) {
             e.setCancelled(true);
             return;
         }
@@ -1184,6 +1586,107 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         String s2 = sideOfPlayer.get(victim.getUniqueId());
         if (s1 != null && s1.equals(s2)) {
             e.setCancelled(true);
+            return;
+        }
+
+        // Nerf ultra-rare 1.21 Mace smash damage cap.
+        if (e.getDamager() instanceof Player directAttacker
+                && directAttacker.getInventory().getItemInMainHand().getType() == Material.MACE) {
+            double maxMaceDmg = plugin.getConfig().getDouble("combat.mace-max-damage", 11.0);
+            if (e.getDamage() > maxMaceDmg) {
+                e.setDamage(maxMaceDmg);
+            }
+        }
+
+        lastAttacker.put(victim.getUniqueId(), new AttackRecord(attacker.getUniqueId(), System.currentTimeMillis()));
+
+        // Interrupt Coin Crate breaking when taking enemy PvP damage.
+        for (CoinCrate c : activeCrates) {
+            if (c.state == CrateState.BREAKING && victim.getUniqueId().equals(c.breakerId)) {
+                c.state = CrateState.LANDED;
+                c.breakerId = null;
+                c.breakTicksDone = 0;
+                victim.spigot().sendMessage(ChatMessageType.ACTION_BAR,
+                        new TextComponent(ChatColor.RED + "Coin Crate break interrupted!"));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPotionSplash(PotionSplashEvent e) {
+        if (!isInGameWorld(e.getPotion())) return;
+        if (!(e.getPotion().getShooter() instanceof Player thrower)) return;
+
+        boolean harmful = false;
+        for (PotionEffect eff : e.getPotion().getEffects()) {
+            if (HARMFUL_POTION_EFFECTS.contains(eff.getType())) {
+                harmful = true;
+                break;
+            }
+        }
+        if (!harmful) return;
+
+        if (phase != Phase.ACTIVE && phase != Phase.LAST_STAND) {
+            e.setCancelled(true);
+            return;
+        }
+
+        String throwerSide = sideOfPlayer.get(thrower.getUniqueId());
+        for (LivingEntity target : e.getAffectedEntities()) {
+            if (!(target instanceof Player victim)) continue;
+            if (victim.getUniqueId().equals(thrower.getUniqueId())) continue;
+            String victimSide = sideOfPlayer.get(victim.getUniqueId());
+            if (throwerSide != null && throwerSide.equals(victimSide)) {
+                e.setIntensity(target, 0.0);
+            } else {
+                lastAttacker.put(victim.getUniqueId(), new AttackRecord(thrower.getUniqueId(), System.currentTimeMillis()));
+            }
+        }
+    }
+
+    private static Player resolveAttacker(Entity damager) {
+        if (damager instanceof Player p) {
+            return p;
+        }
+        if (damager instanceof Projectile proj && proj.getShooter() instanceof Player p) {
+            return p;
+        }
+        if (damager instanceof TNTPrimed tnt && tnt.getSource() instanceof Player p) {
+            return p;
+        }
+        return null;
+    }
+
+    @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent e) {
+        if (!isInGameWorld(e.getPlayer())) return;
+        if (e.getInventory() instanceof EnchantingInventory ei) {
+            ei.setSecondary(new ItemStack(Material.LAPIS_LAZULI, 64));
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent e) {
+        if (!isInGameWorld(e.getPlayer())) return;
+        if (e.getInventory() instanceof EnchantingInventory ei) {
+            ei.setSecondary(null);
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent e) {
+        if (!(e.getWhoClicked() instanceof Player p) || !isInGameWorld(p)) return;
+        if (e.getClickedInventory() instanceof EnchantingInventory && e.getSlot() == 1) {
+            e.setCancelled(true);
+            return;
+        }
+        if (e.getInventory() instanceof AnvilInventory && e.getSlotType() == InventoryType.SlotType.RESULT) {
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                if (running && p.isOnline() && isInGameWorld(p)) {
+                    p.setLevel(INFINITE_XP_LEVEL);
+                    p.setExp(0f);
+                }
+            });
         }
     }
 
@@ -1195,6 +1698,9 @@ public final class SurvivalGamesGame implements McmGame, Listener {
             if (running && p.isOnline()) {
                 p.setLevel(INFINITE_XP_LEVEL);
                 p.setExp(0f);
+                if (e.getInventory() instanceof EnchantingInventory ei) {
+                    ei.setSecondary(new ItemStack(Material.LAPIS_LAZULI, 64));
+                }
             }
         });
     }
@@ -1203,6 +1709,7 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     public void onDeath(PlayerDeathEvent e) {
         if (!isInGameWorld(e.getEntity())) return;
         Player victim = e.getEntity();
+        resetMaxHealth(victim);
         handleElimination(victim.getUniqueId(), victim.getKiller());
     }
 
@@ -1213,6 +1720,7 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         e.setRespawnLocation(new Location(gameWorld, activeCenterX() + 0.5, activeCenterY() + 14.0, activeCenterZ() + 0.5));
         Bukkit.getScheduler().runTask(plugin, () -> {
             if (running && world != null && world.equals(gameWorld) && e.getPlayer().isOnline() && e.getPlayer().getWorld().equals(gameWorld)) {
+                resetMaxHealth(e.getPlayer());
                 e.getPlayer().setGameMode(GameMode.SPECTATOR);
             }
         });
@@ -1220,6 +1728,7 @@ public final class SurvivalGamesGame implements McmGame, Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
+        resetMaxHealth(e.getPlayer());
         if (!running || ctx == null) return;
         if (alive.contains(e.getPlayer().getUniqueId())) {
             handleElimination(e.getPlayer().getUniqueId(), null);
@@ -1229,24 +1738,87 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
         if (!isInGameWorld(e.getPlayer()) || ctx == null) return;
-        if (e.getAction() != Action.RIGHT_CLICK_BLOCK || e.getClickedBlock() == null) return;
-        Location loc = e.getClickedBlock().getLocation();
-        if (activeAirdrops.remove(loc)) {
-            world.playSound(loc, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.2f);
-            String side = sideOfPlayer.get(e.getPlayer().getUniqueId());
-            if (side != null) {
-                int pts = plugin.getConfig().getInt("coins.airdrop", 180);   // MCC: airdrop crate, shared amongst the team
-                if (pts > 0) ctx.addTeamCoins(side, pts, "Supply Airdrop");
-                ctx.broadcast(ctx.sideLabel(side) + ChatColor.LIGHT_PURPLE + " captured a Supply Airdrop!");
+        Player p = e.getPlayer();
+
+        // Prevent boat placement during BUILDING / COUNTDOWN
+        if ((phase == Phase.BUILDING || phase == Phase.COUNTDOWN)
+                && (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR)
+                && e.getItem() != null
+                && e.getItem().getType().name().endsWith("_BOAT")) {
+            e.setCancelled(true);
+            return;
+        }
+
+        if (e.getClickedBlock() == null) return;
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK && e.getAction() != Action.LEFT_CLICK_BLOCK) return;
+
+        CoinCrate crate = findCrateAt(e.getClickedBlock().getLocation());
+        if (crate == null || crate.state == CrateState.INCOMING) return;
+
+        e.setCancelled(true); // Never open barrel/chest GUI; tools do not speed up breaking
+        tryStartCrateBreak(crate, p);
+    }
+
+    private void tryStartCrateBreak(CoinCrate crate, Player p) {
+        if (phase != Phase.ACTIVE && phase != Phase.LAST_STAND) return;
+        if (!alive.contains(p.getUniqueId()) || p.getGameMode() == GameMode.SPECTATOR) return;
+
+        if (crate.state == CrateState.LANDED) {
+            crate.state = CrateState.BREAKING;
+            crate.breakerId = p.getUniqueId();
+            crate.breakTicksDone = 0;
+            world.playSound(crate.center(), Sound.BLOCK_CHEST_OPEN, 0.8f, 0.9f);
+            sendBreakProgressBar(p, 0);
+        }
+    }
+
+    @EventHandler
+    public void onEntityPlace(EntityPlaceEvent e) {
+        if (!running || world == null || !e.getEntity().getWorld().equals(world)) return;
+        if (e.getEntity() instanceof Boat boat) {
+            if (phase == Phase.BUILDING || phase == Phase.COUNTDOWN) {
+                e.setCancelled(true);
+                return;
             }
+            playerPlacedBoats.add(boat.getUniqueId());
+        }
+    }
+
+    @EventHandler
+    public void onVehicleEnter(VehicleEnterEvent e) {
+        if (!isInGameWorld(e.getEntered())) return;
+        if (phase == Phase.BUILDING || phase == Phase.COUNTDOWN) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onVehicleDestroy(VehicleDestroyEvent e) {
+        if (!isInGameWorld(e.getVehicle())) return;
+        if (e.getVehicle() instanceof Boat boat) {
+            playerPlacedBoats.remove(boat.getUniqueId());
         }
     }
 
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
         if (!isInGameWorld(e.getPlayer())) return;
-        Location loc = e.getBlock().getLocation();
+        Block block = e.getBlock();
+        Location loc = block.getLocation();
+
+        CoinCrate crate = findCrateAt(loc);
+        if (crate != null) {
+            e.setCancelled(true);
+            tryStartCrateBreak(crate, e.getPlayer());
+            return;
+        }
+
         if (playerPlacedBlocks.remove(loc)) {
+            return;
+        }
+        // MCC P21: leaves are breakable (without dropping saplings/sticks)
+        if (block.getType().name().endsWith("_LEAVES")) {
+            e.setDropItems(false);
             return;
         }
         e.setCancelled(true);
@@ -1255,21 +1827,58 @@ public final class SurvivalGamesGame implements McmGame, Listener {
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
         if (!isInGameWorld(e.getPlayer())) return;
-        if (phase != Phase.ACTIVE && phase != Phase.DEATHMATCH) {
+        if (phase != Phase.ACTIVE && phase != Phase.LAST_STAND) {
             e.setCancelled(true);
             return;
         }
-        if (PLACEABLE_BLOCKS.contains(e.getBlock().getType())) {
-            playerPlacedBlocks.add(e.getBlock().getLocation());
+        Location loc = e.getBlock().getLocation();
+        if (isNearAnyCrate(loc)) {
+            e.setCancelled(true);
+            return;
+        }
+        Material mat = e.getBlock().getType();
+        if (mat == Material.TNT) {
+            // Auto-igniting tactical TNT: explodes for player damage/knockback only, zero terrain grief
+            e.getBlock().setType(Material.AIR, false);
+            int fuse = Math.max(10, plugin.getConfig().getInt("combat.tnt-fuse-ticks", 45));
+            TNTPrimed primed = (TNTPrimed) world.spawnEntity(loc.clone().add(0.5, 0.0, 0.5), EntityType.TNT);
+            primed.setFuseTicks(fuse);
+            primed.setSource(e.getPlayer());
+            world.playSound(loc, Sound.ENTITY_TNT_PRIMED, 1.0f, 1.0f);
+            return;
+        }
+        if (PLACEABLE_BLOCKS.contains(mat)) {
+            playerPlacedBlocks.add(loc);
         } else {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
+    public void onExplode(EntityExplodeEvent e) {
+        if (!isInGameWorld(e.getEntity())) return;
+        // Preserve map geometry completely; only allow destroying player-placed tactical blocks.
+        Iterator<Block> it = e.blockList().iterator();
+        while (it.hasNext()) {
+            Block b = it.next();
+            Location loc = b.getLocation();
+            if (!playerPlacedBlocks.remove(loc)) {
+                it.remove();
+            }
+        }
+    }
+
+    @EventHandler
     public void onEntityAddToWorld(EntityAddToWorldEvent e) {
-        if (e.getWorld().getName().startsWith("mcc_hg_")) {
-            purgeUnsafeLegacyEntity(e.getEntity());
+        if (!e.getWorld().getName().startsWith("mcc_hg_")) return;
+        Entity entity = e.getEntity();
+        if (isUnsafeLegacyEntity(entity)) {
+            // Defer by 1 tick so Moonrise is never mid-section-status-update during remove().
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                if (entity.isValid()) {
+                    purgeUnsafeLegacyEntity(entity);
+                }
+            });
         }
     }
 
@@ -1281,14 +1890,17 @@ public final class SurvivalGamesGame implements McmGame, Listener {
         }
     }
 
-    private static void purgeUnsafeLegacyEntity(Entity entity) {
-        if (entity == null || entity instanceof Player) return;
+    private static boolean isUnsafeLegacyEntity(Entity entity) {
+        if (entity == null || entity instanceof Player) return false;
         if (entity instanceof Fireball || entity instanceof Mob || entity instanceof ArmorStand) {
-            entity.remove();
-            return;
+            return true;
         }
         Vector v = entity.getVelocity();
-        if (!Double.isFinite(v.getX()) || !Double.isFinite(v.getY()) || !Double.isFinite(v.getZ())) {
+        return !Double.isFinite(v.getX()) || !Double.isFinite(v.getY()) || !Double.isFinite(v.getZ());
+    }
+
+    private static void purgeUnsafeLegacyEntity(Entity entity) {
+        if (isUnsafeLegacyEntity(entity)) {
             entity.remove();
         }
     }
