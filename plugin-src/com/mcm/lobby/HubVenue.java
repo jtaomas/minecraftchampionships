@@ -4,13 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Decision Dome venue. The outside is our own build: terrace, drum facade, ribbed glass dome, brass armillary
- * topper, gatehouse with clock + marquee and the entrance tunnel. The inside (v6) is the downloaded "Decision
- * Dome - Recreation" placed 1:1 from {@link HubRecreation}: its drum and terrace, the 42-deep pit, the ten team
- * cage towers, the floating eight-wedge dial and the gold crown. Between the recreation's terrace (r 28) and our
- * inner wall (r 37) a paved ring with two low spectator tiers joins the two builds, and the red-carpet entrance
- * corridor runs straight from the tunnel onto the recreation's terrace.
- * The v4/v5 interior methods (dial, pods, stands, crown ...) are kept below but are no longer called.
+ * The Decision Dome venue: terrace, drum facade, ribbed glass dome, brass armillary topper, gatehouse with clock +
+ * marquee, entrance tunnel, and the procedural Decision Dome interior (ten team cage towers, white-quartz 8/6-wedge
+ * dial, grand stair, tiered stands, and floating gold/yellow crown).
  */
 final class HubVenue {
     final HubGenerator g;
@@ -75,18 +71,18 @@ final class HubVenue {
     /** Ring tiers between the recreation terrace and the inner wall: y77 from r 31, y78 (top walk) from r 33. */
     static final double TIER1 = 31.0, TIER2 = 33.0;
     /** Wedge 0 centre angles: the recreation's dividers lie on 0/45/90..., so the 8-game wedges are centred on 22.5 + 45k. */
-    static final double WEDGE_BASE8 = 67.5, WEDGE_BASE6 = 90.0;
+    static final double WEDGE_BASE8 = 90.0, WEDGE_BASE6 = 90.0;
     /** Recreation cage centres (source x, z) in team order red .. pink ({@link Draw#TEAM_DYES}). */
     static final int[][] CAGE_SRC = {{-18, 21}, {-18, 11}, {-12, 3}, {-3, 0}, {6, 3}, {12, 11}, {12, 21}, {6, 29}, {-3, 32}, {-12, 29}};
 
     void build() {
-        L.domeX = CX; L.domeZ = CZ; L.stageY = DIAL_Y; L.domeRadius = 48; L.innerRadius = 45;
+        L.domeX = CX; L.domeZ = CZ; L.stageY = STAGE; L.domeRadius = 48; L.innerRadius = 45;
         L.dialCapacity = 8;
         L.dialGeneration = HubGenerator.VERSION;
-        L.dialRadius = DIAL_OUT;
-        L.dialInner = DIAL_IN;
-        L.dialBandY = DIAL_RIM_TOP;
-        L.dialCentre = new double[]{CX + 0.5, DIAL_SURFACE, CZ + 0.5};
+        L.dialRadius = DIAL_R;
+        L.dialInner = 7.5;
+        L.dialBandY = Integer.MIN_VALUE;
+        L.dialCentre = new double[]{CX + 0.5, STAGE + 1.0, CZ + 0.5};
         foundation();
         drumAndFacade();
         interior();
@@ -296,14 +292,9 @@ final class HubVenue {
         for (int x = CX - R; x <= CX + R; x++) for (int z = CZ - R; z <= CZ + R; z++) {
             double rr = r(x, z);
             if (rr > R_IN) continue;
-            if (rr <= PIT_R) {
-                // the recreation's pit: clear the terrain/foundation down to its base disk (placed by recreation())
-                for (int y = 35; y <= 146; y++) d.air(x, y, z);
-                g.paved(x, z, 34);
-                continue;
-            }
-            boolean corridor = Math.abs(x) <= 6 && z > CZ;
-            int top = corridor ? TERRACE : ringTop(rr);
+            double a = angDeg(x, z);
+            boolean tunnel = Math.abs(x) <= 6 && z > CZ && rr > 36.0;
+            int top = tunnel ? TERRACE : topAt(rr);
             for (int y = 58; y <= 146; y++) {
                 if (y > top) {
                     // the shell beyond the inner wall is hollow; the outer drum wall carries the ceiling
@@ -311,26 +302,23 @@ final class HubVenue {
                     d.air(x, y, z);
                     continue;
                 }
-                d.set(x, y, z, y < top - 3 ? "stone" : y < top ? "deepslate_tiles" : ringBlock(x, z, rr, top, corridor));
+                d.set(x, y, z, y < top - 3 ? "stone" : bowlBlock(x, y, z, rr, a, top, tunnel));
             }
             g.paved(x, z, top);
         }
-        recreation();
-        recreationSafety();
-        ringSeats();
+        dial();
+        podiumIsland();
+        pods();
+        concourse();
+        stands();
+        grandStair();
+        aisles();
         innerWallShell();
-        recreationAnchors();
-        recreationLights();
-        // two white/copper boards on the east and west flanks, framing the crown from the ring
-        hangingScreen(0, 29.0, 86, 11, 5);
-        hangingScreen(180, 29.0, 86, 11, 5);
+        dividers();
+        crown();
+        interiorClockRing();
+        interiorFill();
         tunnel();
-    }
-
-    // ================================================================================================ v6: recreation
-    /** Place the downloaded recreation 1:1 (every block state unchanged), translated onto the hub. */
-    void recreation() {
-        HubRecreation.forEach((x, y, z, state) -> d.set(x + REC_DX, y + REC_DY, z + REC_DZ, state));
     }
 
     /** Ring floor height: flat walk to r 31, tier 1 to r 33, then the top walk up to the inner wall. */
@@ -1608,8 +1596,8 @@ final class HubVenue {
 
     // ================================================================================================ layout
     void layout() {
-        // visitors arrive on the red carpet at the end of the tunnel, looking across the pit at the dial
-        L.interiorSpawn[0] = CX + 0.5; L.interiorSpawn[1] = TERRACE + 1; L.interiorSpawn[2] = CZ + 31.5; L.interiorSpawn[3] = 180;
+        // visitors arrive at the top landing of the grand stair, looking north down toward the dial
+        L.interiorSpawn[0] = CX + 0.5; L.interiorSpawn[1] = TERRACE + 1; L.interiorSpawn[2] = CZ + 40.0; L.interiorSpawn[3] = 180;
         for (int k = 0; k < 120 && L.seats.size() < 120; k++) {
             // seats are filled by stands(); this is a fallback ring if a row was clipped
             double deg = k * 3.0;
@@ -1618,7 +1606,7 @@ final class HubVenue {
             double rr = (k % 2 == 0) ? 34.8 : 33.5;
             double x = CX + 0.5 + Math.cos(a) * rr, z = CZ + 0.5 + Math.sin(a) * rr;
             float yaw = (float) Math.toDegrees(Math.atan2(-(CX + 0.5 - x), CZ + 0.5 - z));
-            L.seats.add(new double[]{x, ringTop(rr) + 1.0, z, yaw});
+            L.seats.add(new double[]{x, standTop(rr) + 1.0, z, yaw});
         }
         L.searchlights.add(new double[]{CX + 0.5 - 40, TERRACE + 1, CZ + 0.5 + 33, 1.3});
         L.searchlights.add(new double[]{CX + 0.5 + 40, TERRACE + 1, CZ + 0.5 + 33, 2.1});

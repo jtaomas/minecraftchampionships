@@ -35,6 +35,8 @@ final class HubPlaza {
         statues();
         mascot();
         L.spawnX = PX; L.spawnY = Y + 1; L.spawnZ = PZ + 28; L.spawnYaw = 180f;
+        L.label(PX + 0.5, Y + 5.2, PZ + 17.5, 0,
+                "§6§l✦ MINECRAFT CHAMPIONSHIPS ✦\n§e← LEADERBOARD   §8┃   §d↑ DECISION DOME   §8┃   §bTEAM SELECTION →");
         L.fireworkSpots.add(new double[]{PX + 0.5, Y + 40, PZ + 0.5});
         L.fireworkSpots.add(new double[]{PX - 25.5, Y + 35, GATE_Z});
         L.fireworkSpots.add(new double[]{PX + 25.5, Y + 35, GATE_Z});
@@ -103,6 +105,13 @@ final class HubPlaza {
         if (rr <= 15.0) return rr > 14.0 ? "gold_block" : (Math.floorMod(x + z, 2) == 0 ? "blue_terracotta" : "blue_concrete");
         if (rr <= 16.5) return Math.floorMod((int) Math.round(a / 7.5), 2) == 0 ? "polished_blackstone" : "ochre_froglight";
         if (rr <= 33.5) {
+            // flush guide runners: South spawn -> centre, West -> leaderboard, East -> team booths
+            if (x == PX && z >= PZ + 15 && z <= PZ + 27) {
+                return Math.floorMod(z, 4) == 0 ? "ochre_froglight" : "gold_block";
+            }
+            if (z == PZ && ((x >= PX - 29 && x <= PX - 17) || (x >= PX + 17 && x <= PX + 26))) {
+                return Math.floorMod(x, 4) == 0 ? "sea_lantern" : "gold_block";
+            }
             // light points
             if ((rr > 21.4 && rr < 22.6 || rr > 29.4 && rr < 30.6) && Math.floorMod((int) Math.round(a / 2.5), 12) == 0) return "ochre_froglight";
             // radial spokes every 30 deg
@@ -148,7 +157,7 @@ final class HubPlaza {
         // light bar in front at floor
         for (int z = z0; z <= z1; z++) d.set(wx + 1, Y, z, Math.floorMod(z, 3) == 0 ? "sea_lantern" : "polished_blackstone");
         L.leaderboard[0] = wx + 1.2; L.leaderboard[1] = Y + 7.5; L.leaderboard[2] = PZ + 0.5; L.leaderboard[3] = -90;
-        L.label(wx + 1.3, Y + 13.6, PZ + 0.5, -90, "§6§l★ LEADERBOARD ★");
+        L.label(wx + 1.35, Y + 13.7, PZ + 0.5, -90, "§6§l★ MCC LEADERBOARD ★");
         for (int x = wx - 2; x <= wx + 1; x++) for (int z = z0 - 1; z <= z1 + 1; z++) g.reserve(x, z);
     }
 
@@ -159,18 +168,33 @@ final class HubPlaza {
             double cx = PX + 0.5 + Math.cos(a) * 29.5, cz = PZ + 0.5 + Math.sin(a) * 29.5;
             int bx = (int) Math.floor(cx), bz = (int) Math.floor(cz);
             String dye = Draw.TEAM_DYES[i];
-            for (int x = bx - 1; x <= bx + 1; x++) for (int z = bz - 1; z <= bz + 1; z++)
-                d.set(x, Y, z, x == bx && z == bz ? "sea_lantern" : dye + "_concrete");
-            // banner post behind (outward)
-            int ox = (int) Math.floor(PX + 0.5 + Math.cos(a) * 32.5), oz = (int) Math.floor(PZ + 0.5 + Math.sin(a) * 32.5);
-            d.set(ox, Y + 1, oz, "polished_blackstone");
-            d.set(ox, Y + 2, oz, dye + "_wool");
-            d.set(ox, Y + 3, oz, dye + "_wool");
-            d.set(ox, Y + 4, oz, dye + "_stained_glass");
-            d.set(ox, Y + 5, oz, "end_rod[facing=up]");
+            for (int x = bx - 1; x <= bx + 1; x++) for (int z = bz - 1; z <= bz + 1; z++) {
+                boolean center = x == bx && z == bz;
+                boolean edge = x == bx || z == bz;
+                d.set(x, Y, z, center ? "sea_lantern" : edge ? dye + "_concrete" : "gold_block");
+            }
+            // Framed glowing team booth behind each pad
+            int ox = (int) Math.floor(PX + 0.5 + Math.cos(a) * 32.8), oz = (int) Math.floor(PZ + 0.5 + Math.sin(a) * 32.8);
+            int tx = Math.abs(Math.cos(a)) >= Math.abs(Math.sin(a)) ? 0 : 1;
+            int tz = 1 - tx;
+            for (int s = -1; s <= 1; s++) {
+                int px = ox + s * tx, pz = oz + s * tz;
+                if (s == 0) {
+                    d.set(px, Y + 1, pz, dye + "_wool");
+                    d.set(px, Y + 2, pz, dye + "_stained_glass");
+                    d.set(px, Y + 3, pz, dye + "_stained_glass");
+                    d.set(px, Y + 4, pz, dye + "_wool");
+                    d.set(px, Y + 5, pz, "gold_block");
+                    d.set(px, Y + 6, pz, "end_rod[facing=up]");
+                } else {
+                    for (int y = Y + 1; y <= Y + 4; y++) d.set(px, y, pz, dye + "_concrete");
+                    d.set(px, Y + 5, pz, "gold_block");
+                    d.set(px, Y + 6, pz, "lantern[hanging=false]");
+                }
+            }
             L.teamPads.add(new double[]{bx + 0.5, Y + 1, bz + 0.5});
         }
-        L.label(PX + 33.5, Y + 8.5, PZ + 0.5, 90, "§b§lJOIN A TEAM §7- step on a pad");
+        L.label(PX + 29.5, Y + 9.2, PZ + 0.5, 90, "§b§l▼ JOIN A TEAM ▼\n§fStep onto any booth or type §e/team");
     }
 
     // ------------------------------------------------------------------------------------------------ approach
@@ -302,7 +326,7 @@ final class HubPlaza {
             }
             d.set(x0 + 1, 85, GATE_Z, "end_rod[facing=down]");
         }
-        L.label(0.5, 108.5, GATE_Z + 0.5, 0, "§6§lBLOCK §f§lSHOWDOWN");
+        L.label(0.5, 108.5, GATE_Z + 0.5, 0, "§6§lMINECRAFT §e§lCHAMPIONSHIPS");
     }
 
     // ------------------------------------------------------------------------------------------------ statues
@@ -328,7 +352,7 @@ final class HubPlaza {
             else b = y == -s ? "black_concrete" : "black_concrete";
             d.set(cx + x, cy + s + y, cz + z, b);
         }
-        L.label(cx + 0.5, cy + 2 * s + 3, cz + 0.5, 0, "§e§lTHE SHOWDOWN CUBE");
+        L.label(cx + 0.5, cy + 2 * s + 3, cz + 0.5, 0, "§e§lTHE MCC CROWN CUBE");
     }
 
     void trophy(int cx, int by, int cz, double sc) {
@@ -403,6 +427,6 @@ final class HubPlaza {
         d.set(cx - 1, hy + 2, cz + 4, "black_concrete"); d.set(cx, hy + 2, cz + 4, "black_concrete"); d.set(cx + 1, hy + 2, cz + 4, "black_concrete");
         d.set(cx - 2, hy + 3, cz + 4, "black_concrete"); d.set(cx + 2, hy + 3, cz + 4, "black_concrete");
         d.set(cx - 3, hy + 3, cz + 4, "pink_concrete"); d.set(cx + 3, hy + 3, cz + 4, "pink_concrete");
-        L.label(cx + 0.5, by + 3.2, cz + 6.2, 0, "§c§lBLOXY §7the Showdown mascot");
+        L.label(cx + 0.5, by + 3.2, cz + 6.2, 0, "§c§lBLOXY §7the MCC mascot");
     }
 }
