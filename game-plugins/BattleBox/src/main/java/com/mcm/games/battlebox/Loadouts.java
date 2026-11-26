@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
@@ -32,8 +33,15 @@ import static com.mcm.games.battlebox.Gear.Custom.*;
 final class Loadouts {
     private Loadouts() {}
 
+    /** True = one universal kit table for every map/theme (owner request for the event). */
+    static final boolean UNIVERSAL = true;
+
     static List<ItemStack> items(String theme, Kit kit) {
         List<ItemStack> l = new ArrayList<>();
+        if (UNIVERSAL) {
+            universal(kit, l);
+            return l;
+        }
         String t = theme == null ? "greenhouse" : theme;
         switch (t) {
             case "toyworkshop", "office" -> toy(kit, l);
@@ -54,6 +62,61 @@ final class Loadouts {
     private static ItemStack xbow(String name) { return Gear.weapon(Material.CROSSBOW, name, Enchantment.QUICK_CHARGE, 1); }
 
     private static ItemStack arrows(int n) { return Gear.plain(Material.ARROW, n); }
+
+    // ------------------------------------------------------------------ current (universal) kits
+
+    /** Owner's event kits: same on every map. Spells are plain splash potions; Sting/Spring removed. */
+    private static void universal(Kit k, List<ItemStack> l) {
+        switch (k) {
+            case MEDIC -> {
+                l.add(sword(Material.STONE_SWORD, "Medic Blade"));
+                l.add(bow("Medic Bow", null, 0));
+                l.add(arrows(5));
+                l.add(Gear.splash(PotionType.REGENERATION, ChatColor.LIGHT_PURPLE + "Splash Potion of Regeneration"));
+                l.add(Gear.splash(PotionType.REGENERATION, ChatColor.LIGHT_PURPLE + "Splash Potion of Regeneration"));
+                l.add(Gear.splash(PotionType.REGENERATION, ChatColor.LIGHT_PURPLE + "Splash Potion of Regeneration"));
+            }
+            case MARKSMAN -> {
+                l.add(sword(Material.STONE_SWORD, "Marksman Sword"));
+                l.add(Gear.weapon(Material.CROSSBOW, "Power Crossbow", Enchantment.POWER, 1));
+                l.add(arrows(16));
+                l.add(tripleCrossbow());
+                l.add(windCharges(2));
+            }
+            case RUNNER -> {
+                l.add(Gear.weapon(Material.STONE_AXE, "Runner Axe", Enchantment.KNOCKBACK, 1));
+                l.add(Gear.splash(PotionType.SWIFTNESS, ChatColor.YELLOW + "Splash Potion of Swiftness"));
+                l.add(Gear.splash(PotionType.SWIFTNESS, ChatColor.YELLOW + "Splash Potion of Swiftness"));
+                l.add(Gear.splash(PotionType.SWIFTNESS, ChatColor.YELLOW + "Splash Potion of Swiftness"));
+            }
+            case BRAWLER -> {
+                l.add(sword(Material.IRON_SWORD, "Brawler's Cleaver"));
+                l.add(Gear.plain(Material.GOLDEN_APPLE, 1));
+            }
+            default -> { }
+        }
+    }
+
+    private static ItemStack windCharges(int n) {
+        ItemStack it = new ItemStack(Material.WIND_CHARGE, n);
+        ItemMeta m = it.getItemMeta();
+        if (m != null) { m.setDisplayName(ChatColor.WHITE + "Wind Charge"); it.setItemMeta(m); }
+        return it;
+    }
+
+    /** Multishot crossbow with only three shots left (one durability per shot). */
+    private static ItemStack tripleCrossbow() {
+        ItemStack it = new ItemStack(Material.CROSSBOW);
+        ItemMeta m = it.getItemMeta();
+        if (m != null) {
+            m.setDisplayName(ChatColor.AQUA + "Triple Shot Crossbow" + ChatColor.GRAY + " (3 shots)");
+            m.addEnchant(Enchantment.MULTISHOT, 1, true);
+            m.setLore(List.of(ChatColor.DARK_GRAY + "Breaks after three shots."));
+            it.setItemMeta(m);
+        }
+        it.setDurability((short) Math.max(0, Material.CROSSBOW.getMaxDurability() - 3));
+        return it;
+    }
 
     private static void greenhouse(Kit k, List<ItemStack> l) {
         switch (k) {

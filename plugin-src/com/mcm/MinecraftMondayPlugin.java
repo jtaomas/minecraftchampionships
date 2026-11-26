@@ -129,6 +129,8 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     private String finishedNameOverride;
     private final List<String> externalSidebar = new ArrayList<>();
     private final Set<UUID> externalParticipants = new LinkedHashSet<>();
+    /** Everyone who was a participant when the running external game started (to hand rejoiners back to it). */
+    private final Set<UUID> externalRoster = new HashSet<>();
     private static final String EXTRA_GUI_TITLE = ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "More MCC Games";
     private int playlistIndex = 0;
     /** MCC coin multiplier of the external game running now (set in startExternal). */
@@ -394,7 +396,20 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         getConfig().addDefault("coins.event-multiplier.outside-championship", 1.0);
         getConfig().addDefault("coins.mcc-team-size", 4);
         getConfig().addDefault("coins.team-pool-split", "mcc");
+        getConfig().addDefault("coins.short-team-bonus", true);
+        getConfig().addDefault("teams.size", 4);
+        getConfig().addDefault("teams.count", 8);
+        getConfig().addDefault("staff", new ArrayList<String>());
         getConfig().options().copyDefaults(true);
+        getConfig().setInlineComments("coins.short-team-bonus", List.of(
+                "Short-team bonus: every coin a player earns is multiplied by teams.size / registered team size (a team of 3 = x1.33, a duo = x2).",
+                "The size is snapshotted at the start of each game. Team pools and split side points are not scaled twice."));
+        getConfig().setInlineComments("teams.size", List.of(
+                "Players per full team (/mcm teamsize <n> changes and saves it). Auto-balance and the team cap count registered members, online or not."));
+        getConfig().setInlineComments("teams.count", List.of(
+                "How many teams are in use (1-10, in the order Red, Orange, Yellow, Lime, Green, Cyan, Aqua, Blue, Purple, Pink): team pads, /team slots, auto-balance, Decision Dome pods."));
+        getConfig().setInlineComments("staff", List.of(
+                "Player names that are staff/spectators: never put on a team or into a game as a solo side. Same as /mcm spectate on, or the permission mcm.staff."));
         getConfig().setInlineComments("mcc-hub.enabled", List.of(
                 "Build/load the MCC hub island (world mcc_lobby) as the lobby for MCC games."));
         getConfig().setInlineComments("hidden-games", List.of(
@@ -439,6 +454,16 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                 "Imported shafts from plugins/MinecraftMondayCore/imported-droppers/: always = every ready one is in the round, the rest",
                 "built-in stages; mixed = shuffled into one pool with the built-ins; off = built-in stages only."));
         saveConfig();
+        scoring.configure(getConfig().getInt("teams.size", 4), getConfig().getInt("teams.count", 8),
+                getConfig().getBoolean("coins.short-team-bonus", true));
+        scoring.load(new java.io.File(getDataFolder(), "teams.yml"));
+        scoring.setExcluded(id -> {
+            Player op = Bukkit.getPlayer(id);
+            if (op != null ? isStaff(op) : scoring.isMarkedSpectator(id) || staffByName(scoring.nameOf(id))) return true;
+            return championshipMode && scoring.getTeam(id) == null;
+        });
+        getLogger().info("Teams: " + scoring.getActiveTeams() + " x up to " + scoring.getMaxTeamSize() + ", "
+                + scoring.registeredTotal() + " players registered (teams.yml).");
         importedDroppers = new ImportedDroppers(this);
         try { importedDroppers.enable(dropperWorld); }
         catch (Throwable t) { getLogger().log(Level.WARNING, "Imported droppers failed to start", t); }
@@ -460,6 +485,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             try {
                 hub = new HubManager(this, this::hubBoardLines, this::joinTeamFromPad,
                         () -> currentGame == GameType.LOBBY, this::hubTeamPadLabel);
+                hub.setActiveTeams(scoring::getActiveTeams);
                 hub.enable();
             } catch (Throwable t) {
                 getLogger().log(Level.SEVERE, "MCC hub failed to start", t);
@@ -506,6 +532,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
+        scoring.save();
         CoinFeedback.shutdown();
         if (packServer != null) packServer.stop();
         if (mapEdit != null) { try { mapEdit.disable(); } catch (Throwable t) { getLogger().log(Level.WARNING, "Map Edit shutdown", t); } }
@@ -595,6 +622,8 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                 if (!startById(args[1])) sender.sendMessage("Unknown game. Options: " + String.join(", ", allGameIds()));
             } else {
                 if (args.length > 0 && args[0].equalsIgnoreCase("mapedit")) mapEdit.command(sender, args);
+                else if (args.length > 0 && (args[0].equalsIgnoreCase("team") || args[0].equalsIgnoreCase("spectate")
+                        || args[0].equalsIgnoreCase("teamsize"))) teamAdminCommand(sender, args);
                 else if (args.length > 0 && args[0].equalsIgnoreCase("games")) listGames(sender);
                 else if (args.length > 0 && args[0].equalsIgnoreCase("start")) startChampionship(args.length > 1 && args[1].equalsIgnoreCase("mcc"));
                 else if (args.length > 0 && args[0].equalsIgnoreCase("lobby")) lobbyCommand(sender, args);
@@ -630,13 +659,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                 updateAllScoreboards();
                 if (hub != null) hub.refreshDisplays();
             }
-            case "teamsize" -> {
-                if (args.length >= 2) {
-                    try {
-                        setTeamSize(Integer.parseInt(args[1]));
-                    } catch (NumberFormatException ignored) {}
-                }
-            }
+            case "teamsize", "team", "spectate" -> teamAdminCommand(p, args);
             case "play" -> {
                 if (args.length < 2) {
                     p.sendMessage(ChatColor.YELLOW + "Usage: /mcm play <" + String.join("|", allGameIds()) + ">");
@@ -697,21 +720,179 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         endCurrentEvent("Skipped by Admin");
     }
 
-    private void setTeamSize(int size) {
-        scoring.setMaxTeamSize(size);
-        broadcast(ChatColor.AQUA + "Team Size set to " + ChatColor.YELLOW + scoring.getTeamSizeLabel()
-                + ChatColor.AQUA + "! Step onto an East Team Booth, right-click your Wool, or type /team to join.");
+    // ==================== TEAMS: staff, lock, persistence, admin commands ====================
+
+    /** Staff/spectator: marked with /mcm spectate, listed in config {@code staff}, or holding the permission {@code mcm.staff}. */
+    boolean isStaff(Player p) {
+        if (p == null) return false;
+        if (scoring.isMarkedSpectator(p.getUniqueId()) || staffByName(p.getName())) return true;
+        return p.hasPermission("mcm.staff");
+    }
+
+    private boolean staffByName(String name) {
+        if (name == null) return false;
+        for (String n : getConfig().getStringList("staff")) if (n.equalsIgnoreCase(name)) return true;
+        return false;
+    }
+
+    /** A player who takes part in games: not staff, and during a championship on a team. Everyone else spectates. */
+    boolean isEventPlayer(Player p) {
+        return p != null && !isStaff(p) && !(championshipMode && scoring.getTeam(p.getUniqueId()) == null);
+    }
+
+    /** Teams cannot change while a championship runs; ops use /mcm team set. */
+    private boolean teamsLocked() { return championshipMode; }
+
+    private void tellTeamsLocked(CommandSender s) {
+        s.sendMessage(ChatColor.RED + "Teams are locked during the championship." + (s.isOp() ? ChatColor.GRAY + " Ops: /mcm team set <player> <team|none>." : ""));
+    }
+
+    private void refreshTeamViews() {
         scoring.applyTabNames();
         refreshLobbyItems();
         if (hub != null) hub.refreshDisplays();
     }
 
+    private boolean setTeamSize(int size) {
+        if (teamsLocked()) { for (Player op : Bukkit.getOnlinePlayers()) if (op.isOp()) tellTeamsLocked(op); return false; }
+        scoring.setMaxTeamSize(size);
+        getConfig().set("teams.size", scoring.getMaxTeamSize());
+        saveConfig();
+        broadcast(ChatColor.AQUA + "Team Size set to " + ChatColor.YELLOW + scoring.getTeamSizeLabel()
+                + ChatColor.AQUA + "! Step onto an East Team Booth, right-click your Wool, or type /team to join.");
+        refreshTeamViews();
+        return true;
+    }
+
     private void randomizeTeams() {
-        scoring.randomizeOnlinePlayers();
-        broadcast(ChatColor.AQUA + "Auto-balanced players into teams of " + ChatColor.YELLOW + scoring.getMaxTeamSize() + ChatColor.AQUA + "!");
-        scoring.applyTabNames();
-        refreshLobbyItems();
-        if (hub != null) hub.refreshDisplays();
+        if (teamsLocked()) { for (Player op : Bukkit.getOnlinePlayers()) if (op.isOp()) tellTeamsLocked(op); return; }
+        List<Player> eligible = new ArrayList<>();
+        for (Player p : Bukkit.getOnlinePlayers()) if (!isStaff(p)) eligible.add(p);
+        int left = scoring.autoBalance(eligible);
+        broadcast(ChatColor.AQUA + "Auto-balanced " + eligible.size() + " players into " + ChatColor.YELLOW + scoring.getActiveTeams()
+                + ChatColor.AQUA + " teams of up to " + ChatColor.YELLOW + scoring.getMaxTeamSize() + ChatColor.AQUA + "!");
+        if (left > 0) broadcast(ChatColor.RED + "" + left + " player(s) did not fit (" + scoring.getActiveTeams() + " teams x " + scoring.getMaxTeamSize()
+                + ") and stay unteamed - raise teams.count / use /mcm team count.");
+        refreshTeamViews();
+    }
+
+    /** /mcm teamsize, /mcm team ..., /mcm spectate ... (ops and console). */
+    private void teamAdminCommand(CommandSender s, String[] args) {
+        String head = args[0].toLowerCase(Locale.ROOT);
+        if (head.equals("teamsize")) {
+            if (args.length < 2) { s.sendMessage(ChatColor.YELLOW + "Team size is " + scoring.getMaxTeamSize() + " (teams.size). Usage: /mcm teamsize <1-5>"); return; }
+            try { setTeamSize(Integer.parseInt(args[1])); }
+            catch (NumberFormatException ex) { s.sendMessage(ChatColor.YELLOW + "Usage: /mcm teamsize <1-5>"); }
+            return;
+        }
+        if (head.equals("spectate")) { spectateCommand(s, args); return; }
+        String sub = args.length > 1 ? args[1].toLowerCase(Locale.ROOT) : "list";
+        switch (sub) {
+            case "balance" -> randomizeTeams();
+            case "clear" -> {
+                if (teamsLocked()) { tellTeamsLocked(s); return; }
+                scoring.clearTeams();
+                broadcast(ChatColor.YELLOW + "All teams were cleared.");
+                refreshTeamViews();
+            }
+            case "count" -> {
+                if (args.length < 3) { s.sendMessage(ChatColor.YELLOW + "Teams in use: " + scoring.getActiveTeams() + ". Usage: /mcm team count <1-10>"); return; }
+                if (teamsLocked()) { tellTeamsLocked(s); return; }
+                int n;
+                try { n = Integer.parseInt(args[2]); } catch (NumberFormatException ex) { s.sendMessage(ChatColor.YELLOW + "Usage: /mcm team count <1-10>"); return; }
+                scoring.setActiveTeams(n);
+                getConfig().set("teams.count", scoring.getActiveTeams());
+                saveConfig();
+                int freed = 0;
+                for (int i = scoring.getActiveTeams(); i < TeamScoring.TEAM_NAMES.length; i++) {
+                    for (UUID u : scoring.registeredMembers(TeamScoring.TEAM_NAMES[i])) { scoring.setTeam(u, null); freed++; }
+                }
+                broadcast(ChatColor.AQUA + "Teams in use: " + ChatColor.YELLOW + scoring.getActiveTeams() + ChatColor.AQUA + "."
+                        + (freed > 0 ? ChatColor.GRAY + " " + freed + " player(s) of closed teams are unteamed." : ""));
+                refreshTeamViews();
+            }
+            case "set" -> {
+                if (args.length < 4) { s.sendMessage(ChatColor.YELLOW + "Usage: /mcm team set <player> <team|none> [force]"); return; }
+                UUID id = scoring.findByName(args[2]);
+                if (id == null) { s.sendMessage(ChatColor.RED + "Unknown player: " + args[2] + " (they must have joined once)."); return; }
+                String name = scoring.nameOf(id);
+                Player online = Bukkit.getPlayer(id);
+                boolean force = args.length > 4 && args[4].equalsIgnoreCase("force");
+                if (args[3].equalsIgnoreCase("none") || args[3].equalsIgnoreCase("solo")) {
+                    scoring.setTeam(id, null);
+                    s.sendMessage(ChatColor.GREEN + name + " has no team now.");
+                } else {
+                    String team = null;
+                    for (String t : TeamScoring.TEAM_NAMES) if (t.equalsIgnoreCase(args[3])) team = t;
+                    if (team == null || (!scoring.isTeamActive(team) && !force)) {
+                        s.sendMessage(ChatColor.RED + "Unknown or inactive team: " + args[3] + ". Teams in use: "
+                                + String.join(", ", Arrays.copyOf(TeamScoring.TEAM_NAMES, scoring.getActiveTeams())));
+                        return;
+                    }
+                    if (scoring.isMarkedSpectator(id) || (online != null && isStaff(online))) {
+                        s.sendMessage(ChatColor.RED + name + " is staff/spectator (/mcm spectate off first).");
+                        return;
+                    }
+                    if (!force && !scoring.trySetTeam(id, team)) {
+                        s.sendMessage(ChatColor.RED + team + " is full (" + scoring.registeredCount(team) + "/" + scoring.getMaxTeamSize()
+                                + " registered, online or not). Remove someone first or add 'force'.");
+                        return;
+                    }
+                    if (force) scoring.setTeam(id, team);
+                    s.sendMessage(ChatColor.GREEN + name + " is now on " + scoring.teamColor(team) + team + " Team" + ChatColor.GREEN + " (" + scoring.registeredCount(team) + "/" + scoring.getMaxTeamSize() + ").");
+                    if (online != null) online.sendMessage(ChatColor.YELLOW + "An admin put you on " + scoring.teamColor(team) + team + " Team" + ChatColor.YELLOW + ".");
+                }
+                refreshTeamViews();
+            }
+            default -> {
+                s.sendMessage(ChatColor.GOLD + "Teams: " + scoring.getActiveTeams() + " x " + scoring.getMaxTeamSize()
+                        + ChatColor.GRAY + " (registered, online or not)" + (championshipMode ? ChatColor.RED + "  LOCKED (championship)" : ""));
+                for (int i = 0; i < scoring.getActiveTeams(); i++) {
+                    String t = TeamScoring.TEAM_NAMES[i];
+                    StringBuilder sb = new StringBuilder();
+                    for (UUID u : scoring.registeredMembers(t)) {
+                        if (sb.length() > 0) sb.append(ChatColor.GRAY).append(", ");
+                        sb.append(Bukkit.getPlayer(u) != null ? ChatColor.WHITE : ChatColor.DARK_GRAY).append(scoring.nameOf(u));
+                    }
+                    s.sendMessage(scoring.teamColor(t) + t + ChatColor.GRAY + " " + scoring.registeredCount(t) + "/" + scoring.getMaxTeamSize()
+                            + "  " + (sb.length() == 0 ? ChatColor.DARK_GRAY + "-" : sb.toString()));
+                }
+                List<String> sp = new ArrayList<>();
+                for (Player p : Bukkit.getOnlinePlayers()) if (isStaff(p)) sp.add(p.getName());
+                if (!sp.isEmpty()) s.sendMessage(ChatColor.GRAY + "Staff/spectators online: " + ChatColor.WHITE + String.join(", ", sp));
+            }
+        }
+    }
+
+    private void spectateCommand(CommandSender s, String[] args) {
+        String mode = args.length > 1 ? args[1].toLowerCase(Locale.ROOT) : "toggle";
+        if (mode.equals("list")) {
+            List<String> names = new ArrayList<>();
+            for (Player p : Bukkit.getOnlinePlayers()) if (isStaff(p)) names.add(p.getName());
+            s.sendMessage(ChatColor.GRAY + "Staff/spectators online: " + ChatColor.WHITE + (names.isEmpty() ? "-" : String.join(", ", names)));
+            return;
+        }
+        Player target = args.length > 2 ? Bukkit.getPlayerExact(args[2]) : (s instanceof Player pl ? pl : null);
+        if (target == null) { s.sendMessage(ChatColor.YELLOW + "Usage: /mcm spectate [on|off|list] [player]"); return; }
+        boolean on = switch (mode) { case "on" -> true; case "off" -> false; default -> !scoring.isMarkedSpectator(target.getUniqueId()); };
+        scoring.setMarkedSpectator(target.getUniqueId(), on);
+        if (on) {
+            scoring.setTeam(target.getUniqueId(), null);
+            externalParticipants.remove(target.getUniqueId());
+            alivePlayers.remove(target.getUniqueId());
+            target.sendMessage(ChatColor.AQUA + "You are a spectator/staff now: no team, no game side. " + ChatColor.GRAY + "(/mcm spectate off to play)");
+            if (currentGame == GameType.EXTERNAL && activeExternal != null) {
+                McmSpectator.Zone z = externalSpectatorZone();
+                McmSpectator.makeSpectator(target, z != null ? z.home().clone() : null);
+                coreSpectators.add(target.getUniqueId());
+            }
+        } else {
+            coreSpectators.remove(target.getUniqueId());
+            target.sendMessage(ChatColor.AQUA + "You are a player again. " + ChatColor.GRAY + "Pick a team with /team"
+                    + (isStaff(target) ? ChatColor.YELLOW + " (still staff through config 'staff' or the mcm.staff permission)" : ""));
+        }
+        if (s != target) s.sendMessage(ChatColor.GREEN + target.getName() + (on ? " is a spectator now." : " is a player again."));
+        refreshTeamViews();
     }
 
     // ==================== COMPASS MENUS (spaced layout, click actions by slot) ====================
@@ -829,21 +1010,28 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     private final java.util.Set<UUID> lastMenuClickRight = new java.util.HashSet<>(), lastMenuClickShift = new java.util.HashSet<>();
 
     private void openTeamGui(Player p) {
+        if (teamsLocked()) {
+            String mine = scoring.getTeam(p.getUniqueId());
+            p.sendMessage(ChatColor.RED + "Teams are locked during the championship."
+                    + (mine != null ? ChatColor.GRAY + " You are on " + scoring.teamColor(mine) + mine + " Team" + ChatColor.GRAY + "." : ChatColor.GRAY + " Ask an admin to put you on a team."));
+            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.8f, 1f);
+            return;
+        }
         Inventory inv = Bukkit.createInventory(null, 27, TEAM_GUI_TITLE);
         int max = scoring.getMaxTeamSize();
-        for (int i = 0; i < TeamScoring.TEAM_NAMES.length; i++) {
+        for (int i = 0; i < scoring.getActiveTeams(); i++) {
             String tName = TeamScoring.TEAM_NAMES[i];
-            List<String> members = scoring.getOnlineMembers(tName);
+            List<UUID> members = scoring.registeredMembers(tName);
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.GRAY + "Slots: " + ChatColor.WHITE + members.size() + " / " + max
                     + ChatColor.GRAY + " | Team Coins: " + ChatColor.GREEN + scoring.getTeamPoints(tName));
             if (members.isEmpty()) {
                 lore.add(ChatColor.DARK_GRAY + "No players yet");
             } else {
-                for (String m : members) lore.add(ChatColor.YELLOW + "• " + ChatColor.WHITE + m);
+                for (UUID m : members) lore.add(ChatColor.YELLOW + "• " + (Bukkit.getPlayer(m) != null ? ChatColor.WHITE : ChatColor.DARK_GRAY) + scoring.nameOf(m));
             }
             lore.add("");
-            lore.add(members.size() >= max ? ChatColor.RED + "Team is full!" : ChatColor.GREEN + "Click to join!");
+            lore.add(members.size() >= max && !members.contains(p.getUniqueId()) ? ChatColor.RED + "Team is full!" : ChatColor.GREEN + "Click to join!");
             inv.setItem(TEAM_GUI_SLOTS[i], makeItem(TeamScoring.TEAM_WOOLS[i],
                     scoring.teamColor(tName) + "" + ChatColor.BOLD + McmHud.teamDisplay(tName), lore.toArray(new String[0])));
         }
@@ -898,6 +1086,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
 
         if (title.equals(TEAM_GUI_TITLE)) {
             int slot = e.getRawSlot();
+            if (teamsLocked()) { p.closeInventory(); tellTeamsLocked(p); return; }
             if (slot == 22) {
                 scoring.setTeam(p.getUniqueId(), null);
                 p.sendMessage(ChatColor.YELLOW + "You left your team (now Solo).");
@@ -908,7 +1097,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                 p.closeInventory();
                 return;
             }
-            for (int i = 0; i < TEAM_GUI_SLOTS.length; i++) {
+            for (int i = 0; i < scoring.getActiveTeams(); i++) {
                 if (slot == TEAM_GUI_SLOTS[i]) {
                     String tName = TeamScoring.TEAM_NAMES[i];
                     if (tName.equals(scoring.getTeam(p.getUniqueId()))) {
@@ -1059,6 +1248,8 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         s.sendMessage(y + "/mcm mapedit" + g + " - Map Edit: open a game map in creative and save it as an overlay the game applies (" + y + "/mcm mapedit help" + g + ")");
         s.sendMessage(y + "/mcm stop" + g + " - stop & return to lobby   " + y + "/mcm reset" + g + " - reset scores   " + y + "/mcm games" + g + " - list games");
         s.sendMessage(y + "/mcm teamsize <1-5>" + g + ", " + y + "/mcm lobby [tp|mm|rebuild|status]" + g + ", " + y + "/mcm preview ..." + g + ", " + y + "/mcm selftest");
+        s.sendMessage(y + "/mcm team list|balance|clear|count <n>|set <player> <team|none>" + g + " - teams (set also works while /team is locked in a championship)");
+        s.sendMessage(y + "/mcm spectate [on|off|list] [player]" + g + " - mark staff/spectators: never on a team, never a game side");
     }
 
     void cmdFast(CommandSender sender, Boolean on) {
@@ -1278,9 +1469,11 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         List<String> out = new ArrayList<>();
         if (args.length == 1) {
             out.addAll(List.of("start", "play", "fast", "skipwait", "skip", "next", "map", "mapedit", "tools", "stop", "reset", "games",
-                    "teamsize", "lobby", "preview", "selftest", "help"));
+                    "teamsize", "team", "spectate", "lobby", "preview", "selftest", "help"));
         } else if (args.length == 2) {
             switch (args[0].toLowerCase(Locale.ROOT)) {
+                case "team" -> out.addAll(List.of("list", "set", "balance", "clear", "count"));
+                case "spectate" -> out.addAll(List.of("on", "off", "list"));
                 case "fast" -> out.addAll(List.of("on", "off"));
                 case "start", "championship" -> out.add("mcc");
                 case "play" -> out.addAll(allGameIds());
@@ -1298,6 +1491,13 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             return mapEdit.tab(sender, args);
         } else if (args.length == 3 && (args[0].equalsIgnoreCase("map") || args[0].equalsIgnoreCase("maps")) && isGameId(args[1])) {
             out.addAll(mapsOf(canonicalGameId(args[1])));
+        } else if (args.length == 3 && args[0].equalsIgnoreCase("team") && args[1].equalsIgnoreCase("set")) {
+            for (Player op : Bukkit.getOnlinePlayers()) out.add(op.getName());
+        } else if (args.length == 4 && args[0].equalsIgnoreCase("team") && args[1].equalsIgnoreCase("set")) {
+            out.add("none");
+            for (int i = 0; i < scoring.getActiveTeams(); i++) out.add(TeamScoring.TEAM_NAMES[i]);
+        } else if (args.length == 3 && args[0].equalsIgnoreCase("spectate")) {
+            for (Player op : Bukkit.getOnlinePlayers()) out.add(op.getName());
         }
         String pre = args.length == 0 ? "" : args[args.length - 1].toLowerCase(Locale.ROOT);
         out.removeIf(s -> !s.toLowerCase(Locale.ROOT).startsWith(pre));
@@ -1326,6 +1526,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         if (mapEdit != null) mapEdit.evictAll("A game is starting.");
         if (!championshipMode) mccContext = false;
         snapshotGamePoints();
+        scoring.snapshotTeamSizes();
         roundNumber = 1;
         maxRounds = switch (game) {
             case TNT_RUN, SPLEEF -> 3;
@@ -1687,9 +1888,11 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             }.runTaskLater(this, voteTicks);
             setPendingWait("Decision Dome vote", endVoteNow);
             Map<UUID, String> teams = new HashMap<>();
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                String team = scoring.getTeam(p.getUniqueId());
-                if (team != null && !team.isBlank()) teams.put(p.getUniqueId(), team);
+            // every registered player, online or not, so a rejoiner during the vote lands in their own pod
+            for (Map.Entry<UUID, String> reg : scoring.registeredTeams().entrySet()) {
+                Player rp = Bukkit.getPlayer(reg.getKey());
+                if (rp != null ? isStaff(rp) : scoring.isMarkedSpectator(reg.getKey())) continue;
+                if (reg.getValue() != null && !reg.getValue().isBlank()) teams.put(reg.getKey(), reg.getValue());
             }
             McmVoteRequest request = new McmVoteRequest(voteIds, teams, playlistIndex + 1,
                     playlistIndex > 0, false, 8);
@@ -1778,6 +1981,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         cancelTasks();
         restoreArenas();
         currentGame = GameType.LOBBY;
+        scoring.clearTeamSizeSnapshot();
         coreSpectators.clear();
         builtInZone = null;
         if (sgWorld != null) sgWorld.getWorldBorder().reset();
@@ -2469,6 +2673,9 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
         scoring.ensurePlayer(p.getUniqueId());
+        scoring.rememberName(p.getUniqueId(), p.getName());
+        final String rejoinTeam = scoring.getTeam(p.getUniqueId());
+        final boolean staff = isStaff(p);
         if (currentGame == GameType.LOBBY) {
             resetPlayer(p, GameMode.ADVENTURE);
             Location dest = defaultLobby();
@@ -2480,8 +2687,15 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             }
         } else {
             boolean handled = false;
-            if (currentGame == GameType.EXTERNAL && activeExternal != null && activeCtx != null) {
+            boolean eventPlayer = isEventPlayer(p);
+            if (eventPlayer && currentGame == GameType.EXTERNAL && activeExternal != null && activeCtx != null) {
                 try { handled = activeExternal.onLateJoin(p, activeCtx); } catch (Throwable t) { getLogger().log(Level.WARNING, "onLateJoin failed", t); }
+                // a rejoiner the running game took back is a participant again (ctx.participants()/sides())
+                if (handled && externalRoster.contains(p.getUniqueId())) externalParticipants.add(p.getUniqueId());
+            }
+            if (!eventPlayer && currentGame == GameType.EXTERNAL) {
+                p.sendMessage(ChatColor.YELLOW + (staff ? "You are staff/spectator: watching " + currentDisplay() + "."
+                        : "You have no team, so you are spectating. Ask an admin to put you on a team."));
             }
             if (!handled) {
                 sanitizeAttributes(p);
@@ -2493,8 +2707,15 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                 } else {
                     spectateInBuiltIn(p);
                 }
-                p.sendMessage(ChatColor.YELLOW + "Event in progress (" + currentDisplay() + "). Spectating until next round!");
+                if (eventPlayer) p.sendMessage(ChatColor.YELLOW + "Event in progress (" + currentDisplay() + "). Spectating until next round!");
             }
+        }
+        if (rejoinTeam != null) {
+            if (currentGame != GameType.LOBBY) {
+                getLogger().info("Rejoin: " + p.getName() + " back on " + rejoinTeam + " during " + currentDisplay()
+                        + (externalParticipants.contains(p.getUniqueId()) ? " (handed back to the game)" : " (spectating)"));
+            }
+            p.sendMessage(ChatColor.AQUA + "Welcome back! You are on " + scoring.teamColor(rejoinTeam) + ChatColor.BOLD + rejoinTeam + " Team" + ChatColor.AQUA + ".");
         }
         if (hub != null) Bukkit.getScheduler().runTask(this, () -> { if (hub != null) hub.refreshDisplays(); });
         scoring.applyTabNames();
@@ -3538,7 +3759,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         if (map != null) map = map.replace('_', ' ').replace('-', ' ');
         if ("default".equalsIgnoreCase(map)) map = null;
         LinkedHashMap<String, Integer> totals = overallSideTotals();
-        for (Player p : Bukkit.getOnlinePlayers()) totals.putIfAbsent(scoring.getSideKey(p.getUniqueId()), 0);
+        for (Player p : Bukkit.getOnlinePlayers()) if (isEventPlayer(p)) totals.putIfAbsent(scoring.getSideKey(p.getUniqueId()), 0);
         Map<String, Integer> coins = new HashMap<>();
         if (lobby) {
             coins.putAll(totals);
@@ -3813,10 +4034,27 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         builtInZone = null;
         currentGame = GameType.EXTERNAL;
         activeExternal = g;
+        scoring.snapshotTeamSizes();
+        externalRoster.clear();
         for (Player p : Bukkit.getOnlinePlayers()) {
             scoring.ensurePlayer(p.getUniqueId());
+            if (!isEventPlayer(p)) {
+                // staff, or no team during a championship: never a side, they watch
+                resetPlayer(p, GameMode.SPECTATOR);
+                coreSpectators.add(p.getUniqueId());
+                p.sendMessage(ChatColor.YELLOW + (isStaff(p) ? "You are staff/spectator: watching this game."
+                        : "You have no team, so you are spectating. Ask an admin to put you on a team."));
+                continue;
+            }
             externalParticipants.add(p.getUniqueId());
+            externalRoster.add(p.getUniqueId());
             resetPlayer(p, GameMode.SURVIVAL);
+        }
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            double f = externalParticipants.contains(p.getUniqueId()) ? scoring.teamCoinFactor(p.getUniqueId()) : 1.0;
+            if (f > 1.0) p.sendMessage(ChatColor.AQUA + "Team bonus " + ChatColor.YELLOW + TeamScoring.formatFactor(f) + ChatColor.GRAY
+                    + " - your team has " + scoring.teamSizeNow(scoring.getTeam(p.getUniqueId())) + " of " + scoring.getMaxTeamSize()
+                    + " players, so every coin you earn is multiplied.");
         }
         snapshotGamePoints();
         String cardSub = championshipMode && !playlist.isEmpty()
@@ -3831,6 +4069,13 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
                 + ChatColor.GRAY + " - every coin in this game is multiplied.");
         ExternalContext ctx = new ExternalContext(g);
         activeCtx = ctx;
+        StringBuilder sideLog = new StringBuilder();
+        for (Map.Entry<String, List<Player>> se : ctx.sides().entrySet()) {
+            sideLog.append(sideLog.length() > 0 ? ", " : "").append(se.getKey()).append('=').append(se.getValue().size())
+                    .append('/').append(ctx.registeredTeamSize(se.getKey()));
+        }
+        getLogger().info("Game " + g.id() + " start: " + externalParticipants.size() + " participants in " + ctx.sides().size()
+                + " sides [" + sideLog + "] (online/registered), " + coreSpectators.size() + " spectating");
         try {
             g.start(ctx);
         } catch (Throwable t) {
@@ -3925,13 +4170,24 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             List<UUID> members = sideMembers(sideKey);
             if (members.isEmpty()) return;
             double each = points / (double) members.size();
-            for (UUID u : members) addCoins(u, each, reason);
+            // the side total is already split across its members: no short-team factor on top
+            for (UUID u : members) pay(u, each, reason, false);
         }
 
         @Override public void addCoins(UUID player, double coins, String reason) {
-            if (done || player == null || coins == 0) return;
-            scoring.addCoins(player, coins * coinMultiplier, reason);
+            pay(player, coins, reason, true);
         }
+
+        private void pay(UUID player, double coins, String reason, boolean teamBonus) {
+            if (done || player == null || coins == 0) return;
+            scoring.addCoins(player, coins * coinMultiplier, reason, teamBonus);
+        }
+
+        @Override public double teamCoinFactor(UUID player) { return scoring.teamCoinFactor(player); }
+
+        @Override public int registeredTeamSize(String sideKey) { return scoring.registeredSizeOfSide(sideKey); }
+
+        @Override public int fullTeamSize() { return scoring.getMaxTeamSize(); }
 
         @Override public void addKillCoins(UUID killer, double coins, UUID victim, String victimName, String reason) {
             if (done || killer == null) return;
@@ -3952,7 +4208,10 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             List<UUID> members = sideMembers(sideKey);
             if (members.isEmpty()) return;
             double each = teamShare(pool, members.size());
-            for (UUID u : members) addCoins(u, each, reason);
+            // "mcc": pool / 4 per member, scaled by the short-team factor so a trio still earns the whole pool.
+            // "team": pool / online members is already the whole pool, so no factor.
+            boolean teamSplit = "team".equalsIgnoreCase(getConfig().getString("coins.team-pool-split", "mcc"));
+            for (UUID u : members) pay(u, each, reason, !teamSplit);
         }
 
         @Override public double teamShare(double pool, int members) {
@@ -4246,14 +4505,24 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
 
     /** Read-only game context view used by the core's own McmFx presentation (writes are ignored). */
     private final class CoreView implements McmGameContext {
-        @Override public Collection<Player> participants() { return new ArrayList<>(Bukkit.getOnlinePlayers()); }
+        @Override public Collection<Player> participants() {
+            List<Player> out = new ArrayList<>();
+            for (Player p : Bukkit.getOnlinePlayers()) if (!isStaff(p)) out.add(p);
+            return out;
+        }
         @Override public String teamOf(UUID player) { return scoring.getTeam(player); }
         @Override public ChatColor teamColor(String team) { return scoring.teamColor(team); }
         @Override public Map<String, List<Player>> sides() {
             Map<String, List<Player>> m = new LinkedHashMap<>();
-            for (Player p : Bukkit.getOnlinePlayers()) m.computeIfAbsent(scoring.getSideKey(p.getUniqueId()), k -> new ArrayList<>()).add(p);
+            for (Player p : participants()) {
+                if (championshipMode && scoring.getTeam(p.getUniqueId()) == null) continue;
+                m.computeIfAbsent(scoring.getSideKey(p.getUniqueId()), k -> new ArrayList<>()).add(p);
+            }
             return m;
         }
+        @Override public double teamCoinFactor(UUID player) { return scoring.teamCoinFactor(player); }
+        @Override public int registeredTeamSize(String sideKey) { return scoring.registeredSizeOfSide(sideKey); }
+        @Override public int fullTeamSize() { return scoring.getMaxTeamSize(); }
         @Override public String sideLabel(String sideKey) {
             if (sideKey == null) return "?";
             if (sideKey.startsWith("TEAM:")) {
@@ -4324,12 +4593,23 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             p.sendMessage(ChatColor.YELLOW + "You're already on " + scoring.teamColor(tName) + tName + " Team!");
             return true;
         }
-        if (scoring.getOnlineMembers(tName).size() >= scoring.getMaxTeamSize()) {
-            p.sendMessage(ChatColor.RED + tName + " Team is full (" + scoring.getMaxTeamSize() + "/" + scoring.getMaxTeamSize() + ")!");
+        if (teamsLocked()) {
+            tellTeamsLocked(p);
+            return false;
+        }
+        if (isStaff(p)) {
+            p.sendMessage(ChatColor.RED + "You are staff/spectator and cannot join a team. " + ChatColor.GRAY + "(/mcm spectate off)");
+            return false;
+        }
+        if (!scoring.isTeamActive(tName)) {
+            p.sendMessage(ChatColor.RED + tName + " Team is not in this event.");
+            return false;
+        }
+        if (!scoring.trySetTeam(p.getUniqueId(), tName)) {
+            p.sendMessage(ChatColor.RED + tName + " Team is full (" + scoring.registeredCount(tName) + "/" + scoring.getMaxTeamSize() + ")!");
             p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
             return false;
         }
-        scoring.setTeam(p.getUniqueId(), tName);
         broadcast(ChatColor.WHITE + p.getName() + ChatColor.GRAY + " joined " + scoring.teamColor(tName) + "" + ChatColor.BOLD + McmHud.teamDisplay(tName) + ChatColor.GRAY + "!");
         p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.3f);
         scoring.applyTabNames();
@@ -4340,21 +4620,33 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
 
     /** Hub team pads (index in TeamScoring order); only between events. */
     private void joinTeamFromPad(Player p, Integer idx) {
-        if (currentGame != GameType.LOBBY || championshipMode || idx == null || idx < 0 || idx >= TeamScoring.TEAM_NAMES.length) return;
+        if (currentGame != GameType.LOBBY || idx == null || idx < 0 || idx >= scoring.getActiveTeams()) return;
+        if (championshipMode) {
+            if (System.currentTimeMillis() - padLockNotice.getOrDefault(p.getUniqueId(), 0L) > 5000) {
+                padLockNotice.put(p.getUniqueId(), System.currentTimeMillis());
+                tellTeamsLocked(p);
+            }
+            return;
+        }
         joinTeam(p, TeamScoring.TEAM_NAMES[idx]);
     }
 
+    private final Map<UUID, Long> padLockNotice = new HashMap<>();
+
     /** Multi-line TextDisplay content above each East team booth in the MCC hub. */
     private String hubTeamPadLabel(int idx) {
-        if (idx < 0 || idx >= TeamScoring.TEAM_NAMES.length) return "";
+        if (idx < 0 || idx >= scoring.getActiveTeams()) return "";
         String t = TeamScoring.TEAM_NAMES[idx];
         ChatColor tc = scoring.teamColor(t);
-        List<String> members = scoring.getOnlineMembers(t);
+        List<UUID> members = scoring.registeredMembers(t);
+        List<String> names = new ArrayList<>();
+        for (UUID u : members) names.add((Bukkit.getPlayer(u) != null ? ChatColor.GRAY : ChatColor.DARK_GRAY) + scoring.nameOf(u));
         int max = scoring.getMaxTeamSize();
         String roster = members.isEmpty()
                 ? ChatColor.GREEN + "0/" + max + ChatColor.GRAY + " • Open"
-                : ChatColor.WHITE + "" + members.size() + "/" + max + " " + ChatColor.GRAY + String.join(", ", members);
-        String action = members.size() >= max ? ChatColor.RED + "✖ FULL" : ChatColor.YELLOW + "▶ STEP TO JOIN";
+                : ChatColor.WHITE + "" + members.size() + "/" + max + " " + String.join(ChatColor.GRAY + ", ", names);
+        String action = championshipMode ? ChatColor.GRAY + "✖ LOCKED"
+                : members.size() >= max ? ChatColor.RED + "✖ FULL" : ChatColor.YELLOW + "▶ STEP TO JOIN";
         return tc + "" + ChatColor.BOLD + McmHud.teamDisplay(t) + "\n" + roster + "\n" + action;
     }
 
@@ -4362,7 +4654,8 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
     private List<String> hubBoardLines() {
         List<String> out = new ArrayList<>();
         out.add(ChatColor.GOLD + "" + ChatColor.BOLD + "✦ MINECRAFT CHAMPIONSHIPS ✦");
-        int online = Bukkit.getOnlinePlayers().size();
+        int online = 0;
+        for (Player op : Bukkit.getOnlinePlayers()) if (!isStaff(op)) online++;
         String mode = championshipMode
                 ? ChatColor.YELLOW + "Event " + Math.min(playlistIndex + 1, playlist.size()) + "/" + playlist.size()
                 : ChatColor.GREEN + "Lobby";
@@ -4372,11 +4665,11 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         out.add(ChatColor.GOLD + "" + ChatColor.BOLD + "TEAM STANDINGS");
         List<String> activeTeams = new ArrayList<>();
         for (String t : TeamScoring.TEAM_NAMES) {
-            if (!scoring.getOnlineMembers(t).isEmpty() || scoring.getTeamPoints(t) > 0) activeTeams.add(t);
+            if (scoring.registeredCount(t) > 0 || scoring.getTeamPoints(t) > 0) activeTeams.add(t);
         }
         activeTeams.sort((a, b) -> {
             int c = Integer.compare(scoring.getTeamPoints(b), scoring.getTeamPoints(a));
-            return c != 0 ? c : Integer.compare(scoring.getOnlineMembers(b).size(), scoring.getOnlineMembers(a).size());
+            return c != 0 ? c : Integer.compare(scoring.registeredCount(b), scoring.registeredCount(a));
         });
         int max = scoring.getMaxTeamSize();
         int shownTeams = 0;
@@ -4384,7 +4677,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
             if (shownTeams >= 10) break;
             shownTeams++;
             ChatColor rankCol = shownTeams == 1 ? ChatColor.GOLD : shownTeams == 2 ? ChatColor.WHITE : shownTeams == 3 ? ChatColor.YELLOW : ChatColor.GRAY;
-            int cnt = scoring.getOnlineMembers(t).size();
+            int cnt = scoring.registeredCount(t);
             int pts = scoring.getTeamPoints(t);
             out.add(rankCol + "" + ChatColor.BOLD + "#" + shownTeams + " "
                     + scoring.teamColor(t) + ChatColor.BOLD + McmHud.teamDisplay(t)
@@ -4398,7 +4691,7 @@ public class MinecraftMondayPlugin extends JavaPlugin implements Listener {
         out.add(ChatColor.AQUA + "" + ChatColor.BOLD + "TOP PLAYERS");
         List<UUID> playerList = new ArrayList<>();
         for (Map.Entry<UUID, Integer> e : scoring.getIndividualStandings()) playerList.add(e.getKey());
-        for (Player pl : Bukkit.getOnlinePlayers()) if (!playerList.contains(pl.getUniqueId())) playerList.add(pl.getUniqueId());
+        for (Player pl : Bukkit.getOnlinePlayers()) if (!playerList.contains(pl.getUniqueId()) && !scoring.isExcluded(pl.getUniqueId())) playerList.add(pl.getUniqueId());
         playerList.sort((a, b) -> {
             int c = Integer.compare(scoring.getPlayerPoints(b), scoring.getPlayerPoints(a));
             return c != 0 ? c : scoring.playerName(a).compareToIgnoreCase(scoring.playerName(b));

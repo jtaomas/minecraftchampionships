@@ -1,8 +1,8 @@
 # McmParkourTag settings.
 # MCC coins (base x1.0; the core applies the event multiplier). Source: MCC wiki, Parkour Tag "Coin Rewards"
 # (https://mcchampionship.fandom.com/wiki/Parkour_Tag; research/mcc_archive/parkour_tag/pt-1/notes.md). COINS.md.
-# "Shared" pools pay each player the MCC per-player share: a runner pool / 3 (MCC has 3 runners per team),
-# a team pool / 4.
+# "Shared" pools pay each player pool / (players who played the match): a runner pool / runners, a team pool / team members
+# (3 runners and 4 members in a full team, as in MCC; benched players are not counted).
 coins:
   survive-10s: 2           # MCC: every 10 seconds a hunted runner survives
   survive-round: 0         # MCC: nothing extra for being alive at 0:00 (OURS if > 0)
@@ -11,5 +11,7 @@ coins:
   tag-all: 42              # MCC: hunter tags all runners, decreasing by 7 every 10 seconds
   tag-all-step: 7
   first-clear-pool: 120    # MCC: shared amongst the team if their hunter tags all enemy runners first
-  mcc-runners: 3           # MCC runners per team (runner pool share divisor)
-  mcc-team-size: 4         # MCC team size (team pool share divisor)
+
+# Uneven teams: the bigger side benches (bigger - smaller) random players each match (fair rotation); they spectate their
+# own arena, are never the hunter and earn no coins. false = play uneven.
+bench-uneven-teams: true

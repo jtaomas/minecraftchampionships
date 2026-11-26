@@ -80,6 +80,7 @@ public final class BattleBoxPlugin extends JavaPlugin {
                         + ", rotate each round: " + getConfig().getBoolean("rotate-maps-each-round", true)
                         + ", centre block: " + getConfig().getString("centre-block", "concrete"));
             }
+            case "status" -> sender.sendMessage(game.adminStatus());
             case "arena" -> {
                 if (!(sender instanceof Player p)) { sender.sendMessage("Players only."); return true; }
                 ArenaTheme t = args.length > 1 ? Themes.byId(args[1]) : null;

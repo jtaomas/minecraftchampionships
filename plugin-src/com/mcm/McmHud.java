@@ -188,7 +188,10 @@ final class McmHud {
         List<TextColor> dotColor = new ArrayList<>();
         coinRows(p, s, pack, left, right, dotColor);
         int coinTo = left.size();
-        add(left, right, Component.empty(), null);
+        // short team (3 of 4 players): the team bonus takes the blank line, so the sidebar stays within 15 lines
+        double bonus = s.gameCoins() ? scoring.teamCoinFactor(p.getUniqueId()) : 1.0;
+        if (bonus > 1.0) add(left, right, labelled("Team Bonus", TeamScoring.formatFactor(bonus), NamedTextColor.YELLOW, pack), null);
+        else add(left, right, Component.empty(), null);
         add(left, right, hud("Your Coins: ", HEAD, pack).append(hud(String.valueOf(scoring.getPlayerPoints(p.getUniqueId())), VALUE, pack))
                 .append(Component.space()).append(icon(COIN, pack, "⛃", NamedTextColor.GOLD)), null);
 

@@ -208,15 +208,30 @@ final class DomeSession {
 
     private void buildPods() {
         Map<String, List<UUID>> groups = new LinkedHashMap<>();
+        // The core's request lists every player of a team (staff and unteamed players are left out when teams exist):
+        // whoever is not in it is a spectator and gets no pod, so no "Solos"/"Mixed" pod appears next to eight teams.
+        boolean teamed = false;
+        for (String t : request.teams().values()) if (t != null && !t.isBlank()) { teamed = true; break; }
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.isDead() || p.getGameMode() == org.bukkit.GameMode.SPECTATOR) continue;
             String team = request.teams().get(p.getUniqueId());
-            if (team == null || team.isBlank()) team = "Solos";
+            if (team == null || team.isBlank()) {
+                if (teamed) continue;
+                team = "Solos";
+            }
             groups.computeIfAbsent(team, k -> new ArrayList<>()).add(p.getUniqueId());
         }
         List<String> keys = new ArrayList<>(groups.keySet());
         keys.sort((a, b) -> a.equals("Solos") ? 1 : b.equals("Solos") ? -1 : a.compareToIgnoreCase(b));
         int max = Math.max(1, Math.min(10, settings.podCount));
+        // only the colour cages up to the last team in play are used: red..blue = 8 pods for an 8-team event
+        int top = -1;
+        boolean allNamed = !keys.isEmpty();
+        for (String k : keys) {
+            int s = teamSlot(k);
+            if (s < 0) allNamed = false; else top = Math.max(top, s);
+        }
+        if (allNamed && top >= 0) max = Math.min(max, top + 1);
         if (keys.size() > max) {
             List<String> merged = new ArrayList<>(keys.subList(0, max - 1));
             List<UUID> rest = new ArrayList<>();
@@ -238,6 +253,7 @@ final class DomeSession {
             for (int i = 0; i < max; i++) if (slotKey[i] == null) { slotKey[i] = key; break; }
         }
         // Keep ten visual pods even with fewer teams, so the dial ring matches the venue.
+        plugin.getLogger().info("Dome pods: " + max + " (" + keys.size() + " groups " + keys + ")");
         for (int i = 0; i < max; i++) {
             String key = slotKey[i] == null ? "Empty" : slotKey[i];
             TeamPod pod = new TeamPod(i, key, i);

@@ -218,6 +218,19 @@ final class GameListener implements Listener {
             arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
     }
 
+    /** Power on a crossbow does nothing in vanilla: apply the bow's Power bonus to crossbow arrows ourselves. */
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onShoot(org.bukkit.event.entity.EntityShootBowEvent e) {
+        if (!(e.getEntity() instanceof Player p) || !game.handles(p)) return;
+        if (!(e.getProjectile() instanceof AbstractArrow arrow)) return;
+        org.bukkit.inventory.ItemStack bow = e.getBow();
+        if (bow == null || bow.getType() != org.bukkit.Material.CROSSBOW) return;
+        int power = bow.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.POWER);
+        if (power <= 0) return;
+        double bonus = 1.0 + 0.25 * power;
+        arrow.setDamage(arrow.getDamage() * bonus);
+    }
+
     @EventHandler(priority = EventPriority.HIGH)
     public void onProjectileHit(ProjectileHitEvent e) {
         if (!(e.getEntity() instanceof Snowball s) || !game.inWorld(s.getWorld())) return;

@@ -11,7 +11,12 @@ import java.util.UUID;
 
 /** Everything a game needs from the tournament while it runs. All methods must be called on the main thread. */
 public interface McmGameContext {
-    /** Players taking part (everyone online when the game started, minus anyone who has since quit). */
+    /**
+     * Players taking part: everyone online when the game started minus anyone who has since quit (a player who rejoins
+     * and is handed back through {@link McmGame#onLateJoin} is a participant again). Staff / spectators
+     * ({@code /mcm spectate}, config {@code staff}, permission {@code mcm.staff}) and, during a championship, players
+     * without a team are never participants: they spectate.
+     */
     Collection<Player> participants();
 
     /** Tournament team name ("Red", "Blue", ...) or null if the player is playing solo. */
@@ -99,6 +104,29 @@ public interface McmGameContext {
 
     /** The event coin multiplier of the game running now (x1.0 outside a championship). @since 3.3.0 */
     default double coinMultiplier() { return 1.0; }
+
+    /**
+     * Short-team bonus of a player: {@code fullTeamSize() / registeredTeamSize(own side)} (a team of 3 on a full size of 4 =
+     * 1.333, a duo 2.0), 1.0 for a full team, a solo player or with config {@code coins.short-team-bonus: false}. The core
+     * already applies it to {@link #addCoins}, {@link #addKillCoins}, {@link #addObjectiveCoins}, {@link #addPoints} and
+     * {@link #addTeamCoins} (pools stay equal to a full team's), so games must NOT multiply by it again; it is exposed for
+     * displays and for games that decide things by it. Snapshotted when the game starts. @since 3.5.0
+     */
+    default double teamCoinFactor(UUID player) { return 1.0; }
+
+    /**
+     * Players registered on a side for this event, online or not (snapshot at game start): the team's registered size for
+     * a "TEAM:x" key, 1 for "SOLO:x". Default (older cores): the side's online participants. @since 3.5.0
+     */
+    default int registeredTeamSize(String sideKey) {
+        if (sideKey == null) return 0;
+        if (sideKey.startsWith("SOLO:")) return 1;
+        List<Player> online = sides().get(sideKey);
+        return online == null ? 0 : online.size();
+    }
+
+    /** Size of a full team ({@code teams.size} in the core config, 4 for the 8-team event). @since 3.5.0 */
+    default int fullTeamSize() { return 4; }
 
     /**
      * Declare the side that won the whole event (Dodgebolt: "this one's for the win"). The core's championship

@@ -16,6 +16,10 @@ final class Match {
     /** Colour of the neutral blocks the centre starts filled with (white unless a side is white). */
     final DyeColor neutral;
     final Set<UUID> alive = new HashSet<>();
+    /** Players of the bigger side who sit this match out (spectate their own arena, no kit, no coins). */
+    final Set<UUID> benched = new HashSet<>();
+    /** Team sizes this match is played at (bigger vs smaller) when someone is benched, else 0. */
+    int bigSize, smallSize;
     boolean done;
     Side winner;      // null with done = draw / no result
     String result = "";

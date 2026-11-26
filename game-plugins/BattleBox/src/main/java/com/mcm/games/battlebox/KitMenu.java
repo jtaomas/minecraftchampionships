@@ -38,7 +38,8 @@ final class KitMenu implements InventoryHolder {
 
     Kit kitAt(int slot) {
         if (preview) return null;
-        for (int i = 0; i < SLOTS.length; i++) if (SLOTS[i] == slot) return Kit.values()[i];
+        java.util.List<Kit> pool = Kit.enabled();
+        for (int i = 0; i < SLOTS.length && i < pool.size(); i++) if (SLOTS[i] == slot) return pool.get(i);
         return null;
     }
 
@@ -53,7 +54,7 @@ final class KitMenu implements InventoryHolder {
         ItemStack pane = named(team == null ? Material.GRAY_STAINED_GLASS_PANE
                 : Material.valueOf(team.name() + "_STAINED_GLASS_PANE"), " ", null);
         for (int i = 0; i < 27; i++) h.inv.setItem(i, pane);
-        for (Kit k : Kit.values()) {
+        for (Kit k : Kit.enabled()) {
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.DARK_GRAY + k.role);
             lore.add(ChatColor.GRAY + k.blurb);

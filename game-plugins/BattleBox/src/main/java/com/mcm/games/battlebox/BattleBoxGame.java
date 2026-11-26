@@ -104,6 +104,9 @@ public final class BattleBoxGame implements McmGame {
     private final Map<UUID, Integer> kills = new HashMap<>();
     private final Map<UUID, UUID> lastAttacker = new HashMap<>();
     private final Map<UUID, Long> lastAttackTime = new HashMap<>();
+    /** How many matches each player has sat out so far (fair bench rotation). */
+    private final Map<UUID, Integer> benchCount = new HashMap<>();
+    private boolean benchUneven = true;
 
     private int round;
     private int totalRounds;
@@ -151,6 +154,7 @@ public final class BattleBoxGame implements McmGame {
         winCoins = Math.max(0, c.getInt("coins.round-win", 160));
         drawCoins = Math.max(0, c.getInt("coins.draw", 60));
         byeCoins = Math.max(0, c.getInt("coins.bye", 60));
+        benchUneven = c.getBoolean("bench-uneven-teams", true);
         geo = new ArenaGeo();
     }
 
@@ -251,6 +255,7 @@ public final class BattleBoxGame implements McmGame {
         kills.clear();
         lastAttacker.clear();
         lastAttackTime.clear();
+        benchCount.clear();
         round = 0;
         totalRounds = 0;
         theme = null;
@@ -411,7 +416,11 @@ public final class BattleBoxGame implements McmGame {
         } else {
             List<Side> list = new ArrayList<>(sides);
             Collections.shuffle(list, random);
-            if (list.size() % 2 == 1) list.add(null); // bye slot
+            if (list.size() % 2 == 1) {
+                plugin.getLogger().warning("Battle Box: " + list.size() + " sides is an odd number (an event normally has an even"
+                        + " number of teams); one side gets a bye each round.");
+                list.add(null); // bye slot
+            }
             int n = list.size();
             int want = Math.min(maxRounds, Math.max(n - 1, MIN_ROUNDS));
             for (int r = 0; r < want; r++) {
@@ -581,6 +590,8 @@ public final class BattleBoxGame implements McmGame {
                 + (fightSeconds > 0 ? " instantly; at time-out the most centre blocks wins." : " - the round lasts until a side does."));
         ctx.broadcast(ChatColor.GRAY + " Coins: " + killCoins + " per elimination, " + winCoins + " shared by the team for a round win, "
                 + drawCoins + " shared for a draw, " + byeCoins + " shared for a bye.");
+        if (benchUneven) ctx.broadcast(ChatColor.GRAY + " Uneven teams: the bigger team sits random players out, so every match is even"
+                + " (everyone sits out in turn; sitting out earns no coins).");
         if (sides.size() == 1) ctx.broadcast(ChatColor.GRAY + " Only one side: practice rounds against an empty arena.");
         McmFx.titleCard(players(), ChatColor.GOLD + "" + ChatColor.BOLD + "Battle Box", ChatColor.YELLOW + "Fill the centre with your colour!");
     }
@@ -649,20 +660,86 @@ public final class BattleBoxGame implements McmGame {
         }
     }
 
+    /**
+     * Uneven sides: the bigger side benches (bigger - smaller) random players for this match, so it is played at the
+     * smaller side's size. Players who have sat out the fewest times go first, random among them.
+     */
+    private void assignBench() {
+        for (Match m : matches) {
+            m.benched.clear();
+            m.bigSize = m.smallSize = 0;
+        }
+        if (!benchUneven) return;
+        Set<UUID> online = onlineIds();
+        for (Match m : matches) {
+            if (m.a.dummy || m.b.dummy) continue;
+            List<UUID> la = new ArrayList<>(), lb = new ArrayList<>();
+            for (UUID u : m.a.members) if (online.contains(u)) la.add(u);
+            for (UUID u : m.b.members) if (online.contains(u)) lb.add(u);
+            int small = Math.min(la.size(), lb.size());
+            if (small == 0 || la.size() == lb.size()) continue;
+            List<UUID> bigger = la.size() > lb.size() ? la : lb;
+            Side biggerSide = la.size() > lb.size() ? m.a : m.b;
+            m.bigSize = bigger.size();
+            m.smallSize = small;
+            List<String> sitting = new ArrayList<>();
+            for (UUID u : pickBench(bigger, bigger.size() - small)) {
+                m.benched.add(u);
+                sitting.add(names.getOrDefault(u, "?"));
+            }
+            String msg = ChatColor.YELLOW + String.join(", ", sitting) + ChatColor.GRAY + " (" + biggerSide.label + ChatColor.GRAY
+                    + ") sit" + (sitting.size() == 1 ? "s" : "") + " out this round: team size " + m.bigSize + " vs " + m.smallSize
+                    + ", so it is " + m.smallSize + "v" + m.smallSize + ".";
+            for (UUID u : m.a.members) { Player p = online.contains(u) ? Bukkit.getPlayer(u) : null; if (p != null) p.sendMessage(msg); }
+            for (UUID u : m.b.members) { Player p = online.contains(u) ? Bukkit.getPlayer(u) : null; if (p != null) p.sendMessage(msg); }
+        }
+    }
+
+    private List<UUID> pickBench(List<UUID> pool, int count) {
+        List<UUID> left = new ArrayList<>(pool), out = new ArrayList<>();
+        while (out.size() < count && !left.isEmpty()) {
+            int min = Integer.MAX_VALUE;
+            for (UUID u : left) min = Math.min(min, benchCount.getOrDefault(u, 0));
+            List<UUID> cands = new ArrayList<>();
+            for (UUID u : left) if (benchCount.getOrDefault(u, 0) == min) cands.add(u);
+            UUID pick = cands.get(random.nextInt(cands.size()));
+            left.remove(pick);
+            out.add(pick);
+            benchCount.merge(pick, 1, Integer::sum);
+        }
+        return out;
+    }
+
+    private void sitOut(Player p, Match m) {
+        UUID u = p.getUniqueId();
+        Side s = m.sideOf(u);
+        prep(p, GameMode.SPECTATOR);
+        p.teleport(overview(m.arena, m.isB(s), Math.floorMod(u.hashCode(), 3)));
+        String size = "team size " + m.bigSize + " vs " + m.smallSize;
+        McmFx.title(p, ChatColor.GRAY + "" + ChatColor.BOLD + "You're sitting out this round",
+                ChatColor.WHITE + size + ChatColor.GRAY + " - watch your team", 5, 70, 10);
+        p.sendMessage(ChatColor.GRAY + "You're sitting out this round (" + size + "). Watch your team's arena - no coins this match,"
+                + " you play again next round.");
+        McmFx.sound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1f, 1f);
+    }
+
     private void startKit() {
         if (!running) return;
         phase = Phase.KIT;
         removeEntities();
+        assignBench();
         Map<Side, Integer> spawnIdx = new HashMap<>();
         for (Player p : players()) {
             UUID u = p.getUniqueId();
             if (!roster.contains(u)) continue;
             Match m = matchOf.get(u);
-            if (m != null) {
+            if (m != null && m.benched.contains(u)) {
+                sitOut(p, m);
+            } else if (m != null) {
                 Side s = m.sideOf(u);
                 int idx = spawnIdx.merge(s, 1, Integer::sum) - 1;
                 prep(p, GameMode.ADVENTURE);
-                dress(p, m.dyeOf(s));
+                dress(p, m.dyeOf(s), kitChoice.get(u) != Kit.RUNNER);
                 p.getInventory().setItem(4, Gear.custom(Gear.Custom.MENU, 1));
                 p.getInventory().setHeldItemSlot(4);
                 double[] sp = theme != null ? theme.spawn(geo, m.isB(s), idx) : geo.spawn(m.isB(s), idx);
@@ -699,7 +776,7 @@ public final class BattleBoxGame implements McmGame {
         secondsLeft = phaseTotal = fightSeconds;
         if (fightSeconds > 0) ctx.setTimer(secondsLeft, phaseTotal);
         else ctx.setTimer(0, 1);
-        Set<UUID> online = onlineIds();
+        Set<UUID> online = activeIds();   // benched players stay spectators: no kit, no fight
         for (Match m : matches) {
             openGates(m);
             for (Side s : new Side[]{m.a, m.b}) {
@@ -793,14 +870,14 @@ public final class BattleBoxGame implements McmGame {
         int min = Integer.MAX_VALUE;
         for (int v : used) min = Math.min(min, v);
         List<Kit> pool = new ArrayList<>();
-        for (Kit k : Kit.values()) if (used[k.ordinal()] == min) pool.add(k);
+        for (Kit k : Kit.enabled()) if (used[k.ordinal()] == min) pool.add(k);
         return pool.get(random.nextInt(pool.size()));
     }
 
     private void giveKit(Player p, Kit k, DyeColor dye) {
         PlayerInventory inv = p.getInventory();
         inv.clear();
-        dress(p, dye);
+        dress(p, dye, k != Kit.RUNNER);
         int slot = 0;
         for (ItemStack it : Loadouts.items(theme.id(), k)) {
             if (it.getType() == Material.ARROW) inv.setItem(9, it);
@@ -812,11 +889,21 @@ public final class BattleBoxGame implements McmGame {
     }
 
     private static void dress(Player p, DyeColor dye) {
+        dress(p, dye, true);
+    }
+
+    /** Owner: team leather helmet + chest, iron leggings + boots - Runner stays in full team leather (its axe is strong). */
+    private static void dress(Player p, DyeColor dye, boolean ironLegs) {
         PlayerInventory inv = p.getInventory();
         inv.setHelmet(Gear.leather(Material.LEATHER_HELMET, dye));
         inv.setChestplate(Gear.leather(Material.LEATHER_CHESTPLATE, dye));
-        inv.setLeggings(Gear.leather(Material.LEATHER_LEGGINGS, dye));
-        inv.setBoots(Gear.leather(Material.LEATHER_BOOTS, dye));
+        if (ironLegs) {
+            inv.setLeggings(Gear.iron(Material.IRON_LEGGINGS));
+            inv.setBoots(Gear.iron(Material.IRON_BOOTS));
+        } else {
+            inv.setLeggings(Gear.leather(Material.LEATHER_LEGGINGS, dye));
+            inv.setBoots(Gear.leather(Material.LEATHER_BOOTS, dye));
+        }
     }
 
     private void startEnd() {
@@ -907,12 +994,13 @@ public final class BattleBoxGame implements McmGame {
         m.winner = winner;
         m.result = reason;
         Set<UUID> online = onlineIds();
+        Set<UUID> active = activeIds();   // coins only for players who actually played this match
         if (m.b.dummy) {
             // practice round: no tournament points
         } else if (winner != null) {
-            awardTeam(winner, online, winCoins, "round win");
+            awardTeam(winner, active, winCoins, "round win");
         } else {
-            for (Side s : new Side[]{m.a, m.b}) awardTeam(s, online, drawCoins, "draw");
+            for (Side s : new Side[]{m.a, m.b}) awardTeam(s, active, drawCoins, "draw");
         }
         for (Side s : new Side[]{m.a, m.b}) {
             for (UUID u : s.members) {
@@ -929,6 +1017,7 @@ public final class BattleBoxGame implements McmGame {
                     McmFx.title(p, ChatColor.RED + "" + ChatColor.BOLD + "ROUND LOST", winner.label + ChatColor.GRAY + " " + reason, 5, 50, 10);
                     McmFx.sound(p, Sound.ENTITY_VILLAGER_NO, 1f, 1f);
                 }
+                if (m.benched.contains(u)) p.sendMessage(ChatColor.GRAY + "You sat out this match, so it earns you no coins.");
                 if (m.alive.contains(u) && p.getGameMode() == GameMode.SURVIVAL) p.setGameMode(GameMode.ADVENTURE);
             }
         }
@@ -1150,10 +1239,10 @@ public final class BattleBoxGame implements McmGame {
 
     void openKitMenu(Player p) {
         Match m = matchOf.get(p.getUniqueId());
-        if (m == null || phase != Phase.KIT || theme == null) return;
+        if (m == null || phase != Phase.KIT || theme == null || m.benched.contains(p.getUniqueId())) return;
         Side s = m.sideOf(p.getUniqueId());
         Map<Kit, String> taken = new EnumMap<>(Kit.class);
-        Set<UUID> online = onlineIds();
+        Set<UUID> online = activeIds();
         int cap = kitCap(s, online);
         Map<Kit, List<String>> holders = new EnumMap<>(Kit.class);
         for (UUID o : s.members) {
@@ -1176,11 +1265,11 @@ public final class BattleBoxGame implements McmGame {
         if (phase != Phase.KIT) return;
         UUID u = p.getUniqueId();
         Match m = matchOf.get(u);
-        if (m == null) return;
+        if (m == null || m.benched.contains(u)) return;
         Side s = m.sideOf(u);
         if (s == null) return;
         if (kitChoice.get(u) == k) return;
-        Set<UUID> online = onlineIds();
+        Set<UUID> online = activeIds();
         int taken = 0;
         for (UUID o : s.members) if (!o.equals(u) && online.contains(o) && kitChoice.get(o) == k) taken++;
         if (taken >= kitCap(s, online)) {
@@ -1193,7 +1282,7 @@ public final class BattleBoxGame implements McmGame {
         PlayerInventory inv = p.getInventory();
         inv.clear();
         DyeColor dye = m.dyeOf(s);
-        dress(p, dye);
+        dress(p, dye, k != Kit.RUNNER);
         int slot = 0;
         for (ItemStack it : Loadouts.items(theme.id(), k)) {
             if (it.getType() == Material.ARROW) inv.setItem(9, it); else inv.setItem(slot++, it);
@@ -1215,6 +1304,19 @@ public final class BattleBoxGame implements McmGame {
     }
 
     // ---------- admin helpers
+
+    /** Admin {@code /bb status}: one line for logs and bot tests. */
+    String adminStatus() {
+        if (!running) return "[BB] not running";
+        StringBuilder sb = new StringBuilder("[BB] phase=" + phase + " round=" + (round + 1) + "/" + totalRounds + " matches=" + matches.size());
+        for (Match m : matches) {
+            sb.append(" | ").append(ChatColor.stripColor(m.a.label)).append(" vs ").append(ChatColor.stripColor(m.b.label))
+                    .append(" alive=").append(m.aliveOf(m.a)).append("/").append(m.aliveOf(m.b)).append(" bench=");
+            for (UUID u : m.benched) sb.append(names.getOrDefault(u, "?")).append(",");
+            sb.append(m.done ? " done" : "");
+        }
+        return sb.toString();
+    }
 
     String currentThemeId() { return theme == null ? null : theme.id(); }
     /** Chat feedback log (core 3.2.0+ optional hook; no @Override so older cores still load us). */
@@ -1334,7 +1436,7 @@ public final class BattleBoxGame implements McmGame {
         if (ctx == null || world == null) return;
         Map<Match, int[]> centre = new HashMap<>();
         if (phase == Phase.FIGHT || phase == Phase.END) for (Match m : matches) centre.put(m, centreCounts(m));
-        Set<UUID> online = onlineIds();
+        Set<UUID> online = activeIds();
         for (Player p : players()) {
             UUID u = p.getUniqueId();
             if (!roster.contains(u)) continue;
@@ -1342,6 +1444,8 @@ public final class BattleBoxGame implements McmGame {
             String bar;
             if (phase == Phase.INTRO || phase == Phase.BUILDING) bar = ChatColor.YELLOW + "Battle Box - get ready!";
             else if (m == null) bar = ChatColor.GRAY + "Bye round - spectating";
+            else if (m.benched.contains(u)) bar = ChatColor.GRAY + "Sitting out this round (team size " + m.bigSize + " vs " + m.smallSize
+                    + ") - watching " + m.opponent(m.sideOf(u)).label;
             else {
                 Side s = m.sideOf(u);
                 Side opp = m.opponent(s);
@@ -1402,9 +1506,19 @@ public final class BattleBoxGame implements McmGame {
         return s;
     }
 
+    /** Online players who are actually playing a match this round (benched players excluded). */
+    private Set<UUID> activeIds() {
+        Set<UUID> s = onlineIds();
+        for (Match m : matches) s.removeAll(m.benched);
+        return s;
+    }
+
     private List<Player> inMatches() {
         List<Player> out = new ArrayList<>();
-        for (Player p : players()) if (matchOf.containsKey(p.getUniqueId())) out.add(p);
+        for (Player p : players()) {
+            Match m = matchOf.get(p.getUniqueId());
+            if (m != null && !m.benched.contains(p.getUniqueId())) out.add(p);
+        }
         return out;
     }
 

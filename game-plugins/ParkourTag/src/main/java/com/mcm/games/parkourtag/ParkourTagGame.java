@@ -81,14 +81,14 @@ public final class ParkourTagGame implements McmGame, Listener {
     private int PTS_TAG_ALL_BASE = 42;     // MCC: hunter tags all runners, 7 less every 10 s
     private int PTS_TAG_ALL_STEP = 7;
     private int PTS_FIRST_CLEAR = 120;     // MCC: shared amongst the team whose hunter tags all enemy runners first
-    private int mccRunners = 3;            // MCC team of 4 = 1 hunter + 3 runners: runner pool share = pool / 3
-    private int mccTeam = 4;               // team pool share = pool / 4
+    // Pool shares divide by the players who actually played the match (4-member team: 1 hunter + 3 runners = pool / 3
+    // and pool / 4, as in MCC); benched players are not counted.
 
     private static final int VISION_COOLDOWN_TICKS = 200;
     private static final int VISION_DURATION_TICKS = 60;
 
     private enum Phase { IDLE, BUILDING, INTRO, SELECT, PREP, LIVE, INTERMISSION }
-    private enum Role { HUNTER, RUNNER, OUT, BYE }
+    private enum Role { HUNTER, RUNNER, OUT, BYE, BENCH }
 
     private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacySection();
 
@@ -117,6 +117,9 @@ public final class ParkourTagGame implements McmGame, Listener {
         final List<List<UUID>> members = List.of(new ArrayList<>(), new ArrayList<>());
         /** The side picks its hunter at the sign (volunteer, else random). */
         final boolean[] picksHunter = new boolean[2];
+        /** Players of the bigger side sitting this match out (spectating their arena). */
+        final List<UUID> benched = new ArrayList<>();
+        int bigSize, smallSize;
         Match(int arena, Side a, Side b) { this.arena = arena; side[0] = a; side[1] = b; }
 
         int sideIndexOf(UUID id) {
@@ -169,6 +172,9 @@ public final class ParkourTagGame implements McmGame, Listener {
     private final Map<UUID, Integer> totalTags = new HashMap<>();
     private final Map<UUID, Integer> survivals = new HashMap<>();
     private final Set<UUID> everyone = new HashSet<>();
+    /** How many matches each player has sat out so far (fair bench rotation). */
+    private final Map<UUID, Integer> benchCount = new HashMap<>();
+    private boolean benchUneven = true;
 
     // map: one per game, picked at random among the finished maps
     private static final Map<String, List<ArenaBuilder.Placement>> PARSED = new HashMap<>();
@@ -267,6 +273,7 @@ public final class ParkourTagGame implements McmGame, Listener {
         totalTags.clear();
         survivals.clear();
         everyone.clear();
+        benchCount.clear();
     }
 
     /** Cancels everything and restores the arenas. Safe to call any number of times. */
@@ -513,7 +520,7 @@ public final class ParkourTagGame implements McmGame, Listener {
         String dye = switch (c == null ? ChatColor.WHITE : c) {
             case RED -> "RED"; case DARK_RED -> "BROWN"; case GOLD -> "ORANGE"; case YELLOW -> "YELLOW";
             case GREEN -> "LIME"; case DARK_GREEN -> "GREEN"; case DARK_AQUA -> "CYAN"; case AQUA -> "LIGHT_BLUE";
-            case BLUE, DARK_BLUE -> "BLUE"; case DARK_PURPLE -> "PURPLE"; case LIGHT_PURPLE -> "MAGENTA";
+            case BLUE, DARK_BLUE -> "BLUE"; case DARK_PURPLE -> "PURPLE"; case LIGHT_PURPLE -> "PINK";
             case GRAY -> "LIGHT_GRAY"; case DARK_GRAY -> "GRAY"; case BLACK -> "BLACK"; default -> "WHITE";
         };
         Material m = Material.matchMaterial(dye + "_" + suffix);
@@ -610,7 +617,11 @@ public final class ParkourTagGame implements McmGame, Listener {
             return out;
         }
         List<Side> list = new ArrayList<>(sides);
-        if (list.size() % 2 == 1) list.add(null);
+        if (list.size() % 2 == 1) {
+            plugin.getLogger().warning("Parkour Tag: " + list.size() + " sides is an odd number (an event normally has an even"
+                    + " number of teams); one side gets a bye each round.");
+            list.add(null);
+        }
         int n = list.size();
         List<Round> cycle = new ArrayList<>();
         for (int r = 0; r < n - 1; r++) {
@@ -753,7 +764,18 @@ public final class ParkourTagGame implements McmGame, Listener {
                 if (!mb.isEmpty()) byeSides.add(b);
                 continue;
             }
-            matches.add(setupMatch(new Match(arena++, a, b), ma, mb));
+            // Uneven sides: the bigger one benches (bigger - smaller) random players, fairly rotated.
+            List<UUID> benched = List.of();
+            int big = 0, small = Math.min(ma.size(), mb.size());
+            if (benchUneven && ma.size() != mb.size()) {
+                List<UUID> bigger = ma.size() > mb.size() ? ma : mb;
+                big = bigger.size();
+                benched = pickBench(bigger, big - small);
+                bigger.removeAll(benched);
+            }
+            Match m = setupMatch(new Match(arena++, a, b), ma, mb);
+            matches.add(m);
+            if (!benched.isEmpty()) benchPlayers(m, benched, big, small);
         }
         for (Side s : round.byes()) if (!onlineMembers(s).isEmpty()) byeSides.add(s);
 
@@ -851,11 +873,50 @@ public final class ParkourTagGame implements McmGame, Listener {
         return m;
     }
 
+    /** Fair bench: whoever has sat out the fewest times goes first, random among them. */
+    private List<UUID> pickBench(List<UUID> pool, int count) {
+        List<UUID> left = new ArrayList<>(pool), out = new ArrayList<>();
+        while (out.size() < count && !left.isEmpty()) {
+            int min = Integer.MAX_VALUE;
+            for (UUID u : left) min = Math.min(min, benchCount.getOrDefault(u, 0));
+            List<UUID> cands = new ArrayList<>();
+            for (UUID u : left) if (benchCount.getOrDefault(u, 0) == min) cands.add(u);
+            UUID pick = cands.get(random.nextInt(cands.size()));
+            left.remove(pick);
+            out.add(pick);
+            benchCount.merge(pick, 1, Integer::sum);
+        }
+        return out;
+    }
+
+    /** Benched players watch their own match's arena from spectator mode; both teams are told. */
+    private void benchPlayers(Match m, List<UUID> benched, int big, int small) {
+        m.bigSize = big;
+        m.smallSize = small;
+        String size = "team size " + big + " vs " + small;
+        List<String> names = new ArrayList<>();
+        for (UUID u : benched) {
+            m.benched.add(u);
+            matchOf.put(u, m);
+            roles.put(u, Role.BENCH);
+            Player p = Bukkit.getPlayer(u);
+            if (p == null) continue;
+            names.add(p.getName());
+            SpectatorGuard.makeSpectator(p, spectatorSpot(m.arena));
+            title(p, "§7§lYou're sitting out this round", "§f" + size + " §7- watch your team");
+            p.sendMessage("§7You're sitting out this round (" + size + "). Watch your team's arena - no coins this match, you play again next round.");
+            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1f, 1f);
+        }
+        int bigSide = m.sideIndexOf(benched.get(0));
+        messageMatch(m, "§e" + String.join(", ", names) + " §7(" + m.side[bigSide].label + "§7) sit" + (names.size() == 1 ? "s" : "")
+                + " out this round: " + size + ", so it is " + small + "v" + small + ".");
+    }
+
     /** A player clicked their cage sign during Select Hunter. */
     private void volunteer(Player p) {
         UUID u = p.getUniqueId();
         Match m = matchOf.get(u);
-        if (m == null) return;
+        if (m == null || roles.get(u) == Role.BENCH) return;
         int i = m.sideIndexOf(u);
         if (i < 0) return;
         if (!m.picksHunter[i]) { actionBar(p, "§7Your side's hunter is decided automatically this round."); return; }
@@ -1030,7 +1091,7 @@ public final class ParkourTagGame implements McmGame, Listener {
                 if (!survivors.isEmpty()) {
                     List<UUID> share = new ArrayList<>();
                     for (UUID u : m.runners.get(i)) if (Bukkit.getPlayer(u) != null) share.add(u);
-                    splitPoints(share, PTS_SIDE_SURVIVE, mccRunners, "Your team outlasted the hunter! Well played!");
+                    splitPoints(share, PTS_SIDE_SURVIVE, m.runners.get(i).size(), "Your team outlasted the hunter! Well played!");
                 }
                 summary.add(m.side[i].label + "§7: " + survivors.size() + "/" + m.runners.get(i).size() + " survived");
             }
@@ -1048,7 +1109,7 @@ public final class ParkourTagGame implements McmGame, Listener {
         }
         for (Player p : online()) {
             p.removePotionEffect(PotionEffectType.BLINDNESS);
-            if (roles.get(p.getUniqueId()) != Role.BYE && !survivorsShown.contains(p.getUniqueId()) && !huntedShown.contains(p.getUniqueId()))
+            if (roles.get(p.getUniqueId()) != Role.BYE && roles.get(p.getUniqueId()) != Role.BENCH && !survivorsShown.contains(p.getUniqueId()) && !huntedShown.contains(p.getUniqueId()))
                 title(p, "§c§lRound Over!", "");
         }
         huntedShown.clear();
@@ -1103,6 +1164,8 @@ public final class ParkourTagGame implements McmGame, Listener {
                 sb.append(" | ").append(stripColor(m.side[i].label)).append(" hunter=").append(m.hunter[i] == null ? "-" : nameOf(m.hunter[i]))
                         .append(" alive=").append(m.alive.get(i).size()).append("/").append(m.runners.get(i).size());
             }
+            sb.append(" bench=");
+            for (UUID u : m.benched) sb.append(nameOf(u)).append(",");
         }
         sb.append(" | hunts=");
         for (Map.Entry<UUID, Integer> e : hunts.entrySet()) sb.append(nameOf(e.getKey())).append(":").append(e.getValue()).append(" ");
@@ -1157,8 +1220,8 @@ public final class ParkourTagGame implements McmGame, Listener {
             if (!m.firstClearGiven && m.hunted[0] && m.hunted[1] && m.clearedAt[vs] < 0) {
                 m.firstClearGiven = true;
                 List<UUID> share = new ArrayList<>();
-                for (UUID u : m.side[hs].members) if (Bukkit.getPlayer(u) != null) share.add(u);
-                splitPoints(share, PTS_FIRST_CLEAR, mccTeam, "Your team tagged all enemies first!");
+                for (UUID u : m.members.get(hs)) if (Bukkit.getPlayer(u) != null) share.add(u);   // active players only, never the bench
+                splitPoints(share, PTS_FIRST_CLEAR, m.members.get(hs).size(), "Your team tagged all enemies first!");
                 messageMatch(m, m.side[hs].label + " §7cleared first!");
             }
             // The cleared runners' hunter role ends; that hunter keeps going if their targets remain.
@@ -1286,7 +1349,8 @@ public final class ParkourTagGame implements McmGame, Listener {
             if (phase == Phase.SELECT) {
                 Match sm = matchOf.get(p.getUniqueId());
                 int si = sm == null ? -1 : sm.sideIndexOf(p.getUniqueId());
-                if (si >= 0 && sm.picksHunter[si]) actionBar(p, sm.hunter[si] == null ? "§dSelect Hunter: §7click the sign to hunt"
+                if (roles.get(p.getUniqueId()) == Role.BENCH) actionBar(p, "§7Sitting out this round (team size " + sm.bigSize + " vs " + sm.smallSize + ")");
+                else if (si >= 0 && sm.picksHunter[si]) actionBar(p, sm.hunter[si] == null ? "§dSelect Hunter: §7click the sign to hunt"
                         : "§d" + nameOf(sm.hunter[si]) + " §7will hunt");
                 continue;
             }
@@ -1319,6 +1383,7 @@ public final class ParkourTagGame implements McmGame, Listener {
                     }
                 }
                 case OUT -> bar = "§7Tagged - spectating " + (m == null ? "" : "arena " + (m.arena + 1));
+                case BENCH -> bar = "§7Sitting out this round" + (m == null ? "" : " (team size " + m.bigSize + " vs " + m.smallSize + ")");
                 default -> bar = "§7Bye round - your side sits out";
             }
             actionBar(p, bar);
@@ -1393,11 +1458,10 @@ public final class ParkourTagGame implements McmGame, Listener {
         PTS_TAG_ALL_BASE = Math.max(0, c.getInt("coins.tag-all", 42));
         PTS_TAG_ALL_STEP = Math.max(0, c.getInt("coins.tag-all-step", 7));
         PTS_FIRST_CLEAR = Math.max(0, c.getInt("coins.first-clear-pool", 120));
-        mccRunners = Math.max(1, c.getInt("coins.mcc-runners", 3));
-        mccTeam = Math.max(1, c.getInt("coins.mcc-team-size", 4));
+        benchUneven = c.getBoolean("bench-uneven-teams", true);
     }
 
-    /** MCC "shared amongst" pool: each listed player gets the MCC per-member share {@code total / mccShare}. */
+    /** "Shared amongst" pool: each listed player gets {@code total / mccShare}, mccShare = players who played the match. */
     private void splitPoints(List<UUID> members, int total, int mccShare, String reason) {
         if (members.isEmpty() || total <= 0) return;
         int per = Math.round((float) total / Math.max(1, mccShare));

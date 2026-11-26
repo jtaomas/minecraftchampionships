@@ -90,6 +90,13 @@ public final class HubManager implements Listener, McmLobby.Venue {
         java.util.Arrays.fill(podState, "normal");
     }
 
+    private java.util.function.IntSupplier activeTeams = () -> 10;
+
+    /** How many of the team booths are in use (first N); the others are shown closed and do not react. */
+    public void setActiveTeams(java.util.function.IntSupplier activeTeams) { if (activeTeams != null) this.activeTeams = activeTeams; }
+
+    private boolean padActive(int i) { return i < activeTeams.getAsInt(); }
+
     public boolean isReady() { return ready && world != null; }
     public boolean isBuilding() { return building; }
     @Override public World world() { return world; }
@@ -354,6 +361,7 @@ public final class HubManager implements Listener, McmLobby.Venue {
     }
 
     private String teamPadLabelText(int i) {
+        if (!padActive(i)) return "§8§l" + TEAM_NAMES[i] + "\n§8Not in this event";
         if (teamPadText != null) {
             try {
                 String txt = teamPadText.apply(i);
@@ -391,6 +399,7 @@ public final class HubManager implements Listener, McmLobby.Venue {
                 if (world.getPlayers().isEmpty() || layout == null) return;
                 phase += 0.45;
                 for (int i = 0; i < layout.teamPads.size() && i < PAD_COLORS.length; i++) {
+                    if (!padActive(i)) continue;
                     double[] p = layout.teamPads.get(i);
                     Particle.DustOptions dust = new Particle.DustOptions(PAD_COLORS[i], 1.15f);
                     for (int k = 0; k < 2; k++) {
@@ -449,6 +458,7 @@ public final class HubManager implements Listener, McmLobby.Venue {
         Location to = e.getTo();
         if (rescueFromPit(e.getPlayer(), to)) return;
         for (int i = 0; i < layout.teamPads.size(); i++) {
+            if (!padActive(i)) continue;
             double[] p = layout.teamPads.get(i);
             if (Math.abs(to.getX() - p[0]) <= 1.5 && Math.abs(to.getZ() - p[2]) <= 1.5 && Math.abs(to.getY() - p[1]) < 1.2) {
                 long now = System.currentTimeMillis();

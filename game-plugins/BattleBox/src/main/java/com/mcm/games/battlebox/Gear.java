@@ -144,6 +144,14 @@ final class Gear {
 
     // ------------------------------------------------------------------ team gear
 
+    /** Plain iron armour piece (unbreakable), for the non-Runner kits. */
+    static ItemStack iron(Material mat) {
+        ItemStack it = new ItemStack(mat);
+        ItemMeta m = it.getItemMeta();
+        if (m != null) { m.setUnbreakable(true); m.addItemFlags(ItemFlag.HIDE_UNBREAKABLE); it.setItemMeta(m); }
+        return it;
+    }
+
     static ItemStack leather(Material mat, DyeColor dye) {
         ItemStack it = new ItemStack(mat);
         LeatherArmorMeta m = (LeatherArmorMeta) it.getItemMeta();

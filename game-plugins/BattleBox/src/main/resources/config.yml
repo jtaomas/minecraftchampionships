@@ -27,3 +27,7 @@ coins:
   round-win: 160           # MCC: team pool for capturing the centre or holding the most centre blocks at time-out
   draw: 60                 # MCC: team pool to both teams on a draw
   bye: 60                  # OURS: MCC never has byes; a bye round pays like a draw
+
+# Uneven teams: the bigger side benches (bigger - smaller) random players each match (fair rotation); they spectate their
+# own arena and earn no coins. false = play uneven.
+bench-uneven-teams: true
