@@ -79,6 +79,8 @@ public final class HoleInTheWallGame implements McmGame, Listener {
     private int wavesCleared;
     private int sidesNow = 1;
     private int platformHalf = Arena.HALF;
+    /** Owner: 3 rounds per game. */
+    private int rounds = 3, round = 1, roundWinsCleared;
     private boolean overdrive;
     private boolean finished;
     /** Config {@code difficulty-head-start-seconds}: the wall ramp starts as if this much time had passed. */
@@ -125,6 +127,8 @@ public final class HoleInTheWallGame implements McmGame, Listener {
             headStartSec = 60;
             debugWalls = false;
         }
+        rounds = Math.max(1, Math.min(10, plugin.getConfig().getInt("rounds", 3)));
+        round = 1;
         pickUnlockOrder();
         if (guard == null) guard = new SpectatorGuard(plugin, this::spectatorZone);
 
@@ -881,10 +885,44 @@ public final class HoleInTheWallGame implements McmGame, Listener {
 
         final String r = reason;
         endReason = reason;
+        boolean last = round >= rounds;
+        ctx.broadcast("\u00a77Round " + round + "/" + rounds + (last ? " \u00a77- game over." : " \u00a77- next round starting..."));
         endTask = Bukkit.getScheduler().runTaskLater(plugin, () -> {
             endTask = null;
-            if (state == State.ENDING) finishNow(r);
+            if (state != State.ENDING) return;
+            if (last) finishNow(r);
+            else nextRound();
         }, FastTest.ticks(80L));
+    }
+
+
+    /** Reset for the next round: fresh platform, everyone back on their spawn pad, wall clock restarted. */
+    private void nextRound() {
+        round++;
+        walls.clear();
+        renderWalls();
+        clearGhosts();
+        eliminations.clear();
+        platformHalf = Arena.HALF;
+        overdrive = false;
+        elapsedTicks = 0;
+        waveCooldown = 20;
+        for (UUID id : new ArrayList<>(alive)) alive.remove(id);
+        for (UUID id : spawns.keySet()) if (Bukkit.getPlayer(id) != null) alive.add(id);
+        initialCount = alive.size();
+        arena.clear();
+        arena.build();
+        HitwEdit.applyOverlay(plugin, arena.world());
+        for (UUID id : alive) {
+            Player p = Bukkit.getPlayer(id);
+            Location sp = spawns.get(id);
+            if (p != null && sp != null) { p.setGameMode(org.bukkit.GameMode.ADVENTURE); p.teleport(sp); p.setFallDistance(0); }
+        }
+        state = State.COUNTDOWN;
+        countdownTicks = FastTest.secs(COUNTDOWN_SECONDS) * 20;
+        ctx.setTimer(MAIN_SECONDS, MAIN_SECONDS);
+        titleAll("\u00a7a\u00a7lROUND " + round, "\u00a77Get ready!", 0, 30, 10);
+        loopTask = Bukkit.getScheduler().runTaskTimer(plugin, this::tick, 1L, 1L);
     }
 
     // ------------------------------------------------------------------ admin testing hooks
