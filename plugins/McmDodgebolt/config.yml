@@ -18,7 +18,8 @@ shrink:
   warning-ticks: 40       # [default] how long the outer ring shows red before it drops into the lava
   gap-ticks: 20           # [MCC] one second between consecutive shrinks
   idle-seconds: 30        # [default, not MCC] shrink one block if nothing else shrank the arena for this long (0 = off)
-points:                 # [default] MCC awards no coins in Dodgebolt; these keep the core standings in line with the winner
-  elimination: 4        # to the shooter
-  round-win: 8          # to every member of the round-winning side
-  match-win: 25         # to every member of the champion side
+coins:                  # [MCC] "No coins are awarded in Dodgebolt. This one's for the win!" (game-plugins/COINS.md)
+  elimination: 0        # [MCC] 0. Any value > 0 is OURS: coins to the shooter
+  round-win: 0          # [MCC] 0. OURS if > 0: coins to every member of the round-winning side
+  match-win: 0          # [MCC] 0. OURS if > 0: coins to every member of the champion side
+  winner-wins-event: true  # [MCC] in a championship, the Dodgebolt winner is the event champion (not the coin leader)

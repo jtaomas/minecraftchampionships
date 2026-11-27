@@ -1,14 +1,33 @@
 # Battle Box v2 settings
 # Centre block type: concrete (pickaxe, default - like the current event) or wool (shears).
 centre-block: concrete
+# Efficiency level (0-5) on the centre tool. 0 = plain iron pickaxe / plain shears, mining at normal vanilla speed
+# (white concrete ~0.45 s with an iron pickaxe; wool ~0.25 s with shears). Default, not researched - adjust after playtesting.
+centre-tool-efficiency: 0
 # Pick a new random arena theme every round (map rotation). false = one random theme for the whole game.
 rotate-maps-each-round: true
-# Force one theme for every round: greenhouse, toyworkshop, skilodge (empty = off). Also /bb theme <id|off>.
+# Rotate imported real arenas (plugins/McmBattleBox/imported-arenas/) by default when present.
+prefer-imported-maps: true
+# Force one theme for every round: imported arena id or procedural id (empty = off). Also /bb theme <id|off>.
 force-theme: ""
-# Inner floor half-size: 14 gives the 29x29 floor. Allowed 11..18 (props are laid out for 14).
-arena-half-size: 14
 first-kit-seconds: 20
 kit-seconds: 15
+# Fight time limit per round in seconds. 0 = no limit (default, owner request round 3): the round ends only when a
+# side fills the centre, both sides are out (or the practice side is out), or an admin uses /mcm skip.
+# Any value > 0 (minimum 15) brings back the old timed round with the time-out tiebreak (old default 60).
 fight-seconds: 0
 end-seconds: 5
 max-rounds: 9
+
+# MCC coins (base x1.0; the core applies the event multiplier). Source: MCC wiki, Battle Box "Coin Rewards"
+# (https://mcchampionship.fandom.com/wiki/Battle_Box; research/mcc_archive/battle_box/bb-2/notes.md). See game-plugins/COINS.md.
+# Team pools are shared: each member gets the MCC per-member share (pool / 4), e.g. 40 for a round win.
+coins:
+  elimination: 15          # MCC: per personal elimination
+  round-win: 160           # MCC: team pool for capturing the centre or holding the most centre blocks at time-out
+  draw: 60                 # MCC: team pool to both teams on a draw
+  bye: 60                  # OURS: MCC never has byes; a bye round pays like a draw
+
+# Uneven teams: the bigger side benches (bigger - smaller) random players each match (fair rotation); they spectate their
+# own arena and earn no coins. false = play uneven.
+bench-uneven-teams: true
