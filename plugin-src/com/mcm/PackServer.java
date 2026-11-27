@@ -52,11 +52,16 @@ final class PackServer implements Listener {
         if (!c.getBoolean("resource-pack.enabled", true)) return;
         File f = new File(plugin.getDataFolder(), c.getString("resource-pack.file", "pack/BlockShowdown_Pack.zip"));
         if (!f.isFile()) {
-            plugin.getLogger().info("[pack] no resource pack at " + f + " - none is sent.");
-            return;
+            File fallback = new File("resourcepack/dist/BlockShowdownPack.zip");
+            if (fallback.isFile()) {
+                f = fallback;
+            } else {
+                plugin.getLogger().info("[pack] no resource pack at " + f + " (or " + fallback + ") - none is sent.");
+                return;
+            }
         }
         port = c.getInt("resource-pack.port", 25581);
-        force = c.getBoolean("resource-pack.force", true);
+        force = c.getBoolean("resource-pack.force", false);
         publicHost = c.getString("resource-pack.public-host", "");
         prompt = c.getString("resource-pack.prompt", "Block Showdown uses this pack for the MCC look and sounds.");
         try {
