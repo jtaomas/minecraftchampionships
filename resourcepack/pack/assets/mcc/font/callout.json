@@ -1,0 +1,193 @@
+{
+  "providers": [
+    {
+      "type": "space",
+      "advances": {
+        "\ue800": 0.5,
+        "\ue820": -0.5,
+        "\ue801": 1.0,
+        "\ue821": -1.0,
+        "\ue802": 2.0,
+        "\ue822": -2.0,
+        "\ue803": 4.0,
+        "\ue823": -4.0,
+        "\ue804": 8.0,
+        "\ue824": -8.0,
+        "\ue805": 16.0,
+        "\ue825": -16.0,
+        "\ue806": 32.0,
+        "\ue826": -32.0,
+        "\ue807": 64.0,
+        "\ue827": -64.0,
+        "\ue808": 128.0,
+        "\ue828": -128.0,
+        "\ue809": 256.0,
+        "\ue829": -256.0,
+        "\ue80a": 512.0,
+        "\ue82a": -512.0
+      }
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_box.png",
+      "ascent": 16,
+      "height": 22,
+      "chars": [
+        "\ue030"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_single.png",
+      "ascent": 18,
+      "height": 18,
+      "chars": [
+        "\ue000"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_single_sil.png",
+      "ascent": 18,
+      "height": 18,
+      "chars": [
+        "\ue020"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_double.png",
+      "ascent": 18,
+      "height": 18,
+      "chars": [
+        "\ue001"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_double_sil.png",
+      "ascent": 18,
+      "height": 18,
+      "chars": [
+        "\ue021"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_triple.png",
+      "ascent": 18,
+      "height": 18,
+      "chars": [
+        "\ue002"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_triple_sil.png",
+      "ascent": 18,
+      "height": 18,
+      "chars": [
+        "\ue022"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_freeze.png",
+      "ascent": 18,
+      "height": 18,
+      "chars": [
+        "\ue003"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_freeze_sil.png",
+      "ascent": 18,
+      "height": 18,
+      "chars": [
+        "\ue023"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_lap.png",
+      "ascent": 18,
+      "height": 18,
+      "chars": [
+        "\ue004"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_lap_sil.png",
+      "ascent": 18,
+      "height": 18,
+      "chars": [
+        "\ue024"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_room.png",
+      "ascent": 18,
+      "height": 18,
+      "chars": [
+        "\ue005"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_room_sil.png",
+      "ascent": 18,
+      "height": 18,
+      "chars": [
+        "\ue025"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_objective.png",
+      "ascent": 18,
+      "height": 18,
+      "chars": [
+        "\ue006"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_objective_sil.png",
+      "ascent": 18,
+      "height": 18,
+      "chars": [
+        "\ue026"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_dot.png",
+      "ascent": 18,
+      "height": 18,
+      "chars": [
+        "\ue010"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_star.png",
+      "ascent": 18,
+      "height": 18,
+      "chars": [
+        "\ue011"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/callout_ring.png",
+      "ascent": 18,
+      "height": 18,
+      "chars": [
+        "\ue012"
+      ]
+    }
+  ]
+}

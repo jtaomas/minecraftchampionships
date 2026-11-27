@@ -1,0 +1,175 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/coin.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue000"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/crown.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "\ue001"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/trophy.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue002"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/skull.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue003"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/check.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "\ue004"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/cross.png",
+      "ascent": 7,
+      "height": 7,
+      "chars": [
+        "\ue005"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/star.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue006"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/hud/clock.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue00a"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/brand/emblem.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue00b"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_red.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue010"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_orange.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue011"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_yellow.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue012"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_lime.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue013"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_green.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue014"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_cyan.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue015"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_aqua.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue016"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_blue.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue017"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_purple.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue018"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_pink.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue019"
+      ]
+    }
+  ]
+}

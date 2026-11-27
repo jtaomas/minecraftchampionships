@@ -1,0 +1,107 @@
+{
+  "providers": [
+    {
+      "type": "reference",
+      "id": "minecraft:default"
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_red.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue900"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_orange.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue901"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_yellow.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue902"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_lime.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue903"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_green.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue904"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_cyan.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue905"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_aqua.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue906"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_blue.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue907"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_purple.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue908"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/team/team_pink.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue909"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcmshow:font/brand/emblem.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        "\ue90a"
+      ]
+    }
+  ]
+}

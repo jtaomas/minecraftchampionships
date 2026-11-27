@@ -127,6 +127,9 @@ def write_meta():
     wjson(os.path.join(PACK, 'pack.mcmeta'), {
         'pack': {
             'pack_format': PACK_FORMAT,
+            'supported_formats': [34, 99],
+            'min_format': 34,
+            'max_format': 99,
             'description': [
                 {'text': 'Block Showdown', 'color': 'gold', 'bold': True},
                 {'text': '\nTournament HUD, menus & sounds', 'color': 'gray'},
@@ -179,7 +182,141 @@ def write_items():
             'overrides': [{'predicate': {'custom_model_data': cmd}, 'model': f'{NS}:item/{m}'}
                           for cmd, m in ovs],
         })
+        # Minecraft 1.21.4+ (including 1.21.11) item model definitions
+        wjson(os.path.join(PACK, 'assets', 'minecraft', 'items', item + '.json'), {
+            'model': {
+                'type': 'minecraft:range_dispatch',
+                'property': 'minecraft:custom_model_data',
+                'fallback': {'type': 'minecraft:model', 'model': f'minecraft:item/{item}'},
+                'entries': [{'threshold': float(cmd), 'model': {'type': 'minecraft:model', 'model': f'{NS}:item/{m}'}}
+                            for cmd, m in ovs],
+            }
+        })
     return tex
+
+
+def write_mcc_compat(reg):
+    """Add mcc:* fonts (icon, hud, callout, callout_t1, callout_t2, card) and minecraft:mcc.* sound mappings
+    so MinecraftMondayCore (McmHud, McmFx, Callout, CoinFeedback) and McmBingo work on 1.21.1 through 1.21.11+."""
+    by_const = {g.const: g for g in reg}
+
+    # 1. mcc:icon (matches McmHud.java codepoints: COIN..STAR, SPECTATOR, PLAYER, TEAM_BASE+0..9)
+    icon_map = [
+        (0xE000, 'COIN'), (0xE001, 'CROWN'), (0xE002, 'TROPHY'), (0xE003, 'SKULL'),
+        (0xE004, 'CHECK'), (0xE005, 'CROSS'), (0xE006, 'STAR'),
+        (0xE00A, 'CLOCK'), (0xE00B, 'EMBLEM'),
+    ]
+    team_consts = ['TEAM_RED', 'TEAM_ORANGE', 'TEAM_YELLOW', 'TEAM_LIME', 'TEAM_GREEN',
+                   'TEAM_CYAN', 'TEAM_AQUA', 'TEAM_BLUE', 'TEAM_PURPLE', 'TEAM_PINK']
+    for i, tc in enumerate(team_consts):
+        icon_map.append((0xE010 + i, tc))
+    icon_providers = []
+    for cp, const in icon_map:
+        g = by_const[const]
+        icon_providers.append({'type': 'bitmap', 'file': g.file, 'ascent': min(g.ascent, g.height),
+                               'height': g.height, 'chars': [chr(cp)]})
+    wjson(os.path.join(PACK, 'assets', 'mcc', 'font', 'icon.json'), {'providers': icon_providers})
+
+    # 2. mcc:hud (clean reference to default font so titles/actionbars never show missing-glyph boxes)
+    wjson(os.path.join(PACK, 'assets', 'mcc', 'font', 'hud.json'), {
+        'providers': [{'type': 'reference', 'id': 'minecraft:default'}]
+    })
+
+    # 3. mcc:callout, mcc:callout_t1, mcc:callout_t2 (matches Callout.java)
+    callout_adv = {}
+    for k in range(11):
+        v = 0.5 * (1 << k)
+        callout_adv[chr(0xE800 + k)] = v
+        callout_adv[chr(0xE820 + k)] = -v
+    # Dark translucent callout box (57x22 -> 114x44 GUI px at 2x subtitle scale)
+    box = Image.new('RGBA', (57, 22), (16, 18, 34, 215))
+    bp = box.load()
+    for x in range(57):
+        bp[x, 0] = (255, 216, 74, 240)
+        bp[x, 21] = (255, 216, 74, 240)
+    for y in range(22):
+        bp[0, y] = (255, 216, 74, 240)
+        bp[56, y] = (255, 216, 74, 240)
+    wpng(os.path.join(PACK, 'assets', 'mcc', 'textures', 'font', 'callout_box.png'), box)
+
+    def make_badge(src_img, white_only=False):
+        canvas = Image.new('RGBA', (36, 18), (0, 0, 0, 0))
+        scaled = src_img.resize((min(16, src_img.width * 2), min(16, src_img.height * 2)), Image.NEAREST)
+        if white_only:
+            wp = scaled.copy()
+            px = wp.load()
+            for yy in range(wp.height):
+                for xx in range(wp.width):
+                    if px[xx, yy][3] > 0:
+                        px[xx, yy] = (255, 255, 255, px[xx, yy][3])
+            scaled = wp
+        canvas.alpha_composite(scaled, ((36 - scaled.width) // 2, (18 - scaled.height) // 2))
+        return canvas
+
+    badge_defs = [
+        (0xE000, 'single', 'SWORD'), (0xE001, 'double', 'SWORD'), (0xE002, 'triple', 'CROWN'),
+        (0xE003, 'freeze', 'LOCK'), (0xE004, 'lap', 'FLAG'), (0xE005, 'room', 'CHECK'),
+        (0xE006, 'objective', 'STAR'),
+        (0xE010, 'dot', 'COIN'), (0xE011, 'star', 'STAR'), (0xE012, 'ring', 'EMBLEM'),
+    ]
+    callout_providers = [{'type': 'space', 'advances': callout_adv}]
+    callout_providers.append({'type': 'bitmap', 'file': 'mcc:font/callout_box.png', 'ascent': 16, 'height': 22, 'chars': [chr(0xE030)]})
+    for cp, name, const in badge_defs:
+        wpng(os.path.join(PACK, 'assets', 'mcc', 'textures', 'font', f'callout_{name}.png'), make_badge(by_const[const].img))
+        callout_providers.append({'type': 'bitmap', 'file': f'mcc:font/callout_{name}.png', 'ascent': 18, 'height': 18, 'chars': [chr(cp)]})
+        if 0xE000 <= cp <= 0xE006:
+            wpng(os.path.join(PACK, 'assets', 'mcc', 'textures', 'font', f'callout_{name}_sil.png'), make_badge(by_const[const].img, white_only=True))
+            callout_providers.append({'type': 'bitmap', 'file': f'mcc:font/callout_{name}_sil.png', 'ascent': 18, 'height': 18, 'chars': [chr(0xE020 + (cp - 0xE000))]})
+    wjson(os.path.join(PACK, 'assets', 'mcc', 'font', 'callout.json'), {'providers': callout_providers})
+    wjson(os.path.join(PACK, 'assets', 'mcc', 'font', 'callout_t1.json'), {
+        'providers': [{'type': 'reference', 'id': 'minecraft:default'}]
+    })
+    t2_providers = [{'type': 'reference', 'id': 'minecraft:default'}]
+    for i, tc in enumerate(team_consts):
+        g = by_const[tc]
+        t2_providers.append({'type': 'bitmap', 'file': g.file, 'ascent': min(g.ascent, g.height),
+                             'height': g.height, 'chars': [chr(0xE900 + i)]})
+    eg = by_const['EMBLEM']
+    t2_providers.append({'type': 'bitmap', 'file': eg.file, 'ascent': min(eg.ascent, eg.height),
+                         'height': eg.height, 'chars': [chr(0xE90A)]})
+    wjson(os.path.join(PACK, 'assets', 'mcc', 'font', 'callout_t2.json'), {'providers': t2_providers})
+
+    # 4. mcc:card (Bingo card difficulty cell tints matching BingoGame.java)
+    tier_colors = [
+        (85, 220, 105, 95),   # tier 1: easy green
+        (245, 215, 70, 95),   # tier 2: medium yellow
+        (245, 140, 50, 105),  # tier 3: hard orange
+        (230, 65, 75, 115),   # tier 4: very hard red
+    ]
+    card_providers = [{'type': 'space', 'advances': {chr(0xE1F0): 36, chr(0xE1F1): 1, chr(0xE1F2): -126}}]
+    for t_idx, rgba in enumerate(tier_colors):
+        sq = Image.new('RGBA', (16, 16), rgba)
+        wpng(os.path.join(PACK, 'assets', 'mcc', 'textures', 'font', f'card_t{t_idx + 1}.png'), sq)
+        for r in range(5):
+            cp = 0xE100 + t_idx * 5 + r
+            card_providers.append({'type': 'bitmap', 'file': f'mcc:font/card_t{t_idx + 1}.png',
+                                   'ascent': -11 - r * 18, 'height': 16, 'chars': [chr(cp)]})
+    wjson(os.path.join(PACK, 'assets', 'mcc', 'font', 'card.json'), {'providers': card_providers})
+
+    # 5. minecraft:mcc.* sound aliases (matches McmFx, CoinFeedback, DodgeboltGame, WorldRace)
+    mcc_sounds = {
+        'mcc.ui.coins_small': 'point_gained',
+        'mcc.ui.score': 'point_gained',
+        'mcc.countdown': 'countdown_tick',
+        'mcc.go': 'countdown_go',
+        'mcc.victory.win': 'round_win',
+        'mcc.victory.big_success': 'podium_fanfare',
+        'mcc.death': 'elimination',
+        'mcc.crowd.cheer': 'podium_fanfare',
+        'mcc.ar.checkpoint_pass': 'checkpoint',
+        'mcc.ar.launch1': 'countdown_go',
+        'mcc.ar.jump1': 'vote_cast',
+        'mcc.ar.speed1': 'checkpoint',
+        'mcc.ar.elytra_zone': 'vote_locked',
+        'mcc.ar.elytra_remove': 'countdown_tick',
+    }
+    mc_sj = {k: {'sounds': [{'name': f'{NS}:{v}'}]} for k, v in mcc_sounds.items()}
+    wjson(os.path.join(PACK, 'assets', 'minecraft', 'sounds.json'), mc_sj)
 
 
 def write_sounds():
@@ -605,6 +742,7 @@ def main():
     os.makedirs(PACK)
     reg = build_registry()
     write_font(reg)
+    write_mcc_compat(reg)
     packpng = write_meta()
     item_tex = write_items()
     bossbar = write_bossbar()

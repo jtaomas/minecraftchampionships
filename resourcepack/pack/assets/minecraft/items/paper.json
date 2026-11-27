@@ -1,0 +1,131 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "minecraft:custom_model_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/paper"
+    },
+    "entries": [
+      {
+        "threshold": 1001.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mcmshow:item/kit_fighter"
+        }
+      },
+      {
+        "threshold": 1002.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mcmshow:item/kit_archer"
+        }
+      },
+      {
+        "threshold": 1003.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mcmshow:item/kit_marksman"
+        }
+      },
+      {
+        "threshold": 1004.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mcmshow:item/kit_medic"
+        }
+      },
+      {
+        "threshold": 1010.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mcmshow:item/vote_token"
+        }
+      },
+      {
+        "threshold": 1020.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mcmshow:item/checkpoint_token"
+        }
+      },
+      {
+        "threshold": 1030.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mcmshow:item/team_flag"
+        }
+      },
+      {
+        "threshold": 1031.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mcmshow:item/team_flag_red"
+        }
+      },
+      {
+        "threshold": 1032.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mcmshow:item/team_flag_orange"
+        }
+      },
+      {
+        "threshold": 1033.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mcmshow:item/team_flag_yellow"
+        }
+      },
+      {
+        "threshold": 1034.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mcmshow:item/team_flag_lime"
+        }
+      },
+      {
+        "threshold": 1035.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mcmshow:item/team_flag_green"
+        }
+      },
+      {
+        "threshold": 1036.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mcmshow:item/team_flag_cyan"
+        }
+      },
+      {
+        "threshold": 1037.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mcmshow:item/team_flag_aqua"
+        }
+      },
+      {
+        "threshold": 1038.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mcmshow:item/team_flag_blue"
+        }
+      },
+      {
+        "threshold": 1039.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mcmshow:item/team_flag_purple"
+        }
+      },
+      {
+        "threshold": 1040.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mcmshow:item/team_flag_pink"
+        }
+      }
+    ]
+  }
+}

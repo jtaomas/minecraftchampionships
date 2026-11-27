@@ -76,6 +76,10 @@ final class PackServer implements Listener {
                     boolean ok = ex.getRequestURI().getPath().endsWith(".zip");
                     if (!ok) { ex.sendResponseHeaders(404, -1); return; }
                     ex.getResponseHeaders().set("Content-Type", "application/zip");
+                    if ("HEAD".equalsIgnoreCase(ex.getRequestMethod())) {
+                        ex.sendResponseHeaders(200, -1);
+                        return;
+                    }
                     ex.sendResponseHeaders(200, bytes.length);
                     try (OutputStream o = ex.getResponseBody()) { o.write(bytes); }
                 } finally {
@@ -127,14 +131,22 @@ final class PackServer implements Listener {
     public void onStatus(PlayerResourcePackStatusEvent e) {
         Player p = e.getPlayer();
         switch (e.getStatus()) {
-            case SUCCESSFULLY_LOADED -> McmFx.packLoaded(p.getUniqueId(), true);
+            case ACCEPTED, DOWNLOADED -> plugin.getLogger().info("[pack] " + p.getName() + " status: " + e.getStatus());
+            case SUCCESSFULLY_LOADED -> {
+                McmFx.packLoaded(p.getUniqueId(), true);
+                plugin.getLogger().info("[pack] " + p.getName() + " loaded the resource pack.");
+            }
             case FAILED_DOWNLOAD, INVALID_URL, FAILED_RELOAD -> {
                 McmFx.packLoaded(p.getUniqueId(), false);
                 plugin.getLogger().warning("[pack] " + p.getName() + " could not load the pack (" + e.getStatus() + ") from "
                         + url(p) + " - is port " + port + " reachable for them?");
                 p.sendMessage(ChatColor.YELLOW + "The server pack did not download, so you are playing without the MCC look and sounds.");
             }
-            case DECLINED -> McmFx.packLoaded(p.getUniqueId(), false);
+            case DECLINED, DISCARDED -> {
+                McmFx.packLoaded(p.getUniqueId(), false);
+                plugin.getLogger().info("[pack] " + p.getName() + " declined/discarded the resource pack (" + e.getStatus() + ").");
+                p.sendMessage(ChatColor.YELLOW + "Server resource pack was declined. Set 'Server Resource Packs: Enabled' in your server list entry to load the MCC pack.");
+            }
             default -> { }
         }
     }
@@ -147,7 +159,9 @@ final class PackServer implements Listener {
     private void send(Player p) {
         if (http == null) return;
         try {
-            p.setResourcePack(url(p), sha1, prompt, force);
+            String u = url(p);
+            plugin.getLogger().info("[pack] sending " + u + " to " + p.getName());
+            p.setResourcePack(u, sha1, prompt, force);
         } catch (Throwable t) {
             plugin.getLogger().warning("[pack] could not send the pack to " + p.getName() + ": " + t);
         }

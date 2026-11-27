@@ -1,6 +1,12 @@
 {
   "pack": {
     "pack_format": 34,
+    "supported_formats": [
+      34,
+      99
+    ],
+    "min_format": 34,
+    "max_format": 99,
     "description": [
       {
         "text": "Block Showdown",

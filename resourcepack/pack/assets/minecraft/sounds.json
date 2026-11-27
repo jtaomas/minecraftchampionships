@@ -1,0 +1,100 @@
+{
+  "mcc.ui.coins_small": {
+    "sounds": [
+      {
+        "name": "mcmshow:point_gained"
+      }
+    ]
+  },
+  "mcc.ui.score": {
+    "sounds": [
+      {
+        "name": "mcmshow:point_gained"
+      }
+    ]
+  },
+  "mcc.countdown": {
+    "sounds": [
+      {
+        "name": "mcmshow:countdown_tick"
+      }
+    ]
+  },
+  "mcc.go": {
+    "sounds": [
+      {
+        "name": "mcmshow:countdown_go"
+      }
+    ]
+  },
+  "mcc.victory.win": {
+    "sounds": [
+      {
+        "name": "mcmshow:round_win"
+      }
+    ]
+  },
+  "mcc.victory.big_success": {
+    "sounds": [
+      {
+        "name": "mcmshow:podium_fanfare"
+      }
+    ]
+  },
+  "mcc.death": {
+    "sounds": [
+      {
+        "name": "mcmshow:elimination"
+      }
+    ]
+  },
+  "mcc.crowd.cheer": {
+    "sounds": [
+      {
+        "name": "mcmshow:podium_fanfare"
+      }
+    ]
+  },
+  "mcc.ar.checkpoint_pass": {
+    "sounds": [
+      {
+        "name": "mcmshow:checkpoint"
+      }
+    ]
+  },
+  "mcc.ar.launch1": {
+    "sounds": [
+      {
+        "name": "mcmshow:countdown_go"
+      }
+    ]
+  },
+  "mcc.ar.jump1": {
+    "sounds": [
+      {
+        "name": "mcmshow:vote_cast"
+      }
+    ]
+  },
+  "mcc.ar.speed1": {
+    "sounds": [
+      {
+        "name": "mcmshow:checkpoint"
+      }
+    ]
+  },
+  "mcc.ar.elytra_zone": {
+    "sounds": [
+      {
+        "name": "mcmshow:vote_locked"
+      }
+    ]
+  },
+  "mcc.ar.elytra_remove": {
+    "sounds": [
+      {
+        "name": "mcmshow:countdown_tick"
+      }
+    ]
+  }
+}

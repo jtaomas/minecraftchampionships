@@ -1,0 +1,192 @@
+{
+  "providers": [
+    {
+      "type": "space",
+      "advances": {
+        "\ue1f0": 36,
+        "\ue1f1": 1,
+        "\ue1f2": -126
+      }
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t1.png",
+      "ascent": -11,
+      "height": 16,
+      "chars": [
+        "\ue100"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t1.png",
+      "ascent": -29,
+      "height": 16,
+      "chars": [
+        "\ue101"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t1.png",
+      "ascent": -47,
+      "height": 16,
+      "chars": [
+        "\ue102"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t1.png",
+      "ascent": -65,
+      "height": 16,
+      "chars": [
+        "\ue103"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t1.png",
+      "ascent": -83,
+      "height": 16,
+      "chars": [
+        "\ue104"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t2.png",
+      "ascent": -11,
+      "height": 16,
+      "chars": [
+        "\ue105"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t2.png",
+      "ascent": -29,
+      "height": 16,
+      "chars": [
+        "\ue106"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t2.png",
+      "ascent": -47,
+      "height": 16,
+      "chars": [
+        "\ue107"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t2.png",
+      "ascent": -65,
+      "height": 16,
+      "chars": [
+        "\ue108"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t2.png",
+      "ascent": -83,
+      "height": 16,
+      "chars": [
+        "\ue109"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t3.png",
+      "ascent": -11,
+      "height": 16,
+      "chars": [
+        "\ue10a"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t3.png",
+      "ascent": -29,
+      "height": 16,
+      "chars": [
+        "\ue10b"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t3.png",
+      "ascent": -47,
+      "height": 16,
+      "chars": [
+        "\ue10c"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t3.png",
+      "ascent": -65,
+      "height": 16,
+      "chars": [
+        "\ue10d"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t3.png",
+      "ascent": -83,
+      "height": 16,
+      "chars": [
+        "\ue10e"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t4.png",
+      "ascent": -11,
+      "height": 16,
+      "chars": [
+        "\ue10f"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t4.png",
+      "ascent": -29,
+      "height": 16,
+      "chars": [
+        "\ue110"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t4.png",
+      "ascent": -47,
+      "height": 16,
+      "chars": [
+        "\ue111"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t4.png",
+      "ascent": -65,
+      "height": 16,
+      "chars": [
+        "\ue112"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "mcc:font/card_t4.png",
+      "ascent": -83,
+      "height": 16,
+      "chars": [
+        "\ue113"
+      ]
+    }
+  ]
+}
