@@ -1,0 +1,36 @@
+# Big Sales at Build Mart - Classic Mall (MCC 3-13). Values marked [default] are not researched; adjust after playtesting.
+
+game-seconds: 720            # MCC: 12 minutes
+pregame-seconds: 20          # [default] MCC 13 showed ~75 s of how-to-play; admins can /mcm skipwait
+regrow-seconds: 3            # [default] a mined shelf block grows back after this, if the spot is still empty
+
+# MCC coins (base x1.0; the core applies the event multiplier). Old Build Mart, MCC 3-13 (the version we built):
+# MCC 13 tutorial (research/mcc_archive/build_mart/bm-1/frames/021640): each build is worth 30 coins PER PLAYER to begin
+# with and 2 less every time any team completes it; at the very end each player gets the % of the team's unfinished
+# builds that is filled in, times their current value. See game-plugins/COINS.md.
+coins:
+  per-build: 30              # MCC: coins per player for a build nobody has completed yet
+  decay-per-completion: 2    # MCC: 2 less every time any team completes that build
+  min-per-build: 10          # OURS: floor so a very popular build is never worth nothing (MCC's 10 teams bottom out at 12)
+  gold-bonus: 30             # MCC 14: a Golden build pays double a regular build, so it earns its value plus this
+                             # (30 + 30 = 60 at the base value). Current MCC instead rates it 7 stars at 20 coins
+                             # per star = 140, on a scale where a 5-star is 100; see BUILDS.md.
+
+shopping-list-book: true     # [default] NOT in the old game (the book is from MCC P25); set false for a pure MCC 13 feel
+
+# Blueprint Gallery: MCC Pride 25 "Blueprint Update" (big_sales.wikitext; bm-2/notes.md §2-§3; BUILDS.md).
+# Seven pads in the mall plaza, each with its own build, floor, name/star/material hologram and a red selection button.
+# Right-click the button to send that build to your first free plot. Three builds at a time. [default] values are ours.
+gallery:
+  enabled: true              # false = the old game: three builds appear automatically, no gallery, no gold
+  restock-seconds: 90        # MCC: new blueprints every 90 seconds
+  tiers: [1, 1, 2, 2, 3, 4, 5]   # MCC: 2x 1-star, 2x 2-star, 1x 3-star, 1x 4-star, 1x 5-star per restock
+  appear-delay-seconds: 2    # MCC shows "This blueprint will appear soon..." between builds; exact pause [default]
+
+# Gold Builds: MCC 14 added them, MCC P25 gave them their own pad and a 2-minute window (big_sales.wikitext).
+gold:
+  enabled: true
+  first-at-seconds: 240      # MCC: the first Gold Build appears 4:00 into the game
+  every-seconds: 120         # MCC: rotated every 2:00
+  window-seconds: 120        # MCC: available for 2:00, then the blocks on the gold plot are removed
+  stars: 7                   # MCC: a Gold Build is a 7-star build

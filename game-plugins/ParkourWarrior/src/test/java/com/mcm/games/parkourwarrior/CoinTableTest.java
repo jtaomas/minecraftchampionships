@@ -13,7 +13,7 @@ public final class CoinTableTest {
     public static void main(String[] args) {
         Settings s = Settings.load(YamlConfiguration.loadConfiguration(new File("src/main/resources/config.yml")), Logger.getLogger("test"));
         eq("main coins", 4, s.mainCoins);
-        eq("bonus bronze/silver/gold", 8 * 10000 + 14 * 100 + 22, s.bonusBronze * 10000 + s.bonusSilver * 100 + s.bonusGold);
+        eq("bonus bronze/silver/gold", 4 * 10000 + 6 * 100 + 8, s.bonusBronze * 10000 + s.bonusSilver * 100 + s.bonusGold);
         eq("ending easy", 10, Scoring.ending(s, Difficulty.EASY));
         eq("ending medium", 20, Scoring.ending(s, Difficulty.MEDIUM));
         eq("ending hard", 40, Scoring.ending(s, Difficulty.HARD));

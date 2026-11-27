@@ -9,8 +9,10 @@ hints:
   radius: 12              # only players this close see/hear it
   wide-seconds: 70        # from here the radius widens
   wide-radius: 24
-points:
-  first: 20               # 1st finder; each later finder gets `step` less, never below `minimum`
-  step: 2
-  minimum: 6
-  team-bonus: 5           # to each member when every online member of a 2+ player side found it
+# OURS: Find the Button is a Minecraft Monday game that MCC never had. MCC-style coins (base x1.0, modelled on TGTTOS:
+# 40 + 80 for a 1st finish there); the core applies the event multiplier. See game-plugins/COINS.md.
+coins:
+  first: 80               # 1st finder each round; each later finder gets `step` less, never below `minimum`
+  step: 4
+  minimum: 20
+  team-bonus: 15          # to each member when every online member of a 2+ player side found it (60 for a team of 4)

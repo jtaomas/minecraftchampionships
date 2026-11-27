@@ -1,6 +1,19 @@
 # Hole in the Wall settings (defaults, not researched).
 
+# Number of rounds played per game (owner: 3 rounds per game).
+rounds: 3
+
 # The wall difficulty ramp (wall level / speed, spacing between waves, hole count, wall-type unlocks)
 # starts as if this many seconds had already been played. 0 = the original ramp.
 # The game clock, platform shrinks, OVERDRIVE (at 5:00), game length, scoring and countdown use real time.
 difficulty-head-start-seconds: 60
+
+# Log every wall's pattern and types to the console.
+debug-walls: false
+
+# MCC coins (base x1.0; the core applies the event multiplier). Source: MCC wiki, Hole in the Wall "Coin Rewards",
+# current scoring since MCC FS (https://mcchampionship.fandom.com/wiki/Hole_in_the_Wall). See game-plugins/COINS.md.
+coins:
+  outlive: 2               # MCC: every time another player falls while you are still standing
+  wall: 2                  # MCC: per wall survived
+  placement: [100, 70, 30] # MCC: 1st / 2nd / 3rd; players tied for places split the sum of those places
