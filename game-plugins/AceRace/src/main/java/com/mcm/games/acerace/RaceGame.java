@@ -124,6 +124,10 @@ public final class RaceGame implements McmGame {
             context.finish("Ace Race map data missing: " + mapId);
             return;
         }
+        scoring.load(plugin.getConfig());
+        if (world.world() == null) {
+            world.ensureWorld();
+        }
         if (world.world() == null) {
             context.finish("Ace Race world unavailable");
             return;
@@ -147,6 +151,7 @@ public final class RaceGame implements McmGame {
         timeLeft = data.timeLimitSeconds();
         finishCount = 0;
         racers.clear();
+        restoreBarrier();
 
         List<Player> participants = new ArrayList<>(ctx.participants());
         int index = 0;
@@ -158,6 +163,7 @@ public final class RaceGame implements McmGame {
             Racer r = new Racer(p.getUniqueId(), index);
             racers.put(p.getUniqueId(), r);
             teleport(p, data.startGrid.get(index));
+            r.prev = local(p.getLocation());
             prepare(p);
             index++;
         }
@@ -208,6 +214,7 @@ public final class RaceGame implements McmGame {
         for (Racer r : racers.values()) {
             Player p = Bukkit.getPlayer(r.id);
             if (p == null) continue;
+            r.prev = local(p.getLocation());
             p.setWalkSpeed(0.2f);
             p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.6f);
         }
@@ -595,6 +602,21 @@ public final class RaceGame implements McmGame {
         return new Vector(loc.getX() - world.slotX(slot),
                 loc.getY() - world.baseY(),
                 loc.getZ() - world.slotZ(slot));
+    }
+
+    private void restoreBarrier() {
+        if (world.world() == null || data == null) return;
+        for (Pos p : data.startBarrier) {
+            Location l = world.toWorld(slot, p);
+            String state = data.blocks.get(p.x(), p.y(), p.z());
+            if (state != null) {
+                try {
+                    world.world().getBlockAt(l).setBlockData(Bukkit.createBlockData(state), false);
+                    continue;
+                } catch (Throwable ignored) {}
+            }
+            world.world().getBlockAt(l).setType(Material.CYAN_STAINED_GLASS, false);
+        }
     }
 
     private void clearBarrier() {

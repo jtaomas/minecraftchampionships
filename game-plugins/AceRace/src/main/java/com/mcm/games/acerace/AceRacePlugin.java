@@ -81,14 +81,25 @@ public final class AceRacePlugin extends JavaPlugin {
             McmApi.registerGame(this, worldRace);
             getLogger().info("McmAceRace enabled with " + worldRace.mapCount() + " imported world map(s).");
         } else {
+            world.ensureWorld();
+            String wName = world.world() != null ? world.world().getName() : "unavailable";
+            var defaultData = registry.data(SkyCircuitMap.ID);
+            if (world.world() != null && defaultData != null) {
+                world.paste(registry.slot(SkyCircuitMap.ID), defaultData,
+                        () -> getLogger().info("Ace Race: pre-built '" + SkyCircuitMap.ID + "' (" + defaultData.blocks.size() + " blocks) in " + wName + "."));
+            }
             McmApi.registerGame(this, game);
             getLogger().info("McmAceRace enabled using built-in procedural course(s): " + registry.ids()
+                    + " in world " + wName
                     + " (drop mcc_clouds2 world folder in server root to switch to Clouds 2).");
         }
     }
 
     @Override
     public void onDisable() {
+        if (game != null) {
+            try { game.stop(); } catch (Throwable t) { getLogger().warning("Error stopping procedural Ace Race: " + t); }
+        }
         if (worldRace != null) {
             try { worldRace.stop(); } catch (Throwable t) { getLogger().warning("Error stopping Ace Race: " + t); }
         }

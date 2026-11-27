@@ -161,9 +161,10 @@ public final class RaceWorld {
 
     private void addTickets(int slot, Region bounds) {
         if (bounds == null) return;
+        int ox = slotX(slot), oz = slotZ(slot);
         Set<Long> keys = ticketed.computeIfAbsent(slot, k -> new HashSet<>());
-        for (int cx = (int) Math.floor(bounds.minX / 16.0); cx <= (int) Math.floor(bounds.maxX / 16.0); cx++) {
-            for (int cz = (int) Math.floor(bounds.minZ / 16.0); cz <= (int) Math.floor(bounds.maxZ / 16.0); cz++) {
+        for (int cx = (int) Math.floor((ox + bounds.minX) / 16.0); cx <= (int) Math.floor((ox + bounds.maxX) / 16.0); cx++) {
+            for (int cz = (int) Math.floor((oz + bounds.minZ) / 16.0); cz <= (int) Math.floor((oz + bounds.maxZ) / 16.0); cz++) {
                 long key = ((long) cx << 32) ^ (cz & 0xFFFFFFFFL);
                 if (keys.add(key)) world.addPluginChunkTicket(cx, cz, plugin);
             }

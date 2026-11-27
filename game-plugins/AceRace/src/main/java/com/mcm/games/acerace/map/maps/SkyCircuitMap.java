@@ -54,9 +54,9 @@ public final class SkyCircuitMap implements RaceMap {
         // 2. East Speedway Straight (x=6..135, z=-5..5): speed pads + jump pad over sky gap + elevated terrace
         b.floor(6, 56, -5, 5, 0, "minecraft:smooth_quartz", "minecraft:light_blue_concrete");
         b.fill(18, 0, -3, 25, 0, 3, "minecraft:yellow_glazed_terracotta"); // pad 0: speed
-        b.fill(49, 0, -3, 55, 0, 3, "minecraft:lime_concrete");            // pad 1: jump over gap x=57..65
-        // Elevated east terrace (x=66..136, z=-5..5, y=2)
-        b.floor(66, 136, -5, 5, 2, "minecraft:smooth_quartz", "minecraft:gold_block");
+        b.fill(52, 0, -3, 56, 0, 3, "minecraft:lime_concrete");            // pad 1: jump over gap x=57..63
+        // Elevated east terrace (x=64..136, z=-5..5, y=2)
+        b.floor(64, 136, -5, 5, 2, "minecraft:smooth_quartz", "minecraft:gold_block");
         b.fill(88, 2, -3, 95, 2, 3, "minecraft:yellow_glazed_terracotta"); // pad 2: speed
         // Decorative arch at corner entry
         archYZ(b, 120, 2, 0, 6, "minecraft:sea_lantern", "minecraft:prismarine_bricks");
@@ -101,7 +101,7 @@ public final class SkyCircuitMap implements RaceMap {
         b.floor(-5, 5, 96, 123, 6, "minecraft:smooth_quartz", "minecraft:emerald_block");
         b.fill(-3, 6, 102, 3, 6, 108, "minecraft:yellow_glazed_terracotta"); // pad 6: speed north
         b.floor(-5, 5, 66, 95, 4, "minecraft:smooth_quartz", "minecraft:emerald_block");
-        b.fill(-3, 4, 72, 3, 4, 78, "minecraft:lime_concrete");              // pad 7: jump over gap z=65..58
+        b.fill(-3, 4, 66, 3, 4, 71, "minecraft:lime_concrete");              // pad 7: jump over gap z=65..58
         b.floor(-5, 5, 32, 57, 2, "minecraft:smooth_quartz", "minecraft:emerald_block");
         b.fill(-3, 2, 38, 3, 2, 44, "minecraft:yellow_glazed_terracotta");   // pad 8: speed north
         b.floor(-5, 5, 6, 31, 0, "minecraft:smooth_quartz", "minecraft:cyan_concrete");
@@ -142,18 +142,23 @@ public final class SkyCircuitMap implements RaceMap {
                 new EffectSpec("saturation", 20 * 600, 10)
         ));
 
-        // Pads (indices 0..9)
+        // Pads (indices 0..14: main pads 0..9 + safety cloud jump pads 10..14)
         List<BoostPad> pads = List.of(
                 new BoostPad(0, new Region(18, 0, -3, 25, 2, 3), PadKind.SPEED, 1, 0, 0, 0.85, 15, null),
-                new BoostPad(1, new Region(49, 0, -3, 55, 2, 3), PadKind.JUMP, 0.72, 0.72, 0, 1.15, 15, null),
+                new BoostPad(1, new Region(52, 0, -3, 56, 2, 3), PadKind.JUMP, 0.82, 0.60, 0, 1.35, 15, null),
                 new BoostPad(2, new Region(88, 2, -3, 95, 4, 3), PadKind.SPEED, 1, 0, 0, 0.85, 15, null),
                 new BoostPad(3, new Region(126, 1, 56, 135, 4, 63), PadKind.SPEED, 0, 0, 1, 0.90, 15, null),
-                new BoostPad(4, new Region(127, 2, 118, 134, 4, 125), PadKind.LAUNCH, 0, 0.92, 0.35, 1.85, 20, null),
-                new BoostPad(5, new Region(115, 18, 130, 121, 20, 138), PadKind.LAUNCH, -0.88, 0.48, 0, 1.55, 20, elytraLoadout),
+                new BoostPad(4, new Region(127, 2, 118, 134, 4, 125), PadKind.LAUNCH, 0, 0.94, 0.34, 2.05, 20, null),
+                new BoostPad(5, new Region(115, 18, 130, 121, 20, 138), PadKind.LAUNCH, -0.88, 0.48, 0, 1.65, 20, elytraLoadout),
                 new BoostPad(6, new Region(-3, 6, 102, 3, 8, 108), PadKind.SPEED, 0, 0, -1, 0.85, 15, null),
-                new BoostPad(7, new Region(-3, 4, 72, 3, 6, 78), PadKind.JUMP, 0, 0.65, -0.76, 1.05, 15, null),
+                new BoostPad(7, new Region(-3, 4, 66, 3, 6, 71), PadKind.JUMP, 0, 0.58, -0.82, 1.25, 15, null),
                 new BoostPad(8, new Region(-3, 2, 38, 3, 4, 44), PadKind.SPEED, 0, 0, -1, 0.85, 15, null),
-                new BoostPad(9, new Region(-3, 0, 16, 3, 2, 22), PadKind.SPEED, 0, 0, -1, 0.90, 15, null)
+                new BoostPad(9, new Region(-3, 0, 16, 3, 2, 22), PadKind.SPEED, 0, 0, -1, 0.90, 15, null),
+                new BoostPad(10, new Region(99, 6, 132, 105, 8, 136), PadKind.LAUNCH, -0.82, 0.62, 0, 1.50, 15, elytraLoadout),
+                new BoostPad(11, new Region(79, 6, 132, 85, 8, 136), PadKind.LAUNCH, -0.82, 0.62, 0, 1.50, 15, elytraLoadout),
+                new BoostPad(12, new Region(59, 6, 132, 65, 8, 136), PadKind.LAUNCH, -0.82, 0.62, 0, 1.50, 15, elytraLoadout),
+                new BoostPad(13, new Region(39, 6, 132, 45, 8, 136), PadKind.LAUNCH, -0.82, 0.62, 0, 1.50, 15, elytraLoadout),
+                new BoostPad(14, new Region(19, 6, 132, 25, 8, 136), PadKind.LAUNCH, -0.82, 0.62, 0, 1.45, 15, elytraLoadout)
         );
 
         // Elytra Boost Rings (indices 0..3)
@@ -177,7 +182,7 @@ public final class SkyCircuitMap implements RaceMap {
                 new Section(0, "Start Straight", startGate, startSpawn, sprintLoadout, sprintLoadout, -12, List.of(), List.of()),
                 new Section(1, "Speedway", cp1, new Spawn(130.5, 3.0, 9.5, 0f), aquaLoadout, aquaLoadout, -12, List.of(0, 1, 2), List.of()),
                 new Section(2, "Aqua Canal", cp2, new Spawn(122.5, 19.0, 134.5, 90f), elytraLoadout, elytraLoadout, -12, List.of(3, 4), List.of()),
-                new Section(3, "Sky Flight", cp3, new Spawn(0.5, 7.0, 122.5, 180f), sprintLoadout, sprintLoadout, -12, List.of(5), List.of(0, 1, 2, 3)),
+                new Section(3, "Sky Flight", cp3, new Spawn(0.5, 7.0, 122.5, 180f), sprintLoadout, sprintLoadout, -12, List.of(5, 10, 11, 12, 13, 14), List.of(0, 1, 2, 3)),
                 new Section(4, "Emerald Terraces", cp4, new Spawn(0.5, 1.0, 14.5, 180f), sprintLoadout, sprintLoadout, -12, List.of(6, 7, 8, 9), List.of())
         );
 
