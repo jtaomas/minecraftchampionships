@@ -6,18 +6,20 @@
 game-seconds: 1080
 # Frozen countdown on the start islands before the game clock starts.
 countdown-seconds: 10
-# PENDING_RESEARCH grace-seconds: PvP off for this long after GO (0 = no grace).
-grace-seconds: 60
+# grace-seconds: PvP off for this long after GO (0 = no grace). Video research: no grace announced or shown (M).
+grace-seconds: 0
 # Victory pause before the core takes everyone back to the lobby.
 end-delay-seconds: 8
 
-# ---------------------------------------------------------------- scoring (confirmed 70/10/150 scaled to 14/2/30)
-points:
-  kill: 14
+# ---------------------------------------------------------------- MCC coins (confirmed 70/10/150)
+# Base x1.0 values; the core applies the event multiplier. Source: MCC wiki, Skyblockle "Coin Rewards"
+# (https://mcchampionship.fandom.com/wiki/Skyblockle; research/mcc_archive/skyblockle/skb-1). See game-plugins/COINS.md.
+coins:
+  kill: 70
   # to every OTHER living player each time a player dies
-  survive-death: 2
+  survive-death: 10
   # to every player still alive when the game ends (last side standing or time-out)
-  alive-at-end: 30
+  alive-at-end: 150
   # team kills give nothing (confirmed); friendly fire is off (confirmed)
   team-kill: 0
 
@@ -28,9 +30,16 @@ kill-credit-seconds: 10
 # players-alive, kills, health. Sides equal on every criterion share the result (draw).
 timeout-tiebreak: [players-alive, kills]
 
-# ---------------------------------------------------------------- deaths (PENDING_RESEARCH: item handling)
+# Chat "Only N players remain!" when the living player count drops to one of these (video: "Only 3 players
+# remain!" seen; the exact thresholds are not known).
+announce-remaining: [10, 5, 3, 2]
+
+# ---------------------------------------------------------------- deaths
 death:
-  # drop the inventory at the death point (non-void deaths)
+  # Video research (H): a dead player's whole inventory goes into a lootable "<name>'s Grave" (5-row container)
+  # at the death spot. Void deaths: nothing. PENDING_RESEARCH: whether graves time out / despawn (here: never).
+  grave: true
+  # only used when grave is false: drop the inventory at the death point (non-void deaths)
   drop-items: true
   # void deaths drop nothing (items would fall into the void anyway)
   void-drop-items: false
@@ -39,27 +48,47 @@ death:
   # Falling this far below the lowest map block = void death (instant).
   void-depth: 12
 
-# ---------------------------------------------------------------- start (PENDING_RESEARCH)
+# ---------------------------------------------------------------- start
 # Items each player gets at GO. Same item format as loot.yml, e.g.  - {item: cooked_beef, amount: 4}
+# Video research (H): inventory is empty at spawn; everything comes from the start chest, the tree and mining.
 start-inventory: []
 start-xp-levels: 0
 
-# ---------------------------------------------------------------- border (PENDING_RESEARCH border schedule)
-# Vanilla world border (square, visible) centred on the castle, plus our own damage outside it.
+# ---------------------------------------------------------------- border
+# Vanilla world border (square, visible, enforcing) centred on the castle, plus our own damage outside it and a
+# cyan particle wall drawn near players.
 # points: [seconds after GO, half-size in blocks]. Radius may be a number or a map token:
 #   map, castle, arena, enchanting, brewing, fort, pillar, start, generator, rock  (optionally +N / -N)
-# The border moves linearly between consecutive points.
+# The border moves linearly between consecutive points; a move starting at time T is a "shrink" at T.
+# TIMING from video research (H): first shrink at 7:00 elapsed, then every 2 minutes (9:00, 11:00, 13:00, 15:00),
+# last regular shrink at 1:30 left (16:30), then a 30 s "LAST STAND".
+# PENDING_RESEARCH: the radius of each step, how long each step moves (30 s here), the final size, damage.
 border:
   enabled: true
   points:
     - [0, map+8]
-    - [360, map+8]
-    - [900, castle]
-    - [1080, arena]
-  # damage per second outside the border: [seconds after GO, damage], linear in between
+    - [420, map+8]
+    - [450, start+10]
+    - [540, start+10]
+    - [570, fort+10]
+    - [660, fort+10]
+    - [690, brewing+8]
+    - [780, brewing+8]
+    - [810, enchanting+6]
+    - [900, enchanting+6]
+    - [930, castle+4]
+    - [990, castle+4]
+    - [1020, arena]
+  # damage per second outside the border: [seconds after GO, damage], linear in between (PENDING_RESEARCH)
   damage:
     - [0, 1.0]
     - [1080, 4.0]
+  # "LAST STAND" phase shown in the sidebar from this time (seconds after GO) for last-stand-seconds.
+  # PENDING_RESEARCH: what happens when it reaches 0 (not seen) - here nothing extra, the game runs to 18:00.
+  last-stand-at: 990
+  last-stand-seconds: 30
+  # cyan particle wall at the border, drawn within this distance of each player (0 = off)
+  particles-distance: 24
   # action-bar warning when this close to the border
   warn-distance: 10
 
@@ -87,10 +116,11 @@ map:
 
 # ---------------------------------------------------------------- loot
 loot:
-  # PENDING_RESEARCH: items go into random slots (true) or the first slots (false)
+  # Rolled chests (every table with "fixed"/"categories"): random empty slots (true) or the first empty slots
+  # (false). Fixed "slots" layouts (start, generator, hidden chest) always keep their slots.
   random-slots: true
-  # PENDING_RESEARCH chest refills: seconds after GO at which every map chest gets a fresh roll in its
-  # empty slots. Empty list = chests never refill.
+  # Chest refills: seconds after GO at which every map chest gets a fresh roll in its empty slots.
+  # Empty list = never (video research: no refill seen, L).
   refill-at: []
 
 # ---------------------------------------------------------------- world rules
