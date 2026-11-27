@@ -5,3 +5,13 @@ slot-spacing-x: 1800
 slot-spacing-z: 1400
 blocks-per-tick: 20000
 debug: false
+
+# MCC coins (base x1.0 values; the core applies the event multiplier). Source: MCC wiki, Ace Race "Coin Rewards"
+# (https://mcchampionship.fandom.com/wiki/Ace_Race, current values since MCC 16). Full table: game-plugins/COINS.md.
+coins:
+  finish-first: 400        # MCC: the 1st player to finish all laps
+  finish-step: 10          # MCC: 10 less for every later finisher (390, 380, ...). No coins if you don't finish.
+  # MCC final placement bonus: 1st 300, 2nd 240, 3rd 180, 4th-9th 120, 10th-14th 60, 15th-19th 15
+  placement: [300, 240, 180, 120, 120, 120, 120, 120, 120, 60, 60, 60, 60, 60, 15, 15, 15, 15, 15]
+  checkpoint: 0            # MCC pays nothing for checkpoints
+  lap: 0                   # MCC pays nothing for laps

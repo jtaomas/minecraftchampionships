@@ -1,0 +1,11 @@
+# McmGridRunners settings.
+# MCC coins (base x1.0; the core applies the event multiplier). Source: MCC wiki, Grid Runners "Coin Rewards"
+# (https://mcchampionship.fandom.com/wiki/Grid_Runners; research/mcc_archive/grid_runners/gr-2/notes.md). COINS.md.
+# All are TEAM pools shared amongst the team: each member gets the MCC per-member share (pool / 4).
+# MCC pays them at the end on the score breakdown; we pay them as they happen.
+coins:
+  room-first: 175          # MCC: fastest team in a room
+  room-step: 17            # MCC: 17 less per lower placement (175, 158, 141, ...)
+  room-minimum: 0
+  # MCC course placement: 1st 500 ... 10th 55 (11th and later teams get the last value)
+  course-placement: [500, 400, 320, 255, 200, 155, 120, 95, 75, 55]

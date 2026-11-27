@@ -1,0 +1,8 @@
+# McmSandsOfTime settings.
+# MCC coins (base x1.0; the core applies the event multiplier). Source: MCC wiki, Sands of Time (official description
+# and history; https://mcchampionship.fandom.com/wiki/Sands_of_Time; research/mcc_archive/sands_of_time). COINS.md.
+coins:
+  per-gold: 1.0              # MCC: "the amount of coins you collect and escape the dungeon with is exactly the amount you earn"
+  split-banked-evenly: true  # MCC 8+: banked team coins are split evenly amongst the team at the end
+  escape-bonus: 0            # MCC: none (OURS if > 0)
+  placement: []              # MCC: none (OURS: e.g. [150, 100, 50] team pools by banked coins)

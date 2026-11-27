@@ -1,0 +1,31 @@
+# Decision Dome — Nocturne Orrery vote
+# Durations are seconds in normal play. Fast-test mode (/mcm fast on) cuts every phase to <= 1 s.
+dial:
+  capacity: 8          # 8-game dial (use 6 for the 6-game variant)
+  max-games: 15        # event ceiling: only this many games are ever considered
+  pods: 10             # ten team rooms around the dial
+  refill-vote: 6       # top the dial up before this vote (MCC default)
+
+phases:
+  opening-seconds: 5.0
+  voting-seconds: 30.0
+  settle-seconds: 13.0
+  dividers-seconds: 1.5
+  tally-seconds: 1.0
+  reveal-seconds: 5.0
+  remove-seconds: 2.0
+  refill-seconds: 2.0
+  teleport-seconds: 8.0
+
+chickens:
+  allow-cross-wedge: true
+  max: 200
+
+powerups:
+  enabled: true
+  exclude-first-vote: true    # no power-ups on the Game 1 vote
+  exclude-audience: true      # no power-ups on an audience vote
+  max-per-team: 2
+  phase-2: false              # Levitas, Infernus, Petrify, Transmutation, Cage, Freezing, Dunking
+
+debug: false
