@@ -1,8 +1,11 @@
 package com.mcm.games.acerace;
 
+import com.mcm.games.acerace.map.RaceMapData;
+import com.mcm.games.acerace.map.maps.SkyCircuitMap;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Plain-Java proof that the shipped config.yml pays the MCC Ace Race coins (game-plugins/COINS.md). Run from the
@@ -31,7 +34,11 @@ public final class RaceScoringTest {
         eq("1st total (MCC 700)", 700, s.placePoints(1));
         eq("no checkpoint coins", 0, s.checkpointCoins);
         eq("no lap coins", 0, s.lapCoins);
-        System.out.println("RaceScoringTest: " + passed + " passed, " + failed + " failed");
+        RaceMapData sc = new SkyCircuitMap().build(0L);
+        List<String> errs = sc.check();
+        eq("SkyCircuitMap check errors", 0, errs.size());
+        if (!errs.isEmpty()) System.out.println("SkyCircuitMap errors: " + errs);
+        System.out.println("RaceScoringTest: " + passed + " passed, " + failed + " failed (SkyCircuit blocks=" + sc.blocks().size() + ")");
         if (failed > 0) System.exit(1);
     }
 
