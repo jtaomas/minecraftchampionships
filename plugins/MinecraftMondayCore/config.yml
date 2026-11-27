@@ -17,6 +17,7 @@ minecraft-monday-external-games: # Ids of installed external games that belong t
   - findthebutton
 mcc-championship-playlist: # MCC game ids for /mcm start mcc. Empty = every installed MCC game.
   - tgttos
+  - race
   - hungergames
   - skyblockle
   - rocketspleef
@@ -40,6 +41,7 @@ championship-playlist: # Game ids in order. Empty = the 7 built-in events follow
   - survival
   - findthebutton
   - tgttos
+  - race
   - hungergames
   - skyblockle
   - rocketspleef
@@ -92,3 +94,10 @@ coins:
       - dodgebolt
       - decisiondome
     outside-championship: 1.0 # Multiplier for a single game started with /mcm play (not part of a championship). Staging tests can set e.g. 2.5.
+resource-pack:
+  enabled: true # Serve the Block Showdown resource pack over HTTP and send it to players on join.
+  file: pack/BlockShowdown_Pack.zip # Path under plugins/MinecraftMondayCore/ (falls back to resourcepack/dist/BlockShowdownPack.zip).
+  port: 25581 # Local HTTP port serving the resource pack zip.
+  force: false # Disconnect players who decline the resource pack prompt (false for local testing).
+  public-host: '' # Optional override hostname for external players; blank uses the hostname each player joined with.
+  prompt: Block Showdown uses this pack for the MCC look and sounds.
