@@ -81,6 +81,22 @@ final class MapWorld {
     /** Load or create the void world. The first time per server start a stale folder is deleted (clean map). */
     World ensureWorld() {
         World w = Bukkit.getWorld(WORLD_NAME);
+        // Multiverse may have loaded the folder as a normal world (vanilla terrain around the map): drop it and
+        // re-create it void, like TGTTOS does.
+        if (w != null) {
+            org.bukkit.generator.ChunkGenerator gen = w.getGenerator();
+            if (gen == null || !gen.getClass().getSimpleName().contains("Void")) {
+                plugin.getLogger().warning("Sky Blockle: world " + WORLD_NAME + " was loaded with generator "
+                        + (gen == null ? "vanilla" : gen.getClass().getName()) + "; unloading it to re-create it as a void world.");
+                for (org.bukkit.entity.Player p : new java.util.ArrayList<>(w.getPlayers())) {
+                    p.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
+                }
+                if (!Bukkit.unloadWorld(w, false)) {
+                    plugin.getLogger().severe("Sky Blockle: could not unload " + WORLD_NAME + "; terrain may show around the map.");
+                }
+                w = null;
+            }
+        }
         if (w == null) {
             File folder = new File(Bukkit.getWorldContainer(), WORLD_NAME);
             if (folder.exists()) deleteFolder(folder.toPath());
