@@ -1,6 +1,6 @@
 # Handoff — where this branch stands
 
-This repository root **is the server folder** (Paper 1.21.1, Java 21). Clone the `mcc-1.21` branch, run `start-mcm-server.bat`, join `localhost`. Ops get an **Admin Tools feather** (or `/mcm tools`): fast-test mode, skip wait, skip round, pick map.
+This repository root **is the server folder** (Paper 1.21.1, Java 21). Clone the repository (branch `main`), run `start-mcm-server.bat`, join `localhost`. Ops get an **Admin Tools feather** (or `/mcm tools`): fast-test mode, skip wait, skip round, pick map.
 
 ## Two tournaments on one server
 - **Minecraft Monday** (original lobby, compass): the 7 built-in games + Find the Button.

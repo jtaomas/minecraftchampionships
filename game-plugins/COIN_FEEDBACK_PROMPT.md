@@ -6,7 +6,7 @@ Paste everything below the line into the agent.
 
 You're working on "Block Showdown", an MCC-style (Minecraft Championship) tournament server: Paper 1.21.1, Java 21,
 non-commercial, for a group of friends.
-- Repo: `C:\Users\LeonS\Desktop\Mcc` (branch `mcc-1.21`).
+- Repo: `C:\Users\LeonS\Desktop\Mcc` (branch `main`).
 - The core plugin source is in `plugin-src/com/mcm` and is built in `plugin-build`. The games are in `game-plugins/<Game>`.
 - To build: set `JAVA_HOME=C:\Users\LeonS\Desktop\java`, then run
   `C:\Users\LeonS\Desktop\java-tools\maven\bin\mvn.cmd -q -B -o package` in `plugin-build`, or in a game's folder.

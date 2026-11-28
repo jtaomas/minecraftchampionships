@@ -7,7 +7,7 @@ worker per batch of about 10 builds works well, and one more worker handles part
 
 You are working on "Block Showdown", an MCC-style tournament server (Paper 1.21.1, Java 21) for a group of friends,
 non-commercial.
-- Repo: `C:\Users\LeonS\Desktop\Mcc` (git branch `mcc-1.21`). Your area: `game-plugins/BuildMart`.
+- Repo: `C:\Users\LeonS\Desktop\Mcc` (git branch `main`). Your area: `game-plugins/BuildMart`.
 - Build with `JAVA_HOME=C:\Users\LeonS\Desktop\java`, then
   `C:\Users\LeonS\Desktop\java-tools\maven\bin\mvn.cmd -q -B -o package` inside `game-plugins/BuildMart`.
 
